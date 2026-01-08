@@ -43,8 +43,8 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	auto raw_templates = quick_dra::templates::parse_yaml(platform::data_dir() /
-	                                                      "templates.yaml"sv);
+	auto raw_templates = quick_dra::templates::parse_yaml(
+	    platform::config_data_dir() / "templates.yaml"sv);
 	if (!raw_templates) {
 		return 1;
 	}

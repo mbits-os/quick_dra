@@ -110,8 +110,8 @@ namespace quick_dra {
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
-		auto minimal =
-		    config::parse_minimal_only(platform::data_dir() / "config.yaml"sv);
+		auto minimal = config::parse_minimal_only(platform::config_data_dir() /
+		                                          "minimal_pay.yaml"sv);
 
 		if (minimal) {
 			result->minimal.merge(*minimal);

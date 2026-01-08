@@ -139,12 +139,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
-foreach(FILE config.yaml templates.yaml)
+foreach(FILE minimal_pay.yaml templates.yaml)
   add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-    "${PROJECT_SOURCE_DIR}/data/${FILE}"
-    "${CMAKE_CURRENT_BINARY_DIR}/bin/${PROJECT_NAME}_data/${FILE}")
+    "${PROJECT_SOURCE_DIR}/data/config/${FILE}"
+    "${CMAKE_CURRENT_BINARY_DIR}/shared/${PROJECT_NAME}/config/${FILE}")
 endforeach(FILE)
 
 # #################################################################
