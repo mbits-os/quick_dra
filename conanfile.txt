@@ -1,0 +1,10 @@
+[requires]
+mbits-args/0.12.3
+gtest/1.14.0
+fmt/12.1.0
+rapidyaml/0.10.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
+VirtualRunEnv

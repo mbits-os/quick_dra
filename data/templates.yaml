@@ -1,0 +1,165 @@
+reports:
+  DRA:
+    - id: I
+      fields:
+        1: 6
+        2: [$key.NN, $key.DATE]
+
+    - id: II
+      fields:
+        1: $insurer.tax_id
+        3: $insurer.social_id
+        4: $insurer.document_kind
+        5: $insurer.document
+        6: $insurer.name
+        7: $insurer.last
+        8: $insurer.first
+        9: $insurer.birthday
+
+    - id: III
+      fields:
+        1: $insured_count
+        3: $accident_insurance_contribution
+
+    - id: IV
+      fields:
+        1: $+4,7,10,16
+        2: $+5,8,11,17
+        3: $+1,2
+        #
+        4: $pension_insurance.insured
+        5: $disability_insurance.insured
+        6: $+4,5
+        7: $pension_insurance.payer
+        8: $disability_insurance.payer
+        9: $+7,8
+        10: 0zł
+        11: 0zł
+        12: 0zł
+        13: 0zł
+        14: 0zł
+        15: 0zł
+        16: 0zł
+        17: 0zł
+        18: 0zł
+        #
+        19: $+22,25,28
+        20: $+23,26,29,35
+        21: $+19,20
+        22: $health_insurance.insured
+        23: $accident_insurance.insured
+        24: $+22,23
+        25: $health_insurance.payer
+        26: $accident_insurance.payer
+        27: $+25,26
+        28: 0zł
+        29: 0zł
+        30: 0zł
+        31: 0zł
+        32: 0zł
+        33: 0zł
+        34: 0zł
+        35: 0zł
+        36: 0zł
+        #
+        37: $+6,9,24,27
+
+    - id: V
+      fields:
+        1: 0zł
+        2: 0zł
+        3: 0zł
+        4: 0zł
+        5: 0zł
+
+    - id: VI
+      fields:
+        2: 0zł
+        5: 0zł
+        6: 0zł
+        7: 0zł
+
+    - id: VII
+      fields:
+        1: 0zł
+        2: 0zł
+        3: 0zł
+
+    - id: VIII
+      fields:
+        3: 0zł
+
+    - id: IX
+      fields:
+        1: 0zł
+        2: $amount_payable
+
+    - id: XIII
+      fields:
+        1: $today
+
+  RCA:
+    - id: I
+      fields:
+        1: [$key.NN, $key.DATE]
+    - id: II
+      fields:
+        1: $insurer.tax_id
+        3: $insurer.social_id
+        4: $insurer.document_kind
+        5: $insurer.document
+        6: $insurer.name
+        7: $insurer.last
+        8: $insurer.first
+        9: $insurer.birthday
+
+    - id: III
+      repeatable: true
+
+    - id: III
+      block: A
+      fields:
+        1: $insured.last
+        2: $insured.first
+        3: $insured.document_kind
+        4: $insured.document
+
+    - id: III
+      block: B
+      fields:
+        1: $insurance_title
+        3: [$scale.num, $scale.den]
+        #
+        4: $remuneration.gross
+        5: $remuneration.gross
+        6: $remuneration.gross
+        #
+        7: $pension_insurance.insured
+        8: $disability_insurance.insured
+        9: $health_insurance.insured
+        10: $accident_insurance.insured
+        #
+        11: $pension_insurance.payer
+        12: $disability_insurance.payer
+        13: $health_insurance.payer
+        14: $accident_insurance.payer
+        #
+        29: $+7,8,9,10,11,12,13,14
+
+    - id: III
+      block: C
+      fields:
+        1: $health_baseline
+        4: $health_contribution
+
+    - id: III
+      block: D
+      fields:
+        1: 0zł
+        2: 0zł
+        3: 0zł
+        4: 0zł
+
+    - id: IV
+      fields:
+        1: $today
