@@ -67,18 +67,22 @@ set(SRCS
   include/quick_dra/base/paths.hpp
   include/quick_dra/base/str.hpp
   include/quick_dra/base/verbose.hpp
+  include/quick_dra/docs/file_set.hpp
   include/quick_dra/docs/forms.hpp
   include/quick_dra/docs/xml_builder.hpp
   include/quick_dra/docs/xml.hpp
+  include/quick_dra/io/config.hpp
   include/quick_dra/model/base_types.hpp
   include/quick_dra/model/model.hpp
   include/quick_dra/model/types.hpp
   src/app/main.cpp
   src/base/paths.cpp
   src/base/str.cpp
+  src/docs/file_set.cpp
   src/docs/forms.cpp
   src/docs/xml_builder.cpp
   src/docs/xml.cpp
+  src/io/config.cpp
   src/model/_parser_types.hpp
   src/model/base_types.cpp
   src/model/compiler.cpp
