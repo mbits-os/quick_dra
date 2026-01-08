@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <quick_dra/base/verbose.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/model/model.hpp>
 
@@ -12,7 +13,7 @@ namespace quick_dra {
 	xml build_kedu_doc(std::string_view program_name, std::string_view version);
 
 	void attach_document(xml& root,
-	                     bool verbose,
+	                     verbose level,
 	                     form const& form,
 	                     std::vector<compiled_section> const& tmplt,
 	                     unsigned doc_id);

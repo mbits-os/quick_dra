@@ -1,6 +1,7 @@
 {
     "simple_types": {
         "year_month": [ "<chrono>", "std::chrono::year_month" ],
+        "verbose": [ "<quick_dra/base/verbose.hpp>", "verbose" ],
         "currency": [ "<quick_dra/model/base_types.hpp>", "currency" ],
         "calc_currency": [ "<quick_dra/model/base_types.hpp>", "calc_currency" ],
         "percent": [ "<quick_dra/model/base_types.hpp>", "percent" ],

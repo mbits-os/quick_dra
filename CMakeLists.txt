@@ -66,6 +66,7 @@ set(SRCS
   include/quick_dra/base/meta.hpp
   include/quick_dra/base/paths.hpp
   include/quick_dra/base/str.hpp
+  include/quick_dra/base/verbose.hpp
   include/quick_dra/docs/forms.hpp
   include/quick_dra/docs/xml_builder.hpp
   include/quick_dra/docs/xml.hpp

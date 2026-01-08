@@ -4,6 +4,7 @@
 #pragma once
 
 #include <chrono>
+#include <quick_dra/base/verbose.hpp>
 #include <quick_dra/model/types.hpp>
 #include <string>
 
@@ -12,11 +13,11 @@ namespace quick_dra {
 		std::string key{};
 		global_object state{};
 		std::vector<calculated_section> fill(
-		    bool verbose,
+		    verbose level,
 		    std::vector<compiled_section> const& tmplt) const;
 	};
 
-	std::vector<form> prepare_form_set(bool verbose,
+	std::vector<form> prepare_form_set(verbose level,
 	                                   unsigned report_index,
 	                                   std::chrono::year_month const& date,
 	                                   std::chrono::year_month_day const& today,

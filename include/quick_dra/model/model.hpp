@@ -62,10 +62,10 @@ namespace quick_dra {
 
 		VAR(NN);
 		VAR(DATE);
-		VAR_BEGIN(key)
-		MEMBER_VAR(key, NN);
-		MEMBER_VAR(key, DATE);
-		VAR_END(key);
+		VAR_BEGIN(serial)
+		MEMBER_VAR(serial, NN);
+		MEMBER_VAR(serial, DATE);
+		VAR_END(serial);
 		VAR(today);
 
 		VAR(payer);
@@ -129,7 +129,7 @@ namespace quick_dra {
 			fmt::print("{:.2f} zł", value);
 		}
 		void operator()(percent const& value) const noexcept {
-			fmt::print("{:.2f} %", value);
+			fmt::print("{:.2f}%", value);
 		}
 		void operator()(uint_value const& value) const noexcept {
 			fmt::print("{}", value);
@@ -162,12 +162,12 @@ namespace quick_dra {
 		void debug_print(int indent, bool standalone = true) const noexcept {
 			bool first = standalone;
 			if (!id.empty()) {
-				fmt::print("{:{}}{} id: {}\n", "", indent, first ? '-' : ' ',
+				fmt::print("-- {:{}}{} id: {}\n", "", indent, first ? '-' : ' ',
 				           id);
 				first = false;
 			}
 
-			fmt::print("{:{}}{} fields:\n", "", indent, first ? '-' : ' ');
+			fmt::print("-- {:{}}{} fields:\n", "", indent, first ? '-' : ' ');
 
 			unsigned max_id = 0;
 			for (auto const& [index, _] : fields) {
@@ -180,12 +180,12 @@ namespace quick_dra {
 			static const auto printer = value_printer<ValueType>{};
 
 			for (auto const& [index, field] : fields) {
-				fmt::print("{:{}}    {:{}}: ", "", indent, index, width);
+				fmt::print("-- {:{}}    {:{}}: ", "", indent, index, width);
 				std::visit(printer, field);
 				fmt::print("\n");
 			}
 
-			fmt::print("\n");
+			fmt::print("--\n");
 		}
 	};
 
@@ -196,18 +196,16 @@ namespace quick_dra {
 		std::vector<block<ValueType>> blocks{};
 
 		void debug_print() const noexcept {
-			fmt::print("    {}", id);
+			fmt::print("--     {}", id);
 			if (repeatable) {
 				fmt::print("[*]");
 			}
 			fmt::print(":\n");
 
 			if (blocks.size() == 1) {
-				// if (!blocks.front().fields.empty())
 				blocks.front().debug_print(2 * INDENT, false);
 			} else {
 				for (auto const& block : blocks) {
-					// if (block.fields.empty()) continue;
 					block.debug_print(3 * INDENT);
 				}
 			}

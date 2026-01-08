@@ -106,18 +106,18 @@ namespace quick_dra {
 	}
 
 	void attach_document(xml& root,
-	                     bool verbose,
+	                     verbose level,
 	                     form const& form,
 	                     std::vector<compiled_section> const& tmplt,
 	                     unsigned doc_id) {
-		auto const sections = form.fill(verbose, tmplt);
+		auto const sections = form.fill(level, tmplt);
 		root.with(map_sections(E(fmt::format("ZUS{}", form.key),
 		                         {{"id_dokumentu", fmt::to_string(doc_id)}}),
 		                       sections));
 	}
 
 	void store_xml(xml const& tree, std::string const& filename) {
-		fmt::print("writing {}\n", filename);
+		fmt::print("-- output: {}\n", filename);
 		std::ofstream{filename} << tree;
 	}
 };  // namespace quick_dra

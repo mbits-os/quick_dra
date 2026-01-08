@@ -114,11 +114,11 @@ namespace quick_dra {
 		                 year_month_day const& today,
 		                 config const& cfg) {
 			form result = {.key = kedu};
-			auto& key = result.state.get(var::key);
-			key.insert(var::NN, fmt::format("{:02}", report_index));
-			key.insert(var::DATE,
-			           fmt::format("{}-{:02}", static_cast<int>(date.year()),
-			                       static_cast<unsigned>(date.month())));
+			auto& serial = result.state.get(var::serial);
+			serial.insert(var::NN, fmt::format("{:02}", report_index));
+			serial.insert(var::DATE,
+			              fmt::format("{}-{:02}", static_cast<int>(date.year()),
+			                          static_cast<unsigned>(date.month())));
 			result.state.insert(
 			    var::today,
 			    fmt::format("{}-{:02}-{:02}", static_cast<int>(today.year()),
@@ -148,12 +148,14 @@ namespace quick_dra {
 	}  // namespace
 
 	std::vector<calculated_section> form::fill(
-	    bool verbose,
+	    verbose level,
 	    std::vector<compiled_section> const& tmplt) const {
 		auto result = calculate(tmplt, state);
 
-		if (verbose) {
-			fmt::print("ZUS {}\n", key);
+		if (level == verbose::calculated_sections) {
+			auto doc_id = state.typed_value(var::insured.document, ""s);
+			if (!doc_id.empty()) doc_id = fmt::format(" [{}]", doc_id);
+			fmt::print("--   ZUS{}{}\n", key, doc_id);
 			debug_print(result);
 		}
 
@@ -275,7 +277,7 @@ namespace quick_dra {
 		return result;
 	}
 
-	std::vector<form> prepare_form_set(bool verbose,
+	std::vector<form> prepare_form_set(verbose level,
 	                                   unsigned report_index,
 	                                   std::chrono::year_month const& date,
 	                                   std::chrono::year_month_day const& today,
@@ -288,16 +290,18 @@ namespace quick_dra {
 		}
 
 		forms.push_back(calc_dra(report_index, date, today, cfg, forms));
-		if (verbose) {
+		if (level >= verbose::raw_form_data) {
+			fmt::print("-- form data:\n");
 			for (auto const& form : forms) {
 				auto const doc_id =
-				    forms.back().state.typed_value(var::insured.document, ""s);
+				    form.state.typed_value(var::insured.document, ""s);
 				if (doc_id.empty()) {
-					fmt::print("{}:", form.key);
+					fmt::print("--   {}:", form.key);
 				} else {
-					fmt::print("{} [{}]:", form.key, doc_id);
+					fmt::print("--   {} [{}]:", form.key, doc_id);
 				}
-				form.state.debug_print(1);
+				form.state.debug_print(2);
+				fmt::print("--\n");
 			}
 		}
 

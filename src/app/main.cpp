@@ -8,6 +8,7 @@
 #include <fstream>
 #include <quick_dra/app/version.hpp>
 #include <quick_dra/base/paths.hpp>
+#include <quick_dra/base/verbose.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
@@ -16,6 +17,23 @@
 using namespace std::literals;
 
 namespace quick_dra {
+	using namespace std::chrono;
+
+	currency find_minimal(year_month const& key,
+	                      std::map<year_month, currency> const& minimal) {
+		year_month result_date{};
+		currency result{};
+
+		for (auto const& [date, amount] : minimal) {
+			if (key < date) continue;
+			if (result_date > date) continue;
+			result_date = date;
+			result = amount;
+		}
+
+		return result;
+	}
+
 	std::filesystem::path get_config_path(
 	    std::optional<std::string> const& override) {
 		if (override) return *override;
@@ -23,12 +41,9 @@ namespace quick_dra {
 		return platform::home_path() / ".quick_dra.yaml"sv;
 	}
 
-	std::optional<config> parse_config(bool debug,
+	std::optional<config> parse_config(verbose level,
+	                                   year_month const& date,
 	                                   std::filesystem::path const& path) {
-		if (debug) {
-			fmt::print("using config from: {}\n", path.string());
-		}
-
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
@@ -39,14 +54,11 @@ namespace quick_dra {
 			result->minimal.merge(*minimal);
 		}
 
-		if (debug) {
-			result->debug_print();
-		}
+		result->params.minimal_pay = find_minimal(date, result->minimal);
+		result->debug_print(level);
 
 		return result;
 	}
-
-	using namespace std::chrono;
 
 	template <typename D1, typename D2, typename Clock>
 	time_point<Clock, D1> floor(time_point<Clock, D1> const& from) {
@@ -67,21 +79,6 @@ namespace quick_dra {
 		return year_month{ymd.year(), ymd.month()} + rel_months;
 	}
 
-	currency find_minimal(year_month const& key,
-	                      std::map<year_month, currency> const& minimal) {
-		year_month result_date{};
-		currency result{};
-
-		for (auto const& [date, amount] : minimal) {
-			if (key < date) continue;
-			if (result_date > date) continue;
-			result_date = date;
-			result = amount;
-		}
-
-		return result;
-	}
-
 	std::string set_filename(unsigned report_index, year_month const& date) {
 		return fmt::format("quick-dra_{}{:02}-{:02}.xml",
 		                   static_cast<int>(date.year()),
@@ -93,7 +90,7 @@ int main(int argc, char* argv[]) {
 	using namespace quick_dra;
 
 	std::optional<std::string> config_path;
-	bool verbose{false};
+	unsigned verbose_counter{};
 	int rel_month{-1};
 	unsigned report_index{1};
 
@@ -102,12 +99,15 @@ int main(int argc, char* argv[]) {
 
 	parser
 	    .custom(
-	        []() {
+	        [] {
 		        fmt::print("{} version {}\n", version::program, version::ui);
 		        std::exit(0);
 	        },
-	        "v", "version")
+	        "V", "version")
 	    .help("show version and exit")
+	    .opt();
+	parser.custom([&] { ++verbose_counter; }, "v")
+	    .help("sets the output to be more verbose")
 	    .opt();
 	parser.arg(config_path, "config")
 	    .meta("<path>")
@@ -123,9 +123,6 @@ int main(int argc, char* argv[]) {
 	        "defaults "
 	        "to -1")
 	    .opt();
-	parser.set<std::true_type>(verbose, "V")
-	    .help("sets the output to be more verbose")
-	    .opt();
 	parser.parse();
 
 	if (report_index < 1 || report_index > 99) {
@@ -133,17 +130,40 @@ int main(int argc, char* argv[]) {
 		    fmt::format("serial number must be in range 1 to 99 inclusive"));
 	}
 
+	auto const verbose_level = verbose{verbose_counter};
 	auto const today = quick_dra::today();
 	auto const date =
 	    year_month{today.year(), today.month()} + months{rel_month};
 
-	fmt::print("report: {:02} {}-{:02}\n", report_index,
+	if (verbose_level > verbose::none) {
+		fmt::print("-- config used: {}\n",
+		           get_config_path(config_path).string());
+	}
+	if (verbose_level >= verbose::names_and_summary) {
+		fmt::print("-- today: {}-{:02}-{:02}\n", static_cast<int>(today.year()),
+		           static_cast<unsigned>(today.month()),
+		           static_cast<unsigned>(today.day()));
+	}
+	fmt::print("-- report: #{} {}-{:02}\n", report_index,
 	           static_cast<int>(date.year()),
 	           static_cast<unsigned>(date.month()));
-	fmt::print("config: {}\n", get_config_path(config_path).string());
-	auto cfg = parse_config(verbose, get_config_path(config_path));
+	auto cfg = parse_config(verbose_level, date, get_config_path(config_path));
 	if (!cfg) {
 		return 1;
+	}
+
+	if (verbose_level >= verbose::names_and_summary) {
+		bool everyone_has_salary = true;
+		for (auto const& insured : cfg->insured) {
+			if (!insured.remuneration) {
+				everyone_has_salary = false;
+				break;
+			}
+		}
+		if (!everyone_has_salary) {
+			fmt::print("-- minimal pay for month reported: {:.02f} zł\n",
+			           cfg->params.minimal_pay);
+		}
 	}
 
 	auto raw_templates = quick_dra::templates::parse_yaml(platform::data_dir() /
@@ -154,25 +174,28 @@ int main(int argc, char* argv[]) {
 
 	auto templates = compiled_templates::compile(*raw_templates);
 
-	cfg->params.minimal_pay = find_minimal(date, cfg->minimal);
-
-	if (verbose) {
-		templates.debug_print();
-		fmt::print("Today: {}-{:02}-{:02}\n", static_cast<int>(today.year()),
-		           static_cast<unsigned>(today.month()),
-		           static_cast<unsigned>(today.day()));
-		fmt::print("Minimal pay: {:.02f} zł\n", cfg->params.minimal_pay);
-	}
-
 	auto doc_id = 0u;
 	auto root = build_kedu_doc(version::program, version::string);
+	auto const forms =
+	    prepare_form_set(verbose_level, report_index, date, today, *cfg);
 
-	for (auto const& form :
-	     prepare_form_set(verbose, report_index, date, today, *cfg)) {
+	if (verbose_level == verbose::templates) {
+		templates.debug_print();
+	}
+
+	if (verbose_level == verbose::calculated_sections) {
+		fmt::print("-- filled forms:\n");
+	}
+
+	for (auto const& form : forms) {
 		auto it = templates.reports.find(form.key);
 		if (it == templates.reports.end()) continue;
-		attach_document(root, verbose, form, it->second, ++doc_id);
+		attach_document(root, verbose_level, form, it->second, ++doc_id);
 	}
 
 	store_xml(root, set_filename(report_index, date));
+
+	if (verbose_level >= verbose::last) {
+		fmt::print("-- (no more info to unveil)\n");
+	}
 }

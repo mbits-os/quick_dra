@@ -3,7 +3,7 @@ reports:
     - id: I
       fields:
         1: 6
-        2: [$key.NN, $key.DATE]
+        2: [$serial.NN, $serial.DATE]
 
     - id: II
       fields:
@@ -101,7 +101,7 @@ reports:
   RCA:
     - id: I
       fields:
-        1: [$key.NN, $key.DATE]
+        1: [$serial.NN, $serial.DATE]
     - id: II
       fields:
         1: $insurer.tax_id

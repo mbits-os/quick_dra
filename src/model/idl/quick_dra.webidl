@@ -7,7 +7,7 @@ interface config {
     [static, throws] config? parse_yaml([in] path path);
     [static, throws] record<year_month, currency>? parse_minimal_only([in] path path);
 
-    void debug_print();
+    void debug_print(verbose level);
     [mutable] bool validate();
 };
 
