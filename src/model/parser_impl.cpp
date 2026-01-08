@@ -125,19 +125,6 @@ namespace quick_dra::v1 {
 		return true;
 	}
 
-	bool read_value(ref_ctx const& ref, std::filesystem::path& ctx) {
-		auto const value = ref.val();
-		if (value.empty()) {
-			ctx.clear();
-			return false;
-		}
-
-		auto const path =
-		    ref.current_base / std::string_view{value.data(), value.size()};
-		ctx = std::filesystem::weakly_canonical(path);
-		return true;
-	}
-
 	bool convert_string(ref_ctx const& ref,
 	                    c4::csubstr const& value,
 	                    std::chrono::year_month& ctx) {
@@ -181,9 +168,8 @@ namespace quick_dra::v1 {
 		}
 		bool validate(auto const&) { return true; }
 
-		template <typename FileObj>
-		std::optional<FileObj> parse_yaml_file(
-		    std::filesystem::path const& path) try {
+		template <typename FileObj, typename Callback>
+		std::optional<FileObj> parse_yaml_file_base(Callback&& cb) try {
 			std::optional<FileObj> result{};
 
 			c4::yml::Callbacks callbacks;
@@ -192,7 +178,7 @@ namespace quick_dra::v1 {
 
 			YAML parser{};
 
-			auto maybe_tree = parser.load(path);
+			auto maybe_tree = cb(parser);
 			if (!maybe_tree) {
 				return result;
 			}
@@ -203,7 +189,7 @@ namespace quick_dra::v1 {
 			parse_succeeded = true;
 			auto root = tree.rootref();
 
-			if (!read_value(parser.context(path).from(root), *result) ||
+			if (!read_value(parser.context().from(root), *result) ||
 			    !validate(*result)) {
 				result.reset();
 			}
@@ -211,6 +197,21 @@ namespace quick_dra::v1 {
 			return result;
 		} catch (c4_error_exception const&) {
 			return std::nullopt;
+		}
+
+		template <typename FileObj>
+		std::optional<FileObj> parse_yaml_file(
+		    std::filesystem::path const& path) {
+			return parse_yaml_file_base<FileObj>(
+			    [&](YAML& parser) { return parser.load(path); });
+		}
+
+		template <typename FileObj>
+		std::optional<FileObj> parse_yaml_file_from_text(
+		    std::string const& text,
+		    std::string const& path) {
+			return parse_yaml_file_base<FileObj>(
+			    [&](YAML& parser) { return parser.load_contents(text, path); });
 		}
 	}  // namespace
 
@@ -223,6 +224,13 @@ namespace quick_dra::v1 {
 	config::parse_minimal_only(std::filesystem::path const& path) {
 		return parse_yaml_file<std::map<std::chrono::year_month, currency>>(
 		    path);
+	}
+
+	std::optional<std::map<std::chrono::year_month, currency>>
+	config::parse_minimal_only_from_text(std::string const& text,
+	                                     std::string const& path) {
+		return parse_yaml_file_from_text<
+		    std::map<std::chrono::year_month, currency>>(text, path);
 	}
 
 	bool config::validate() noexcept {

@@ -9,7 +9,7 @@ namespace quick_dra::v1 {
 	namespace {
 		std::string from_rate(rate const& r) {
 			if (r.insured)
-				return fmt::format("total: {}%, insured: {}%", r.total,
+				return fmt::format("total {}%, insured {}%", r.total,
 				                   *r.insured);
 			return fmt::format("{}%", r.total);
 		}

@@ -82,7 +82,6 @@ namespace quick_dra {
 	struct ref_ctx;
 
 	struct base_ctx {
-		std::filesystem::path current_base;
 		ryml::Parser const* parser{nullptr};
 
 		inline ref_ctx from(ryml::ConstNodeRef const& ref) const;
@@ -125,16 +124,14 @@ namespace quick_dra {
 
 	inline ref_ctx base_ctx::from(ryml::ConstNodeRef const& ref) const {
 		return {
-		    {.current_base = current_base, .parser = parser},
+		    {.parser = parser},
 		    &ref,
 		};
 	}
 
 	struct YAML {
-		base_ctx context(std::filesystem::path const& path,
-		                 base_ctx const& parent = {}) const {
+		base_ctx context(base_ctx const& parent = {}) const {
 			auto result = parent;
-			result.current_base = path.parent_path();
 			result.parser = &parser;
 			return result;
 		}
@@ -156,8 +153,14 @@ namespace quick_dra {
 				return std::nullopt;
 			}
 
-			contents = std::move(*maybe_contents);
-			path_str = path.string();
+			return load_contents(std::move(*maybe_contents), path.string());
+		}
+
+		template <typename StringLike>
+		std::optional<ryml::Tree> load_contents(StringLike&& text,
+		                                        std::string const& path) {
+			contents = std::forward<StringLike>(text);
+			path_str = path;
 			parser.reserve_locations(300);
 			auto tree = ryml::parse_in_place(
 			    &parser, ryml::to_csubstr(path_str), ryml::to_substr(contents));
@@ -247,7 +250,6 @@ namespace quick_dra::v1 {
 	bool read_value(ref_ctx const& ref, ratio& ctx);
 	bool read_value(ref_ctx const& ref, insurance_title& ctx);
 	bool read_value(ref_ctx const& ref, std::string& ctx);
-	bool read_value(ref_ctx const& ref, std::filesystem::path& ctx);
 
 	bool convert_string(ref_ctx const& ref,
 	                    c4::csubstr const& value,
@@ -288,29 +290,6 @@ namespace quick_dra::v1 {
 #include "model/yaml_parser.hpp"
 
 namespace quick_dra::v1 {
-	template <typename T>
-	static inline bool read_local_or_external(ref_ctx const& ref, T& ctx) {
-		if (!ref.ref().is_map()) {
-			std::filesystem::path path;
-			if (!read_value(ref, path)) return false;
-
-			YAML subparser{};
-			auto maybe = subparser.load(path);
-			if (!maybe) {
-				return ref.error(fmt::format("could not open `{}`", path));
-			}
-
-			auto root_var = subparser.context(path, ref).from(maybe->rootref());
-
-			if (!root_var.ref().is_map()) {
-				return root_var.error(
-				    fmt::format("expecting a map in `{}`", path));
-			}
-			return read_local_value(root_var, ctx);
-		}
-		return read_local_value(ref, ctx);
-	}
-
 	template <typename T>
 	static inline bool read_key(ref_ctx const& ref,
 	                            ryml::csubstr key,
@@ -385,30 +364,6 @@ namespace quick_dra::v1 {
 			if (!read_value(child_var, sub)) return false;
 		}
 		return true;
-	}
-
-	template <typename T>
-	bool read_external_value(ref_ctx const& ref, ryml::csubstr key, T& ctx) {
-		if (!is_valid(ref, ctx)) {
-			std::string path;
-			if (!read_value(ref, path)) return false;
-			auto const ref_path = ref.current_base / path;
-			YAML subparser{};
-			auto maybe = subparser.load(ref_path);
-			if (!maybe) {
-				return ref.error(fmt::format("could not open `{}`", view(key)));
-			}
-
-			auto root_var =
-			    subparser.context(ref_path, ref).from(maybe->rootref());
-
-			auto const child = root_var.ref().find_child(key);
-			if (child.invalid()) {
-				return root_var.error(fmt::format("expecting `{}`", view(key)));
-			}
-			return read_value_impl(root_var.from(child), ctx);
-		}
-		return read_value_impl(ref, ctx);
 	}
 
 	template <typename T>

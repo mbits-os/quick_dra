@@ -6,6 +6,7 @@ interface config {
 
     [static, throws] config? parse_yaml([in] path path);
     [static, throws] record<year_month, currency>? parse_minimal_only([in] path path);
+    [static, throws] record<year_month, currency>? parse_minimal_only_from_text([in] string text, [in] string path);
 
     void debug_print(verbose level);
     [mutable] bool validate();

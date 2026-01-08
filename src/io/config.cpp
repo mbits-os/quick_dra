@@ -5,6 +5,7 @@
 #include <quick_dra/app/version.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/io/config.hpp>
+#include <quick_dra/io/http.hpp>
 
 namespace quick_dra {
 	namespace {
@@ -41,6 +42,20 @@ namespace quick_dra {
 				result = amount;
 			}
 
+			return result;
+		}
+
+		std::optional<std::map<std::chrono::year_month, currency>>
+		download_minimal(verbose level, std::string const& url) {
+			std::string text{};
+			if (!download_file(url, text)) {
+				return {};
+			}
+
+			auto result = config::parse_minimal_only_from_text(text, url);
+			if (level >= verbose::parameters) {
+				fmt::print("-- downloaded {}\n", url);
+			}
 			return result;
 		}
 	}  // namespace
@@ -110,11 +125,24 @@ namespace quick_dra {
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
-		auto minimal = config::parse_minimal_only(platform::config_data_dir() /
-		                                          "minimal_pay.yaml"sv);
+		static constexpr auto loaders = std::array{
+		    +[](verbose level) {
+			    return download_minimal(
+			        level,
+			        "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/config/minimal_pay.yaml"s);
+		    },
+		    +[](verbose) {
+			    return config::parse_minimal_only(platform::config_data_dir() /
+			                                      "minimal_pay.yaml"sv);
+		    },
+		};
 
-		if (minimal) {
-			result->minimal.merge(*minimal);
+		for (auto const& loader : loaders) {
+			auto minimal = loader(level);
+
+			if (minimal) {
+				result->minimal.merge(*minimal);
+			}
 		}
 
 		result->params.minimal_pay = find_minimal(date, result->minimal);

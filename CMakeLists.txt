@@ -37,6 +37,7 @@ find_package(fmt REQUIRED)
 find_package(GTest REQUIRED)
 find_package(mbits-args REQUIRED)
 find_package(ryml REQUIRED)
+find_package(CURL REQUIRED)
 
 if(QUICK_DRA_TESTING)
   enable_testing()
@@ -72,6 +73,7 @@ set(SRCS
   include/quick_dra/docs/xml_builder.hpp
   include/quick_dra/docs/xml.hpp
   include/quick_dra/io/config.hpp
+  include/quick_dra/io/http.hpp
   include/quick_dra/model/base_types.hpp
   include/quick_dra/model/model.hpp
   include/quick_dra/model/types.hpp
@@ -83,6 +85,7 @@ set(SRCS
   src/docs/xml_builder.cpp
   src/docs/xml.cpp
   src/io/config.cpp
+  src/io/http.cpp
   src/model/_parser_types.hpp
   src/model/base_types.cpp
   src/model/compiler.cpp
@@ -134,7 +137,7 @@ target_include_directories(${PROJECT_NAME}
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(${PROJECT_NAME} fmt::fmt ryml::ryml mbits::args)
+target_link_libraries(${PROJECT_NAME} fmt::fmt ryml::ryml CURL::libcurl mbits::args)
 set_target_properties(${PROJECT_NAME} PROPERTIES
   VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
