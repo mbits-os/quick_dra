@@ -3,6 +3,7 @@ extensions:
   - proj_flow.ext.sign
   - proj_flow.ext.store
   - proj_flow.ext.github
+  - quick_dra.icons
 
 entry:
   config: [Conan, CMake]
