@@ -1,1 +1,1 @@
-set(CPACK_PACKAGE_NAME "quick_dra")
+set(CPACK_PACKAGE_NAME "Quick-DRA")
