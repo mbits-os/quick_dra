@@ -5,6 +5,7 @@
 
 #include <fmt/format.h>
 #include <concepts>
+#include <string>
 #include <vector>
 
 namespace quick_dra {
@@ -50,7 +51,7 @@ namespace quick_dra {
 		requires std::derived_from<T,
 		                           fixed_point<typename T::tag_type, T::den>> ||
 		             std::same_as<T, fixed_point<typename T::tag_type, T::den>>;
-	};
+	};  // NOLINT(readability/braces)
 
 	template <fixed_child Value>
 	inline constexpr Value operator+(Value const& lhs,
