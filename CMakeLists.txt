@@ -15,6 +15,8 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
   message(FATAL_ERROR "Building in source directory is not supported")
 endif()
 
+set(SHARE_DIR "share/${PROJECT_NAME}-${PROJECT_VERSION_SHORT}")
+
 set(QUICK_DRA_TESTING ON CACHE BOOL "Compile and/or run self-tests")
 set(QUICK_DRA_INSTALL ON CACHE BOOL "Install the application")
 set(QUICK_DRA_SANITIZE OFF CACHE BOOL "Compile with sanitizers enabled")
@@ -58,9 +60,11 @@ include(${PROJECT_SOURCE_DIR}/.flow/packages/config.cmake)
 include(CPack)
 
 configure_file(src/app/version.hpp.in include/quick_dra/app/version.hpp @ONLY)
+configure_file(src/base/dir_names.hpp.in include/quick_dra/base/dir_names.hpp @ONLY)
 
 set(SRCS
   "${CMAKE_CURRENT_BINARY_DIR}/include/quick_dra/app/version.hpp"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/quick_dra/base/dir_names.hpp"
   "${CMAKE_CURRENT_BINARY_DIR}/include/quick_dra/model/yaml.hpp"
   "${CMAKE_CURRENT_BINARY_DIR}/src/model/yaml_parser.cpp"
   "${CMAKE_CURRENT_BINARY_DIR}/src/model/yaml_parser.hpp"
@@ -147,14 +151,24 @@ foreach(FILE minimal_pay.yaml templates.yaml)
     TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
     "${PROJECT_SOURCE_DIR}/data/config/${FILE}"
-    "${CMAKE_CURRENT_BINARY_DIR}/shared/${PROJECT_NAME}/config/${FILE}")
+    "${CMAKE_CURRENT_BINARY_DIR}/${SHARE_DIR}/config/${FILE}")
 endforeach(FILE)
 
 # #################################################################
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-  install(TARGETS ${PROJECT_NAME})
+  install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${BINARY_DIR}
+    COMPONENT app
+  )
+
+  install(
+    DIRECTORY ${PROJECT_BINARY_DIR}/share/
+    DESTINATION share/
+    USE_SOURCE_PERMISSIONS
+    COMPONENT app
+  )
 endif()
 
 # #################################################################

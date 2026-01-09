@@ -1,0 +1,19 @@
+// DO NOT MODIFY, THIS FILE IS GENERATED FROM version.hpp.in
+//
+// @PROJECT_NAME@/@PROJECT_VERSION@@PROJECT_VERSION_STABILITY@
+//
+// Copyright (c) 2026 midnightBITS
+// This code is licensed under MIT license (see LICENSE for details)
+// clang-format off
+
+#pragma once
+
+#include <string_view>
+
+namespace quick_dra {
+	using namespace std::literals;
+	struct dir_names {
+		static constexpr auto share = "@SHARE_DIR@"sv;
+		static constexpr auto config = "@SHARE_DIR@/config"sv;
+	};
+}  // namespace quick_dra
