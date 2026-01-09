@@ -12,7 +12,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Optional, cast
 
-CXX_FLOW_VERSION = "0.16.0"
+CXX_FLOW_VERSION = "0.17.1"
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 VER_REGEX = re.compile(r"((?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))")
 
