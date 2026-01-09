@@ -34,7 +34,7 @@ namespace quick_dra {
 				return fixed_point<Tag, D2>{value * Den / D2};
 			} else {
 				auto const value_f = static_cast<long double>(value) / Den;
-				auto const rescaled = value_f * D2 + 0.5;
+				auto const rescaled = value_f * D2 + 0.5l;
 				return fixed_point<Tag, D2>{static_cast<long long>(rescaled)};
 			}
 		}
@@ -47,8 +47,9 @@ namespace quick_dra {
 		typename T::tag_type;
 		{ T::den } -> std::common_with<intmax_t>;
 		{ obj.value } -> std::common_with<long long>;
-		requires std::derived_from<T, fixed_point<typename T::tag_type, T::den>> ||
-		    std::same_as<T, fixed_point<typename T::tag_type, T::den>>;
+		requires std::derived_from<T,
+		                           fixed_point<typename T::tag_type, T::den>> ||
+		             std::same_as<T, fixed_point<typename T::tag_type, T::den>>;
 	};
 
 	template <fixed_child Value>
@@ -112,7 +113,17 @@ namespace quick_dra {
 	struct ratio {
 		unsigned num;
 		unsigned den;
+
+		constexpr bool operator==(ratio const& rhs) const noexcept {
+			return (num * rhs.den) == (rhs.num * den);
+		}
+		constexpr auto operator<=>(ratio const& rhs) const noexcept {
+			return (num * rhs.den) <=> (rhs.num * den);
+		}
 	};
+
+	static_assert(ratio{3, 4} == ratio{6, 8});
+	static_assert(ratio{3, 4} > ratio{5, 8});
 
 	struct insurance_title {
 		std::string code{};
@@ -124,6 +135,8 @@ namespace quick_dra {
 			result[2].push_back(code[5]);
 			return result;
 		}
+
+		auto operator<=>(insurance_title const& rhs) const noexcept = default;
 	};
 
 	struct contribution {
