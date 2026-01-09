@@ -67,32 +67,61 @@ namespace quick_dra {
 		return *this;
 	}
 
-	std::ostream& operator<<(std::ostream& os, xml const& node) {
-		fmt::print(os, "<{}", node.tag);
-		for (auto const& [name, value] : node.attributes) {
+	void xml::print_open_tag(std::ostream& os) const {
+		fmt::print(os, "<{}", tag);
+		for (auto const& [name, value] : attributes) {
 			fmt::print(os, " {}=\"{}\"", name, xml_escape(value));
 		}
-
 		fmt::print(os, ">");
+	}
+
+	void xml::print_close_tag(std::ostream& os) const {
+		fmt::print(os, "</{}>", tag);
+	}
+
+	std::ostream& operator<<(std::ostream& os, xml const& node) {
+		node.print_open_tag(os);
 
 		if (std::holds_alternative<std::string>(node.inside)) {
-			fmt::print(os, "{}</{}>",
-			           xml_escape(std::get<std::string>(node.inside)),
-			           node.tag);
-			return os;
+			fmt::print(os, "{}",
+			           xml_escape(std::get<std::string>(node.inside)));
+		} else {
+			auto const& list = std::get<xml::vector>(node.inside);
+			if (list.empty()) {
+				os << "<!-- empty -->";
+			} else {
+				for (auto const& item : list) {
+					os << item;
+				}
+			}
 		}
 
-		auto const& list = std::get<xml::vector>(node.inside);
-		if (list.empty()) {
-			fmt::print(os, "<!-- empty --></{}>", node.tag);
-			return os;
-		}
-
-		for (auto const& item : list) {
-			os << item;
-		}
-
-		fmt::print(os, "</{}>", node.tag);
+		node.print_close_tag(os);
 		return os;
 	}
+
+	std::ostream& operator<<(std::ostream& os, xml::indented_t const& node) {
+		node.indent(os);
+		node.ref.print_open_tag(os);
+
+		if (std::holds_alternative<std::string>(node.ref.inside)) {
+			fmt::print(os, "{}",
+			           xml_escape(std::get<std::string>(node.ref.inside)));
+		} else {
+			auto const& list = std::get<xml::vector>(node.ref.inside);
+			if (list.empty()) {
+				os << "<!-- empty -->";
+			} else {
+				os << '\n';
+				for (auto const& item : list) {
+					os << node.child(item);
+				}
+				node.indent(os);
+			}
+		}
+
+		node.ref.print_close_tag(os);
+		return os << '\n';
+	}
+
 }  // namespace quick_dra

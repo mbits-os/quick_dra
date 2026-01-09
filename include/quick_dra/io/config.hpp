@@ -19,6 +19,7 @@ namespace quick_dra {
 		year_month_day today{};
 		unsigned report_index{};
 		year_month date{};
+		bool indent_xml{};
 
 		static options from_cli(int argc, char* argv[]);
 	};

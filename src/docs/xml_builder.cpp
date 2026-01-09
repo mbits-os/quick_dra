@@ -116,8 +116,14 @@ namespace quick_dra {
 		                       sections));
 	}
 
-	void store_xml(xml const& tree, std::string const& filename) {
+	void store_xml(xml const& tree,
+	               std::string const& filename,
+	               bool indented) {
 		fmt::print("-- output: {}\n", filename);
-		std::ofstream{filename} << tree;
+		auto file = std::ofstream{filename};
+		if (indented)
+			file << tree.indented();
+		else
+			file << tree;
 	}
 };  // namespace quick_dra

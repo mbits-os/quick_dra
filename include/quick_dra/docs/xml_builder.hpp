@@ -6,6 +6,8 @@
 #include <quick_dra/base/verbose.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/model/model.hpp>
+#include <string>
+#include <vector>
 
 namespace quick_dra {
 	struct xml;
@@ -17,5 +19,5 @@ namespace quick_dra {
 	                     form const& form,
 	                     std::vector<compiled_section> const& tmplt,
 	                     unsigned doc_id);
-	void store_xml(xml const& tree, std::string const& filename);
+	void store_xml(xml const& tree, std::string const& filename, bool indented);
 }  // namespace quick_dra
