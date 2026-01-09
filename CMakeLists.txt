@@ -172,5 +172,5 @@ if(QUICK_DRA_TESTING)
   add_project_test(${PROJECT_NAME} ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
   target_link_libraries(${PROJECT_NAME}-test PUBLIC GTest::gmock_main fmt::fmt)
 
-  add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}-test " --gtest_output=xml:${TEST_REPORT_DIR}/${PROJECT_NAME}/${TEST_REPORT_FILE} ")
+  add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME}-test "--gtest_output=xml:${TEST_REPORT_DIR}/${PROJECT_NAME}/${TEST_REPORT_FILE}")
 endif()
