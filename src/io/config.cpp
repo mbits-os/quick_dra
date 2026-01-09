@@ -65,6 +65,7 @@ namespace quick_dra {
 		unsigned verbose_counter{};
 		int rel_month{-1};
 		unsigned report_index{1};
+		bool indent_xml{false};
 
 		args::null_translator tr{};
 		args::parser parser{"", args::from_main(argc, argv), &tr};
@@ -96,6 +97,9 @@ namespace quick_dra {
 		        "defaults "
 		        "to -1")
 		    .opt();
+		parser.set<std::true_type>(indent_xml, "pretty")
+		    .help("pretty-prints resulting XML document")
+		    .opt();
 		parser.parse();
 
 		if (report_index < 1 || report_index > 99) {
@@ -110,6 +114,7 @@ namespace quick_dra {
 		    .today = today,
 		    .report_index = report_index,
 		    .date = year_month{today.year(), today.month()} + months{rel_month},
+		    .indent_xml = indent_xml,
 		};
 	}
 

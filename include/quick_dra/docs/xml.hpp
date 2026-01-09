@@ -9,6 +9,8 @@
 #include <variant>
 #include <vector>
 
+using namespace std::literals;
+
 namespace quick_dra {
 	struct xml {
 		using vector = std::vector<xml>;
@@ -26,7 +28,32 @@ namespace quick_dra {
 		xml& with(xml&& child);
 		xml& with(xml& child);
 
+		void print_open_tag(std::ostream& os) const;
+		void print_close_tag(std::ostream& os) const;
+
 		friend std::ostream& operator<<(std::ostream& os, xml const& node);
+
+		struct indented_t {
+			xml const& ref{};
+			std::string_view indentation{};
+			size_t level{};
+
+			indented_t child(xml const& child) const {
+				return {child, indentation, level + 1};
+			}
+
+			void indent(std::ostream& os) const {
+				for (size_t index = 0; index < level; ++index)
+					os << indentation;
+			}
+
+			friend std::ostream& operator<<(std::ostream& os,
+			                                indented_t const& node);
+		};
+
+		indented_t indented(std::string_view indentation = "\t"sv) const {
+			return {*this, indentation};
+		}
 	};
 
 	inline xml E(std::string_view const& tag,

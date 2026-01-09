@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
 	auto const file =
 	    build_file_set(opt, *cfg, compiled_templates::compile(*raw_templates));
-	store_xml(file, set_filename(opt.report_index, opt.date));
+	store_xml(file, set_filename(opt.report_index, opt.date), opt.indent_xml);
 
 	if (opt.verbose_level >= verbose::last) {
 		fmt::print("-- (no more info to unveil)\n");
