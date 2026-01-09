@@ -197,5 +197,4 @@ except RuntimeError as e:
 reorder_types(objects)
 
 for output in Output.from_config(cast(dict[str, str | dict], data.get("mustache", {}))):
-    print(output)
     output.render(defines, objects, debug=args.debug)
