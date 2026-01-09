@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.2.1](https://github.com/mbits-os/quick_dra/compare/v0.2.0...v0.2.1) (2026-01-09)
+
+### Bug Fixes
+
+- generate icons w/out need of masks ([6b5437f](https://github.com/mbits-os/quick_dra/commit/6b5437f31da9355b760b4d1821d33d63e88532fc))
+
 ## [0.2.0](https://github.com/mbits-os/quick_dra/compare/v0.1.0...v0.2.0) (2026-01-09)
 
 ### New Features
