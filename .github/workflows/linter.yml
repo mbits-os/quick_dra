@@ -51,7 +51,7 @@ jobs:
           FILTER_REGEX_EXCLUDE: ".*/build/.*|.*/external/.*|.*/tools/.*"
 
       - name: Lint with clang-format
-        uses: DoozyX/clang-format-lint-action@v0.17
+        uses: DoozyX/clang-format-lint-action@v0.18
         with:
           exclude: ./build ./external ./tools
-          clangFormatVersion: 17
+          clangFormatVersion: 18
