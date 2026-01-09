@@ -38,12 +38,7 @@ class Magick:
                 tool,
                 "-background",
                 "none",
-                *st.inputs,
-                "-alpha",
-                "Off",
-                "-compose",
-                "CopyOpacity",
-                "-composite",
+                st.inputs[0],
                 st.outputs[0],
             ]
 
@@ -83,8 +78,8 @@ def copy(src: str, dst: str):
     return Copy.statement([dst], [src])
 
 
-def svg_to_png(output: str, image: str, mask: str):
-    return Magick.SvgToPng.statement([output], [image, mask], [os.path.dirname(output)])
+def svg_to_png(output: str, image: str):
+    return Magick.SvgToPng.statement([output], [image], [os.path.dirname(output)])
 
 
 def resize(output: str, stencil: str, size: str):
