@@ -31,9 +31,10 @@ postproc:
 
 cmake:
   vars:
-    QUICK_DRA_COVERAGE: "?config:coverage"
     QUICK_DRA_SANITIZE: "?config:sanitizer"
-    QUICK_DRA_CUTDOWN_OS: "?runtime:cutdown_os"
+
+package:
+  main-group: apps
 
 shortcuts:
   dbg: { build_type: Debug, sanitizer: false }

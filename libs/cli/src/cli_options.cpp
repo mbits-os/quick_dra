@@ -1,11 +1,12 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include "cli_options.hpp"
 #include <args/parser.hpp>
-#include <quick_dra/app/version.hpp>
+#include <map>
 #include <quick_dra/base/paths.hpp>
-#include <quick_dra/io/config.hpp>
-#include <quick_dra/io/http.hpp>
+#include <quick_dra/version.hpp>
+#include <string>
 
 namespace quick_dra {
 	namespace {
@@ -44,23 +45,9 @@ namespace quick_dra {
 
 			return result;
 		}
-
-		std::optional<std::map<std::chrono::year_month, currency>>
-		download_minimal(verbose level, std::string const& url) {
-			std::string text{};
-			if (!download_file(url, text)) {
-				return {};
-			}
-
-			auto result = config::parse_minimal_only_from_text(text, url);
-			if (level >= verbose::parameters) {
-				fmt::print("-- downloaded {}\n", url);
-			}
-			return result;
-		}
 	}  // namespace
 
-	options options::from_cli(int argc, char* argv[]) {
+	options options_from_cli(int argc, char* argv[]) {
 		std::optional<std::string> config_path;
 		unsigned verbose_counter{};
 		int rel_month{-1};
@@ -116,57 +103,5 @@ namespace quick_dra {
 		    .date = year_month{today.year(), today.month()} + months{rel_month},
 		    .indent_xml = indent_xml,
 		};
-	}
-
-	std::string set_filename(unsigned report_index, year_month const& date) {
-		return fmt::format("quick-dra_{}{:02}-{:02}.xml",
-		                   static_cast<int>(date.year()),
-		                   static_cast<unsigned>(date.month()), report_index);
-	}
-
-	std::optional<config> parse_config(verbose level,
-	                                   year_month const& date,
-	                                   std::filesystem::path const& path) {
-		auto result = config::parse_yaml(path);
-		if (!result) return result;
-
-		static constexpr auto loaders = std::array{
-		    +[](verbose level) {
-			    return download_minimal(
-			        level,
-			        "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/config/minimal_pay.yaml"s);
-		    },
-		    +[](verbose) {
-			    return config::parse_minimal_only(platform::config_data_dir() /
-			                                      "minimal_pay.yaml"sv);
-		    },
-		};
-
-		for (auto const& loader : loaders) {
-			auto minimal = loader(level);
-
-			if (minimal) {
-				result->minimal.merge(*minimal);
-			}
-		}
-
-		result->params.minimal_pay = find_minimal(date, result->minimal);
-		result->debug_print(level);
-
-		if (level >= verbose::names_and_summary) {
-			bool everyone_has_salary = true;
-			for (auto const& insured : result->insured) {
-				if (!insured.remuneration) {
-					everyone_has_salary = false;
-					break;
-				}
-			}
-			if (!everyone_has_salary) {
-				fmt::print("-- minimal pay for month reported: {:.02f} zł\n",
-				           result->params.minimal_pay);
-			}
-		}
-
-		return result;
 	}
 }  // namespace quick_dra

@@ -9,13 +9,17 @@
 #include <concepts>
 #include <filesystem>
 #include <fstream>
+#include <map>
 #include <optional>
 #include <quick_dra/model/types.hpp>
 #include <ryml.hpp>
 #include <ryml_std.hpp>
 #include <set>
 #include <string>
+#include <tuple>
+#include <utility>
 #include <variant>
+#include <vector>
 
 using namespace std::literals;
 
@@ -24,7 +28,7 @@ namespace quick_dra {
 		std::optional<std::string> result{};
 		std::ifstream in{path, std::ios::in | std::ios::binary};
 		if (!in) {
-			fmt::print("quick_dra: error: cannot find {}\n", path);
+			fmt::print("Quick-DRA: error: cannot find {}\n", path);
 			return result;
 		}
 
@@ -98,7 +102,7 @@ namespace quick_dra {
 			    .line = loc.line,
 			    .col = loc.col,
 			};
-		};
+		}
 
 		bool error(std::string_view const& msg) const {
 			if (parser && ref_) {
@@ -215,7 +219,7 @@ namespace quick_dra::v1 {
 	template <typename T>
 	concept ReadableValue = requires(ref_ctx const& ref, T& ctx) {
 		{ ctx.read(ref) } -> std::same_as<bool>;
-	};
+	};  // NOLINT(readability/braces)
 
 	template <ReadableValue T>
 	bool read_value(ref_ctx const& ref, T& ctx) {
