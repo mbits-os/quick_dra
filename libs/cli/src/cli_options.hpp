@@ -3,9 +3,8 @@
 
 #pragma once
 
-#include <optional>
-#include <string>
+#include <quick_dra/io/options.hpp>
 
 namespace quick_dra {
-	bool download_file(std::string const& url, std::string& out);
-}
+	options options_from_cli(int argc, char* argv[]);
+}  // namespace quick_dra

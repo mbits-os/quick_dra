@@ -7,6 +7,7 @@
 #include <quick_dra/base/verbose.hpp>
 #include <quick_dra/model/types.hpp>
 #include <string>
+#include <vector>
 
 namespace quick_dra {
 	struct form {

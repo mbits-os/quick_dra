@@ -15,4 +15,4 @@ namespace quick_dra {
 		calculated_sections,
 		last,
 	};
-}
+}  // namespace quick_dra

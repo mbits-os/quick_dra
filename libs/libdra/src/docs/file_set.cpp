@@ -1,10 +1,10 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <quick_dra/app/version.hpp>
 #include <quick_dra/docs/file_set.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
+#include <quick_dra/version.hpp>
 
 namespace quick_dra {
 	xml build_file_set(options const& opt,

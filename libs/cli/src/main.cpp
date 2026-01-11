@@ -6,22 +6,22 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
-#include <quick_dra/app/version.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/verbose.hpp>
 #include <quick_dra/docs/file_set.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
-#include <quick_dra/io/config.hpp>
 #include <quick_dra/model/types.hpp>
+#include <quick_dra/version.hpp>
+#include "cli_options.hpp"
 
 using namespace std::literals;
 
 int main(int argc, char* argv[]) {
 	using namespace quick_dra;
 
-	auto const opt = options::from_cli(argc, argv);
+	auto const opt = options_from_cli(argc, argv);
 
 	if (opt.verbose_level > verbose::none) {
 		fmt::print("-- config used: {}\n", opt.config_path.string());

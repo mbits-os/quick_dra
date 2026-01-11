@@ -57,7 +57,7 @@ namespace quick_dra {
 			if (!currency::parse(view, value)) {
 				fmt::print(stderr, "error while parsing `{}'\n", input);
 				return fmt::format("unparsable: {}", input);
-			};
+			}
 
 			return value;
 		}
