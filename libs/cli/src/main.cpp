@@ -12,7 +12,7 @@
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
-#include <quick_dra/model/types.hpp>
+#include <quick_dra/models/types.hpp>
 #include <quick_dra/version.hpp>
 #include "cli_options.hpp"
 

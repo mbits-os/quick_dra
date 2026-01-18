@@ -13,8 +13,8 @@ interface config {
 };
 
 interface insurer_t {
-    [yaml_name("nazwisko")] attribute string last;
-    [no_yaml] attribute string first;
+    [yaml_name("nazwisko")] attribute string last_name;
+    [no_yaml] attribute string first_name;
     [yaml_name("nip")] attribute string tax_id;
     [yaml_name("pesel")] attribute string social_id;
     [yaml_name("dowod")] attribute string? id_card;
@@ -27,8 +27,8 @@ interface insurer_t {
 };
 
 interface insured_t {
-    [yaml_name("nazwisko")] attribute string last;
-    [no_yaml] attribute string first;
+    [yaml_name("nazwisko")] attribute string last_name;
+    [no_yaml] attribute string first_name;
     [yaml_name("tytul-ubezpieczenia")] attribute insurance_title title;
     [yaml_name("pesel")] attribute string? social_id;
     [yaml_name("dowod")] attribute string? id_card;
@@ -39,7 +39,7 @@ interface insured_t {
     [no_yaml] attribute string kind;
     [no_yaml] attribute string document;
 
-    [mutable] bool validate();
+    [mutable, throws] bool validate();
 };
 
 interface rate {

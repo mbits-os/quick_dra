@@ -21,19 +21,20 @@ namespace quick_dra::v1 {
 		}
 
 		if (level == verbose::names_only) {
-			fmt::print("-- insurer: {} {}\n", insurer.first, insurer.last);
+			fmt::print("-- insurer: {} {}\n", insurer.first_name,
+			           insurer.last_name);
 			fmt::print("-- insured:\n");
 			for (auto const& obj : insured) {
-				fmt::print("--   - {} {}\n", obj.first, obj.last);
+				fmt::print("--   - {} {}\n", obj.first_name, obj.last_name);
 			}
 		} else if (level == verbose::names_and_summary) {
-			fmt::print("-- insurer: {} {} ({})\n", insurer.first, insurer.last,
-			           insurer.tax_id);
+			fmt::print("-- insurer: {} {} ({})\n", insurer.first_name,
+			           insurer.last_name, insurer.tax_id);
 			fmt::print("-- insured:\n");
 			for (auto const& obj : insured) {
 				auto const scale = obj.part_time_scale.value_or(ratio{});
-				fmt::print("--   - {} {} ({}), {}/{} of {}\n", obj.first,
-				           obj.last, obj.document, std::max(1u, scale.num),
+				fmt::print("--   - {} {} ({}), {}/{} of {}\n", obj.first_name,
+				           obj.last_name, obj.document, std::max(1u, scale.num),
 				           std::max(1u, scale.den),
 				           obj.remuneration
 				               .transform([](auto const& value) {
@@ -44,7 +45,8 @@ namespace quick_dra::v1 {
 			return;
 		} else {
 			fmt::print("-- insurer:\n");
-			fmt::print("--   name: {} {}\n", insurer.first, insurer.last);
+			fmt::print("--   name: {} {}\n", insurer.first_name,
+			           insurer.last_name);
 			fmt::print("--   social id: {}\n", insurer.social_id);
 			fmt::print("--   tax id: {}\n", insurer.tax_id);
 			fmt::print("--   ident: {} {}\n", insurer.kind, insurer.document);
@@ -53,7 +55,8 @@ namespace quick_dra::v1 {
 			for (auto const& obj : insured) {
 				auto const scale = obj.part_time_scale.value_or(ratio{});
 
-				fmt::print("--   - name: {} {}\n", obj.first, obj.last);
+				fmt::print("--   - name: {} {}\n", obj.first_name,
+				           obj.last_name);
 				fmt::print("--     insurance title: {}\n",
 				           fmt::join(obj.title.split(), " "));
 				fmt::print("--     ident: {} {}\n", obj.kind, obj.document);

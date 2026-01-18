@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <optional>
 #include <quick_dra/base/verbose.hpp>
-#include <quick_dra/model/types.hpp>
+#include <quick_dra/models/types.hpp>
 #include <string>
 
 namespace quick_dra {

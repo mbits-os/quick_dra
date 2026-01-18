@@ -6,7 +6,7 @@
 #include <chrono>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/io/options.hpp>
-#include <quick_dra/model/types.hpp>
+#include <quick_dra/models/types.hpp>
 #include <string>
 
 namespace quick_dra {

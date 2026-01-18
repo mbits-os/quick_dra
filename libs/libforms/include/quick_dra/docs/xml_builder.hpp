@@ -5,7 +5,7 @@
 
 #include <quick_dra/base/verbose.hpp>
 #include <quick_dra/docs/forms.hpp>
-#include <quick_dra/model/model.hpp>
+#include <quick_dra/models/model.hpp>
 #include <string>
 #include <vector>
 

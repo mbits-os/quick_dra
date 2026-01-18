@@ -2,7 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <charconv>
-#include <quick_dra/model/base_types.hpp>
+#include <quick_dra/models/base_types.hpp>
 
 namespace quick_dra {
 	namespace {
