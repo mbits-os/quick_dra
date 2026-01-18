@@ -7,6 +7,7 @@ matrix:
 exclude:
   - { os: windows, compiler: clang }
   - { os: windows, compiler: gcc }
+  - { os: windows, sanitizer: true }
   - { os: ubuntu, compiler: msvc }
   - { build_type: Release, sanitizer: true }
 
