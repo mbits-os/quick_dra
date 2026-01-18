@@ -10,7 +10,8 @@
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/base_types.hpp>
 #include <quick_dra/models/model.hpp>
-#include <quick_dra/models/yaml.hpp>
+#include <quick_dra/models/yaml/form_template.hpp>
+#include <quick_dra/models/yaml/user_config.hpp>
 #include <string>
 #include <string_view>
 #include <utility>

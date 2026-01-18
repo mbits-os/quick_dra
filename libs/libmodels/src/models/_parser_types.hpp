@@ -291,7 +291,8 @@ namespace quick_dra::v1 {
 	}
 }  // namespace quick_dra::v1
 
-#include "models/yaml_parser.hpp"
+#include "models/yaml/form_template.hpp"
+#include "models/yaml/user_config.hpp"
 
 namespace quick_dra::v1 {
 	template <typename T>

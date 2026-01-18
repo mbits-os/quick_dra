@@ -1,8 +1,4 @@
-set(GEN_SRCS
-    "${CMAKE_CURRENT_BINARY_DIR}/include/quick_dra/models/yaml.hpp"
-    "${CMAKE_CURRENT_BINARY_DIR}/src/models/yaml_parser.cpp"
-    "${CMAKE_CURRENT_BINARY_DIR}/src/models/yaml_parser.hpp"
-)
+include(flow_webidl)
 
 set(SRCS
     include/quick_dra/models/base_types.hpp
@@ -16,32 +12,10 @@ set(SRCS
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
-source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${GEN_SRCS})
 
-add_custom_command(
-    OUTPUT
-    "${CMAKE_CURRENT_BINARY_DIR}/include/quick_dra/models/yaml.hpp"
-    "${CMAKE_CURRENT_BINARY_DIR}/src/models/yaml_parser.cpp"
-    "${CMAKE_CURRENT_BINARY_DIR}/src/models/yaml_parser.hpp"
-    COMMAND
-    Python3::Interpreter
-    "${PROJECT_SOURCE_DIR}/tools/webidl.py"
-    -d "CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
-    -d "CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}"
-    -d "PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}"
-    -d "PROJECT_BINARY_DIR=${PROJECT_BINARY_DIR}"
-    -c "${CMAKE_CURRENT_SOURCE_DIR}/idl/config.json"
-    "${CMAKE_CURRENT_SOURCE_DIR}/idl/quick_dra.webidl"
-    DEPENDS
-    "${PROJECT_SOURCE_DIR}/tools/webidl.py"
-    "${CMAKE_CURRENT_SOURCE_DIR}/idl/quick_dra.webidl"
-    "${CMAKE_CURRENT_SOURCE_DIR}/idl/config.json"
-    "${CMAKE_CURRENT_SOURCE_DIR}/idl/cpp/code.mustache"
-    "${CMAKE_CURRENT_SOURCE_DIR}/idl/cpp/header.mustache"
-    "${PROJECT_SOURCE_DIR}/tools/widl/printers/cpp/common.py"
-    VERBATIM)
+add_library(libmodels STATIC ${SRCS})
 
-add_library(libmodels STATIC ${SRCS} ${GEN_SRCS})
+add_webidl_generation(libmodels idl/models.json)
 
 target_compile_options(libmodels PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(libmodels PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})

@@ -250,7 +250,9 @@ namespace quick_dra::v1 {
 		return !(named.last_name.empty() || named.first_name.empty());
 	}
 
-	bool insurer_t::validate() noexcept {
+	bool person::validate() noexcept { return true; }
+
+	bool insurer_t::postprocess() {
 		kind.clear();
 		document.clear();
 
@@ -271,7 +273,7 @@ namespace quick_dra::v1 {
 		                                 kind.empty() || document.empty());
 	}
 
-	bool insured_t::validate() {
+	bool insured_t::postprocess() {
 		if (!validate_name(*this)) return false;
 
 		if (title.code.length() != 8) return false;
