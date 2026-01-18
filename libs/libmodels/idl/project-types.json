@@ -1,0 +1,12 @@
+{
+    "cxx": {
+        "year_month": [ "<chrono>", "std::chrono::year_month" ],
+        "verbose": [ "<quick_dra/base/verbose.hpp>", "verbose" ],
+        "currency": [ "<quick_dra/models/base_types.hpp>", "currency" ],
+        "calc_currency": [ "<quick_dra/models/base_types.hpp>", "calc_currency" ],
+        "percent": [ "<quick_dra/models/base_types.hpp>", "percent" ],
+        "ratio": [ "<quick_dra/models/base_types.hpp>", "ratio" ],
+        "insurance_title": [ "<quick_dra/models/base_types.hpp>", "insurance_title" ],
+        "contribution": [ "<quick_dra/models/base_types.hpp>", "contribution" ]
+    }
+}

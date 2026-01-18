@@ -18,7 +18,7 @@ namespace quick_dra::v{{version}} {
 
 {{# interfaces}}
 {{^ ext_attrs.no_yaml}}
-{{? ext_attrs.external}}
+{{# ext_attrs.external}}
 	bool read_local_value(ref_ctx const& ref, {{name}}& ctx);
 {{/ ext_attrs.external}}
 	bool read_value(ref_ctx const& ref, {{name}}& ctx);

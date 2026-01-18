@@ -3,7 +3,9 @@ extensions:
   - proj_flow.ext.sign
   - proj_flow.ext.store
   - proj_flow.ext.github
+  - proj_flow.ext.webidl
   - quick_dra.icons
+  - quick_dra.yaml_reader
 
 entry:
   config: [Conan, CMake]

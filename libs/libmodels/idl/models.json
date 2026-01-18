@@ -1,0 +1,58 @@
+{
+	"version": 1,
+	"templates": {
+		"": {
+			"": {
+				"path": "{{CMAKE_CURRENT_BINARY_DIR}}/{{PATH}}",
+				"lang": "cxx",
+				"types": "./project-types.json",
+				"partials": "./mustache/partials"
+			}
+		},
+		"yaml parser": {
+			"src/models/yaml/{{input.shortest_stem}}.cpp": {
+				"template": "mustache/yaml_parser/code.mustache",
+				"context": { "header": "<quick_dra/models/yaml/{{input.shortest_stem}}.hpp>" }
+			},
+			"src/models/yaml/{{input.shortest_stem}}.hpp": "mustache/yaml_parser/fwd.mustache"
+		},
+		"c++ declarations": {
+			"include/quick_dra/models/yaml/{{input.shortest_stem}}.hpp": "mustache/c++/header.mustache"
+		}
+	},
+	"partials": {
+		"yaml parser": "partials",
+		"c++ declarations": "partials"
+	},
+	"inputs": [
+		{
+			"idl": "interfaces/user_config.yaml.webidl",
+			"template": "yaml parser"
+		},
+		{
+			"idl": [ "interfaces/user_config.yaml.webidl", "interfaces/user_config.c++.webidl" ],
+			"template": "c++ declarations"
+		},
+		{
+			"idl": "interfaces/form_template.yaml.webidl",
+			"template": "yaml parser"
+		},
+		{
+			"idl": [ "interfaces/form_template.yaml.webidl", "interfaces/form_template.c++.webidl" ],
+			"template": "c++ declarations"
+		}
+	],
+	"ext_attrs": {
+		"interface": {
+			"no_spaceship": "bool",
+			"postprocess": "bool"
+		},
+		"attribute": {
+			"opt": "bool",
+			"yaml_name": "str"
+		},
+		"operation": {
+			"mutable": "bool"
+		}
+	}
+}
