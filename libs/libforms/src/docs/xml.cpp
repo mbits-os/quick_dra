@@ -6,7 +6,7 @@
 #include <fmt/ranges.h>
 #include <array>
 #include <quick_dra/docs/xml.hpp>
-#include <quick_dra/model/base_types.hpp>
+#include <quick_dra/models/base_types.hpp>
 #include <string>
 #include <string_view>
 

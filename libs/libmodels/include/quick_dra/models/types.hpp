@@ -8,9 +8,9 @@
 #include <map>
 #include <quick_dra/base/meta.hpp>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/model/base_types.hpp>
-#include <quick_dra/model/model.hpp>
-#include <quick_dra/model/yaml.hpp>
+#include <quick_dra/models/base_types.hpp>
+#include <quick_dra/models/model.hpp>
+#include <quick_dra/models/yaml.hpp>
 #include <string>
 #include <string_view>
 #include <utility>

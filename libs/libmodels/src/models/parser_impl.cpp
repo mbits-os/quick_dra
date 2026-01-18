@@ -243,11 +243,11 @@ namespace quick_dra::v1 {
 
 	template <typename Named>
 	bool validate_name(Named& named) noexcept {
-		auto const name = split_sv(", "sv, named.last, 1);
+		auto const name = split_sv(", "sv, named.last_name, 1);
 		if (name.size() != 2) return false;
-		named.first = strip_sv(name[1]);
-		named.last = strip_sv(name[0]);
-		return !(named.last.empty() || named.first.empty());
+		named.first_name = strip_sv(name[1]);
+		named.last_name = strip_sv(name[0]);
+		return !(named.last_name.empty() || named.first_name.empty());
 	}
 
 	bool insurer_t::validate() noexcept {
@@ -271,7 +271,7 @@ namespace quick_dra::v1 {
 		                                 kind.empty() || document.empty());
 	}
 
-	bool insured_t::validate() noexcept {
+	bool insured_t::validate() {
 		if (!validate_name(*this)) return false;
 
 		if (title.code.length() != 8) return false;

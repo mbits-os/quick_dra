@@ -8,7 +8,7 @@
 #include <map>
 #include <quick_dra/base/meta.hpp>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/model/base_types.hpp>
+#include <quick_dra/models/base_types.hpp>
 #include <string>
 #include <string_view>
 #include <vector>

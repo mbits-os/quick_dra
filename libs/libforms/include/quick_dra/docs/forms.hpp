@@ -5,7 +5,7 @@
 
 #include <chrono>
 #include <quick_dra/base/verbose.hpp>
-#include <quick_dra/model/types.hpp>
+#include <quick_dra/models/types.hpp>
 #include <string>
 #include <vector>
 

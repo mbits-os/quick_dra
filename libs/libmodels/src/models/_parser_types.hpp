@@ -11,7 +11,7 @@
 #include <fstream>
 #include <map>
 #include <optional>
-#include <quick_dra/model/types.hpp>
+#include <quick_dra/models/types.hpp>
 #include <ryml.hpp>
 #include <ryml_std.hpp>
 #include <set>
@@ -291,7 +291,7 @@ namespace quick_dra::v1 {
 	}
 }  // namespace quick_dra::v1
 
-#include "model/yaml_parser.hpp"
+#include "models/yaml_parser.hpp"
 
 namespace quick_dra::v1 {
 	template <typename T>
