@@ -135,7 +135,7 @@ def activate_virtual_env():
 
 def bootstrap_cxx_flow():
     if proj_flow is None:
-        print('Cannot parse version "{CXX_FLOW_VERSION}"', file=sys.stderr)
+        print(f'Cannot parse version "{CXX_FLOW_VERSION}"', file=sys.stderr)
         return False
 
     if proj_flow.compatible_with(cxx_flow_version()):
