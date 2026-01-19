@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.3.0](https://github.com/mbits-os/quick_dra/compare/v0.2.1...v0.3.0) (2026-01-19)
+
+### New Features
+
+- add payment summary info ([fb61a47](https://github.com/mbits-os/quick_dra/commit/fb61a476e068c80db2c25db9c4b41a37d5572ac8))
+
+### Bug Fixes
+
+- GCC has not ranges::to yet ([b78dfcd](https://github.com/mbits-os/quick_dra/commit/b78dfcd5bd39c8d6aa05c17052ac741c217b686f))
+- remove old widl codegen ([1e01c70](https://github.com/mbits-os/quick_dra/commit/1e01c70462361a37b79333caf540be89a68094e4))
+- use external webidl generator ([a18edbd](https://github.com/mbits-os/quick_dra/commit/a18edbd95451381afb25df6037b98cb109209991))
+
 ## [0.2.1](https://github.com/mbits-os/quick_dra/compare/v0.2.0...v0.2.1) (2026-01-09)
 
 ### Bug Fixes
