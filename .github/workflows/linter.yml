@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Lint Code Base
-        uses: github/super-linter/slim@v5
+        uses: github/super-linter/slim@v7
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
@@ -47,7 +47,8 @@ jobs:
           VALIDATE_TSX: true
 
           IGNORE_GENERATED_FILES: true
-          FILTER_REGEX_INCLUDE: ".*/src/.*|.*/include/.*|.*/tools/[^/]+\\.py"
+          IGNORE_GITIGNORED_FILES: true
+          FILTER_REGEX_INCLUDE: ".*/src/.*|.*/include/.*|.*/extensions/.*\\.py|.*/tools/[^/]+\\.py"
           FILTER_REGEX_EXCLUDE: ".*/build/.*|.*/external/.*|.*/tools/.*"
 
       - name: Lint with clang-format

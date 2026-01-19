@@ -4,6 +4,7 @@ extensions:
   - proj_flow.ext.store
   - proj_flow.ext.github
   - proj_flow.ext.webidl
+  - proj_flow.ext.tools
   - quick_dra.icons
   - quick_dra.yaml_reader
 
