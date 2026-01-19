@@ -62,7 +62,7 @@ makefile = Makefile(
 
 @step.register
 class IconsStep:
-    """Builds the application icon(s) from source SCG files"""
+    """Builds the application icon(s) from source SVG files"""
 
     name = "Icons"
     runs_before = ["Build"]

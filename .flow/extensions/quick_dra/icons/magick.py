@@ -3,7 +3,7 @@
 
 # pylint: disable=locally-disabled, import-error, missing-function-docstring
 
-"""Provides Makefile-like set of rules to build icons using ImageMagik"""
+"""Provides Makefile-like set of rules to build icons using ImageMagick"""
 
 import os
 import sys
@@ -40,7 +40,7 @@ class Copy(Rule):
 
 
 class Magick:
-    """``Magick`` holds all ImageMagik rules"""
+    """``Magick`` holds all ImageMagick rules"""
 
     class SvgToPng(Rule):
         """``Magick.Merge`` turns an SVG in first input into a PNG in first output"""

@@ -9,10 +9,11 @@
 #include <quick_dra/io/options.hpp>
 #include <quick_dra/models/types.hpp>
 #include <string>
+#include <vector>
 
 namespace quick_dra {
 	xml build_file_set(options const& opts,
-	                   std::vector<quick_dra::form> const& forms,
+	                   std::vector<form> const& forms,
 	                   compiled_templates const& templates);
 
 	inline xml build_file_set(options const& opts,
