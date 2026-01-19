@@ -22,6 +22,16 @@ namespace quick_dra {
 			return data ? std::optional{*data} : std::nullopt;
 		}
 
+		template <typename Range>
+		std::vector<std::ranges::range_value_t<Range>> to_vector(
+		    Range const& range) {
+			std::vector<std::ranges::range_value_t<Range>> result{};
+			for (auto&& item : range) {
+				result.emplace_back(std::move(item));
+			}
+			return result;
+		}
+
 		size_t codepoints(std::string_view utf8) {
 			size_t len = 0;
 			for (auto const c : utf8) {
@@ -92,11 +102,11 @@ namespace quick_dra {
 		    total_range.begin(), total_range.end(), currency{},
 		    [](auto const& lhs, auto const& rhs) { return lhs + rhs; });
 
-		auto lines = rows | std::views::transform([](auto const& line) {
-			             return std::pair{fmt::format("- {}:", line.label),
-			                              format(line.value)};
-		             }) |
-		             std::ranges::to<std::vector>();
+		auto lines =
+		    to_vector(rows | std::views::transform([](auto const& line) {
+			              return std::pair{fmt::format("- {}:", line.label),
+			                               format(line.value)};
+		              }));
 		lines.emplace_back("sum total ="s, to_string(total));
 
 		auto const [labels, values] = std::transform_reduce(
