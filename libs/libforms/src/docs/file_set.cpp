@@ -8,12 +8,10 @@
 
 namespace quick_dra {
 	xml build_file_set(options const& opt,
-	                   config const& cfg,
+	                   std::vector<quick_dra::form> const& forms,
 	                   compiled_templates const& templates) {
 		auto doc_id = 0u;
 		auto root = build_kedu_doc(version::program, version::string);
-		auto const forms = prepare_form_set(opt.verbose_level, opt.report_index,
-		                                    opt.date, opt.today, cfg);
 
 		if (opt.verbose_level == verbose::templates) {
 			templates.debug_print();

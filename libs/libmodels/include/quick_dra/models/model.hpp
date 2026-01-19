@@ -73,6 +73,8 @@ namespace quick_dra {
 		VAR(payer);
 		VAR_BEGIN(insured)
 		MEMBER_VAR(insured, document);
+		MEMBER_VAR(insured, first);
+		MEMBER_VAR(insured, last);
 		VAR_END(insured);
 		VAR(insurer);
 
@@ -96,7 +98,8 @@ namespace quick_dra {
 		CONTRIBUTION_VAR(guaranteed_employee_benefits_fund);
 		VAR(health_baseline);
 		VAR(health_contribution);
-		VAR(amount_payable);
+		VAR(insurance_total);
+		VAR(tax_total);
 
 		VAR_BEGIN(scale)
 		MEMBER_VAR(scale, num);

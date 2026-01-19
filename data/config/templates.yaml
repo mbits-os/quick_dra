@@ -93,7 +93,7 @@ reports:
     - id: IX
       fields:
         1: 0zł
-        2: $amount_payable
+        2: $insurance_total
 
     - id: XIII
       fields:
