@@ -1,6 +1,10 @@
 # Copyright (c) 2026 Marcin Zdun
 # This code is licensed under MIT license (see LICENSE for details)
 
+# pylint: disable=locally-disabled, import-error, missing-function-docstring
+
+"""Provides Makefile-like set of rules to build icons using ImageMagik"""
+
 import os
 import sys
 from typing import List
@@ -8,15 +12,17 @@ from typing import List
 from proj_flow.api.env import Runtime
 from proj_flow.api.makefile import Rule, Statement
 
-tool = "magick" if sys.platform == "win32" else "convert"
+TOOL = "magick" if sys.platform == "win32" else "convert"
 
 
 class MkDirs(Rule):
-    def command(self, _: Statement):
+    """``MkDirs`` creates directories named by outputs"""
+
+    def command(self, statement: Statement):
         return []
 
-    def run(self, st: Statement, rt: Runtime):
-        for output in st.outputs:
+    def run(self, statement: Statement, rt: Runtime):
+        for output in statement.outputs:
             result = rt.mkdirs(output)
             if result:
                 return result
@@ -24,49 +30,59 @@ class MkDirs(Rule):
 
 
 class Copy(Rule):
-    def command(self, _: Statement):
+    """``Copy`` copies first input into first output"""
+
+    def command(self, statement: Statement):
         return []
 
-    def run(self, st: Statement, rt: Runtime):
-        return rt.cp(st.inputs[0], st.outputs[0])
+    def run(self, statement: Statement, rt: Runtime):
+        return rt.cp(statement.inputs[0], statement.outputs[0])
 
 
 class Magick:
+    """``Magick`` holds all ImageMagik rules"""
+
     class SvgToPng(Rule):
-        def command(self, st: Statement):
+        """``Magick.Merge`` turns an SVG in first input into a PNG in first output"""
+
+        def command(self, statement: Statement):
             return [
-                tool,
+                TOOL,
                 "-background",
                 "none",
-                st.inputs[0],
-                st.outputs[0],
+                statement.inputs[0],
+                statement.outputs[0],
             ]
 
     class Resize(Rule):
+        """``Magick.Resize`` resizes first input into first output"""
+
         size: str
 
         def __init__(self, size: str):
             self.size = size
 
-        def command(self, st: Statement):
+        def command(self, statement: Statement):
             return [
-                tool,
+                TOOL,
                 "-background",
                 "none",
-                st.inputs[0],
+                statement.inputs[0],
                 "-resize",
                 f"{self.size}x{self.size}",
                 "-depth",
                 "32",
-                st.outputs[0],
+                statement.outputs[0],
             ]
 
     class Merge(Rule):
-        def command(self, st: Statement):
+        """``Magick.Merge`` merges all inputs into first output"""
+
+        def command(self, statement: Statement):
             return [
-                tool,
-                *st.inputs,
-                st.outputs[0],
+                TOOL,
+                *statement.inputs,
+                statement.outputs[0],
             ]
 
 
