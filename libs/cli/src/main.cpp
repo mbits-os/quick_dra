@@ -10,6 +10,7 @@
 #include <quick_dra/base/verbose.hpp>
 #include <quick_dra/docs/file_set.hpp>
 #include <quick_dra/docs/forms.hpp>
+#include <quick_dra/docs/summary.hpp>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
 #include <quick_dra/models/types.hpp>
@@ -49,9 +50,20 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	auto const forms = prepare_form_set(opt.verbose_level, opt.report_index,
+	                                    opt.date, opt.today, *cfg);
 	auto const file =
-	    build_file_set(opt, *cfg, compiled_templates::compile(*raw_templates));
+	    build_file_set(opt, forms, compiled_templates::compile(*raw_templates));
 	store_xml(file, set_filename(opt.report_index, opt.date), opt.indent_xml);
+
+	if (!opt.print_info && opt.verbose_level != verbose::none) {
+		fmt::print("-- use --info to print summary of amounts to pay\n");
+	}
+
+	if (opt.print_info) {
+		auto const lines = gather_summary_data(forms);
+		print_summary(lines);
+	}
 
 	if (opt.verbose_level >= verbose::last) {
 		fmt::print("-- (no more info to unveil)\n");

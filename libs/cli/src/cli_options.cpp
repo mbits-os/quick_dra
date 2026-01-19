@@ -53,6 +53,7 @@ namespace quick_dra {
 		int rel_month{-1};
 		unsigned report_index{1};
 		bool indent_xml{false};
+		bool print_info{false};
 
 		args::null_translator tr{};
 		args::parser parser{"", args::from_main(argc, argv), &tr};
@@ -87,6 +88,9 @@ namespace quick_dra {
 		parser.set<std::true_type>(indent_xml, "pretty")
 		    .help("pretty-prints resulting XML document")
 		    .opt();
+		parser.set<std::true_type>(print_info, "info")
+		    .help("ends printout with a summary of amounts to pay")
+		    .opt();
 		parser.parse();
 
 		if (report_index < 1 || report_index > 99) {
@@ -95,13 +99,14 @@ namespace quick_dra {
 		}
 
 		auto const today = get_today();
-		return {
-		    .config_path = get_config_path(config_path),
-		    .verbose_level = verbose{verbose_counter},
-		    .today = today,
-		    .report_index = report_index,
-		    .date = year_month{today.year(), today.month()} + months{rel_month},
-		    .indent_xml = indent_xml,
-		};
+		auto const date =
+		    year_month{today.year(), today.month()} + months{rel_month};
+		return {.config_path = get_config_path(config_path),
+		        .verbose_level = verbose{verbose_counter},
+		        .today = today,
+		        .report_index = report_index,
+		        .date = date,
+		        .indent_xml = indent_xml,
+		        .print_info = print_info};
 	}
 }  // namespace quick_dra

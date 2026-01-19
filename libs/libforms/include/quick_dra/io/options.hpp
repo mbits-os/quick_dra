@@ -20,6 +20,7 @@ namespace quick_dra {
 		unsigned report_index{};
 		year_month date{};
 		bool indent_xml{};
+		bool print_info{};
 	};
 
 	std::string set_filename(unsigned report_index, year_month const& date);

@@ -105,7 +105,8 @@ namespace quick_dra {
 			reduce_contribution(dst, src, var::disability_insurance);
 			reduce_contribution(dst, src, var::health_insurance);
 			reduce_contribution(dst, src, var::accident_insurance);
-			reduce_currency(dst, src, var::amount_payable);
+			reduce_currency(dst, src, var::insurance_total);
+			reduce_currency(dst, src, var::tax_total);
 		}
 
 		form calc_common(std::string const& kedu,
@@ -251,9 +252,10 @@ namespace quick_dra {
 		result.state.insert(var::health_contribution, health_contribution);
 
 		result.state.insert(
-		    var::amount_payable,
+		    var::insurance_total,
 		    health_insurance.total() + pension_insurance.total() +
 		        disability_insurance.total() + accident_insurance.total());
+		result.state.insert(var::tax_total, tax);
 		return result;
 	}
 
