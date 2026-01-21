@@ -2,12 +2,19 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <charconv>
+#include <quick_dra/base/str.hpp>
 #include <quick_dra/models/base_types.hpp>
 
 namespace quick_dra {
 	namespace {
 		template <typename FixedPoint>
-		bool parse_fixed_point(std::string_view input, FixedPoint& ctx) {
+		bool parse_fixed_point(std::string_view input,
+		                       FixedPoint& ctx,
+		                       std::string_view suffix) {
+			input = strip_sv(input);
+			if (input.ends_with(suffix)) {
+				input = strip_sv(input.substr(0, input.size() - suffix.size()));
+			}
 			std::string alt_storage{};
 			auto const comma = input.find(',');
 			auto const has_comma = comma != std::string_view::npos;
@@ -36,10 +43,10 @@ namespace quick_dra {
 	}  // namespace
 
 	bool currency::parse(std::string_view input, currency& ctx) {
-		return parse_fixed_point(input, ctx);
+		return parse_fixed_point(input, ctx, "zł"sv);
 	}
 
 	bool percent::parse(std::string_view input, percent& ctx) {
-		return parse_fixed_point(input, ctx);
+		return parse_fixed_point(input, ctx, "%"sv);
 	}
 }  // namespace quick_dra
