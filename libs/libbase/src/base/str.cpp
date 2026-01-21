@@ -27,8 +27,8 @@ namespace quick_dra {
 	}  // namespace
 
 	template <typename String>
-	std::vector<String> split_impl(std::string_view sep,
-	                               std::string_view data,
+	std::vector<String> split_impl(std::string_view data,
+	                               sep_view_t sep,
 	                               size_t max) {
 		std::vector<String> result{};
 
@@ -40,13 +40,13 @@ namespace quick_dra {
 				return result;
 			}
 
-			sep = " \f\t\v\r\n"sv;
+			auto const whitespaces = " \f\t\v\r\n"sv;
 
-			auto pos = data.find_first_of(sep);
+			auto pos = data.find_first_of(whitespaces);
 			while (max && pos != std::string_view::npos) {
 				auto const view = data.substr(0, pos);
 				data = lstrip_sv(data.substr(pos));
-				pos = data.find_first_of(sep);
+				pos = data.find_first_of(whitespaces);
 				if (max != std::string::npos) --max;
 
 				result.push_back(helper<String>::as_str(view));
@@ -56,13 +56,13 @@ namespace quick_dra {
 			return result;
 		}
 
-		auto pos = data.find(sep);
+		auto pos = data.find(sep.value);
 		decltype(pos) prev = 0;
 
 		while (max && pos != std::string_view::npos) {
 			auto const view = data.substr(prev, pos - prev);
 			prev = pos + sep.size();
-			pos = data.find(sep, prev);
+			pos = data.find(sep.value, prev);
 			if (max != std::string::npos) --max;
 
 			result.push_back(helper<String>::as_str(view));
@@ -73,15 +73,15 @@ namespace quick_dra {
 		return result;
 	}
 
-	size_t calc_separators(char sep, std::string_view data, size_t max) {
-		auto pos = data.find(sep);
+	size_t calc_separators(sep_char_t sep, std::string_view data, size_t max) {
+		auto pos = data.find(sep.value);
 		decltype(pos) prev = 0;
 
 		size_t result = 1;
 
 		while (max && pos != std::string_view::npos) {
 			prev = pos + 1;
-			pos = data.find(sep, prev);
+			pos = data.find(sep.value, prev);
 			if (max != std::string::npos) --max;
 
 			++result;
@@ -91,20 +91,20 @@ namespace quick_dra {
 	}
 
 	template <typename String>
-	std::vector<String> split_impl(char sep,
-	                               std::string_view data,
+	std::vector<String> split_impl(std::string_view data,
+	                               sep_char_t sep,
 	                               size_t max) {
 		std::vector<String> result{};
 
 		result.reserve(calc_separators(sep, data, max));
 
-		auto pos = data.find(sep);
+		auto pos = data.find(sep.value);
 		decltype(pos) prev = 0;
 
 		while (max && pos != std::string_view::npos) {
 			auto const view = data.substr(prev, pos - prev);
 			prev = pos + 1;
-			pos = data.find(sep, prev);
+			pos = data.find(sep.value, prev);
 			if (max != std::string::npos) --max;
 
 			result.push_back(helper<String>::as_str(view));
@@ -115,40 +115,40 @@ namespace quick_dra {
 		return result;
 	}
 
-	std::vector<std::string_view> split_sv(std::string_view sep,
-	                                       std::string& data,
+	std::vector<std::string_view> split_sv(std::string& data,
+	                                       sep_view_t sep,
 	                                       size_t max) {
-		return split_impl<std::string_view>(sep, data, max);
+		return split_impl<std::string_view>(data, sep, max);
 	}
 
-	std::vector<std::string_view> split_sv(std::string_view sep,
-	                                       std::string_view data,
+	std::vector<std::string_view> split_sv(std::string_view data,
+	                                       sep_view_t sep,
 	                                       size_t max) {
-		return split_impl<std::string_view>(sep, data, max);
+		return split_impl<std::string_view>(data, sep, max);
 	}
 
-	std::vector<std::string> split_s(std::string_view sep,
-	                                 std::string_view data,
+	std::vector<std::string> split_s(std::string_view data,
+	                                 sep_view_t sep,
 	                                 size_t max) {
-		return split_impl<std::string>(sep, data, max);
+		return split_impl<std::string>(data, sep, max);
 	}
 
-	std::vector<std::string_view> split_sv(char sep,
-	                                       std::string& data,
+	std::vector<std::string_view> split_sv(std::string& data,
+	                                       sep_char_t sep,
 	                                       size_t max) {
-		return split_impl<std::string_view>(sep, data, max);
+		return split_impl<std::string_view>(data, sep, max);
 	}
 
-	std::vector<std::string_view> split_sv(char sep,
-	                                       std::string_view data,
+	std::vector<std::string_view> split_sv(std::string_view data,
+	                                       sep_char_t sep,
 	                                       size_t max) {
-		return split_impl<std::string_view>(sep, data, max);
+		return split_impl<std::string_view>(data, sep, max);
 	}
 
-	std::vector<std::string> split_s(char sep,
-	                                 std::string_view data,
+	std::vector<std::string> split_s(std::string_view data,
+	                                 sep_char_t sep,
 	                                 size_t max) {
-		return split_impl<std::string>(sep, data, max);
+		return split_impl<std::string>(data, sep, max);
 	}
 
 	std::string_view lstrip_sv(std::string_view data) {
@@ -191,7 +191,7 @@ namespace quick_dra {
 		return {result.data(), result.size()};
 	}
 
-	std::string& tolower_inplace(std::string& s) noexcept {
+	std::string& to_lower_inplace(std::string& s) noexcept {
 		for (auto& c : s) {
 			c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 		}
@@ -199,7 +199,7 @@ namespace quick_dra {
 		return s;
 	}
 
-	std::string& toupper_inplace(std::string& s) noexcept {
+	std::string& to_upper_inplace(std::string& s) noexcept {
 		for (auto& c : s) {
 			c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
 		}
@@ -207,15 +207,14 @@ namespace quick_dra {
 		return s;
 	}
 
-	std::string toupper_flt(std::string_view input) {
+	std::string to_upper_copy(std::string_view input) {
 		std::string result{};
 		result = input;
-		return toupper_inplace(result);
+		return to_upper_inplace(result);
 	}
 
-	template <typename String>
-	std::string join_impl(std::string_view sep,
-	                      std::vector<String> const& items) {
+	template <typename String, typename Sep>
+	std::string join_impl(std::vector<String> const& items, Sep sep) {
 		std::string result{};
 
 		if (items.empty()) return result;
@@ -232,20 +231,28 @@ namespace quick_dra {
 			if (first)
 				first = false;
 			else
-				result.append(sep);
+				sep.append_to(result);
 			result.append(item);
 		}
 
 		return result;
 	}
 
-	std::string join(std::string_view sep,
-	                 std::vector<std::string_view> const& items) {
-		return join_impl(sep, items);
+	std::string join(std::vector<std::string_view> const& items,
+	                 sep_view_t sep) {
+		return join_impl(items, sep);
 	}
 
-	std::string join(std::string_view sep,
-	                 std::vector<std::string> const& items) {
-		return join_impl(sep, items);
+	std::string join(std::vector<std::string> const& items, sep_view_t sep) {
+		return join_impl(items, sep);
+	}
+
+	std::string join(std::vector<std::string_view> const& items,
+	                 sep_char_t sep) {
+		return join_impl(items, sep);
+	}
+
+	std::string join(std::vector<std::string> const& items, sep_char_t sep) {
+		return join_impl(items, sep);
 	}
 }  // namespace quick_dra

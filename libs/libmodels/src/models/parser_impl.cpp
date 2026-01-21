@@ -87,7 +87,7 @@ namespace quick_dra::v1 {
 			return false;
 		}
 
-		auto const split = split_sv('/', view(value));
+		auto const split = split_sv(view(value), '/'_sep);
 		if (split.size() < 2) {
 			ctx = {};
 			return ref.error(expecting_NUM_DEN);
@@ -131,10 +131,10 @@ namespace quick_dra::v1 {
 		static constexpr auto expecting_YYYY_MM =
 		    "expecting YYYY/MM or YYYY-MM"sv;
 		auto const val = view(value);
-		auto split = split_sv('/', val, 1);
+		auto split = split_sv(val, '/'_sep, 1);
 
 		if (split.size() < 2) {
-			split = split_sv('-', val, 1);
+			split = split_sv(val, '-'_sep, 1);
 		}
 
 		if (split.size() < 2) {
@@ -243,7 +243,7 @@ namespace quick_dra::v1 {
 
 	template <typename Named>
 	bool validate_name(Named& named) noexcept {
-		auto const name = split_sv(", "sv, named.last_name, 1);
+		auto const name = split_sv(named.last_name, ", "_sep, 1);
 		if (name.size() != 2) return false;
 		named.first_name = strip_sv(name[1]);
 		named.last_name = strip_sv(name[0]);

@@ -27,7 +27,7 @@ namespace quick_dra {
 
 		static varname parse(std::string_view path) {
 			if (path.starts_with('$')) path = path.substr(1);
-			return varname{.path = split_s('.', path)};
+			return varname{.path = split_s(path, '.'_sep)};
 		}
 	};
 

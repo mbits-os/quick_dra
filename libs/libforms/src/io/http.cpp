@@ -93,9 +93,9 @@ namespace quick_dra {
 			return response.cleaned();
 		}
 		auto const view = std::string_view{header->value};
-		auto const split_view = split_sv(';', view);
+		auto const split_view = split_sv(view, ';'_sep);
 
-		auto const type_subtype = split_sv('/', split_view[0], 1);
+		auto const type_subtype = split_sv(split_view[0], '/'_sep, 1);
 		if (type_subtype.size() == 2) {
 			response.content_type.type = strip_sv(type_subtype[0]);
 			response.content_type.subtype = strip_sv(type_subtype[1]);
@@ -103,7 +103,7 @@ namespace quick_dra {
 
 		auto const params = std::span{split_view}.subspan(1);
 		for (auto const& param_view : params) {
-			auto const name_value = split_sv('=', param_view, 1);
+			auto const name_value = split_sv(param_view, '='_sep, 1);
 			if (name_value.size() != 2) {
 				continue;
 			}
