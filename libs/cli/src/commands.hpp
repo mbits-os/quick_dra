@@ -6,6 +6,7 @@
 #include <args/parser.hpp>
 #include <set>
 #include <span>
+#include <string>
 
 namespace quick_dra {
 	struct builtin_tool {

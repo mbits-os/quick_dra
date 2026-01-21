@@ -2,6 +2,9 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include "commands.hpp"
+#include <functional>
+#include <string>
+#include <utility>
 
 using namespace std::literals;
 
