@@ -29,7 +29,7 @@ namespace quick_dra {
 		};
 
 		compiled_value compile_sum(std::string_view input) {
-			auto const parts = split_sv(',', input.substr(2));
+			auto const parts = split_sv(input.substr(2), ','_sep);
 			std::vector<unsigned> refs{};
 			refs.reserve(parts.size());
 
@@ -208,7 +208,7 @@ namespace quick_dra {
 				auto const ptr = ctx.peek(var);
 				if (!ptr) {
 					fmt::print(stderr, "{}: error: cannot find `${}'\n",
-					           label(key, index), join(".", var.path));
+					           label(key, index), join(var.path, '.'_sep));
 					return;
 				}
 
@@ -218,7 +218,7 @@ namespace quick_dra {
 					fmt::print(stderr,
 					           "{}: error: reference `${}' contains no "
 					           "value\n",
-					           label(key, index), join(".", var.path));
+					           label(key, index), join(var.path, '.'_sep));
 					return;
 				}
 
@@ -237,7 +237,7 @@ namespace quick_dra {
 				fmt::print(stderr,
 				           "{}: error: cannot assign a list to a "
 				           "list item when checking `${}'\n",
-				           label(key, index), join(".", var.path));
+				           label(key, index), join(var.path, '.'_sep));
 			}
 
 			void precalc(unsigned key, size_t index, compiled_value& tgt) {
