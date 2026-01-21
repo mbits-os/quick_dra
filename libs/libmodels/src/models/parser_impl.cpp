@@ -233,24 +233,16 @@ namespace quick_dra::v1 {
 		    std::map<std::chrono::year_month, currency>>(text, path);
 	}
 
-	bool config::validate() noexcept {
-		if (!insurer.validate()) return false;
-		for (auto& obj : insured) {
-			if (!obj.validate()) return false;
-		}
-		return true;
-	}
+	bool config::postprocess() { return version == kVersion; }
 
 	template <typename Named>
-	bool validate_name(Named& named) noexcept {
+	bool parse_and_validate_name(Named& named) noexcept {
 		auto const name = split_sv(named.last_name, ", "_sep, 1);
 		if (name.size() != 2) return false;
 		named.first_name = strip_sv(name[1]);
 		named.last_name = strip_sv(name[0]);
 		return !(named.last_name.empty() || named.first_name.empty());
 	}
-
-	bool person::validate() noexcept { return true; }
 
 	bool insurer_t::postprocess() {
 		kind.clear();
@@ -269,12 +261,13 @@ namespace quick_dra::v1 {
 			document = std::move(*passport);
 		}
 
-		return validate_name(*this) && !(social_id.empty() || tax_id.empty() ||
-		                                 kind.empty() || document.empty());
+		return parse_and_validate_name(*this) &&
+		       !(social_id.empty() || tax_id.empty() || kind.empty() ||
+		         document.empty());
 	}
 
 	bool insured_t::postprocess() {
-		if (!validate_name(*this)) return false;
+		if (!parse_and_validate_name(*this)) return false;
 
 		if (title.code.length() != 8) return false;
 		if (!(std::isdigit(title.code[0]) && std::isdigit(title.code[1]) &&
