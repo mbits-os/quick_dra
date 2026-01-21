@@ -26,6 +26,9 @@ namespace quick_dra {
 	inline auto as_str(std::u8string_view view) {
 		return conv<std::string>(view);
 	}
+	inline auto as_str(std::string_view view) {
+		return conv<std::string>(view);
+	}
 
 	std::vector<std::string_view> split_sv(std::string_view sep,
 	                                       std::string& data,

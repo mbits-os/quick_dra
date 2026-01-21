@@ -2,9 +2,14 @@
 # This file is licensed under MIT license (see LICENSE for details)
 
 set(SRCS
+    src/builtins.hpp
+    src/commands.cpp
+    src/commands.hpp
     src/main.cpp
-    src/cli_options.cpp
-    src/cli_options.hpp
+    src/root/command.cpp
+    src/xml/cli_options.cpp
+    src/xml/cli_options.hpp
+    src/xml/command.cpp
 )
 
 add_executable(qdra ${SRCS})
@@ -16,6 +21,11 @@ target_link_libraries(qdra libforms mbits::args)
 set_target_properties(qdra PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
+
+if(WIN32)
+    target_link_options(qdra PRIVATE /ENTRY:wmainCRTStartup)
+    target_compile_options(qdra PUBLIC /D_UNICODE /DUNICODE)
+endif()
 
 # #################################################################
 # #  INSTALL

@@ -1,71 +1,50 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#ifdef _WIN32
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 #include <fmt/format.h>
 #include <args/parser.hpp>
-#include <chrono>
-#include <filesystem>
-#include <fstream>
-#include <quick_dra/base/paths.hpp>
-#include <quick_dra/base/verbose.hpp>
-#include <quick_dra/docs/file_set.hpp>
-#include <quick_dra/docs/forms.hpp>
-#include <quick_dra/docs/summary.hpp>
-#include <quick_dra/docs/xml.hpp>
-#include <quick_dra/docs/xml_builder.hpp>
-#include <quick_dra/models/types.hpp>
-#include <quick_dra/version.hpp>
-#include "cli_options.hpp"
 
-using namespace std::literals;
+extern int tool(::args::args_view const&);
 
-int main(int argc, char* argv[]) {
-	using namespace quick_dra;
+#ifdef _WIN32
+#include <tchar.h>
 
-	auto const opt = options_from_cli(argc, argv);
+std::string ut8_str(wchar_t const* arg) {
+	if (!arg) return {};
 
-	if (opt.verbose_level > verbose::none) {
-		fmt::print("-- config used: {}\n", opt.config_path.string());
-	}
-
-	if (opt.verbose_level >= verbose::names_and_summary) {
-		fmt::print("-- today: {}-{:02}-{:02}\n",
-		           static_cast<int>(opt.today.year()),
-		           static_cast<unsigned>(opt.today.month()),
-		           static_cast<unsigned>(opt.today.day()));
-	}
-
-	fmt::print("-- report: #{} {}-{:02}\n", opt.report_index,
-	           static_cast<int>(opt.date.year()),
-	           static_cast<unsigned>(opt.date.month()));
-
-	auto cfg = parse_config(opt.verbose_level, opt.date, opt.config_path);
-	if (!cfg) {
-		return 1;
-	}
-
-	auto raw_templates = quick_dra::templates::parse_yaml(
-	    platform::config_data_dir() / "templates.yaml"sv);
-	if (!raw_templates) {
-		return 1;
-	}
-
-	auto const forms = prepare_form_set(opt.verbose_level, opt.report_index,
-	                                    opt.date, opt.today, *cfg);
-	auto const file =
-	    build_file_set(opt, forms, compiled_templates::compile(*raw_templates));
-	store_xml(file, set_filename(opt.report_index, opt.date), opt.indent_xml);
-
-	if (!opt.print_info && opt.verbose_level != verbose::none) {
-		fmt::print("-- use --info to print summary of amounts to pay\n");
-	}
-
-	if (opt.print_info) {
-		auto const lines = gather_summary_data(forms);
-		print_summary(lines);
-	}
-
-	if (opt.verbose_level >= verbose::last) {
-		fmt::print("-- (no more info to unveil)\n");
-	}
+	auto size =
+	    WideCharToMultiByte(CP_UTF8, 0, arg, -1, nullptr, 0, nullptr, nullptr);
+	std::unique_ptr<char[]> out{new char[size + 1]};
+	WideCharToMultiByte(CP_UTF8, 0, arg, -1, out.get(), size + 1, nullptr,
+	                    nullptr);
+	return out.get();
 }
+
+std::vector<std::string> wide_char_to_utf8(int argc, wchar_t* argv[]) {
+	std::vector<std::string> result{};
+	result.resize(argc);
+	std::transform(argv, argv + argc, result.begin(), ut8_str);
+	return result;
+}
+
+int _tmain(int argc, wchar_t* argv[]) {
+	auto utf8 = wide_char_to_utf8(argc, argv);
+	std::vector<char*> args{};
+	args.resize(utf8.size() + 1);
+	std::transform(utf8.begin(), utf8.end(), args.begin(),
+	               [](auto& s) { return s.data(); });
+	args[argc] = nullptr;
+
+	SetConsoleOutputCP(CP_UTF8);
+
+	return tool(
+	    ::args::from_main(static_cast<int>(args.size() - 1), args.data()));
+}
+#else
+int main(int argc, char* argv[]) { return tool(args::from_main(argc, argv)); }
+#endif
