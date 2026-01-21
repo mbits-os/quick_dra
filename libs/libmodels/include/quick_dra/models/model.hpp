@@ -5,16 +5,18 @@
 
 #include <fmt/format.h>
 #include <algorithm>
+#include <functional>
 #include <map>
 #include <quick_dra/base/meta.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/base_types.hpp>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace quick_dra {
-	static constexpr auto INDENT = 2u;
+	static constexpr auto kIndent = 2u;
 
 	struct addition {
 		std::vector<unsigned> refs;
@@ -40,13 +42,13 @@ namespace quick_dra {
 	}
 
 	namespace var {
-#define CONST static constexpr auto
-#define VAR(N) CONST N = #N##_var
-#define MEMBER_VAR(N, M) CONST M = #N "." #M##_var
+#define VAR_CONST static constexpr auto
+#define VAR(N) VAR_CONST N = #N##_var
+#define MEMBER_VAR(N, M) VAR_CONST M = #N "." #M##_var
 #define VAR_BEGIN(N)                                              \
 	struct N##_t {                                                \
 	private:                                                      \
-		CONST name_{#N##_var};                                    \
+		VAR_CONST name_{#N##_var};                                \
                                                                   \
 	public:                                                       \
 		operator varname() const { return name_; }                \
@@ -56,7 +58,7 @@ namespace quick_dra {
 #define VAR_END(N) \
 	}              \
 	;              \
-	CONST N = N##_t{};
+	VAR_CONST N = N##_t{};
 #define CONTRIBUTION_VAR(N)              \
 	VAR_BEGIN(N) MEMBER_VAR(N, insurer); \
 	MEMBER_VAR(N, insured);              \
@@ -117,7 +119,7 @@ namespace quick_dra {
 #undef VAR_BEGIN
 #undef VAR_END
 #undef CONTRIBUTION_VAR
-#undef CONST
+#undef VAR_CONST
 	};  // namespace var
 
 	using calculated_value = std::
@@ -125,39 +127,66 @@ namespace quick_dra {
 	using compiled_value = expand_args_t<calculated_value, addition, varname>;
 
 	template <typename ValueType>
-	struct value_printer {
-		void operator()(std::monostate) const noexcept { fmt::print("<null>"); }
-		void operator()(std::string const& str) const noexcept {
-			fmt::print("'{}'", str);
+	struct value_formatter {
+		auto operator()(std::monostate) const { return "<null>"s; }
+		auto operator()(std::string const& str) const {
+			return fmt::format("'{}'", str);
 		}
-		void operator()(currency const& value) const noexcept {
-			fmt::print("{:.2f} zł", value);
+		auto operator()(currency const& value) const {
+			return fmt::format("{:.2f} zł", value);
 		}
-		void operator()(percent const& value) const noexcept {
-			fmt::print("{:.2f}%", value);
+		auto operator()(percent const& value) const {
+			return fmt::format("{:.2f}%", value);
 		}
-		void operator()(uint_value const& value) const noexcept {
-			fmt::print("{}", value);
+		auto operator()(uint_value const& value) const {
+			return fmt::format("{}", value);
 		}
-		void operator()(addition const& sum) const noexcept {
-			fmt::print("({})", fmt::join(sum.refs, " + "));
+		auto operator()(addition const& sum) const {
+			return fmt::format("({})", fmt::join(sum.refs, " + "));
 		}
-		void operator()(varname const& var) const noexcept {
-			fmt::print("${}", fmt::join(var.path, "."));
+		auto operator()(varname const& var) const {
+			return fmt::format("${}", fmt::join(var.path, "."));
 		}
-		void operator()(ValueType const& value) const noexcept {
-			std::visit(*this, value);
+		auto operator()(ValueType const& value) const {
+			return std::visit(*this, value);
 		}
-		void operator()(std::vector<ValueType> const& values) const noexcept {
-			fmt::print("[");
+		auto operator()(std::vector<ValueType> const& values) const {
+			std::string result{"["};
 			bool first = true;
 			for (auto const& value : values) {
-				if (!first) fmt::print(", ");
+				if (!first) result.append(", "sv);
 				first = false;
-				std::visit(*this, value);
+				result.append(std::visit(*this, value));
 			}
-			fmt::print("]");
+			result.push_back(']');
+			return result;
 		}
+
+		auto operator()(maybe_list<ValueType> const& value) const {
+			return std::visit(*this, value);
+		}
+	};
+
+	template <typename ValueType>
+	struct value_printer {
+		using sink_type = std::function<void(std::string_view)>;
+
+		explicit value_printer(sink_type sink = {}) : sink_{std::move(sink)} {
+			if (!sink_) {
+				sink_ = [](auto const& text) { fmt::print("{}", text); };
+			}
+		}
+
+		explicit value_printer(FILE* file)
+		    : value_printer{
+		          [file](auto const& text) { fmt::print(file, "{}", text); }} {}
+
+		void operator()(auto const& arg) const {
+			sink_(value_formatter<ValueType>{}(arg));
+		}
+
+	private:
+		sink_type sink_{};
 	};
 
 	template <typename ValueType>
@@ -208,10 +237,10 @@ namespace quick_dra {
 			fmt::print(":\n");
 
 			if (blocks.size() == 1) {
-				blocks.front().debug_print(2 * INDENT, false);
+				blocks.front().debug_print(2 * kIndent, false);
 			} else {
 				for (auto const& block : blocks) {
-					block.debug_print(3 * INDENT);
+					block.debug_print(3 * kIndent);
 				}
 			}
 		}
