@@ -20,19 +20,6 @@
 namespace quick_dra {
 	struct global_object;
 
-	struct file_var {
-		std::string filename{};
-		size_t line{};
-		size_t col{};
-	};
-
-	template <typename Payload>
-	struct payload_with_location {
-		using payload_type = Payload;
-		Payload payload{};
-		file_var loc{};
-	};
-
 	template <typename T>
 	struct stored_type {
 		using type = T;
