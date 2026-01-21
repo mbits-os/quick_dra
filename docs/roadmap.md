@@ -2,12 +2,12 @@
 
 - [x] Subcommand system, with `qdra xml` replacing current `main()` (_v0.4.0_)
 - [x] Use `yaml_name` in `tax_parameters`' attributes (_v0.5.0_)
-- [ ] Extract YAML parser to submodule independent of libmodels.
+- [x] Extract YAML parser to submodule independent of libmodels and libbase (_v0.6.0_)
 - [ ] Initialization
   - [ ] Questionnaire config for filling out `~/.quick_dra.yaml`
-  - [ ] Add `qdra insurer` updating/creating `"płatnik"` and `"paramtery"`
+  - [ ] Add `qdra insurer` updating/creating `"płatnik"` and `"parametry"`
   - [ ] Add `qdra insured` updating `"ubezpieczeni"` sequence
-- [ ] Create a `qdra_gui`.
+- [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
   - _Notes:_

@@ -3,12 +3,13 @@ include(flow_webidl)
 set(SRCS
     include/quick_dra/models/base_types.hpp
     include/quick_dra/models/model.hpp
+    include/quick_dra/models/project_reader.hpp
     include/quick_dra/models/types.hpp
-    src/models/_parser_types.hpp
     src/models/base_types.cpp
     src/models/compiler.cpp
     src/models/parser_debug.cpp
     src/models/parser_impl.cpp
+    src/models/project_reader.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
@@ -27,7 +28,7 @@ target_include_directories(libmodels
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(libmodels PUBLIC ryml::ryml libbase)
+target_link_libraries(libmodels PUBLIC libbase libyaml)
 
 # #################################################################
 # #  INSTALL

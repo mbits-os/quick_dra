@@ -3,233 +3,27 @@
 
 #include <cmath>
 #include <quick_dra/base/str.hpp>
-#include "_parser_types.hpp"
+#include <quick_dra/models/project_reader.hpp>
 
 namespace quick_dra::v1 {
-	bool read_value(ref_ctx const& ref, bool& ctx) {
-		if (!ref.ref().has_val()) {
-			ctx = false;
-			return false;
-		}
-
-		auto const value = ref.val();
-		if (value.empty()) {
-			ctx = false;
-			return true;
-		}
-
-		auto key = std::string{value.data(), value.size()};
-		for (auto& c : key) {
-			c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-		}
-
-		if (key == "true"sv) {
-			ctx = true;
-		} else if (key == "false"sv) {
-			ctx = false;
-		} else {
-			return ref.error("expecting a true or false");
-		}
-
-		return true;
-	}
-
-	bool read_value(ref_ctx const& ref, percent& ctx) {
-		if (!ref.ref().has_val()) {
-			ctx = {};
-			return false;
-		}
-
-		auto const value = ref.val();
-		if (value.empty()) {
-			ctx = {};
-			return false;
-		}
-
-		if (!percent::parse(view(value), ctx)) {
-			return ref.error("could not parse the percent value");
-		}
-
-		return true;
-	}
-
-	bool read_value(ref_ctx const& ref, currency& ctx) {
-		if (!ref.ref().has_val()) {
-			ctx = {};
-			return false;
-		}
-
-		auto const value = ref.val();
-		if (value.empty()) {
-			ctx = {};
-			return false;
-		}
-
-		if (!currency::parse(view(value), ctx)) {
-			return ref.error("could not parse the currency value");
-		}
-
-		return true;
-	}
-
-	bool read_value(ref_ctx const& ref, ratio& ctx) {
-		static constexpr auto expecting_NUM_DEN =
-		    "expecting N/M, e.g. 1/1 or 4/5"sv;
-
-		if (!ref.ref().has_val()) {
-			ctx = {};
-			return false;
-		}
-
-		auto const value = ref.val();
-		if (value.empty()) {
-			ctx = {};
-			return false;
-		}
-
-		auto const split = split_sv(view(value), '/'_sep);
-		if (split.size() < 2) {
-			ctx = {};
-			return ref.error(expecting_NUM_DEN);
-		}
-
-		unsigned num{};
-		unsigned den{};
-
-		if (!convert_string(ref, split[0], num) ||
-		    !convert_string(ref, split[1], den)) {
-			return ref.error(expecting_NUM_DEN);
-		}
-
-		ctx = {.num = num, .den = den};
-		return true;
-	}
-
-	bool read_value(ref_ctx const& ref, insurance_title& ctx) {
-		return read_value(ref, ctx.code);
-	}
-
-	bool read_value(ref_ctx const& ref, std::string& ctx) {
-		if (!ref.ref().has_val()) {
-			ctx.clear();
-			return false;
-		}
-
-		auto const value = ref.val();
-		if (value.empty()) {
-			ctx = {};
-			return false;
-		}
-
-		ctx = {value.data(), value.size()};
-		return true;
-	}
-
-	bool convert_string(ref_ctx const& ref,
-	                    c4::csubstr const& value,
-	                    std::chrono::year_month& ctx) {
-		static constexpr auto expecting_YYYY_MM =
-		    "expecting YYYY/MM or YYYY-MM"sv;
-		auto const val = view(value);
-		auto split = split_sv(val, '/'_sep, 1);
-
-		if (split.size() < 2) {
-			split = split_sv(val, '-'_sep, 1);
-		}
-
-		if (split.size() < 2) {
-			return ref.error(expecting_YYYY_MM);
-		}
-
-		int year{};
-		unsigned month{};
-
-		if (!convert_string(ref, split[0], year) ||
-		    !convert_string(ref, split[1], month)) {
-			return ref.error(expecting_YYYY_MM);
-		}
-
-		ctx = std::chrono::year{year} / static_cast<int>(month);
-
-		if (!ctx.ok()) {
-			return ref.error(expecting_YYYY_MM);
-		}
-
-		return true;
-	}
-
 	namespace {
-		template <typename T>
-		    requires requires(T& obj) {
-			    { obj.validate() } -> std::same_as<bool>;
-		    }
-		bool validate(T& obj) {
-			return obj.validate();
-		}
-		bool validate(auto const&) { return true; }
-
-		template <typename FileObj, typename Callback>
-		std::optional<FileObj> parse_yaml_file_base(Callback&& cb) try {
-			std::optional<FileObj> result{};
-
-			c4::yml::Callbacks callbacks;
-			callbacks.m_error = c4_error_handler;
-			c4::yml::set_callbacks(callbacks);
-
-			YAML parser{};
-
-			auto maybe_tree = cb(parser);
-			if (!maybe_tree) {
-				return result;
-			}
-			auto& tree = *maybe_tree;
-
-			result.emplace();
-
-			parse_succeeded = true;
-			auto root = tree.rootref();
-
-			if (!read_value(parser.context().from(root), *result) ||
-			    !validate(*result)) {
-				result.reset();
-			}
-
-			return result;
-		} catch (c4_error_exception const&) {
-			return std::nullopt;
-		}
-
-		template <typename FileObj>
-		std::optional<FileObj> parse_yaml_file(
-		    std::filesystem::path const& path) {
-			return parse_yaml_file_base<FileObj>(
-			    [&](YAML& parser) { return parser.load(path); });
-		}
-
-		template <typename FileObj>
-		std::optional<FileObj> parse_yaml_file_from_text(
-		    std::string const& text,
-		    std::string const& path) {
-			return parse_yaml_file_base<FileObj>(
-			    [&](YAML& parser) { return parser.load_contents(text, path); });
-		}
-	}  // namespace
-
+		static constexpr auto app_name = "Quick-DRA"sv;
+	}
 	std::optional<config> config::parse_yaml(
 	    std::filesystem::path const& path) {
-		return parse_yaml_file<config>(path);
+		return parser::parse_yaml_file<config>(path, app_name);
 	}
 
 	std::optional<std::map<std::chrono::year_month, currency>>
-	config::parse_minimal_only(std::filesystem::path const& path) {
-		return parse_yaml_file<std::map<std::chrono::year_month, currency>>(
-		    path);
+	config::parse_minimal(std::filesystem::path const& path) {
+		return parser::parse_yaml_file<
+		    std::map<std::chrono::year_month, currency>>(path, app_name);
 	}
 
 	std::optional<std::map<std::chrono::year_month, currency>>
-	config::parse_minimal_only_from_text(std::string const& text,
-	                                     std::string const& path) {
-		return parse_yaml_file_from_text<
+	config::parse_minimal_from_text(std::string const& text,
+	                                std::string const& path) {
+		return parser::parse_yaml_text<
 		    std::map<std::chrono::year_month, currency>>(text, path);
 	}
 
@@ -313,7 +107,7 @@ namespace quick_dra::v1 {
 
 	std::optional<templates> templates::parse_yaml(
 	    std::filesystem::path const& path) {
-		return parse_yaml_file<templates>(path);
+		return parser::parse_yaml_file<templates>(path, app_name);
 	}
 
 	bool templates::validate() noexcept {

@@ -13,8 +13,7 @@
 			"src/models/yaml/{{input.shortest_stem}}.cpp": {
 				"template": "mustache/yaml_parser/code.mustache",
 				"context": { "header": "<quick_dra/models/yaml/{{input.shortest_stem}}.hpp>" }
-			},
-			"src/models/yaml/{{input.shortest_stem}}.hpp": "mustache/yaml_parser/fwd.mustache"
+			}
 		},
 		"c++ declarations": {
 			"include/quick_dra/models/yaml/{{input.shortest_stem}}.hpp": "mustache/c++/header.mustache"

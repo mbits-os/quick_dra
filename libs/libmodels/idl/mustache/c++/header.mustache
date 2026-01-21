@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <yaml/ref.hpp>
+
 {{> pkg-cxx:includes}}
 namespace quick_dra::v{{version}} {
 #ifndef QUICK_DRA_VERSION
@@ -48,6 +50,7 @@ namespace quick_dra::v{{version}} {
 {{#ext_attrs.postprocess}}
 		bool postprocess();
 {{/ext_attrs.postprocess}}
+		bool read(yaml::ref_ctx const& ref);
 	};
 {{/ interfaces}}
 } // namespace quick_dra::v{{version}}
