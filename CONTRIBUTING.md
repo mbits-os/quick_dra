@@ -11,14 +11,14 @@ In the meantime, look at the [issue templates](.github/ISSUE_TEMPLATE/).
 - [ ] Subcommand system, with `qdra kedu` replacing current `main()`
 - [ ] Use `yaml_name` in `tax_parameters`' attributes
 - [ ] Initialization
-  - [ ] Questionare config for filling out `~/.quick_dra.yaml`
+  - [ ] Questionnaire  config for filling out `~/.quick_dra.yaml`
   - [ ] Add `qdra insurer` updating/creating `"platnik"` and `"paramtery"`
   - [ ] Add `qdra insured` updating `"ubezpieczeni"` sequence
 - [ ] Create a `qdra_gui`.
   - [ ] Obviously cross-platform
   - [ ] Using ElectronJS or Chromium's CEF is an overkill
-  - [ ] If not looking native, stick to current-ish Matertial Design
-  - [ ] Support for editing of `~/quick_dra.yaml`
+  - [ ] If not looking native, stick to current-ish Material Design
+  - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
 - [ ] Automatic upload to ZUS ePłatnik
 
