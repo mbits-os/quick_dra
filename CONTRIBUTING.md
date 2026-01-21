@@ -8,7 +8,7 @@ In the meantime, look at the [issue templates](.github/ISSUE_TEMPLATE/).
 
 ## Planned tasks
 
-- [ ] Subcommand system, with `qdra kedu` replacing current `main()`
+- [x] Subcommand system, with `qdra xml` replacing current `main()`
 - [ ] Use `yaml_name` in `tax_parameters`' attributes
 - [ ] Initialization
   - [ ] Questionare config for filling out `~/.quick_dra.yaml`

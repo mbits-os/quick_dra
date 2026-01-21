@@ -5,10 +5,9 @@
 #include <args/parser.hpp>
 #include <map>
 #include <quick_dra/base/paths.hpp>
-#include <quick_dra/version.hpp>
 #include <string>
 
-namespace quick_dra {
+namespace quick_dra::builtin::xml {
 	namespace {
 		template <typename D1, typename D2, typename Clock>
 		time_point<Clock, D1> floor(time_point<Clock, D1> const& from) {
@@ -47,7 +46,8 @@ namespace quick_dra {
 		}
 	}  // namespace
 
-	options options_from_cli(int argc, char* argv[]) {
+	options options_from_cli(args::args_view const& arguments,
+	                         std::string_view description) {
 		std::optional<std::string> config_path;
 		unsigned verbose_counter{};
 		int rel_month{-1};
@@ -56,40 +56,35 @@ namespace quick_dra {
 		bool print_info{false};
 
 		args::null_translator tr{};
-		args::parser parser{"", args::from_main(argc, argv), &tr};
+		args::parser parser{as_str(description), arguments, &tr};
 
-		parser
-		    .custom(
-		        [] {
-			        fmt::print("{} version {}\n", version::program,
-			                   version::ui);
-			        std::exit(0);
-		        },
-		        "V", "version")
-		    .help("show version and exit")
-		    .opt();
 		parser.custom([&] { ++verbose_counter; }, "v")
-		    .help("sets the output to be more verbose")
+		    .help(
+		        "set the output to be more verbose, "
+		        "output will change with each added -v, e.g. -vv will differ "
+		        "from -vvv")
+		    .multi()
 		    .opt();
 		parser.arg(config_path, "config")
 		    .meta("<path>")
-		    .help("selects file other, than ~/.quick_dra.yaml");
+		    .help("select config file; defaults to ~/.quick_dra.yaml");
 		parser.arg(report_index, "n")
 		    .meta("<NN>")
-		    .help("serial number of this particular report set; defaults to 1")
+		    .help(
+		        "choose serial number of this particular report set; "
+		        "defaults to 1")
 		    .opt();
 		parser.arg(rel_month, "m")
 		    .meta("<month>")
 		    .help(
-		        "how many month away from today to generate reports for; "
-		        "defaults "
-		        "to -1")
+		        "choose how many month away from today the report should use; "
+		        "defaults to -1")
 		    .opt();
 		parser.set<std::true_type>(indent_xml, "pretty")
-		    .help("pretty-prints resulting XML document")
+		    .help("pretty-print resulting XML document")
 		    .opt();
 		parser.set<std::true_type>(print_info, "info")
-		    .help("ends printout with a summary of amounts to pay")
+		    .help("end terminal printout with a summary of amounts to pay")
 		    .opt();
 		parser.parse();
 
@@ -109,4 +104,4 @@ namespace quick_dra {
 		        .indent_xml = indent_xml,
 		        .print_info = print_info};
 	}
-}  // namespace quick_dra
+}  // namespace quick_dra::builtin::xml
