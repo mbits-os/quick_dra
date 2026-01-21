@@ -3,7 +3,7 @@
 
 #include <fmt/ranges.h>
 #include <quick_dra/base/str.hpp>
-#include "_parser_types.hpp"
+#include <quick_dra/models/types.hpp>
 
 namespace quick_dra::v1 {
 	namespace {

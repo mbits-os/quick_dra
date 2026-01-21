@@ -47,7 +47,7 @@ namespace quick_dra {
 			auto view = resp.text();
 
 			// TODO: object vs array
-			auto result = config::parse_minimal_only_from_text(
+			auto result = config::parse_minimal_from_text(
 			    {view.data(), view.size()}, url);
 			if (level >= verbose::parameters) {
 				fmt::print("-- downloaded {}\n", url);
@@ -80,8 +80,8 @@ namespace quick_dra {
 		static constexpr minimal_loader loaders[] = {
 		    download_minimal,
 		    +[](verbose) {
-			    return config::parse_minimal_only(platform::config_data_dir() /
-			                                      "minimal_pay.yaml"sv);
+			    return config::parse_minimal(platform::config_data_dir() /
+			                                 "minimal_pay.yaml"sv);
 		    },
 		};
 
