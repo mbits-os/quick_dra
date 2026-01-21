@@ -59,20 +59,6 @@ namespace quick_dra {
 		return false;
 	}
 
-	inline void diagnostic(file_var const& loc,
-	                       std::string_view msg,
-	                       std::string_view level = "error"sv) {
-		if (!loc.filename.empty()) {
-			fmt::print(stderr, "{}:", loc.filename);
-		}
-		fmt::print(stderr, "{}:{}: {}: {}\n", loc.line + 1, loc.col + 1, level,
-		           msg);
-	}
-
-	inline void warn(file_var const& loc, std::string_view msg) {
-		diagnostic(loc, msg, "warning"sv);
-	}
-
 	struct c4_error_exception {};
 
 	inline void c4_error_handler(const char* msg,
@@ -93,16 +79,6 @@ namespace quick_dra {
 
 	struct ref_ctx : base_ctx {
 		ryml::ConstNodeRef const* ref_{};
-
-		file_var get_location() const {
-			if (!parser || !ref_) return {};
-			auto const loc = ref_->location(*parser);
-			return {
-			    .filename{loc.name.data(), loc.name.size()},
-			    .line = loc.line,
-			    .col = loc.col,
-			};
-		}
 
 		bool error(std::string_view const& msg) const {
 			if (parser && ref_) {
@@ -244,9 +220,6 @@ namespace quick_dra::v1 {
 		return ref.error(fmt::format("unknown value, `{}`", value));
 	}
 
-	template <typename T>
-	bool read_value(ref_ctx const& ref, payload_with_location<T>& ctx);
-
 	bool read_value(ref_ctx const& ref, bool& ctx);
 	bool read_value(ref_ctx const& ref, std::integral auto& ctx);
 	bool read_value(ref_ctx const& ref, percent& ctx);
@@ -379,13 +352,6 @@ namespace quick_dra::v1 {
 	template <typename K, typename T>
 	bool read_value(ref_ctx const& ref, std::map<K, T>& ctx) {
 		return read_value_impl(ref, ctx);
-	}
-
-	template <typename T>
-	bool read_value(ref_ctx const& ref, payload_with_location<T>& ctx) {
-		if (!read_value(ref, ctx.payload)) return false;
-		ctx.loc = ref.get_location();
-		return true;
 	}
 
 	template <typename T>
