@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.4.0](https://github.com/mbits-os/quick_dra/compare/v0.3.0...v0.4.0) (2026-01-21)
+
+### New Features
+
+- introduce sub-command system to CLI app (#12) ([5e1a27d](https://github.com/mbits-os/quick_dra/commit/5e1a27dc74ebbfe60c9decabfe268b025d584ae0))
+
+### Bug Fixes
+
+- **docs**: fix wording in documentation ([c87080a](https://github.com/mbits-os/quick_dra/commit/c87080a5a993c05aa6a0d9ebb106fcf29aed0b27))
+- **docs**: list planned tasks ([fcfdb1d](https://github.com/mbits-os/quick_dra/commit/fcfdb1df559d9802dae624694de7cb4081de36e6))
+
 ## [0.3.0](https://github.com/mbits-os/quick_dra/compare/v0.2.1...v0.3.0) (2026-01-19)
 
 ### New Features
