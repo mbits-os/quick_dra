@@ -138,7 +138,7 @@ namespace quick_dra {
 			fmt::print("\n");
 
 			for (auto const& [key, child] : children) {
-				fmt::print("-- {:{}} {}:", "", indent * INDENT, key);
+				fmt::print("-- {:{}} {}:", "", indent * kIndent, key);
 				child.debug_print(indent + 1);
 			}
 		}
