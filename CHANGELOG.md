@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.5.0](https://github.com/mbits-os/quick_dra/compare/v0.4.0...v0.5.0) (2026-01-29)
+
+### New Features
+
+- extract independent YAML code to library ([d04a0db](https://github.com/mbits-os/quick_dra/commit/d04a0db5fcca7179a6fe0371bd3fd699c0f4d70f))
+- use `yaml_name`s for all user-facing configs ([206deb7](https://github.com/mbits-os/quick_dra/commit/206deb76d05cfffec99a2f9082d66f90c0e46cd8))
+
+### Bug Fixes
+
+- allow artifact building ([33d1c66](https://github.com/mbits-os/quick_dra/commit/33d1c66d54dfbcee98f7fecf92818f8ec9e7c966))
+- **docs**: prepare a better CONTRIBUTION doc ([4cbc7ab](https://github.com/mbits-os/quick_dra/commit/4cbc7ab8a1608a7376c61531909b68bbc37347ca))
+
 ## [0.4.0](https://github.com/mbits-os/quick_dra/compare/v0.3.0...v0.4.0) (2026-01-21)
 
 ### New Features
