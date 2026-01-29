@@ -9,15 +9,6 @@
 using namespace std::literals;
 
 namespace quick_dra {
-	namespace {
-		std::set<std::string> list_tools(tools const& runner,
-		                                 std::string_view group) {
-			if (group == "builtins"sv || group == "builtin"sv)
-				return runner.list_builtins();
-			return {};
-		}
-	}  // namespace
-
 	int tools::handle(std::string_view tool, args::arglist args) const {
 		for (auto const& builtin : builtins_) {
 			if (builtin.name != tool) continue;

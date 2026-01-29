@@ -85,7 +85,7 @@ namespace quick_dra {
 		    CURLE_OK) {
 			return response.cleaned();
 		}
-		response.status = code;
+		response.status = static_cast<unsigned>(std::max(code, 0l));
 
 		curl_header* header{};
 		if (curl_easy_header(curl.get(), "Content-Type", 0, CURLH_HEADER, -1,

@@ -31,7 +31,7 @@ list(APPEND CMAKE_PREFIX_PATH "${PROJECT_BINARY_DIR}/conan")
 
 include(common)
 include(output_dirs_setup)
-old_conan_output_dirs_setup()
+prepare_output_dirs_setup()
 
 set(CONAN_CMAKE_SILENT_OUTPUT ON)
 find_package(Python3 COMPONENTS Interpreter REQUIRED)

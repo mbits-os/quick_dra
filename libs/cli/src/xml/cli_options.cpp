@@ -29,21 +29,6 @@ namespace quick_dra::builtin::xml {
 
 			return platform::home_path() / ".quick_dra.yaml"sv;
 		}
-
-		currency find_minimal(year_month const& key,
-		                      std::map<year_month, currency> const& minimal) {
-			year_month result_date{};
-			currency result{};
-
-			for (auto const& [date, amount] : minimal) {
-				if (key < date) continue;
-				if (result_date > date) continue;
-				result_date = date;
-				result = amount;
-			}
-
-			return result;
-		}
 	}  // namespace
 
 	options options_from_cli(args::args_view const& arguments,
