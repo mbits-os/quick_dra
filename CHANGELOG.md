@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.6.2](https://github.com/mbits-os/quick_dra/compare/v0.6.1...v0.6.2) (2026-01-30)
+
+### Bug Fixes
+
+- allow overriding tax config from command line ([bc66c75](https://github.com/mbits-os/quick_dra/commit/bc66c75fffeb0ae8692ffafb07e62cb9c842f664))
+
 ## [0.6.1](https://github.com/mbits-os/quick_dra/compare/v0.6.0...v0.6.1) (2026-01-30)
 
 ### Bug Fixes
