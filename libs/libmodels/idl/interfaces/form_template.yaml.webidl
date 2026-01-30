@@ -9,7 +9,3 @@ interface report_section {
     [opt] attribute [key=unsigned] record<DOMString, (string or sequence<string>)> fields;
 };
 
-
-enum EnumName {
-    "ala", "ma", "kota"
-};

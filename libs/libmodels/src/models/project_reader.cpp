@@ -81,6 +81,47 @@ namespace quick_dra {
 		return read_value(ref, ctx.code);
 	}
 
+	bool read_value(ref_ctx const& ref, costs_of_obtaining& ctx) {
+#define X(NAME)                          \
+	if (!read_key(ref, #NAME, ctx.NAME)) \
+		return ref.error("while reading `" #NAME "`");
+
+		X(local)
+		X(remote)
+#undef X
+		return true;
+	}
+
+	bool read_value(ref_ctx const& ref, rate& ctx) {
+#define X(NAME, KEY)                         \
+	if (!read_key(ref, KEY, ctx.NAME, true)) \
+		return ref.error("while reading `" KEY "`");
+
+		X(payer, "płatnik")
+		X(insured, "ubezpieczony")
+#undef X
+		return true;
+	}
+
+	bool read_value(ref_ctx const& ref, rates& ctx) {
+#define X(NAME, KEY)                   \
+	if (!read_key(ref, KEY, ctx.NAME)) \
+		return ref.error("while reading `" KEY "`");
+		CONTRIBUTIONS_EX(X)
+#undef X
+		return true;
+	}
+
+	bool convert_string(ref_ctx const& ref,
+	                    c4::csubstr const& value,
+	                    currency& ctx) {
+		if (!currency::parse(view(value), ctx)) {
+			return ref.error("could not parse the currency value");
+		}
+
+		return true;
+	}
+
 }  // namespace quick_dra
 
 namespace yaml {

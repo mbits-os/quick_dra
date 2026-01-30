@@ -11,6 +11,7 @@
 #include <quick_dra/base/types.hpp>
 #include <quick_dra/models/model.hpp>
 #include <quick_dra/models/yaml/form_template.hpp>
+#include <quick_dra/models/yaml/tax_config.hpp>
 #include <quick_dra/models/yaml/user_config.hpp>
 #include <string>
 #include <string_view>

@@ -14,10 +14,16 @@ namespace quick_dra {
 	bool read_value(ref_ctx const& ref, currency& ctx);
 	bool read_value(ref_ctx const& ref, ratio& ctx);
 	bool read_value(ref_ctx const& ref, insurance_title& ctx);
+	bool read_value(ref_ctx const& ref, costs_of_obtaining& ctx);
+	bool read_value(ref_ctx const& ref, rates& ctx);
+
+	bool convert_string(ref_ctx const& ref,
+	                    c4::csubstr const& value,
+	                    currency& ctx);
 }  // namespace quick_dra
 
 namespace yaml {
 	bool convert_string(ref_ctx const& ref,
 	                    c4::csubstr const& value,
 	                    std::chrono::year_month& ctx);
-}
+}  // namespace yaml
