@@ -12,15 +12,14 @@ namespace quick_dra {
 	namespace {
 		static constexpr auto GITHUB_MAIN_BRANCH =
 		    "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/"sv;
-		static constexpr auto GITHUB_MINIMAL_PATH_1 =
-		    "libs/libdra/data/config/minimal_pay.yaml"sv;
-		static constexpr auto GITHUB_MINIMAL_PATH_2 =
-		    "data/config/minimal_pay.yaml"sv;
+		static constexpr auto GITHUB_TAX_CONFIG =
+		    "libs/libdra/data/config/tax_config.yaml"sv;
 
-		currency find_minimal(year_month const& key,
-		                      std::map<year_month, currency> const& minimal) {
+		template <typename T>
+		T find_in_timeline(year_month const& key,
+		                   std::map<year_month, T> const& minimal) {
 			year_month result_date{};
-			currency result{};
+			T result{};
 
 			for (auto const& [date, amount] : minimal) {
 				if (key < date) continue;
@@ -32,12 +31,10 @@ namespace quick_dra {
 			return result;
 		}
 
-		std::optional<std::map<year_month, currency>> download_minimal_option(
-		    verbose level,
-		    std::string_view path) {
+		std::optional<tax_config> download_tax_config(verbose level) {
 			std::string url{};
 			url = GITHUB_MAIN_BRANCH;
-			url += path;
+			url += GITHUB_TAX_CONFIG;
 
 			auto resp = http_get(url);
 			if (!resp) {
@@ -47,22 +44,15 @@ namespace quick_dra {
 			auto view = resp.text();
 
 			// TODO: object vs array
-			auto result = config::parse_minimal_from_text(
-			    {view.data(), view.size()}, url);
+			auto result =
+			    tax_config::parse_from_text({view.data(), view.size()}, url);
 			if (level >= verbose::parameters) {
 				fmt::print("-- downloaded {}\n", url);
 			}
 			return result;
 		}
 
-		std::optional<std::map<year_month, currency>> download_minimal(
-		    verbose level) {
-			auto result = download_minimal_option(level, GITHUB_MINIMAL_PATH_1);
-			if (result) return result;
-			return download_minimal_option(level, GITHUB_MINIMAL_PATH_2);
-		}
-
-		using minimal_loader = decltype(download_minimal)*;
+		using minimal_loader = decltype(download_tax_config)*;
 	}  // namespace
 
 	std::string set_filename(unsigned report_index, year_month const& date) {
@@ -78,22 +68,35 @@ namespace quick_dra {
 		if (!result) return result;
 
 		static constexpr minimal_loader loaders[] = {
-		    download_minimal,
+		    download_tax_config,
 		    +[](verbose) {
-			    return config::parse_minimal(platform::config_data_dir() /
-			                                 "minimal_pay.yaml"sv);
+			    return tax_config::parse_yaml(platform::config_data_dir() /
+			                                  "tax_config.yaml"sv);
 		    },
 		};
 
+		std::optional<tax_config> tax_cfg{};
 		for (auto const& loader : loaders) {
-			auto minimal = loader(level);
+			auto current = loader(level);
 
-			if (minimal) {
-				result->minimal.merge(*minimal);
+			if (current) {
+				tax_cfg = std::move(current);
 			}
 		}
 
-		result->params.minimal_pay = find_minimal(date, result->minimal);
+		if (!tax_cfg) {
+			result.reset();
+			return result;
+		}
+
+#define FIND_IN_TIMELINE(NAME) \
+	result->params.NAME = find_in_timeline(date, tax_cfg->NAME)
+		FIND_IN_TIMELINE(scale);
+		FIND_IN_TIMELINE(minimal_pay);
+		FIND_IN_TIMELINE(costs_of_obtaining);
+		FIND_IN_TIMELINE(contributions);
+
+		tax_cfg->debug_print(level);
 		result->debug_print(level);
 
 		if (level >= verbose::names_and_summary) {
@@ -105,7 +108,7 @@ namespace quick_dra {
 				}
 			}
 			if (!everyone_has_salary) {
-				fmt::print("-- minimal pay for month reported: {:.02f} zł\n",
+				fmt::print("--   minimal pay for month reported: {:.02f} zł\n",
 				           result->params.minimal_pay);
 			}
 		}

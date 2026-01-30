@@ -31,7 +31,7 @@ target_include_directories(libforms
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(libforms PUBLIC CURL::libcurl libmodels)
+target_link_libraries(libforms PUBLIC CURL::libcurl libmodels liblex)
 
 add_custom_command(
     TARGET libforms POST_BUILD
@@ -39,6 +39,13 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND}
     ARGS -E copy_directory "${PROJECT_SOURCE_DIR}/data/config"
     "${PROJECT_BINARY_DIR}/${SHARE_DIR}/config")
+
+add_custom_command(
+    TARGET libforms POST_BUILD
+    COMMENT "Copy schema files"
+    COMMAND ${CMAKE_COMMAND}
+    ARGS -E copy_directory "${PROJECT_SOURCE_DIR}/data/schemas"
+    "${PROJECT_BINARY_DIR}/${SHARE_DIR}/schemas")
 
 # #################################################################
 # #  INSTALL

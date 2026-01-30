@@ -4,5 +4,6 @@
 add_subdirectory(libyaml)
 add_subdirectory(libbase)
 add_subdirectory(libmodels)
+add_subdirectory(liblex)
 add_subdirectory(libforms)
 add_subdirectory(cli)

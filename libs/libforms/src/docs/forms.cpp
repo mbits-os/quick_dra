@@ -5,6 +5,7 @@
 #include <chrono>
 #include <concepts>
 #include <quick_dra/docs/forms.hpp>
+#include <quick_dra/lex/tax.hpp>
 #include <string_view>
 
 namespace quick_dra {
@@ -180,37 +181,22 @@ namespace quick_dra {
 		}();
 
 		auto const tax_lowering_amount =
-		    calc_currency{
-		        (cfg.params.tax_free_allowance.calc() * cfg.params.tax_rate)
-		            .value /
-		        12}
-		        .rounded();
+		    calc_tax_lowering_amount(cfg.params.scale);
 
-		auto const health_insurance =
-		    cfg.params.health_insurance.contribution_on(baseline);
-		auto const pension_insurance =
-		    cfg.params.pension_insurance.contribution_on(baseline);
-		auto const disability_insurance =
-		    cfg.params.disability_insurance.contribution_on(baseline);
-		auto const accident_insurance =
-		    cfg.params.accident_insurance.contribution_on(baseline);
-		auto const guaranteed_employee_benefits_fund =
-		    cfg.params.guaranteed_employee_benefits_fund.contribution_on(
-		        baseline);
+		auto const all_contributions =
+		    cfg.params.contributions.contribution_on(baseline);
 
-		auto const contributions = health_insurance.insured +
-		                           pension_insurance.insured +
-		                           disability_insurance.insured;
-		auto const health_baseline = round_to_whole(
-		    clamp(baseline - (contributions + cfg.params.cost_of_obtaining)));
+		auto const insured_contributions = all_contributions.insured();
+		auto const taxed_baseline = round_to_whole(
+		    clamp(baseline - (insured_contributions +
+		                      cfg.params.costs_of_obtaining.local)));
 
-		auto const advance =
-		    (health_baseline.calc() * cfg.params.tax_rate).rounded();
-		auto const tax = clamp(advance - cfg.params.free_amount);
+		auto const tax_owed = calc_tax_owed(cfg.params.scale, taxed_baseline);
 
-		auto const health_lowered = clamp(advance - tax_lowering_amount);
+		auto const health_lowered = clamp(tax_owed - tax_lowering_amount);
 		auto const health_contribution_intermediate =
-		    (clamp(baseline - contributions).calc() * cfg.params.health)
+		    (clamp(baseline - insured_contributions).calc() *
+		     cfg.params.contributions.health.insured)
 		        .rounded();
 
 		auto const health_contribution =
@@ -218,11 +204,9 @@ namespace quick_dra {
 		        ? health_contribution_intermediate
 		        : health_lowered;
 
-		auto const cost_of_insured = contributions + tax + health_contribution;
-		auto const cost_of_payer =
-		    health_insurance.payer + pension_insurance.payer +
-		    disability_insurance.payer + accident_insurance.payer +
-		    guaranteed_employee_benefits_fund.payer;
+		auto const cost_on_insured =
+		    insured_contributions + tax_owed + health_contribution;
+		auto const cost_on_payer = all_contributions.payer();
 
 		auto result = calc_common("RCA"s, report_index, date, today, cfg);
 		auto& person = result.state.get(var::insured);
@@ -237,25 +221,26 @@ namespace quick_dra {
 
 		result.state.insert(var::remuneration.gross, baseline);
 		result.state.insert(var::remuneration.net,
-		                    clamp(baseline - cost_of_insured));
+		                    clamp(baseline - cost_on_insured));
 		result.state.insert(var::remuneration.payer_gross,
-		                    baseline + cost_of_payer);
+		                    baseline + cost_on_payer);
 
-		result.state.insert(var::health_insurance, health_insurance);
-		result.state.insert(var::pension_insurance, pension_insurance);
-		result.state.insert(var::disability_insurance, disability_insurance);
-		result.state.insert(var::accident_insurance, accident_insurance);
+		result.state.insert(var::health_insurance,
+		                    all_contributions.health_insurance);
+		result.state.insert(var::pension_insurance,
+		                    all_contributions.pension_insurance);
+		result.state.insert(var::disability_insurance,
+		                    all_contributions.disability_insurance);
+		result.state.insert(var::accident_insurance,
+		                    all_contributions.accident_insurance);
 		result.state.insert(var::guaranteed_employee_benefits_fund,
-		                    guaranteed_employee_benefits_fund);
+		                    contribution{});
 
-		result.state.insert(var::health_baseline, health_baseline);
+		result.state.insert(var::health_baseline, taxed_baseline);
 		result.state.insert(var::health_contribution, health_contribution);
 
-		result.state.insert(
-		    var::insurance_total,
-		    health_insurance.total() + pension_insurance.total() +
-		        disability_insurance.total() + accident_insurance.total());
-		result.state.insert(var::tax_total, tax);
+		result.state.insert(var::insurance_total, all_contributions.total());
+		result.state.insert(var::tax_total, tax_owed);
 		return result;
 	}
 
@@ -268,8 +253,9 @@ namespace quick_dra {
 		result.state.insert(
 		    var::insured_count,
 		    uint_value{static_cast<unsigned>(cfg.insured.size())});
-		result.state.insert(var::accident_insurance_contribution,
-		                    cfg.params.accident_insurance.total);
+		result.state.insert(
+		    var::accident_insurance_contribution,
+		    cfg.params.contributions.accident_insurance.total());
 
 		for (auto const& src : forms) {
 			if (src.key != "RCA"s) continue;

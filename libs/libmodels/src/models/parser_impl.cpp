@@ -15,19 +15,6 @@ namespace quick_dra::v1 {
 		return parser::parse_yaml_file<config>(path, app_name);
 	}
 
-	std::optional<std::map<std::chrono::year_month, currency>>
-	config::parse_minimal(std::filesystem::path const& path) {
-		return parser::parse_yaml_file<
-		    std::map<std::chrono::year_month, currency>>(path, app_name);
-	}
-
-	std::optional<std::map<std::chrono::year_month, currency>>
-	config::parse_minimal_from_text(std::string const& text,
-	                                std::string const& path) {
-		return parser::parse_yaml_text<
-		    std::map<std::chrono::year_month, currency>>(text, path);
-	}
-
 	bool config::postprocess() { return version == kVersion; }
 
 	template <typename Named>
@@ -142,20 +129,6 @@ namespace quick_dra::v1 {
 			if (!std::visit(value, field)) return false;
 		}
 		return true;
-	}
-
-	contribution rate::contribution_on(currency amount) const noexcept {
-		return contribution_on(amount.calc());
-	}
-
-	contribution rate::contribution_on(calc_currency amount) const noexcept {
-		auto const total_contribution = (amount * total).rounded();
-		if (!insured) {
-			return {.payer = total_contribution, .insured = {}};
-		}
-		auto const insured_contribution = (amount * *insured).rounded();
-		return {.payer = total_contribution - insured_contribution,
-		        .insured = insured_contribution};
 	}
 
 	std::optional<tax_config> tax_config::parse_yaml(
