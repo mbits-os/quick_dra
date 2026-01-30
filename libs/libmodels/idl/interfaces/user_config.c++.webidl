@@ -1,10 +1,7 @@
 partial interface config {
-    attribute [key=year_month] record<DOMString, currency> minimal;
+    attribute tax_parameters params;
 
     [throws, nullable] static config parse_yaml([in] path path);
-    [throws, key=year_month, nullable] static record<DOMString, currency> parse_minimal([in] path path);
-    [throws, key=year_month, nullable] static record<DOMString, currency> parse_minimal_from_text([in] string text, [in] string path);
-
     void debug_print(verbose level);
 };
 
@@ -14,7 +11,9 @@ partial interface person {
     attribute string document;
 };
 
-partial interface rate {
-    contribution contribution_on(currency amount);
-    contribution contribution_on(calc_currency amount);
+interface tax_parameters {
+    [key=currency] attribute record<DOMString, percent> scale;
+    attribute currency minimal_pay;
+    attribute costs_of_obtaining costs_of_obtaining;
+    attribute rates contributions;
 };

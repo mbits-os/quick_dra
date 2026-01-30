@@ -1,0 +1,53 @@
+# Copyright (c) 2026 midnightBITS
+# This file is licensed under MIT license (see LICENSE for details)
+
+set(SRCS
+    include/quick_dra/lex/tax.hpp
+    src/lex/tax.cpp
+)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
+add_library(liblex STATIC ${SRCS})
+
+target_compile_options(liblex PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+target_link_options(liblex PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+target_include_directories(liblex
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_BINARY_DIR}/src
+)
+target_link_libraries(liblex PUBLIC libbase)
+
+# #################################################################
+# #  INSTALL
+# #################################################################
+if(QUICK_DRA_INSTALL)
+    install(TARGETS liblex COMPONENT libraries)
+
+    install(
+        DIRECTORY include/
+        TYPE INCLUDE
+        COMPONENT libraries
+    )
+endif()
+
+# #################################################################
+# #  TESTING
+# #################################################################
+if(QUICK_DRA_TESTING)
+    file(GLOB EXCLUDES_TEST_SRCS_CC tests/*.cc)
+    file(GLOB EXCLUDES_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB EXCLUDES_TEST_SRCS_CXX tests/*.cxx)
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
+        ${EXCLUDES_TEST_SRCS_CC}
+        ${EXCLUDES_TEST_SRCS_CPP}
+        ${EXCLUDES_TEST_SRCS_CXX})
+
+    add_project_test(liblex ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
+    target_link_libraries(liblex-test PUBLIC GTest::gmock_main fmt::fmt liblex)
+
+    add_test(NAME liblex COMMAND liblex-test "--gtest_output=xml:${TEST_REPORT_DIR}/liblex/${TEST_REPORT_FILE}")
+endif()

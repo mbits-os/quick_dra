@@ -8,13 +8,6 @@
 namespace quick_dra::v1 {
 	namespace {
 		std::string from_rate(rate const& r) {
-			if (r.insured)
-				return fmt::format("total {}%, insured {}%", r.total,
-				                   *r.insured);
-			return fmt::format("{}%", r.total);
-		}
-
-		std::string from_rate(rate const& r) {
 			std::vector<std::string> result{};
 			result.reserve(2);
 			if (r.payer != percent{}) {
@@ -89,29 +82,22 @@ namespace quick_dra::v1 {
 			return;
 		}
 
-		fmt::print("-- minimal pay per month:\n");
-		for (auto const& [date, amount] : minimal) {
-			fmt::print("--   {}-{:02}: {} zł\n", static_cast<int>(date.year()),
-			           static_cast<unsigned>(date.month()), amount);
-		}
-
 		fmt::print("-- parameters\n");
-		fmt::print("--   cost of obtaining: {} zł\n", params.cost_of_obtaining);
-		fmt::print("--   tax-free allowance: {} zł\n",
-		           params.tax_free_allowance);
-		fmt::print("--   free amount: {} zł\n", params.free_amount);
-		fmt::print("--   tax rate: {}%\n", params.tax_rate);
-		fmt::print("--   health: {}%\n", params.health);
+		fmt::print("--   cost of obtaining: {} zł / {} zł\n",
+		           params.costs_of_obtaining.local,
+		           params.costs_of_obtaining.remote);
+		fmt::print("--   health: {}\n", from_rate(params.contributions.health));
 		fmt::print("--   pension insurance: {}\n",
-		           from_rate(params.pension_insurance));
+		           from_rate(params.contributions.pension_insurance));
 		fmt::print("--   disability insurance: {}\n",
-		           from_rate(params.disability_insurance));
+		           from_rate(params.contributions.disability_insurance));
 		fmt::print("--   health insurance: {}\n",
-		           from_rate(params.health_insurance));
+		           from_rate(params.contributions.health_insurance));
 		fmt::print("--   accident insurance: {}\n",
-		           from_rate(params.accident_insurance));
-		fmt::print("--   guaranteed employee benefits fund: {}\n",
-		           from_rate(params.guaranteed_employee_benefits_fund));
+		           from_rate(params.contributions.accident_insurance));
+		fmt::print("--   tax scale for month reported:\n");
+		for (auto const& [amount, tax] : params.scale)
+			fmt::print("--     over {} zł at {}%\n", amount, tax);
 	}
 
 	void tax_config::debug_print(verbose level) const noexcept {
