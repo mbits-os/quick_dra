@@ -93,6 +93,10 @@ namespace quick_dra {
 			return calc_currency{value * 100};
 		}
 		constexpr auto operator<=>(currency const&) const noexcept = default;
+
+		constexpr currency operator-() const noexcept {
+			return currency{-value};
+		}
 	};
 
 	constexpr inline currency calc_currency::rounded() const noexcept {
@@ -104,6 +108,8 @@ namespace quick_dra {
 		using base::base;
 
 		static bool parse(std::string_view, percent&);
+
+		constexpr percent operator-() const noexcept { return percent{-value}; }
 	};
 
 	inline constexpr calc_currency operator*(calc_currency const& amount,

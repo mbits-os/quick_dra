@@ -49,7 +49,7 @@ namespace quick_dra {
 			}
 
 			value *= FixedPoint::den;
-			value += 0.5;
+			value += value < 0 ? -0.5 : 0.5;
 			ctx = FixedPoint{static_cast<long long>(value)};
 			return true;
 		}
