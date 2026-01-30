@@ -1,0 +1,16 @@
+$schema: http://json-schema.org/draft-04/schema#
+type: object
+required: [ version, reports ]
+additionalProperties: false
+
+properties:
+  version: { $ref: types/version-1.yaml }
+  reports:
+    description: List of ZUS KEDU form templates
+    type: object
+    additionalProperties: false
+
+    patternProperties:
+      ^[A-Z]+$:
+        # this will not accept IDs for forms such as ZUS DRA cz. II
+        ref: types/report-section.yaml

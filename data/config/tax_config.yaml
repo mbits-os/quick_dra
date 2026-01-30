@@ -1,0 +1,29 @@
+version: 1
+
+scale:
+  2022/1:
+    30000 zł: 17%
+    120000 zł: 32%
+  2022/7:
+    30000 zł: 12%
+    120000 zł: 32%
+
+minimal-pay:
+  2022/01: 3010 zł
+  2023/01: 3490 zł
+  2023/07: 3600 zł
+  2024/01: 4242 zł
+  2024/07: 4300 zł
+  2025/01: 4666 zł
+  2026/01: 4806 zł
+
+costs-of-obtaining:
+  2022/01: { local: 250 zł, remote: 300 zł }
+
+contributions:
+  2022/01:
+    emerytalne: { płatnik: 9.76%, ubezpieczony: 9.76% }
+    rentowe: { płatnik: 6.5%, ubezpieczony: 1.5% }
+    chorobowe: { ubezpieczony: 2.45% }
+    wypadkowe: { płatnik: 1.67% }
+    zdrowotne: { ubezpieczony: 9% }

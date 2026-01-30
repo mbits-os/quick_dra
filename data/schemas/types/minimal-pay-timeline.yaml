@@ -1,0 +1,10 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: |
+  For given starting month, it defines the minimal salary before taxes
+type: object
+additionalProperties: false
+
+patternProperties:
+  ^2[0-9]{3}/([1-9]|0[1-9]|1[012])$:
+    description: Starting month for this minimal salary
+    $ref: currency.yaml
