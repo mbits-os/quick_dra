@@ -13,4 +13,6 @@ properties:
     patternProperties:
       ^[A-Z]+$:
         # this will not accept IDs for forms such as ZUS DRA cz. II
-        ref: types/report-section.yaml
+        description: ZUS KEDU form template
+        type: array
+        items: { $ref: types/report-section.yaml }
