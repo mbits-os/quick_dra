@@ -9,6 +9,7 @@ namespace quick_dra::v1 {
 	namespace {
 		static constexpr auto app_name = "Quick-DRA"sv;
 	}
+
 	std::optional<config> config::parse_yaml(
 	    std::filesystem::path const& path) {
 		return parser::parse_yaml_file<config>(path, app_name);
@@ -156,4 +157,17 @@ namespace quick_dra::v1 {
 		return {.payer = total_contribution - insured_contribution,
 		        .insured = insured_contribution};
 	}
+
+	std::optional<tax_config> tax_config::parse_yaml(
+	    std::filesystem::path const& path) {
+		return parser::parse_yaml_file<tax_config>(path, app_name);
+	}
+
+	std::optional<tax_config> tax_config::parse_from_text(
+	    std::string const& text,
+	    std::string const& path) {
+		return parser::parse_yaml_text<tax_config>(text, path);
+	}
+
+	bool tax_config::postprocess() { return version == kVersion; }
 }  // namespace quick_dra::v1

@@ -33,6 +33,14 @@
 			"template": "c++ declarations"
 		},
 		{
+			"idl": "interfaces/tax_config.yaml.webidl",
+			"template": "yaml parser"
+		},
+		{
+			"idl": [ "interfaces/tax_config.yaml.webidl", "interfaces/tax_config.c++.webidl" ],
+			"template": "c++ declarations"
+		},
+		{
 			"idl": "interfaces/form_template.yaml.webidl",
 			"template": "yaml parser"
 		},

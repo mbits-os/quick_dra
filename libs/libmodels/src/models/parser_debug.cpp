@@ -13,6 +13,21 @@ namespace quick_dra::v1 {
 				                   *r.insured);
 			return fmt::format("{}%", r.total);
 		}
+
+		std::string from_rate(rate const& r) {
+			std::vector<std::string> result{};
+			result.reserve(2);
+			if (r.payer != percent{}) {
+				result.push_back(fmt::format("payer {}%", r.payer));
+			}
+			if (r.insured != percent{}) {
+				result.push_back(fmt::format("insured {}%", r.insured));
+			}
+			if (result.empty()) {
+				result.push_back("payer 0%"s);
+			}
+			return join(result, ", "_sep);
+		}
 	}  // namespace
 
 	void config::debug_print(verbose level) const noexcept {
@@ -97,6 +112,49 @@ namespace quick_dra::v1 {
 		           from_rate(params.accident_insurance));
 		fmt::print("--   guaranteed employee benefits fund: {}\n",
 		           from_rate(params.guaranteed_employee_benefits_fund));
+	}
+
+	void tax_config::debug_print(verbose level) const noexcept {
+		if (level < verbose::parameters) {
+			return;
+		}
+
+		fmt::print("-- costs of obtaining per month:\n");
+		for (auto const& [date, coo] : costs_of_obtaining) {
+			fmt::print(
+			    "--   {}-{:02}: {} zł / {} zł\n", static_cast<int>(date.year()),
+			    static_cast<unsigned>(date.month()), coo.local, coo.remote);
+		}
+
+		fmt::print("-- minimal pay per month:\n");
+		for (auto const& [date, amount] : minimal_pay) {
+			fmt::print("--   {}-{:02}: {} zł\n", static_cast<int>(date.year()),
+			           static_cast<unsigned>(date.month()), amount);
+		}
+
+		fmt::print("-- tax scale per month:\n");
+		for (auto const& [date, levels] : scale) {
+			fmt::print("--   {}-{:02}:\n", static_cast<int>(date.year()),
+			           static_cast<unsigned>(date.month()));
+			for (auto const& [amount, tax] : levels) {
+				fmt::print("--     over {} zł at {}%\n", amount, tax);
+			}
+		}
+
+		fmt::print("-- insurance rates per month:\n");
+		for (auto const& [date, rates] : contributions) {
+			fmt::print("--   {}-{:02}:\n", static_cast<int>(date.year()),
+			           static_cast<unsigned>(date.month()));
+			fmt::print("--     health: {}\n", from_rate(rates.health));
+			fmt::print("--     pension insurance: {}\n",
+			           from_rate(rates.pension_insurance));
+			fmt::print("--     disability insurance: {}\n",
+			           from_rate(rates.disability_insurance));
+			fmt::print("--     health insurance: {}\n",
+			           from_rate(rates.health_insurance));
+			fmt::print("--     accident insurance: {}\n",
+			           from_rate(rates.accident_insurance));
+		}
 	}
 }  // namespace quick_dra::v1
 
