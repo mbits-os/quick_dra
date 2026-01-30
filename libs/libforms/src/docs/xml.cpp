@@ -5,8 +5,8 @@
 #include <fmt/ostream.h>
 #include <fmt/ranges.h>
 #include <array>
+#include <quick_dra/base/types.hpp>
 #include <quick_dra/docs/xml.hpp>
-#include <quick_dra/models/base_types.hpp>
 #include <string>
 #include <string_view>
 

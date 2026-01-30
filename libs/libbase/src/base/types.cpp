@@ -3,7 +3,7 @@
 
 #include <charconv>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/models/base_types.hpp>
+#include <quick_dra/base/types.hpp>
 
 namespace quick_dra {
 	namespace {

@@ -42,7 +42,7 @@ namespace quick_dra {
 		}
 
 		std::string to_string(currency const& v) {
-			return fmt::format("{} zł", v);
+			return fmt::format("{:.02f} zł", v);
 		}
 
 		std::string format(std::optional<currency> const& value) {
