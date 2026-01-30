@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.6.0](https://github.com/mbits-os/quick_dra/compare/v0.5.0...v0.6.0) (2026-01-30)
+
+### New Features
+
+- switch between tax parameter handling methods ([9ea864d](https://github.com/mbits-os/quick_dra/commit/9ea864d3946507c054ec60b858576315477d5bc5))
+- read the tax configuration ([66503ca](https://github.com/mbits-os/quick_dra/commit/66503caa553731fc01bf5ad49f5d19aa627f34e9))
+- add new tax config + $schemas ([89cfb54](https://github.com/mbits-os/quick_dra/commit/89cfb54b0ef3899b32f789a18a324ddafd56c4e0))
+
+### Bug Fixes
+
+- move basic types deeper into library layer cake ([98530bb](https://github.com/mbits-os/quick_dra/commit/98530bb6237dfed54b8382afa8a8cef69dc1e2bf))
+
 ## [0.5.0](https://github.com/mbits-os/quick_dra/compare/v0.4.0...v0.5.0) (2026-01-29)
 
 ### New Features
