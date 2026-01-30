@@ -2,11 +2,13 @@
     "cxx": {
         "year_month": [ "<chrono>", "std::chrono::year_month" ],
         "verbose": [ "<quick_dra/base/verbose.hpp>", "verbose" ],
-        "currency": [ "<quick_dra/models/base_types.hpp>", "currency" ],
-        "calc_currency": [ "<quick_dra/models/base_types.hpp>", "calc_currency" ],
-        "percent": [ "<quick_dra/models/base_types.hpp>", "percent" ],
-        "ratio": [ "<quick_dra/models/base_types.hpp>", "ratio" ],
-        "insurance_title": [ "<quick_dra/models/base_types.hpp>", "insurance_title" ],
-        "contribution": [ "<quick_dra/models/base_types.hpp>", "contribution" ]
+        "currency": [ "<quick_dra/base/types.hpp>", "currency" ],
+        "calc_currency": [ "<quick_dra/base/types.hpp>", "calc_currency" ],
+        "percent": [ "<quick_dra/base/types.hpp>", "percent" ],
+        "ratio": [ "<quick_dra/base/types.hpp>", "ratio" ],
+        "insurance_title": [ "<quick_dra/base/types.hpp>", "insurance_title" ],
+        "contribution": [ "<quick_dra/base/types.hpp>", "contribution" ],
+        "rates": [ "<quick_dra/base/types.hpp>", "quick_dra::rates" ],
+        "costs_of_obtaining": [ "<quick_dra/base/types.hpp>", "quick_dra::costs_of_obtaining" ]
     }
 }

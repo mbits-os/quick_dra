@@ -4,7 +4,7 @@
 #pragma once
 
 #include <optional>
-#include <quick_dra/models/base_types.hpp>
+#include <quick_dra/base/types.hpp>
 #include <string>
 #include <utility>
 #include <vector>

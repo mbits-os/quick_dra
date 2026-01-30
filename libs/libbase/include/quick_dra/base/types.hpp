@@ -79,7 +79,7 @@ namespace quick_dra {
 	struct calc_currency : currency_base<100'00> {
 		using currency_base<100'00>::currency_base;
 
-		inline currency rounded() const noexcept;
+		constexpr inline currency rounded() const noexcept;
 		constexpr auto operator<=>(calc_currency const&) const noexcept =
 		    default;
 	};
@@ -95,7 +95,7 @@ namespace quick_dra {
 		constexpr auto operator<=>(currency const&) const noexcept = default;
 	};
 
-	inline currency calc_currency::rounded() const noexcept {
+	constexpr inline currency calc_currency::rounded() const noexcept {
 		return currency{base::template rounded_impl<currency::den>().value};
 	}
 
@@ -140,11 +140,85 @@ namespace quick_dra {
 		auto operator<=>(insurance_title const& rhs) const noexcept = default;
 	};
 
+	struct costs_of_obtaining {
+		currency local{};
+		currency remote{};
+	};
+
 	struct contribution {
-		currency payer;
-		currency insured;
+		currency payer{};
+		currency insured{};
 
 		constexpr currency total() const noexcept { return payer + insured; }
+	};
+
+	struct rate {
+		percent payer{};
+		percent insured{};
+
+		constexpr percent total() const noexcept { return payer + insured; }
+		constexpr contribution contribution_on(currency amount) const noexcept {
+			return contribution_on(amount.calc());
+		}
+		constexpr contribution contribution_on(
+		    calc_currency amount) const noexcept {
+			auto const total_contribution = (amount * total()).rounded();
+			auto const insured_contribution = (amount * insured).rounded();
+			return {.payer = total_contribution - insured_contribution,
+			        .insured = insured_contribution};
+		}
+	};
+
+#define CONTRIBUTIONS(X)               \
+	X(health_insurance, "chorobowe")   \
+	X(pension_insurance, "emerytalne") \
+	X(disability_insurance, "rentowe") \
+	X(accident_insurance, "wypadkowe")
+#define CONTRIBUTIONS_EX(X) \
+	CONTRIBUTIONS(X)        \
+	X(health, "zdrowotne")
+
+	struct contributions {
+#define X(NAME, _) contribution NAME{};
+		CONTRIBUTIONS(X)
+#undef X
+
+		constexpr currency total() const noexcept {
+#define X(NAME, _) NAME.total() +
+			return CONTRIBUTIONS(X) currency{};
+#undef X
+		}
+
+		constexpr currency payer() const noexcept {
+#define X(NAME, _) NAME.payer +
+			return CONTRIBUTIONS(X) currency{};
+#undef X
+		}
+
+		constexpr currency insured() const noexcept {
+#define X(NAME, _) NAME.insured +
+			return CONTRIBUTIONS(X) currency{};
+#undef X
+		}
+	};
+
+	struct rates {
+#define X(NAME, _) rate NAME{};
+		CONTRIBUTIONS_EX(X)
+#undef X
+
+		constexpr contributions contribution_on(
+		    currency amount) const noexcept {
+			return contribution_on(amount.calc());
+		}
+		constexpr contributions contribution_on(
+		    calc_currency amount) const noexcept {
+			return {
+#define X(NAME, _) .NAME = NAME.contribution_on(amount),
+			    CONTRIBUTIONS(X)
+#undef X
+			};
+		}
 	};
 }  // namespace quick_dra
 

@@ -1,11 +1,9 @@
 include(flow_webidl)
 
 set(SRCS
-    include/quick_dra/models/base_types.hpp
     include/quick_dra/models/model.hpp
     include/quick_dra/models/project_reader.hpp
     include/quick_dra/models/types.hpp
-    src/models/base_types.cpp
     src/models/compiler.cpp
     src/models/parser_debug.cpp
     src/models/parser_impl.cpp

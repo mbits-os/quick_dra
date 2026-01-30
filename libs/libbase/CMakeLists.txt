@@ -13,9 +13,11 @@ set(SRCS
     include/quick_dra/base/meta.hpp
     include/quick_dra/base/paths.hpp
     include/quick_dra/base/str.hpp
+    include/quick_dra/base/types.hpp
     include/quick_dra/base/verbose.hpp
     src/base/paths.cpp
     src/base/str.cpp
+    src/base/types.cpp
 )
 
 if(UNIX)
