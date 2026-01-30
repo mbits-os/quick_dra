@@ -26,7 +26,7 @@ target_include_directories(libmodels
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
-target_link_libraries(libmodels PUBLIC libbase libyaml)
+target_link_libraries(libmodels PUBLIC libbase libpersist)
 
 # #################################################################
 # #  INSTALL
