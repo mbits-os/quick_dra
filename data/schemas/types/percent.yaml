@@ -2,5 +2,5 @@ $schema: http://json-schema.org/draft-04/schema#
 description: Percent value, with optional % sign at the end
 type: [ number, string ]
 multipleOf: 0.01
-pattern: ^[0-9]+(\.[0-9]{1,2})*(\s*%)?$
+pattern: ^[0-9]+([.,][0-9]{1,2})*(\s*%)?$
 errorMessage: The percent value must be a number with 0.01 increment, with optional % sign

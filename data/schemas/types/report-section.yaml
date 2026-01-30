@@ -1,14 +1,21 @@
 $schema: http://json-schema.org/draft-04/schema#
-description: List of ZUS KEDU form templates
+description: ZUS KEDU form section
 type: object
 additionalProperties: false
-required: [id, fields]
+required: [id]
+oneOf:
+  - required: [fields]
+  - required: [repeatable]
 
 properties:
   id:
     description: KEDU section identifier
     type: string
     pattern: ^[MDCLXVI]+$
+
+  repeatable:
+    description: KEDU section building a sequence and requiring an id
+    type: boolean
 
   block:
     description: |

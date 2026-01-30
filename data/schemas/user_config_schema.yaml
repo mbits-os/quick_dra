@@ -1,104 +1,84 @@
-{
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
-    "properties": {
-        "wersja": { "$ref": "types/version-1.yaml" },
-        "płatnik": {
-            "description": "Płatnik składek",
-            "type": "object",
-            "properties": {
-                "nazwisko": { "$ref": "#/$defs/nazwisko" },
-                "pesel": { "$ref": "#/$defs/pesel" },
-                "nip": { "$ref": "#/$defs/nip" },
-                "dowód": { "$ref": "#/$defs/dowód" },
-                "paszport": { "$ref": "#/$defs/paszport" }
-            },
-            "required": [
-                "nazwisko",
-                "pesel",
-                "nip"
-            ],
-            "oneOf": [
-                { "required": [ "dowód" ], "not": { "required": [ "paszport" ] } },
-                { "required": [ "paszport" ], "not": { "required": [ "dowód" ] } }
-            ]
-        },
-        "ubezpieczeni": {
-            "description": "Lista osób dla których istnieje obowiązek ubezpieczeniowy nie na podstawie zatrudnienia, ale umowy cywilnej",
-            "type": "array",
-            "items": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "nazwisko": { "$ref": "#/$defs/nazwisko" },
-                        "pesel": { "$ref": "#/$defs/pesel" },
-                        "dowód": { "$ref": "#/$defs/dowód" },
-                        "paszport": { "$ref": "#/$defs/paszport" },
-                        "tytuł ubezpieczenia": { "$ref": "#/$defs/tytuł ubezpieczenia" },
-                        "wymiar": { "$ref": "#/$defs/wymiar" },
-                        "pensja": {
-                            "description": "Wysokość pensji brutto; brak oznacza pensję minimalną dla danego miesiąca",
-                            "$ref": "types/currency.yaml"
-                        }
-                    },
-                    "required": [
-                        "nazwisko",
-                        "tytuł ubezpieczenia"
-                    ],
-                    "oneOf": [
-                        { "required": [ "pesel" ], "not": { "required": [ "dowód", "paszport" ] } },
-                        { "required": [ "dowód" ], "not": { "required": [ "pesel", "paszport" ] } },
-                        { "required": [ "paszport" ], "not": { "required": [ "dowód", "pesel" ] } }
-                    ]
-                }
-            ]
-        }
-    },
-    "required": [
-        "wersja",
-        "płatnik",
-        "ubezpieczeni"
-    ],
-    "additionalProperties": false,
-    "$defs": {
-        "nazwisko": {
-            "description": "Nazwisko osoby w formie \"Nazwisko, Imię\"",
-            "type": "string"
-        },
-        "pesel": {
-            "description": "PESEL (6 cyfr na zakodowaną datę urodzin, 5 cyfr na numer seryjny)",
-            "type": "integer",
-            "pattern": "^[0-9]{11}$"
-        },
-        "nip": {
-            "description": "Numer Identifikacji Podatkowej, bez myślników",
-            "type": "integer",
-            "pattern": "^[0-9]{10}$"
-        },
-        "dowód": {
-            "description": "Numer dowodu bez spacji",
-            "type": "string",
-            "pattern": "^[A-Z]{3}[0-9]{6}$"
-        },
-        "paszport": {
-            "description": "Numer paszportu",
-            "type": [ "integer", "string" ],
-            "pattern": "^([0-9]{7-9})|([A-Z][A-Z0-9 ][0-9]{7})$"
-        },
-        "tytuł ubezpieczenia": {
-            "description": "Tytułu ubezpieczenia (4 znaki kodu, ustalone bądź nieustalone prawo do emerytury lub renty, stopień niepełnosprawności)",
-            "type": "string",
-            "pattern": "^[0-9]{4} [0-9] [0-9]$"
-        },
-        "wymiar": {
-            "description": "Wymiar pracy jako ułamek; brak oznacza wartość 1/1",
-            "type": "string",
-            "pattern": "^[1-9][0-9]*/[1-9][0-9]*$"
-        },
-        "pensja": {
-            "type": [ "number", "string" ],
-            "multipleOf": 0.01,
-            "pattern": "^[0-9]+(\\.[0-9]{1,2})*\\s*zł$"
-        }
-    }
-}
+$schema: http://json-schema.org/draft-04/schema#
+type: object
+required: [wersja, płatnik, ubezpieczeni]
+additionalProperties: false
+
+properties:
+  wersja: { $ref: types/version-1.yaml }
+  płatnik:
+    description: Płatnik składek
+    type: object
+    required: [ nazwisko, pesel, nip ]
+    oneOf: [
+      required: [ dowód ], not: { required: [ paszport ] },
+      required: [ paszport ], not: { required: [ dowód ] }
+    ]
+
+    properties:
+      nazwisko: { $ref: "#/$defs/nazwisko" }
+      pesel: { $ref: "#/$defs/pesel" }
+      nip: { $ref: "#/$defs/nip" }
+      dowód: { $ref: "#/$defs/dowód" }
+      paszport: { $ref: "#/$defs/paszport" }
+
+  ubezpieczeni:
+    description: |
+      Lista osób dla których istnieje obowiązek ubezpieczeniowy nie
+      na podstawie zatrudnienia, ale umowy cywilnej
+    type: array
+    items:
+      type: object
+      required: [nazwisko, tytuł ubezpieczenia]
+      oneOf: [
+        required: [ pesel ], not: {required: [ dowód, paszport ]},
+        required: [ dowód ], not: {required: [ pesel, paszport ]},
+        required: [ paszport ], not: {required: [ dowód, pesel ]}
+      ]
+
+      properties:
+        nazwisko: { $ref: "#/$defs/nazwisko" }
+        pesel: { $ref: "#/$defs/pesel" }
+        dowód: { $ref: "#/$defs/dowód" }
+        paszport: { $ref: "#/$defs/paszport" }
+        tytuł ubezpieczenia: { $ref: "#/$defs/tytuł ubezpieczenia" }
+        wymiar: { $ref: "#/$defs/wymiar" }
+        pensja:
+          description: |
+              Wysokość pensji brutto; brak oznacza pensję
+              minimalną dla danego miesiąca
+          $ref: types/currency.yaml
+
+$defs:
+    nazwisko:
+      description: Nazwisko osoby w formie \Nazwisko, Imię\
+      type: string
+
+    pesel:
+      description: PESEL (6 cyfr na zakodowaną datę urodzin, 5 cyfr na numer seryjny)
+      type: integer
+      pattern: ^[0-9]{11}$
+
+    nip:
+      description: Numer Identifikacji Podatkowej, bez myślników
+      type: integer
+      pattern: ^[0-9]{10}$
+
+    dowód:
+      description: Numer dowodu bez spacji
+      type: string
+      pattern: ^[A-Z]{3}[0-9]{6}$
+
+    paszport:
+      description: Numer paszportu
+      type: [ integer, string ]
+      pattern: ^([0-9]{7-9})|([A-Z][A-Z0-9 ][0-9]{7})$
+
+    tytuł ubezpieczenia:
+      description: Tytułu ubezpieczenia (4 znaki kodu, ustalone bądź nieustalone prawo do emerytury lub renty, stopień niepełnosprawności)
+      type: string
+      pattern: ^[0-9]{4} [0-9] [0-9]$
+
+    wymiar:
+      description: Wymiar pracy jako ułamek; brak oznacza wartość 1/1
+      type: string
+      pattern: ^[1-9][0-9]*/[1-9][0-9]*$

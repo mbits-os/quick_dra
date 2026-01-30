@@ -2,5 +2,5 @@ $schema: http://json-schema.org/draft-04/schema#
 description: Monetary value, with optional PLN or zł suffix
 type: [ number, string ]
 multipleOf: 0.01
-pattern: ^[0-9]+(\.[0-9]{1,2})*(\s*(PLN|zł))?$
+pattern: ^[0-9]+([.,][0-9]{1,2})*(\s*(PLN|zł))?$
 errorMessage: The currency must be a number with 0.01 increment, with optional PLN or zł suffix
