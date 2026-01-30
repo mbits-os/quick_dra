@@ -52,7 +52,8 @@
 	"ext_attrs": {
 		"interface": {
 			"no_spaceship": "bool",
-			"postprocess": "bool"
+			"postprocess": "bool",
+			"merge": "bool"
 		},
 		"attribute": {
 			"opt": "bool",

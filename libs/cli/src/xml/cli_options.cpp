@@ -34,6 +34,7 @@ namespace quick_dra::builtin::xml {
 	options options_from_cli(args::args_view const& arguments,
 	                         std::string_view description) {
 		std::optional<std::string> config_path;
+		std::optional<std::filesystem::path> tax_config_path;
 		unsigned verbose_counter{};
 		int rel_month{-1};
 		unsigned report_index{1};
@@ -53,6 +54,11 @@ namespace quick_dra::builtin::xml {
 		parser.arg(config_path, "config")
 		    .meta("<path>")
 		    .help("select config file; defaults to ~/.quick_dra.yaml");
+		parser.arg(tax_config_path, "tax-config")
+		    .meta("<path>")
+		    .help(
+		        "select tax parameters file; will take precedent before data "
+		        "from repository and installation");
 		parser.arg(report_index, "n")
 		    .meta("<NN>")
 		    .help(
@@ -82,6 +88,7 @@ namespace quick_dra::builtin::xml {
 		auto const date =
 		    year_month{today.year(), today.month()} + months{rel_month};
 		return {.config_path = get_config_path(config_path),
+		        .tax_config_path = tax_config_path,
 		        .verbose_level = verbose{verbose_counter},
 		        .today = today,
 		        .report_index = report_index,

@@ -37,12 +37,12 @@ namespace yaml {
 
 	template <typename T>
 	bool is_valid(ref_ctx const& ref, std::set<T> const&) {
-		return ref.ref().is_seq();
+		return ref.ref().is_seq() || ref.ref().type().val_is_null();
 	}
 
 	template <typename K, typename T>
 	bool is_valid(ref_ctx const& ref, std::map<K, T> const&) {
-		return ref.ref().is_map();
+		return ref.ref().is_map() || ref.ref().type().val_is_null();
 	}
 
 	template <typename T>
