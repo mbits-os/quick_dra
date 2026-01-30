@@ -1,0 +1,5 @@
+# for future use with oneOf branching
+$schema: http://json-schema.org/draft-04/schema#
+description: Version number denoting compatibility level 2
+type: integer
+enum: [ 2 ]

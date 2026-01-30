@@ -1,0 +1,11 @@
+$schema: http://json-schema.org/draft-04/schema#
+type: object
+required: [ version, scale, minimal-pay, costs-of-obtaining, contributions ]
+additionalProperties: false
+
+properties:
+  version: { $ref: types/version-1.yaml }
+  scale: { $ref: types/scale-timeline.yaml }
+  minimal-pay: { $ref: types/minimal-pay-timeline.yaml }
+  costs-of-obtaining: { $ref: types/costs-of-obtaining-timeline.yaml }
+  contributions: { $ref: types/contributions-timeline.yaml }

@@ -1,0 +1,20 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: |
+  For given starting month, it defines the tax scale with currency denoting
+  level and percentage defining the tax rate for taxable amount falling
+  into this level
+type: object
+additionalProperties: false
+
+patternProperties:
+  ^2[0-9]{3}/([1-9]|0[1-9]|1[012])$:
+    description: Starting month for this tax scale rules
+    type: object
+    additionalProperties: false
+
+    patternProperties:
+      ^[0-9]+(\.[0-9]{1,2})*(\s*(PLN|zł))?$:
+        description: |
+          Tax scale level, declared by the yearly taxable amount
+          and associated tax rate
+        $ref: percent.yaml

@@ -1,0 +1,33 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: |
+  For given starting month, it defines the contributions to various insurances
+type: object
+additionalProperties: false
+
+patternProperties:
+  ^2[0-9]{3}/([1-9]|0[1-9]|1[012])$:
+    description: Starting month for this contribution rules
+    type: object
+    required: [ emerytalne, rentowe, chorobowe, wypadkowe, zdrowotne ]
+    additionalProperties: false
+
+    properties:
+      emerytalne:
+        description: Składki na ubezpieczenie emerytalne obowiązujące w danym okresie
+        $ref: contribution.yaml
+
+      rentowe:
+        description: Składki na ubezpieczenie rentowe obowiązujące w danym okresie
+        $ref: contribution.yaml
+
+      chorobowe:
+        description: Składka na ubezpieczenie chorobowe obowiązująca w danym okresie
+        $ref: contribution.yaml
+
+      wypadkowe:
+        description: Składka na ubezpieczenie wypadkowe obowiązująca w danym okresie
+        $ref: contribution.yaml
+
+      zdrowotne:
+        description: Składka na ubezpieczenie zdrowotne obowiązująca w danym okresie
+        $ref: contribution.yaml

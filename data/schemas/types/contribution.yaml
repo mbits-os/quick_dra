@@ -1,0 +1,12 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: Insurance contribution, split between payer and insured
+type: object
+additionalProperties: false
+
+properties:
+    płatnik:
+        description: Składka opłacana przez płatnika
+        $ref: percent.yaml
+    ubezpieczony:
+        description: Składka opłacana przez ubezpieczonego
+        $ref: percent.yaml

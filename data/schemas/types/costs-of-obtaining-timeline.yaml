@@ -1,0 +1,22 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: |
+  For given starting month, it defines the costs of obtaining the salary for
+  people working in the same city and people commuting from another city
+type: object
+additionalProperties: false
+
+patternProperties:
+  ^2[0-9]{3}/([1-9]|0[1-9]|1[012])$:
+    description: Starting month for this costs of obtaining rules
+    type: object
+    required: [ local, remote ]
+    additionalProperties: false
+
+    properties:
+      local:
+        description: Costs of obtaining for people in the same city
+        $ref: currency.yaml
+
+      remote:
+        description: Costs of obtaining for people commuting from another city
+        $ref: currency.yaml

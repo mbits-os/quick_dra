@@ -1,0 +1,7 @@
+{
+    "yaml.schemas": {
+        "./data/schemas/user_config_schema.yaml": [ ".quick_dra.yaml" ],
+        "./data/schemas/tax_config_schema.yaml": [ "tax_config.yaml" ],
+        "./data/schemas/templates_schema.yaml": [ "templates.yaml" ]
+    }
+}

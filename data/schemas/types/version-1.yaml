@@ -1,0 +1,4 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: Version number denoting compatibility level 1
+type: integer
+enum: [ 1 ]

@@ -1,0 +1,24 @@
+$schema: http://json-schema.org/draft-04/schema#
+description: List of ZUS KEDU form templates
+type: object
+additionalProperties: false
+required: [id, fields]
+
+properties:
+  id:
+    description: KEDU section identifier
+    type: string
+    pattern: ^[MDCLXVI]+$
+
+  block:
+    description: |
+      Single-letter block id for multi-block sections (II.A, II.B, etc.)
+    type: string
+    pattern: ^[A-Z]$
+
+  fields:
+    type: object
+    additionalProperties: false
+    patternProperties:
+      ^[1-9][0-9]*$: { $ref: report-section-field.yaml }
+
