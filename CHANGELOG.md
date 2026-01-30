@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.6.1](https://github.com/mbits-os/quick_dra/compare/v0.6.0...v0.6.1) (2026-01-30)
+
+### Bug Fixes
+
+- properly round negative numbers ([0b0f3c3](https://github.com/mbits-os/quick_dra/commit/0b0f3c3c2413462a3925516ae8f6b1231d734d8c))
+- allow PLN suffix for currency ([a63d332](https://github.com/mbits-os/quick_dra/commit/a63d332c8678d5c5b6390f979da0289881a0f821))
+
 ## [0.6.0](https://github.com/mbits-os/quick_dra/compare/v0.5.0...v0.6.0) (2026-01-30)
 
 ### New Features
