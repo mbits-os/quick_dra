@@ -15,6 +15,7 @@ namespace quick_dra {
 
 	struct options {
 		std::filesystem::path config_path{};
+		std::optional<std::filesystem::path> tax_config_path{};
 		verbose verbose_level{};  // TO BE REMOVED FROM LIBRARY
 		year_month_day today{};
 		unsigned report_index{};
@@ -24,7 +25,9 @@ namespace quick_dra {
 	};
 
 	std::string set_filename(unsigned report_index, year_month const& date);
-	std::optional<config> parse_config(verbose level,
-	                                   year_month const& date,
-	                                   std::filesystem::path const& path);
+	std::optional<config> parse_config(
+	    verbose level,
+	    year_month const& date,
+	    std::filesystem::path const& path,
+	    std::optional<std::filesystem::path> tax_config_path);
 }  // namespace quick_dra

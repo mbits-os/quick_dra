@@ -41,7 +41,8 @@ namespace quick_dra::builtin::xml {
 		           static_cast<int>(opt.date.year()),
 		           static_cast<unsigned>(opt.date.month()));
 
-		auto cfg = parse_config(opt.verbose_level, opt.date, opt.config_path);
+		auto cfg = parse_config(opt.verbose_level, opt.date, opt.config_path,
+		                        opt.tax_config_path);
 		if (!cfg) {
 			return 1;
 		}

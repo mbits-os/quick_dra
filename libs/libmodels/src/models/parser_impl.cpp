@@ -143,4 +143,11 @@ namespace quick_dra::v1 {
 	}
 
 	bool tax_config::postprocess() { return version == kVersion; }
+
+	void tax_config::merge(tax_config&& newer) {
+		scale.merge(std::move(newer.scale));
+		minimal_pay.merge(std::move(newer.minimal_pay));
+		costs_of_obtaining.merge(std::move(newer.costs_of_obtaining));
+		contributions.merge(std::move(newer.contributions));
+	}
 }  // namespace quick_dra::v1

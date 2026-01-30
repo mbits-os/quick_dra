@@ -1,6 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <fmt/std.h>
 #include <map>
 #include <optional>
 #include <quick_dra/base/paths.hpp>
@@ -13,7 +14,7 @@ namespace quick_dra {
 		static constexpr auto GITHUB_MAIN_BRANCH =
 		    "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/"sv;
 		static constexpr auto GITHUB_TAX_CONFIG =
-		    "libs/libdra/data/config/tax_config.yaml"sv;
+		    "data/config/tax_config.yaml"sv;
 
 		template <typename T>
 		T find_in_timeline(year_month const& key,
@@ -38,6 +39,10 @@ namespace quick_dra {
 
 			auto resp = http_get(url);
 			if (!resp) {
+				if (level >= verbose::parameters) {
+					fmt::print("-- nothing downloaded (status: {}, {})\n",
+					           resp.status, url);
+				}
 				return {};
 			}
 
@@ -52,7 +57,7 @@ namespace quick_dra {
 			return result;
 		}
 
-		using minimal_loader = decltype(download_tax_config)*;
+		using tax_config_loader = std::function<decltype(download_tax_config)>;
 	}  // namespace
 
 	std::string set_filename(unsigned report_index, year_month const& date) {
@@ -61,13 +66,19 @@ namespace quick_dra {
 		                   static_cast<unsigned>(date.month()), report_index);
 	}
 
-	std::optional<config> parse_config(verbose level,
-	                                   year_month const& date,
-	                                   std::filesystem::path const& path) {
+	std::optional<config> parse_config(
+	    verbose level,
+	    year_month const& date,
+	    std::filesystem::path const& path,
+	    std::optional<std::filesystem::path> tax_config_path) {
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
-		static constexpr minimal_loader loaders[] = {
+		tax_config_loader const loaders[] = {
+		    [&tax_config_path](verbose) -> std::optional<tax_config> {
+			    if (!tax_config_path) return std::nullopt;
+			    return tax_config::parse_yaml(*tax_config_path);
+		    },
 		    download_tax_config,
 		    +[](verbose) {
 			    return tax_config::parse_yaml(platform::config_data_dir() /
@@ -75,28 +86,30 @@ namespace quick_dra {
 		    },
 		};
 
-		std::optional<tax_config> tax_cfg{};
+		tax_config tax_cfg{};
+		auto read_one_tax_config = false;
 		for (auto const& loader : loaders) {
 			auto current = loader(level);
 
 			if (current) {
-				tax_cfg = std::move(current);
+				read_one_tax_config = true;
+				tax_cfg.merge(std::move(*current));
 			}
 		}
 
-		if (!tax_cfg) {
+		if (!read_one_tax_config) {
 			result.reset();
 			return result;
 		}
 
 #define FIND_IN_TIMELINE(NAME) \
-	result->params.NAME = find_in_timeline(date, tax_cfg->NAME)
+	result->params.NAME = find_in_timeline(date, tax_cfg.NAME)
 		FIND_IN_TIMELINE(scale);
 		FIND_IN_TIMELINE(minimal_pay);
 		FIND_IN_TIMELINE(costs_of_obtaining);
 		FIND_IN_TIMELINE(contributions);
 
-		tax_cfg->debug_print(level);
+		tax_cfg.debug_print(level);
 		result->debug_print(level);
 
 		if (level >= verbose::names_and_summary) {
