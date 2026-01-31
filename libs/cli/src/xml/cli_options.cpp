@@ -6,6 +6,7 @@
 #include <map>
 #include <quick_dra/base/paths.hpp>
 #include <string>
+#include "ctre_parsing.hpp"
 
 namespace quick_dra::builtin::xml {
 	namespace {
@@ -37,6 +38,7 @@ namespace quick_dra::builtin::xml {
 		std::optional<std::filesystem::path> tax_config_path;
 		unsigned verbose_counter{};
 		int rel_month{-1};
+		std::optional<std::string> today_str;
 		unsigned report_index{1};
 		bool indent_xml{false};
 		bool print_info{false};
@@ -71,6 +73,12 @@ namespace quick_dra::builtin::xml {
 		        "choose how many month away from today the report should use; "
 		        "defaults to -1")
 		    .opt();
+		parser.arg(today_str, "today")
+		    .meta("<YYYY-MM-DD>")
+		    .help(
+		        "choose the date for the XML production; defaults to date "
+		        "setup on the host machine")
+		    .opt();
 		parser.set<std::true_type>(indent_xml, "pretty")
 		    .help("pretty-print resulting XML document")
 		    .opt();
@@ -80,11 +88,16 @@ namespace quick_dra::builtin::xml {
 		parser.parse();
 
 		if (report_index < 1 || report_index > 99) {
-			parser.error(fmt::format(
-			    "serial number must be in range 1 to 99 inclusive"));
+			parser.error("serial number must be in range 1 to 99 inclusive");
 		}
 
-		auto const today = get_today();
+		auto const today_from_args = parse_date(today_str);
+		if (!today_from_args && today_str) {
+			parser.error(fmt::format("--today: expected YYYY-MM-DD, got `{}'",
+			                         *today_str));
+		}
+
+		auto const today = today_from_args.value_or(get_today());
 		auto const date =
 		    year_month{today.year(), today.month()} + months{rel_month};
 		return {.config_path = get_config_path(config_path),

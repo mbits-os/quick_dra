@@ -10,6 +10,8 @@ set(SRCS
     src/xml/cli_options.cpp
     src/xml/cli_options.hpp
     src/xml/command.cpp
+    src/xml/ctre_parsing.cpp
+    src/xml/ctre_parsing.hpp
 )
 
 add_executable(qdra ${SRCS})
@@ -17,7 +19,7 @@ add_executable(qdra ${SRCS})
 add_win32_icon(qdra appicon.ico)
 target_compile_options(qdra PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(qdra PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(qdra libforms mbits::args)
+target_link_libraries(qdra libforms mbits::args ctre::ctre)
 set_target_properties(qdra PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )

@@ -4,10 +4,15 @@
 - [x] Use `yaml_name` in `tax_parameters`' attributes (_v0.5.0_)
 - [x] Extract YAML parser to submodule independent of libmodels and libbase (_v0.5.0_)
 - [x] Rebuild tax parameters data handling (_v0.6.0_)
+- [x] Allow setting today date from command line (user freedom and stable testability)
+- [ ] Rename all `insurer`/`insurer_t` uses with `payer`
 - [ ] Initialization
   - [ ] Questionnaire config for filling out `~/.quick_dra.yaml`
-  - [ ] Add `qdra insurer` updating/creating `"płatnik"` and `"parametry"`
+  - [ ] Add `qdra payer` updating/creating `"płatnik"`
   - [ ] Add `qdra insured` updating `"ubezpieczeni"` sequence
+    - [ ] Add `qdra insured edit`
+    - [ ] Add `qdra insured add`
+    - [ ] Add `qdra insured remove`
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
