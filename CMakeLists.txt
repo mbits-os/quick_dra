@@ -39,6 +39,7 @@ find_package(fmt REQUIRED)
 find_package(mbits-args REQUIRED)
 find_package(ryml REQUIRED)
 find_package(CURL REQUIRED)
+find_package(ctre REQUIRED)
 
 if(QUICK_DRA_TESTING)
   enable_testing()
