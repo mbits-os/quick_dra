@@ -3,7 +3,11 @@
 
 set(SRCS
     include/quick_dra/lex/tax.hpp
+    include/quick_dra/lex/validators.hpp
     src/lex/tax.cpp
+    src/lex/validate/actions.hpp
+    src/lex/validate/fixed_string.hpp
+    src/lex/validators.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})

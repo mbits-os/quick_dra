@@ -6,45 +6,12 @@
 #include <concepts>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/lex/tax.hpp>
+#include <quick_dra/lex/validators.hpp>
 #include <string_view>
 
 namespace quick_dra {
 	namespace {
 		using namespace std::chrono;
-
-		template <std::integral T = int>
-		T int_parse(std::string_view number) {
-			T result{};
-			auto const begin = number.data();
-			auto const end = begin + number.size();
-			auto const [ptr, ec] = std::from_chars(begin, end, result);
-			if (ptr != end || ec != std::errc{}) {
-				return 0;
-			}
-			return result;
-		}
-
-		year_month_day birthday_from_social_id(std::string_view social_id) {
-			if (social_id.length() != 11) {
-				return {};
-			}
-
-			auto const in_century = int_parse(social_id.substr(0, 2));
-			auto const month_and_century =
-			    int_parse<unsigned>(social_id.substr(2, 2));
-			auto const day = int_parse(social_id.substr(4, 2));
-
-			static constexpr auto const centuries =
-			    std::array{1900, 2000, 2100, 2200, 1800};
-
-			auto const month = static_cast<int>(month_and_century % 20);
-			auto const century_code = month_and_century / 20u;
-			auto const century = century_code >= centuries.size()
-			                         ? 1900
-			                         : centuries[century_code];
-
-			return year{century + in_century} / month / day;
-		}
 
 		template <fixed_child Value>
 		inline Value clamp(Value const& v) {
@@ -75,10 +42,11 @@ namespace quick_dra {
 		void reduce_contribution(global_object& dst,
 		                         global_object const& src,
 		                         compiletime_varname path) {
+			static auto const dummy = global_object{};
 			auto const var = varname::parse(path.name);
 			auto& tgt = dst.get(var);
-			auto const ptr = src.peek(var);
-			if (!ptr) return;
+			auto ptr = src.peek(var);
+			if (!ptr) ptr = &dummy;
 
 			auto& from = *ptr;
 
@@ -129,7 +97,8 @@ namespace quick_dra {
 
 			auto& payer = result.state.get(var::payer);
 			auto const& input = cfg.payer;
-			auto const bday = birthday_from_social_id(input.social_id);
+			auto const bday =
+			    social_id_validator::get_birthday(input.social_id);
 			auto const _first = to_upper_copy(input.first_name);
 			auto const _last = to_upper_copy(input.last_name);
 			payer.insert(var::tax_id, input.tax_id);
@@ -257,6 +226,7 @@ namespace quick_dra {
 		    var::accident_insurance_contribution,
 		    cfg.params.contributions.accident_insurance.total());
 
+		reduce_form(result.state, {});
 		for (auto const& src : forms) {
 			if (src.key != "RCA"s) continue;
 			reduce_form(result.state, src.state);
