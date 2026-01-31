@@ -8,14 +8,14 @@ reports:
 
     - id: II
       fields:
-        1: $insurer.tax_id
-        3: $insurer.social_id
-        4: $insurer.document_kind
-        5: $insurer.document
-        6: $insurer.name
-        7: $insurer.last
-        8: $insurer.first
-        9: $insurer.birthday
+        1: $payer.tax_id
+        3: $payer.social_id
+        4: $payer.document_kind
+        5: $payer.document
+        6: $payer.name
+        7: $payer.last
+        8: $payer.first
+        9: $payer.birthday
 
     - id: III
       fields:
@@ -105,14 +105,14 @@ reports:
         1: [$serial.NN, $serial.DATE]
     - id: II
       fields:
-        1: $insurer.tax_id
-        3: $insurer.social_id
-        4: $insurer.document_kind
-        5: $insurer.document
-        6: $insurer.name
-        7: $insurer.last
-        8: $insurer.first
-        9: $insurer.birthday
+        1: $payer.tax_id
+        3: $payer.social_id
+        4: $payer.document_kind
+        5: $payer.document
+        6: $payer.name
+        7: $payer.last
+        8: $payer.first
+        9: $payer.birthday
 
     - id: III
       repeatable: true

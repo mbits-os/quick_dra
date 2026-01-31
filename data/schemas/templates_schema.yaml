@@ -4,6 +4,7 @@ required: [ version, reports ]
 additionalProperties: false
 
 properties:
+  $schema: { type: string }
   version: { $ref: types/version-1.yaml }
   reports:
     description: List of ZUS KEDU form templates
