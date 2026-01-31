@@ -127,19 +127,19 @@ namespace quick_dra {
 			                static_cast<unsigned>(today.month()),
 			                static_cast<unsigned>(today.day())));
 
-			auto& insurer = result.state.get(var::insurer);
-			auto const& input = cfg.insurer;
+			auto& payer = result.state.get(var::payer);
+			auto const& input = cfg.payer;
 			auto const bday = birthday_from_social_id(input.social_id);
 			auto const _first = to_upper_copy(input.first_name);
 			auto const _last = to_upper_copy(input.last_name);
-			insurer.insert(var::tax_id, input.tax_id);
-			insurer.insert(var::social_id, input.social_id);
-			insurer.insert(var::document_kind, input.kind);
-			insurer.insert(var::document, input.document);
-			insurer.insert(var::name, fmt::format("{} {}", _first, _last));
-			insurer.insert(var::last, _last);
-			insurer.insert(var::first, _first);
-			insurer.insert(
+			payer.insert(var::tax_id, input.tax_id);
+			payer.insert(var::social_id, input.social_id);
+			payer.insert(var::document_kind, input.kind);
+			payer.insert(var::document, input.document);
+			payer.insert(var::name, fmt::format("{} {}", _first, _last));
+			payer.insert(var::last, _last);
+			payer.insert(var::first, _first);
+			payer.insert(
 			    var::birthday,
 			    fmt::format("{}-{:02}-{:02}", static_cast<int>(bday.year()),
 			                static_cast<unsigned>(bday.month()),

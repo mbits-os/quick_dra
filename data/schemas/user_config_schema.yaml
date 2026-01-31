@@ -4,6 +4,7 @@ required: [wersja, płatnik, ubezpieczeni]
 additionalProperties: false
 
 properties:
+  $schema: { type: string }
   wersja: { $ref: types/version-1.yaml }
   płatnik:
     description: Płatnik składek
@@ -50,7 +51,7 @@ properties:
 
 $defs:
     nazwisko:
-      description: Nazwisko osoby w formie \Nazwisko, Imię\
+      description: Nazwisko osoby w formie "Nazwisko, Imię"
       type: string
 
     pesel:

@@ -26,7 +26,7 @@ namespace quick_dra::v1 {
 		return !(named.last_name.empty() || named.first_name.empty());
 	}
 
-	bool insurer_t::postprocess() {
+	bool payer_t::postprocess() {
 		kind.clear();
 		document.clear();
 

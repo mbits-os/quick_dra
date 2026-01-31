@@ -1,10 +1,10 @@
 [postprocess] interface config {
     [yaml_name=wersja] attribute unsigned short version;
-    [yaml_name="płatnik"] attribute insurer_t insurer;
+    [yaml_name="płatnik"] attribute payer_t payer;
     [yaml_name=ubezpieczeni] attribute sequence<insured_t> insured;
 };
 
-[postprocess] interface insurer_t: person {
+[postprocess] interface payer_t: person {
     [yaml_name=nip] attribute string tax_id;
     [yaml_name=pesel] attribute string social_id;
 };

@@ -59,9 +59,10 @@ namespace quick_dra {
 	}              \
 	;              \
 	VAR_CONST N = N##_t{};
-#define CONTRIBUTION_VAR(N)              \
-	VAR_BEGIN(N) MEMBER_VAR(N, insurer); \
-	MEMBER_VAR(N, insured);              \
+#define CONTRIBUTION_VAR(N) \
+	VAR_BEGIN(N)            \
+	MEMBER_VAR(N, payer);   \
+	MEMBER_VAR(N, insured); \
 	VAR_END(N)
 
 		VAR(NN);
@@ -78,7 +79,6 @@ namespace quick_dra {
 		MEMBER_VAR(insured, first);
 		MEMBER_VAR(insured, last);
 		VAR_END(insured);
-		VAR(insurer);
 
 		VAR(tax_id);
 		VAR(social_id);
