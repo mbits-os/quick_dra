@@ -9,6 +9,7 @@
         "insurance_title": [ "<quick_dra/base/types.hpp>", "insurance_title" ],
         "contribution": [ "<quick_dra/base/types.hpp>", "contribution" ],
         "rates": [ "<quick_dra/base/types.hpp>", "quick_dra::rates" ],
-        "costs_of_obtaining": [ "<quick_dra/base/types.hpp>", "quick_dra::costs_of_obtaining" ]
+        "costs_of_obtaining": [ "<quick_dra/base/types.hpp>", "quick_dra::costs_of_obtaining" ],
+        "load_status": [ "<quick_dra/models/utility_types.hpp>", "load_status" ]
     }
 }

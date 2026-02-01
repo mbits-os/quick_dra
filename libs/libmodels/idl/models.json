@@ -17,6 +17,15 @@
 		},
 		"c++ declarations": {
 			"include/quick_dra/models/yaml/{{input.shortest_stem}}.hpp": "mustache/c++/header.mustache"
+		},
+		"yaml partial parser": {
+			"src/models/yaml/{{input.shortest_stem}}_partial_load.cpp": "mustache/yaml_parser/partial_code_load.mustache"
+		},
+		"c++ partial declarations": {
+			"include/quick_dra/models/yaml/{{input.shortest_stem}}_partial.hpp": {
+				"template": "mustache/c++/partial_header.mustache",
+				"context": { "header": "<quick_dra/models/yaml/{{input.shortest_stem}}.hpp>" }
+			}
 		}
 	},
 	"partials": {
@@ -31,6 +40,14 @@
 		{
 			"idl": [ "interfaces/user_config.yaml.webidl", "interfaces/user_config.c++.webidl" ],
 			"template": "c++ declarations"
+		},
+		{
+			"idl": "interfaces/user_config.yaml.webidl",
+			"template": "yaml partial parser"
+		},
+		{
+			"idl": [ "interfaces/user_config.yaml.webidl", "interfaces/user_config.partial.webidl" ],
+			"template": "c++ partial declarations"
 		},
 		{
 			"idl": "interfaces/tax_config.yaml.webidl",

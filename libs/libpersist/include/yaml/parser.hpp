@@ -3,13 +3,16 @@
 
 #pragma once
 
+#include <concepts>
 #include <filesystem>
+#include <functional>
 #include <ryml.hpp>
 #include <ryml_std.hpp>
 #include <string>
 #include <string_view>
 #include <yaml/reader.hpp>
 #include <yaml/ref.hpp>
+#include <yaml/writer.hpp>
 
 namespace yaml {
 	struct parser {
@@ -33,6 +36,14 @@ namespace yaml {
 			    [&](parser& parser) { return parser.load(path, app_name); });
 		}
 
+		template <typename FileObj, std::invocable ErrorCallback>
+		static std::optional<FileObj> parse_yaml_file(
+		    std::filesystem::path const& path,
+		    ErrorCallback&& on_error) {
+			return parse_yaml<FileObj>(
+			    [&](parser& parser) { return parser.load(path, on_error); });
+		}
+
 		template <typename FileObj>
 		static std::optional<FileObj> parse_yaml_text(std::string const& text,
 		                                              std::string const& path) {
@@ -44,6 +55,8 @@ namespace yaml {
 	private:
 		std::optional<ryml::Tree> load(std::filesystem::path const& path,
 		                               std::string_view app_name) &;
+		std::optional<ryml::Tree> load(std::filesystem::path const& path,
+		                               std::function<void()> const& on_error) &;
 		std::optional<ryml::Tree> load_contents(std::string text,
 		                                        std::string const& path) &;
 
@@ -64,7 +77,7 @@ namespace yaml {
 			std::optional<FileObj> result{};
 
 			try {
-				ref_ctx::error_handler handler{};
+				base_ctx::error_handler handler{};
 				handler.install_in_c4();
 
 				parser storage{};
@@ -77,10 +90,10 @@ namespace yaml {
 
 				result.emplace();
 
-				auto root = tree.rootref();
+				auto root = tree.crootref();
+				auto ref = storage.context().from(root);
 
-				if (!read_value(storage.context().from(root), *result) ||
-				    !validate(*result)) {
+				if (!read_value(ref, *result)) {
 					result.reset();
 				}
 			} catch (c4_error_exception const&) {

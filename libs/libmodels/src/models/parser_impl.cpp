@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <cmath>
+#include <fstream>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/project_reader.hpp>
 
@@ -151,3 +152,217 @@ namespace quick_dra::v1 {
 		contributions.merge(std::move(newer.contributions));
 	}
 }  // namespace quick_dra::v1
+
+namespace quick_dra::v1::partial {
+	load_status config::load(std::filesystem::path const& path) {
+		std::error_code ec{};
+		if (!std::filesystem::exists(path, ec) || ec) {
+			return load_status::file_not_found;
+		}
+
+		auto result = load_status::errors_encountered;
+
+		auto object = parser::parse_yaml_file<config>(
+		    path, [&]() { result = load_status::file_not_readable; });
+		if (!object) {
+			return result;
+		}
+
+		*this = std::move(*object);
+		auto const [needed, present] = count_loaded();
+		return needed < present ? needed == 0 ? load_status::empty
+		                                      : load_status::partially_loaded
+		                        : load_status::fully_loaded;
+	}
+
+	bool config::store(std::filesystem::path const& path) {
+		prepare_for_write();
+		ryml::Tree tree{};
+		auto ref = tree.rootref();
+		yaml::write_value(ref, *this);
+
+		ryml::csubstr output = ryml::emit_yaml(
+		    tree, tree.root_id(), ryml::substr{}, /*error_on_excess*/ false);
+
+		std::vector<char> buf(output.len);
+		output = ryml::emit_yaml(tree, tree.root_id(), ryml::to_substr(buf),
+		                         /*error_on_excess*/ true);
+
+		std::ofstream out{path, std::ios::out | std::ios::binary};
+		if (!out) {
+			return false;
+		}
+
+		out.write(output.data(), output.size());
+		return true;
+	}
+
+	bool config::postprocess() {
+		if (version && *version != kVersion) version = std::nullopt;
+		if (!insured) insured.emplace();
+		return true;
+	}
+
+	void config::preprocess() {
+		if (!version) version = static_cast<unsigned short>(kVersion);
+		if (!insured) insured.emplace();
+	}
+
+	template <typename Named>
+	void parse_name(Named& named) noexcept {
+		if (!named.last_name) return;
+
+		auto const name = split_s(*named.last_name, ", "_sep, 1);
+		if (name.size() == 2) {
+			named.first_name.emplace(strip_sv(name[1]));
+			named.last_name.emplace(strip_sv(name[0]));
+			if (!(named.last_name->empty() || named.first_name->empty())) {
+				return;
+			}
+		}
+
+		named.first_name = std::nullopt;
+		named.last_name = std::nullopt;
+	}
+
+	template <typename Named>
+	void preprocess_name(Named& named) noexcept {
+		if (!named.last_name || !named.first_name) {
+			named.last_name = std::nullopt;
+			return;
+		}
+
+		named.last_name =
+		    fmt::format("{}, {}", *named.last_name, *named.first_name);
+		named.first_name = std::nullopt;
+	}
+
+	void payer_t::postprocess_document() noexcept {
+		kind = std::nullopt;
+		document = std::nullopt;
+
+		if (id_card) {
+			kind = "1"sv;
+			document = std::move(*id_card);
+		} else if (passport) {
+			kind = "2"sv;
+			document = std::move(*passport);
+		}
+	}
+
+	bool payer_t::postprocess() {
+		postprocess_document();
+
+		parse_name(*this);
+
+#define NULLIFY(STR)           \
+	if (STR && STR->empty()) { \
+		STR.reset();           \
+	}
+
+		NULLIFY(social_id);
+		NULLIFY(tax_id);
+		NULLIFY(kind);
+		NULLIFY(document);
+		return true;
+	}
+
+	void payer_t::preprocess() {
+		preprocess_name(*this);
+		preprocess_document();
+	}
+
+	void payer_t::preprocess_document() noexcept {
+		auto kind_ = kind.value_or(""s);
+		auto document_ = document.value_or(""s);
+
+		id_card = std::nullopt;
+		passport = std::nullopt;
+		kind = std::nullopt;
+		document = std::nullopt;
+
+		if (kind_ == "1"sv) {
+			id_card = std::move(document_);
+		} else if (kind_ == "2"sv) {
+			passport = std::move(document_);
+		}
+	}
+
+	bool insured_t::postprocess() {
+		parse_name(*this);
+
+		if (title && title->code.length() == 8) {
+			auto const& code = title->code;
+			if (std::isdigit(code[0]) && std::isdigit(code[1]) &&
+			    std::isdigit(code[2]) && std::isdigit(code[3]) &&
+			    std::isdigit(code[5]) && std::isdigit(code[7]) &&
+			    code[4] == ' ' && code[6] == ' ') {
+				auto const view = std::string_view{code};
+				title->code =
+				    fmt::format("{}{}{}", view.substr(0, 4), view[5], view[7]);
+			} else {
+				title = std::nullopt;
+			}
+		} else {
+			title = std::nullopt;
+		}
+
+		kind = std::nullopt;
+		document = std::nullopt;
+
+		if (id_card) {
+			kind = "1"sv;
+			document = std::move(*id_card);
+		} else if (passport) {
+			kind = "2"sv;
+			document = std::move(*passport);
+		} else if (social_id) {
+			kind = "P"sv;
+			document = std::move(*social_id);
+		}
+
+		NULLIFY(id_card);
+		NULLIFY(passport);
+		NULLIFY(social_id);
+		NULLIFY(kind);
+		NULLIFY(document);
+
+		return true;
+	}
+
+	void insured_t::preprocess() {
+		preprocess_name(*this);
+
+		if (title && title->code.length() == 6) {
+			auto const& code = title->code;
+			if (std::isdigit(code[0]) && std::isdigit(code[1]) &&
+			    std::isdigit(code[2]) && std::isdigit(code[3]) &&
+			    std::isdigit(code[4]) && std::isdigit(code[5])) {
+				auto const view = std::string_view{code};
+				title->code = fmt::format("{} {} {}", view.substr(0, 4),
+				                          view[4], view[5]);
+			} else {
+				title = std::nullopt;
+			}
+		} else {
+			title = std::nullopt;
+		}
+
+		auto kind_ = kind.value_or(""s);
+		auto document_ = document.value_or(""s);
+
+		id_card = std::nullopt;
+		passport = std::nullopt;
+		social_id = std::nullopt;
+		kind = std::nullopt;
+		document = std::nullopt;
+
+		if (kind_ == "1"sv) {
+			id_card = std::move(document_);
+		} else if (kind_ == "2"sv) {
+			passport = std::move(document_);
+		} else if (kind_ == "P"sv) {
+			social_id = std::move(document_);
+		}
+	}
+}  // namespace quick_dra::v1::partial

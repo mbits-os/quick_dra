@@ -12,12 +12,13 @@ using namespace std::literals;
 
 namespace yaml {
 	namespace {
-		std::optional<std::string> open(std::filesystem::path const& path,
-		                                std::string_view app_name) {
+		template <typename ErrorCallback>
+		std::optional<std::string> open_with(std::filesystem::path const& path,
+		                                     ErrorCallback&& on_error) {
 			std::optional<std::string> result{};
 			std::ifstream in{path, std::ios::in | std::ios::binary};
 			if (!in) {
-				fmt::print("{}: error: cannot find {}\n", app_name, path);
+				on_error();
 				return result;
 			}
 
@@ -26,6 +27,13 @@ namespace yaml {
 			result = std::move(contents).str();
 
 			return result;
+		}
+
+		std::optional<std::string> open(std::filesystem::path const& path,
+		                                std::string_view app_name) {
+			return open_with(path, [app_name, &path] {
+				fmt::print("{}: error: cannot find {}\n", app_name, path);
+			});
 		}
 	}  // namespace
 
@@ -44,6 +52,17 @@ namespace yaml {
 	std::optional<ryml::Tree> parser::load(std::filesystem::path const& path,
 	                                       std::string_view app_name) & {
 		auto maybe_contents = open(path, app_name);
+		if (!maybe_contents) {
+			return std::nullopt;
+		}
+
+		return load_contents(std::move(*maybe_contents), path.string());
+	}
+
+	std::optional<ryml::Tree> parser::load(
+	    std::filesystem::path const& path,
+	    std::function<void()> const& on_error) & {
+		auto maybe_contents = open_with(path, on_error);
 		if (!maybe_contents) {
 			return std::nullopt;
 		}
