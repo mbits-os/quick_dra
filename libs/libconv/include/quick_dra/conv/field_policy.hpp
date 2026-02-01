@@ -155,7 +155,7 @@ namespace quick_dra {
 			template <typename SelectorLambda>
 			[[nodiscard]] consteval label_selector<SelectorLambda> with()
 			    const noexcept {
-				return {.value = value};
+				return {SelectorLambda{}, value};
 			}
 		};
 	}  // namespace policy_builder

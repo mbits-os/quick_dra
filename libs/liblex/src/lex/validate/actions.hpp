@@ -91,7 +91,8 @@ namespace quick_dra::checker {
 		template <typename PostprocLambda>
 		constexpr full_mask_type<Input, List, PostprocLambda> postproc(
 		    PostprocLambda&& cb) const noexcept {
-			return {std::forward<PostprocLambda>(cb)};
+			return {std::forward<PostprocLambda>(cb),
+			        weights_wrapper<Input, List>{}};
 		}
 	};
 
