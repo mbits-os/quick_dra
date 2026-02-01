@@ -17,7 +17,7 @@ namespace quick_dra::checker {
 		constexpr fixed_string(construct_from_pointer_t,
 		                       char const* input) noexcept {
 			for (size_t i{0}; i < N; ++i) {
-				content[i] = static_cast<uint8_t>(input[i]);
+				content[i] = input[i];
 			}
 		}
 

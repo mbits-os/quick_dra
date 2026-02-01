@@ -6,6 +6,7 @@ set(SRCS
     include/quick_dra/lex/validators.hpp
     src/lex/tax.cpp
     src/lex/validate/actions.hpp
+    src/lex/validate/check_compiler.hpp
     src/lex/validate/fixed_string.hpp
     src/lex/validators.cpp
 )
