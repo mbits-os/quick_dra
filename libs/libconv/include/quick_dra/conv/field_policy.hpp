@@ -55,50 +55,58 @@ namespace quick_dra {
 
 	namespace getters {
 		struct first_name {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.first_name;
 			}
 		};
 		struct last_name {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.last_name;
 			}
 		};
 		struct tax_id {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.tax_id;
 			}
 		};
 		struct social_id {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.social_id;
 			}
 		};
 		struct id_card {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.id_card;
 			}
 		};
 		struct passport {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.passport;
 			}
 		};
 		struct kind {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.kind;
 			}
 		};
 		struct document {
+			template <typename Payer>
 			inline std::optional<std::string>& operator()(
-			    auto& payer) const noexcept {
+			    Payer& payer) const noexcept {
 				return payer.document;
 			}
 		};
@@ -123,20 +131,20 @@ namespace quick_dra {
 			}
 
 			template <typename ValidatorLambda>
-			friend consteval
-			    [[nodiscard]] field_policy<SelectorLambda, ValidatorLambda>
-			    operator/(label_selector<SelectorLambda> const& lhs,
-			              ValidatorLambda&& validator) {
+			[[nodiscard]] friend consteval field_policy<SelectorLambda,
+			                                            ValidatorLambda>
+			operator/(label_selector<SelectorLambda> const& lhs,
+			          ValidatorLambda&& validator) {
 				return {lhs.selector(),
 				        std::forward<ValidatorLambda>(validator), lhs.value};
 			}
 
-			friend consteval
-			    [[nodiscard]] field_policy<SelectorLambda, validator_function>
-			    operator/(label_selector<SelectorLambda> const& lhs,
-			              bool (*validator)(std::string&& value,
-			                                std::optional<std::string>&,
-			                                bool)) {
+			[[nodiscard]] friend consteval field_policy<SelectorLambda,
+			                                            validator_function>
+			operator/(label_selector<SelectorLambda> const& lhs,
+			          bool (*validator)(std::string&& value,
+			                            std::optional<std::string>&,
+			                            bool)) {
 				return {lhs.selector(), validator, lhs.value};
 			}
 		};
@@ -145,14 +153,14 @@ namespace quick_dra {
 			std::string_view value;
 
 			template <typename SelectorLambda>
-			consteval [[nodiscard]] label_selector<SelectorLambda> with()
+			[[nodiscard]] consteval label_selector<SelectorLambda> with()
 			    const noexcept {
 				return {.value = value};
 			}
 		};
 	}  // namespace policy_builder
 
-	inline consteval [[nodiscard]] policy_builder::label operator""_label(
+	[[nodiscard]] inline consteval policy_builder::label operator""_label(
 	    char const* str,
 	    size_t length) {
 		return {.value{str, length}};

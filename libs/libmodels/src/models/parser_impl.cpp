@@ -193,7 +193,7 @@ namespace quick_dra::v1::partial {
 			return false;
 		}
 
-		out.write(output.data(), output.size());
+		out.write(output.data(), static_cast<std::streamsize>(output.size()));
 		return true;
 	}
 

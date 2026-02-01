@@ -7,7 +7,16 @@
 #include <cctype>
 #include <list>
 #include <utility>
+#include "check_compiler.hpp"
 #include "fixed_string.hpp"
+
+#if CNTTP_COMPILER_CHECK
+#define CHECKER_INPUT_TYPE fixed_string
+#define CHECKER_TEMPLATE_COPY_TYPE auto
+#else
+#define CHECKER_INPUT_TYPE const auto&
+#define CHECKER_TEMPLATE_COPY_TYPE const auto&
+#endif
 
 namespace quick_dra::checker {
 	template <typename... Action>
@@ -42,11 +51,13 @@ namespace quick_dra::checker {
 		                      std::index_sequence<I...>) noexcept {
 			if (str.size() != sizeof...(I)) return false;
 
-			return ((Action{}.value(str[I]) * weights[I]) + ... + 0);
+			return ((Action{}.value(static_cast<unsigned char>(str[I])) *
+			         weights[I]) +
+			        ... + 0);
 		}
 	};
 
-	template <std::array Input, typename List>
+	template <CHECKER_TEMPLATE_COPY_TYPE Input, typename List>
 	struct weights_wrapper {
 		using list = List;
 		static constexpr auto weights = Input;
@@ -60,8 +71,10 @@ namespace quick_dra::checker {
 		}
 	};
 
-	template <std::array Input, typename List, typename Lambda>
-	struct full_mask_type : Lambda, weights_wrapper<Input, List> {
+	template <CHECKER_TEMPLATE_COPY_TYPE Input,
+	          typename List,
+	          typename PostprocLambda>
+	struct full_mask_type : PostprocLambda, weights_wrapper<Input, List> {
 		unsigned short checksum(std::string_view id) const noexcept {
 			if (!this->check(id)) {
 				return kInvalidChecksum;
@@ -69,16 +82,16 @@ namespace quick_dra::checker {
 
 			auto const sum = this->weighted_sum(id);
 			return static_cast<unsigned short>(
-			    static_cast<Lambda const&>(*this)(sum));
+			    static_cast<PostprocLambda const&>(*this)(sum));
 		}
 	};
 
-	template <std::array Input, typename List>
+	template <CHECKER_TEMPLATE_COPY_TYPE Input, typename List>
 	struct mask_type : weights_wrapper<Input, List> {
-		template <typename Lambda>
-		constexpr full_mask_type<Input, List, Lambda> postproc(
-		    Lambda&& cb) const noexcept {
-			return {std::forward<Lambda>(cb)};
+		template <typename PostprocLambda>
+		constexpr full_mask_type<Input, List, PostprocLambda> postproc(
+		    PostprocLambda&& cb) const noexcept {
+			return {std::forward<PostprocLambda>(cb)};
 		}
 	};
 
@@ -98,17 +111,18 @@ namespace quick_dra::checker {
 	template <char ch>
 	struct action_from_t {};
 
-	template <char ch>
-	using action_from = typename action_from_t<ch>::type;
+	template <CHECKER_TEMPLATE_COPY_TYPE Input, size_t Index>
+	using action_from =
+	    typename action_from_t<Input.template get<Index>()>::type;
 
 	template <>
 	struct action_from_t<'A'> {
 		struct upper_case {
-			bool check(char ch) const noexcept {
+			bool check(unsigned char ch) const noexcept {
 				return std::isalpha(ch) && std::toupper(ch) == ch;
 			}
 
-			unsigned value(char ch) const noexcept { return ch - 'A' + 10; }
+			int value(unsigned char ch) const noexcept { return ch - 'A' + 10; }
 		};
 
 		using type = upper_case;
@@ -117,9 +131,11 @@ namespace quick_dra::checker {
 	template <>
 	struct action_from_t<'0'> {
 		struct digit {
-			bool check(char ch) const noexcept { return std::isdigit(ch); }
+			bool check(unsigned char ch) const noexcept {
+				return std::isdigit(ch);
+			}
 
-			unsigned value(char ch) const noexcept { return ch - '0'; }
+			int value(unsigned char ch) const noexcept { return ch - '0'; }
 		};
 
 		using type = digit;
@@ -128,9 +144,11 @@ namespace quick_dra::checker {
 	template <>
 	struct action_from_t<'F'> {
 		struct hex_digit {
-			bool check(char ch) const noexcept { return std::isxdigit(ch); }
+			bool check(unsigned char ch) const noexcept {
+				return std::isxdigit(ch);
+			}
 
-			unsigned value(char ch) const noexcept {
+			int value(unsigned char ch) const noexcept {
 				switch (ch) {
 					case 'A':
 					case 'B':
@@ -157,25 +175,25 @@ namespace quick_dra::checker {
 	template <>
 	struct action_from_t<'?'> {
 		struct ignore {
-			bool check(char) const noexcept { return true; }
+			bool check(unsigned char) const noexcept { return true; }
 
-			unsigned value(char) const noexcept { return 0; }
+			int value(unsigned char) const noexcept { return 0; }
 		};
 
 		using type = ignore;
 	};
 
-	template <fixed_string Input>
+	template <CHECKER_TEMPLATE_COPY_TYPE Input>
 	struct mask_builder {
-		static constexpr auto input = Input;
+		static constexpr auto input = fixed_string{Input};
 		template <size_t... I>
 		static auto create(std::index_sequence<I...>) {
-			return partial_mask_type<list<action_from<input.get<I>()>...>>{};
+			return partial_mask_type<list<action_from<input, I>...>>{};
 		}
 
 		using type = decltype(create(std::make_index_sequence<input.size()>{}));
 	};
 
-	template <fixed_string Input>
+	template <CHECKER_INPUT_TYPE Input>
 	constexpr auto mask = typename mask_builder<Input>::type{};
 }  // namespace quick_dra::checker

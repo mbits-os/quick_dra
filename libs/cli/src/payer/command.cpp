@@ -34,6 +34,8 @@ namespace quick_dra::builtin::payer {
 				           "Quick-DRA: error: {} will be overwritten at save\n",
 				           conv.path);
 				return 1;
+			default:
+				break;
 		}
 
 		if (!cfg.payer) {
