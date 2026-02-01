@@ -23,13 +23,6 @@ namespace quick_dra::builtin::xml {
 			    floor<days>(zoned_time{current_zone(), now}.get_local_time());
 			return year_month_day{local};
 		}
-
-		std::filesystem::path get_config_path(
-		    std::optional<std::string> const& override) {
-			if (override) return *override;
-
-			return platform::home_path() / ".quick_dra.yaml"sv;
-		}
 	}  // namespace
 
 	options options_from_cli(args::args_view const& arguments,
@@ -100,7 +93,7 @@ namespace quick_dra::builtin::xml {
 		auto const today = today_from_args.value_or(get_today());
 		auto const date =
 		    year_month{today.year(), today.month()} + months{rel_month};
-		return {.config_path = get_config_path(config_path),
+		return {.config_path = platform::get_config_path(config_path),
 		        .tax_config_path = tax_config_path,
 		        .verbose_level = verbose{verbose_counter},
 		        .today = today,
