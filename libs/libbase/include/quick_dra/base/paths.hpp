@@ -5,6 +5,7 @@
 
 #include <filesystem>
 #include <quick_dra/base/dir_names.hpp>
+#include <string>
 #include <string_view>
 
 using namespace std::literals;

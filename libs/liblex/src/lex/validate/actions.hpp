@@ -5,6 +5,8 @@
 
 #include <array>
 #include <cctype>
+#include <list>
+#include <utility>
 #include "fixed_string.hpp"
 
 namespace quick_dra::checker {

@@ -1,9 +1,12 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#pragma once
+
 #include <optional>
 #include <quick_dra/conv/field_policy.hpp>
 #include <string>
+#include <utility>
 
 namespace quick_dra::builtin::payer {
 	bool valid_first_name(std::string&& value,

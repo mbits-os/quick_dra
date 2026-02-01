@@ -35,7 +35,7 @@ namespace yaml {
 
 	template <typename T>
 	concept WriteableValue = requires(ryml::NodeRef& ref, T const& ctx) {
-		{ ctx.write(ref) };
+		{ ctx.write(ref) };  // NOLINT(readability/braces)
 	};  // NOLINT(readability/braces)
 
 	template <WriteableValue T>
@@ -50,7 +50,7 @@ namespace yaml {
 
 	template <typename T>
 	concept PreparableValue = requires(T& ctx) {
-		{ ctx.prepare_for_write() };
+		{ ctx.prepare_for_write() };  // NOLINT(readability/braces)
 	};  // NOLINT(readability/braces)
 
 	void prepare_child(auto&) {}
