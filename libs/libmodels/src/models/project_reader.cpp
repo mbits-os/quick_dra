@@ -112,6 +112,19 @@ namespace quick_dra {
 		return true;
 	}
 
+	void write_value(ryml::NodeRef& ref, percent const& ctx) {
+		yaml::write_value(ref, fmt::format("{}%", ctx));
+	}
+	void write_value(ryml::NodeRef& ref, currency const& ctx) {
+		yaml::write_value(ref, fmt::format("{} zł", ctx));
+	}
+	void write_value(ryml::NodeRef& ref, ratio const& ctx) {
+		yaml::write_value(ref, fmt::format("{}/{}", ctx.num, ctx.den));
+	}
+	void write_value(ryml::NodeRef& ref, insurance_title const& ctx) {
+		yaml::write_value(ref, ctx.code);
+	}
+
 	bool convert_string(ref_ctx const& ref,
 	                    c4::csubstr const& value,
 	                    currency& ctx) {
@@ -121,7 +134,6 @@ namespace quick_dra {
 
 		return true;
 	}
-
 }  // namespace quick_dra
 
 namespace yaml {

@@ -1,9 +1,11 @@
 include(flow_webidl)
 
 set(SRCS
+    include/quick_dra/models/count_loaded.hpp
     include/quick_dra/models/model.hpp
     include/quick_dra/models/project_reader.hpp
     include/quick_dra/models/types.hpp
+    include/quick_dra/models/utility_types.hpp
     src/models/compiler.cpp
     src/models/parser_debug.cpp
     src/models/parser_impl.cpp

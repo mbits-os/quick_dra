@@ -16,6 +16,10 @@ namespace quick_dra {
 	bool read_value(ref_ctx const& ref, insurance_title& ctx);
 	bool read_value(ref_ctx const& ref, costs_of_obtaining& ctx);
 	bool read_value(ref_ctx const& ref, rates& ctx);
+	void write_value(ryml::NodeRef& ref, percent const& ctx);
+	void write_value(ryml::NodeRef& ref, currency const& ctx);
+	void write_value(ryml::NodeRef& ref, ratio const& ctx);
+	void write_value(ryml::NodeRef& ref, insurance_title const& ctx);
 
 	bool convert_string(ref_ctx const& ref,
 	                    c4::csubstr const& value,

@@ -2,9 +2,11 @@ set(SRCS
     include/yaml/parser.hpp
     include/yaml/reader.hpp
     include/yaml/ref.hpp
+    include/yaml/writer.hpp
     src/parser.cpp
     src/reader.cpp
     src/ref.cpp
+    src/writer.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
