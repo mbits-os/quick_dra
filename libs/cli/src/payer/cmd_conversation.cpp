@@ -1,8 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#pragma once
-
 #include "cmd_conversation.hpp"
 #include <quick_dra/base/paths.hpp>
 #include <string>
