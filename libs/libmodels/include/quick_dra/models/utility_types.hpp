@@ -16,7 +16,7 @@ namespace quick_dra {
 		partially_loaded,
 		fully_loaded,
 	};
-}
+}  // namespace quick_dra
 
 namespace quick_dra::utility {
 	template <typename T>
@@ -26,7 +26,7 @@ namespace quick_dra::utility {
 	struct is_optional<std::optional<T>> : std::true_type {};
 
 	template <typename T>
-	concept optional_type = (bool)is_optional<T>{};
+	concept optional_type = static_cast<bool>(is_optional<T>{});
 
 	template <typename T>
 	concept required_type = !optional_type<T>;
@@ -34,12 +34,12 @@ namespace quick_dra::utility {
 	template <typename S, typename D>
 	concept partial_type_with_copy_to = requires(D& dst, S const& src) {
 		{ src.copy_to(dst) } -> std::same_as<bool>;
-	};
+	};  // NOLINT(readability/braces)
 
 	template <typename S, typename D>
 	concept partial_type_with_merge = requires(D& dst, S const& src) {
 		{ src.merge_into(dst) } -> std::same_as<bool>;
-	};
+	};  // NOLINT(readability/braces)
 
 	template <typename T>
 	using add_optional =

@@ -5,6 +5,8 @@
 
 #include "cmd_conversation.hpp"
 #include <quick_dra/base/paths.hpp>
+#include <string>
+#include <utility>
 
 namespace quick_dra::builtin::payer {
 	void cmd_conversation::parse_args(std::string_view tool_name,

@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <limits>
+#include <string>
 #include <string_view>
 
 namespace quick_dra {

@@ -5,6 +5,7 @@
 
 #include <optional>
 #include <quick_dra/models/utility_types.hpp>
+#include <utility>
 
 namespace quick_dra::v1::partial {
 	using namespace utility;
