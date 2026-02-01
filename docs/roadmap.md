@@ -4,11 +4,12 @@
 - [x] Use `yaml_name` in `tax_parameters`' attributes (_v0.5.0_)
 - [x] Extract YAML parser to submodule independent of libmodels and libbase (_v0.5.0_)
 - [x] Rebuild tax parameters data handling (_v0.6.0_)
-- [x] Allow setting today date from command line (user freedom and stable testability)
-- [x] Rename all `insurer`/`insurer_t` uses with `payer`
+- [x] Allow setting today date from command line (user freedom and stable testability) (_v0.7.0_)
+- [x] Rename all `insurer`/`insurer_t` uses with `payer` (_v0.7.0_)
+- [ ] Integrate [json-runner](https://github.com/mzdun/json-runner)
 - [ ] Initialization
   - [ ] Questionnaire config for filling out `~/.quick_dra.yaml`
-  - [x] Add `qdra payer` updating/creating `"płatnik"`
+  - [x] Add `qdra payer` updating/creating `"płatnik"` (_v0.7.0_)
   - [ ] Add `qdra insured` updating `"ubezpieczeni"` sequence
     - [ ] Add `qdra insured edit`
     - [ ] Add `qdra insured add`

@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.7.0](https://github.com/mbits-os/quick_dra/compare/v0.6.2...v0.7.0) (2026-02-01)
+
+### New Features
+
+- add `qdra payer` sub-command ([37a02c8](https://github.com/mbits-os/quick_dra/commit/37a02c87713ff843a0ade473eab9d246903d02e8))
+- add libconv to share with future commands ([8bea5ac](https://github.com/mbits-os/quick_dra/commit/8bea5ac85e3828135e3b82b27fe4ef3db9ee78f4))
+- load partial user config ([05d82b7](https://github.com/mbits-os/quick_dra/commit/05d82b7a35ae1d5d907721db135c16d8dd33efd1))
+- validate NIP, PESEL, ID card and PL passport numbers ([7c73438](https://github.com/mbits-os/quick_dra/commit/7c734384ea625110e84b3e6f40cb3df6b12ace2a))
+- add `--today` to `qdra xml` ([f8d43dc](https://github.com/mbits-os/quick_dra/commit/f8d43dcf8398ab9ed7bd535e22937330712b1a24))
+
+### Bug Fixes
+
+- compile with g++-13 ([a3cdf91](https://github.com/mbits-os/quick_dra/commit/a3cdf91ee1142742a69a3fe11d7c889c1223b943))
+- compile with g++-14 ([725af3e](https://github.com/mbits-os/quick_dra/commit/725af3ef8405ee6fe6e0ae2cfd53412f8600ea89))
+- rename `insurer` to `payer` ([dea44f0](https://github.com/mbits-os/quick_dra/commit/dea44f01e8fec82c4e1deaaf6b2c90f4e7f94742))
+
 ## [0.6.2](https://github.com/mbits-os/quick_dra/compare/v0.6.1...v0.6.2) (2026-01-30)
 
 ### Bug Fixes
