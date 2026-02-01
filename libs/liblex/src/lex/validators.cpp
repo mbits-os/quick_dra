@@ -1,8 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#pragma once
-
 #include <array>
 #include <cctype>
 #include <quick_dra/lex/validators.hpp>
