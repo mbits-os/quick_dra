@@ -8,7 +8,9 @@
 namespace quick_dra::builtin {
 	using namespace std::literals;
 
-#define BUILTINS_X(X) X(xml, "xml", "produce KEDU 5.6 XML file")
+#define BUILTINS_X(X)                          \
+	X(xml, "xml", "produce KEDU 5.6 XML file") \
+	X(payer, "payer", "manage the payer data in ~/.quick_dra.yaml file")
 
 #define BUILTINS_X_DECL(NAME, TOOL, DSCR)         \
 	namespace NAME {                              \

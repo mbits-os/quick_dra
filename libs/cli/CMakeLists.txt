@@ -6,6 +6,11 @@ set(SRCS
     src/commands.cpp
     src/commands.hpp
     src/main.cpp
+    src/payer/cmd_conversation.cpp
+    src/payer/cmd_conversation.hpp
+    src/payer/command.cpp
+    src/payer/validators.cpp
+    src/payer/validators.hpp
     src/root/command.cpp
     src/xml/cli_options.cpp
     src/xml/cli_options.hpp
@@ -14,12 +19,14 @@ set(SRCS
     src/xml/ctre_parsing.hpp
 )
 
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
+
 add_executable(qdra ${SRCS})
 
 add_win32_icon(qdra appicon.ico)
 target_compile_options(qdra PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(qdra PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(qdra libforms mbits::args ctre::ctre)
+target_link_libraries(qdra libconv mbits::args ctre::ctre)
 set_target_properties(qdra PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
