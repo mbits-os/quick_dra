@@ -55,3 +55,25 @@ if(QUICK_DRA_INSTALL)
         GROUP apps
     )
 endif()
+
+# #################################################################
+# #  TESTING
+# #################################################################
+if(QUICK_DRA_TESTING)
+    string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_PRESET)
+
+    foreach(TEST_SET
+        001-basic
+        002-xml
+        003-payer
+    )
+        add_test(
+            NAME qdra-runner-${TEST_SET}
+            COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
+                tools "test-runner"
+                --preset "${CMAKE_PRESET}"
+                --tests "main-set/${TEST_SET}"
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        )
+    endforeach()
+endif()

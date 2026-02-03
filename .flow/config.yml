@@ -1,10 +1,11 @@
 extensions:
   - proj_flow.ext.cplusplus
+  - proj_flow.ext.github
   - proj_flow.ext.sign
   - proj_flow.ext.store
-  - proj_flow.ext.github
-  - proj_flow.ext.webidl
+  - proj_flow.ext.test_runner
   - proj_flow.ext.tools
+  - proj_flow.ext.webidl
   - quick_dra.icons
   - quick_dra.yaml_reader
 
@@ -48,3 +49,13 @@ shortcuts:
   rel: { build_type: Release, sanitizer: false }
   both: { build_type: [Debug, Release], sanitizer: false }
   sane: { build_type: Debug, sanitizer: true }
+
+test-runner:
+    target: qdra
+    report_env: QDRA_
+    install: [ cli ]
+    testsuite:
+      root: libs/cli/tests
+      data: data
+      default-set: main
+    patches: {}
