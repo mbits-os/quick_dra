@@ -109,6 +109,7 @@ namespace quick_dra::testing {
 	    "02070803628"_test(8),
 	    "78070707132"_test(2),
 	    "00000000000"_test(0),
+	    "26211012346"_test(6),
 	};
 
 	static constexpr birthday_testcase birthday_tests[] = {

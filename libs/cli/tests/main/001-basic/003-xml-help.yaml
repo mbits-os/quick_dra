@@ -1,0 +1,19 @@
+args: xml --help
+expected:
+- 0
+- - 'usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]'
+  - ''
+  - produce KEDU 5.6 XML file
+  - ''
+  - 'optional arguments:'
+  - ' -h, --help           show this help message and exit'
+  - ' -v                   set the output to be more verbose, output will change with each added -v, e.g. -vv will differ from -vvv'
+  - ' --config <path>      select config file; defaults to ~/.quick_dra.yaml'
+  - ' --tax-config <path>  select tax parameters file; will take precedent before data from repository and installation'
+  - ' -n <NN>              choose serial number of this particular report set; defaults to 1'
+  - ' -m <month>           choose how many month away from today the report should use; defaults to -1'
+  - ' --today <YYYY-MM-DD> choose the date for the XML production; defaults to date setup on the host machine'
+  - ' --pretty             pretty-print resulting XML document'
+  - ' --info               end terminal printout with a summary of amounts to pay'
+  - ''
+- ''

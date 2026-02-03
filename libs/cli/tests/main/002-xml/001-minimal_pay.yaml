@@ -1,0 +1,16 @@
+args: xml --pretty --info --today 2026-1-1 --config .quick_dra.yaml
+expected:
+- 0
+- - '-- report: #1 2025-12'
+  - '-- output: quick-dra_202512-01.xml'
+  - '-- payments:'
+  - "   - PIOTR IKSINSKI: 3873.17 z\u0142"
+  - "   - ZUS:            1476.32 z\u0142"
+  - "   - Urz\u0105d Skarbowy:  153.12 z\u0142"
+  - "   sum total =       5502.61 z\u0142"
+  - ''
+- ''
+prepare:
+- cp $DATA/.quick_dra.AB4123456_50671500000.yaml $CWD/.quick_dra.yaml
+writes:
+  $CWD/quick-dra_202512-01.xml: $DATA/quick-dra_202512-01.AB4123456_50671500000.xml

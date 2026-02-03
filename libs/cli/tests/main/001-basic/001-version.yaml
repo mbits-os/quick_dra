@@ -1,0 +1,6 @@
+args: --version
+expected:
+- 0
+- - Quick-DRA version $VERSION
+  - ''
+- ''

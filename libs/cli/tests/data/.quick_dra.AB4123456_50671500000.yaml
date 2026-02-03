@@ -1,0 +1,10 @@
+wersja: 1
+płatnik:
+  nazwisko: 'Nowak, Jan'
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: 'Iksinski, Piotr'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 50671500000
