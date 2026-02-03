@@ -1,0 +1,11 @@
+args: payer --file .quick_dra.yaml -y --passport AB4123456
+expected:
+- 0
+- - "\e[0;90mDocument kind changed from \e[m1\e[0;90m to \e[m2"
+  - "\e[0;90mDocument changed from \e[mABC523456\e[0;90m to \e[mAB4123456"
+  - ''
+- ''
+writes:
+  $CWD/.quick_dra.yaml: $DATA/.quick_dra.AB4123456.yaml
+prepare:
+  - cp $DATA/.quick_dra.ABC523456.yaml $CWD/.quick_dra.yaml
