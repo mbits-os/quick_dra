@@ -28,6 +28,8 @@ endif()
 
 if(TARGET ICU::i18n)
     list(APPEND SRCS src/base/unicode_icu.cpp)
+elseif(WIN32)
+    list(APPEND SRCS src/base/unicode_win32.cpp)
 endif()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
