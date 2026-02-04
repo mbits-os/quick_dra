@@ -26,6 +26,10 @@ elseif(WIN32)
     list(APPEND SRCS src/base/exec_path_win32.cpp)
 endif()
 
+if(TARGET ICU::i18n)
+    list(APPEND SRCS src/base/unicode_icu.cpp)
+endif()
+
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
 source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${GEN_SRCS})
 
@@ -42,6 +46,11 @@ target_include_directories(libbase
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
 target_link_libraries(libbase PUBLIC fmt::fmt)
+
+if(TARGET ICU::i18n)
+    message(STATUS "Component target declared 'ICU::i18n'")
+    target_link_libraries(libbase PUBLIC ICU::uc ICU::i18n ${ICU_LIBRARIES})
+endif()
 
 # #################################################################
 # #  INSTALL

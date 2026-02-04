@@ -83,6 +83,11 @@ jobs:
         run: |
           sudo apt-get install ninja-build -y
 
+      - name: Install ICU
+        if: ${{ matrix.ubuntu }}
+        run: |
+          sudo apt-get install libicu-dev -y
+
       - name: Install GCC
         if: ${{ matrix.ubuntu && matrix.needs_gcc_ppa }}
         run: |
