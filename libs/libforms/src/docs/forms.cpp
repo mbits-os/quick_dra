@@ -99,8 +99,8 @@ namespace quick_dra {
 			auto const& input = cfg.payer;
 			auto const bday =
 			    social_id_validator::get_birthday(input.social_id);
-			auto const _first = to_upper_copy(input.first_name);
-			auto const _last = to_upper_copy(input.last_name);
+			auto const _first = to_upper(input.first_name);
+			auto const _last = to_upper(input.last_name);
 			payer.insert(var::tax_id, input.tax_id);
 			payer.insert(var::social_id, input.social_id);
 			payer.insert(var::document_kind, input.kind);
@@ -181,8 +181,8 @@ namespace quick_dra {
 		auto& person = result.state.get(var::insured);
 		person.insert(var::document_kind, insured.kind);
 		person.insert(var::document, insured.document);
-		person.insert(var::last, to_upper_copy(insured.last_name));
-		person.insert(var::first, to_upper_copy(insured.first_name));
+		person.insert(var::last, to_upper(insured.last_name));
+		person.insert(var::first, to_upper(insured.first_name));
 
 		result.state.insert(var::insurance_title, compiled(insured.title));
 		result.state.insert(var::scale.num, uint_value{scale_num});

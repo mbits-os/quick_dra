@@ -94,10 +94,7 @@ namespace quick_dra {
 	std::string lstrip_s(std::string_view);
 	std::string rstrip_s(std::string_view);
 
-	std::string& to_lower_inplace(std::string&) noexcept;
-	std::string& to_upper_inplace(std::string&) noexcept;
-
-	std::string to_upper_copy(std::string_view);
+	std::string to_upper(std::string_view);
 
 	std::string join(std::vector<std::string_view> const& items,
 	                 sep_view_t sep);
