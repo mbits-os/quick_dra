@@ -61,7 +61,7 @@ namespace yaml {
 	}
 
 	bool ref_ctx::error(std::string_view const& msg) const {
-		if (parser && ref_ && head) {
+		if (parser && parser->source().len && ref_ && head) {
 			return head->handle_error(ref_->location(*parser), msg);
 		}
 		fmt::print(stderr, "error: {}\n", msg);
