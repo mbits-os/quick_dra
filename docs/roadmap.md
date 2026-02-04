@@ -6,7 +6,6 @@
 - [x] Rebuild tax parameters data handling (_v0.6.0_)
 - [x] Allow setting today date from command line (user freedom and stable testability) (_v0.7.0_)
 - [x] Rename all `insurer`/`insurer_t` uses with `payer` (_v0.7.0_)
-- [ ] Integrate [json-runner](https://github.com/mzdun/json-runner)
 - [ ] Initialization
   - [ ] Questionnaire config for filling out `~/.quick_dra.yaml`
   - [x] Add `qdra payer` updating/creating `"płatnik"` (_v0.7.0_)
@@ -14,6 +13,10 @@
     - [ ] Add `qdra insured edit`
     - [ ] Add `qdra insured add`
     - [ ] Add `qdra insured remove`
+- [ ] Testing and coverage
+  - [ ] Integrate [json-runner](https://github.com/mzdun/json-runner)
+  - [ ] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI`
+  - [ ] Integrate test coverage gathering tools
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
