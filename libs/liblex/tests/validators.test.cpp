@@ -94,12 +94,8 @@ namespace quick_dra::testing {
 	using std::literals::operator""y;
 
 	static constexpr id_testcase tax_id_tests[] = {
-	    ""_inv
-	    "02070803628"_inv,
-	    "0000000000"_test(0),
-	    "1234567890"_inv,
-	    "1234563218"_test(8),
-	    "7680002466"_test(6),
+	    ""_inv,           "02070803628"_inv,    "0000000000"_test(0),
+	    "1234567890"_inv, "1234563218"_test(8), "7680002466"_test(6),
 	};
 
 	static constexpr id_testcase social_id_tests[] = {
