@@ -8,6 +8,9 @@ namespace yaml {
 	static inline bool read_key(ref_ctx const& ref,
 	                            ryml::csubstr key,
 	                            std::optional<T>& ctx) {
+		if (!ref.ref().is_map()) {
+			return ref.ref().type().is_notype();
+		}
 		auto const child = ref.ref().find_child(key);
 		if (child.invalid()) {
 			return true;
@@ -22,6 +25,15 @@ namespace yaml {
 	                            ryml::csubstr key,
 	                            T& ctx,
 	                            bool optional) {
+		if (!ref.ref().is_map()) {
+			if (optional) return ref.ref().type().is_notype();
+			if (ref.ref().type().is_notype())
+				return ref.error(
+				    fmt::format("expecting `{}`; please use explicit {{}} to "
+				                "heave empty object instead",
+				                view(key)));
+			return ref.error(fmt::format("expecting `{}`", view(key)));
+		}
 		auto const child = ref.ref().find_child(key);
 		if (child.invalid()) {
 			if (optional) return true;
