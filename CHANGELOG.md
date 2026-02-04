@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.7.1](https://github.com/mbits-os/quick_dra/compare/v0.7.0...v0.7.1) (2026-02-04)
+
+### Bug Fixes
+
+- do not react to borked YAML config in `payer` ([02db9be](https://github.com/mbits-os/quick_dra/commit/02db9bee17267a779995ebd10c8b4c4bf8c2fef4))
+- add WinAPI-based implementation ([860cb1b](https://github.com/mbits-os/quick_dra/commit/860cb1b5b0c43986e2d0704dc608768d2b49689f))
+- add ICU-based implementation ([5dced9d](https://github.com/mbits-os/quick_dra/commit/5dced9def739febc1328213834e2c4b4ed280213))
+- prepare for new `to_upper` implementation(s) ([4d40c34](https://github.com/mbits-os/quick_dra/commit/4d40c346b6fab4dbcbfa70abab14b6c169802a6a))
+
 ## [0.7.0](https://github.com/mbits-os/quick_dra/compare/v0.6.2...v0.7.0) (2026-02-01)
 
 ### New Features

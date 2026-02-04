@@ -14,8 +14,8 @@
     - [ ] Add `qdra insured add`
     - [ ] Add `qdra insured remove`
 - [ ] Testing and coverage
-  - [ ] Integrate [json-runner](https://github.com/mzdun/json-runner)
-  - [ ] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI`
+  - [x] Integrate `proj-flow tools test-runner` (_v0.7.1_)
+  - [x] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI` (_v0.7.1_)
   - [ ] Integrate test coverage gathering tools
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
