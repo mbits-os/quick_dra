@@ -4,10 +4,10 @@ expected:
 - - '-- report: #1 2025-12'
   - '-- output: quick-dra_202512-01.xml'
   - '-- payments:'
-  - "   - PIOTR IKSINSKI: 3873.17 z\u0142"
-  - "   - ZUS:            1476.32 z\u0142"
-  - "   - Urz\u0105d Skarbowy:  153.12 z\u0142"
-  - "   sum total =       5502.61 z\u0142"
+  - '   - PIOTR IKSIŃSKI: 3873.17 zł'
+  - '   - ZUS:            1476.32 zł'
+  - '   - Urząd Skarbowy:  153.12 zł'
+  - '   sum total =       5502.61 zł'
   - ''
 - ''
 prepare:

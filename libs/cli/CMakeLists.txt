@@ -72,7 +72,7 @@ if(QUICK_DRA_TESTING)
             COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
                 tools "test-runner"
                 --preset "${CMAKE_PRESET}"
-                --tests "main-set/${TEST_SET}"
+                --tests "main/${TEST_SET}"
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         )
     endforeach()
