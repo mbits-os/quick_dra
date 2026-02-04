@@ -191,28 +191,6 @@ namespace quick_dra {
 		return {result.data(), result.size()};
 	}
 
-	std::string& to_lower_inplace(std::string& s) noexcept {
-		for (auto& c : s) {
-			c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-		}
-
-		return s;
-	}
-
-	std::string& to_upper_inplace(std::string& s) noexcept {
-		for (auto& c : s) {
-			c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
-		}
-
-		return s;
-	}
-
-	std::string to_upper_copy(std::string_view input) {
-		std::string result{};
-		result = input;
-		return to_upper_inplace(result);
-	}
-
 	template <typename String, typename Sep>
 	std::string join_impl(std::vector<String> const& items, Sep sep) {
 		std::string result{};

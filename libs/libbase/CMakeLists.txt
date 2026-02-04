@@ -21,9 +21,9 @@ set(SRCS
 )
 
 if(UNIX)
-    list(APPEND SRCS src/base/posix.cpp)
+    list(APPEND SRCS src/base/exec_path_posix.cpp)
 elseif(WIN32)
-    list(APPEND SRCS src/base/win32.cpp)
+    list(APPEND SRCS src/base/exec_path_win32.cpp)
 endif()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
