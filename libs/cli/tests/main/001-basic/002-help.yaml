@@ -1,14 +1,14 @@
 args: --help
 expected:
-- 0
-- - 'usage: qdra [-h] [--version] <command> [<args>]'
-  - ''
-  - 'optional arguments:'
-  - ' -h, --help    shows this help message and exits'
-  - ' -v, --version show version and exit'
-  - ''
-  - 'known commands:'
-  - ' xml           produce KEDU 5.6 XML file'
-  - ' payer         manage the payer data in ~/.quick_dra.yaml file'
-  - ''
-- ''
+  return-code: 0
+  stdout: |
+    usage: qdra [-h] [--version] <command> [<args>]
+
+    optional arguments:
+     -h, --help    shows this help message and exits
+     -v, --version show version and exit
+
+    known commands:
+     xml           produce KEDU 5.6 XML file
+     payer         manage the payer data in ~/.quick_dra.yaml file
+  stderr: ''

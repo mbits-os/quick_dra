@@ -7,7 +7,7 @@
         "./data/schemas/tax_config_schema.yaml": [ "tax_config.yaml" ],
         "./data/schemas/templates_schema.yaml": [ "templates.yaml" ],
         "http://json-schema.org/draft-04/schema#": [ "runner-schema.yaml" ],
-        "https://raw.githubusercontent.com/mzdun/proj-flow/refs/tags/v0.22.1/schema/test-runner.yaml": [ "/libs/cli/tests/main/**/*.yaml" ]
+        "https://raw.githubusercontent.com/mzdun/proj-flow/refs/tags/v0.23.0/schema/test-runner.yaml": [ "/libs/cli/tests/main/**/*.yaml" ]
     },
     "cSpell.words": [
         "KEDU",

@@ -1,6 +1,6 @@
 args: --version
 expected:
-- 0
-- - Quick-DRA version $VERSION
-  - ''
-- ''
+  return-code: 0
+  stdout: |
+    Quick-DRA version $VERSION
+  stderr: ''
