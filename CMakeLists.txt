@@ -41,6 +41,10 @@ find_package(ryml REQUIRED)
 find_package(CURL REQUIRED)
 find_package(ctre REQUIRED)
 
+if (UNIX)
+find_package(ICU COMPONENTS uc i18n REQUIRED)
+endif()
+
 if(QUICK_DRA_TESTING)
   enable_testing()
 
