@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.7.2](https://github.com/mbits-os/quick_dra/compare/v0.7.1...v0.7.2) (2026-02-05)
+
+### Bug Fixes
+
+- better contribution calculation ([1f97d6d](https://github.com/mbits-os/quick_dra/commit/1f97d6d87e3e8f86ee3dcd26dd69fd5b0629379b))
+
 ## [0.7.1](https://github.com/mbits-os/quick_dra/compare/v0.7.0...v0.7.1) (2026-02-04)
 
 ### Bug Fixes
