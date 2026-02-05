@@ -9,24 +9,26 @@
 using namespace std::literals;
 
 namespace quick_dra {
-	int tools::handle(std::string_view tool, args::arglist args) const {
-		for (auto const& builtin : builtins_) {
-			if (builtin.name != tool) continue;
-			static constexpr auto tool_prefix = "qdra "sv;
+	int tools::handle(std::string_view tool,
+	                  args::arglist args,
+	                  std::string_view tool_name) const {
+		for (auto const& command : commands_) {
+			if (command.name != tool) continue;
 			std::string name{};
-			name.reserve(tool_prefix.size() + tool.size());
-			name.append(tool_prefix);
+			name.reserve(tool_name.size() + tool.size() + 1);
+			name.append(tool_name);
+			name.push_back(' ');
 			name.append(tool);
-			return builtin.tool(name, args, builtin.description);
+			return command.tool(name, args, command.description);
 		}  // GCOV_EXCL_LINE[WIN32]
 
 		return -ENOENT;
 	}
 
-	std::set<std::string> tools::list_builtins() const {
+	std::set<std::string> tools::list_commands() const {
 		std::set<std::string, std::less<>> commands{};
 
-		for (auto const& builtin : builtins_) {
+		for (auto const& builtin : commands_) {
 			auto it = commands.lower_bound(builtin.name);
 			if (it == commands.end() || *it != builtin.name)
 				commands.insert(

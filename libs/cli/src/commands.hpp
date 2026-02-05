@@ -19,14 +19,33 @@ namespace quick_dra {
 
 	class tools {
 	public:
-		tools(std::span<builtin_tool const> const& builtins)
-		    : builtins_{builtins} {}
+		tools(std::span<builtin_tool const> const& commands)
+		    : commands_{commands} {}
 
-		int handle(std::string_view tool, args::arglist args) const;
+		int handle(std::string_view tool,
+		           args::arglist tool_args,
+		           std::string_view parent_name) const;
 
-		std::set<std::string> list_builtins() const;
+		std::set<std::string> list_commands() const;
+
+		template <typename ArgParser>
+		static int run(ArgParser& parser,
+		               std::span<builtin_tool const> const& commands,
+		               std::string_view parent_name) {
+			auto const [tool, tool_args] = parser.parse_args();
+
+			auto const ret =
+			    tools{commands}.handle(tool, tool_args, parent_name);
+			if (ret == -ENOENT) {
+				parser.noent(tool, parent_name);
+				return 1;
+			}
+
+			if (ret < 0) return -ret;
+			return ret;
+		}
 
 	private:
-		std::span<builtin_tool const> builtins_;
+		std::span<builtin_tool const> commands_;
 	};
 }  // namespace quick_dra
