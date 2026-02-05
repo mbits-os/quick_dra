@@ -1,0 +1,11 @@
+args: insured list --help
+expected:
+  return-code: 0
+  stdout: |
+    usage: qdra insured list [-h]
+
+    list all known insured people
+
+    optional arguments:
+     -h, --help show this help message and exit
+  stderr: ''

@@ -8,9 +8,9 @@
 - [x] Allow setting today date from command line (user freedom and stable testability) (_v0.7.0_)
 - [x] Rename all `insurer`/`insurer_t` uses with `payer` (_v0.7.0_)
 - [ ] Initialization
-  - [ ] Questionnaire config for filling out `~/.quick_dra.yaml`
   - [x] Add `qdra payer` updating/creating `"płatnik"` (_v0.7.0_)
-  - [ ] Add `qdra insured` updating `"ubezpieczeni"` sequence
+  - [x] Add `qdra insured` updating `"ubezpieczeni"` sequence
+    - [ ] Add `qdra insured list`
     - [ ] Add `qdra insured edit`
     - [ ] Add `qdra insured add`
     - [ ] Add `qdra insured remove`
