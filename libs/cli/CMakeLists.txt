@@ -3,6 +3,7 @@
 
 set(SRCS
     src/args_parser.hpp
+    src/builtins.cpp
     src/builtins.hpp
     src/commands.cpp
     src/commands.hpp
