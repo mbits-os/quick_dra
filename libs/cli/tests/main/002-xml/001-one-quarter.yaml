@@ -1,0 +1,29 @@
+args: xml --pretty --info --today 2026-2-1 --config .quick_dra.yaml -vvv
+expected:
+  return-code: 0
+  stdout: |
+    -- config used: .quick_dra.yaml
+    -- today: 2026-02-01
+    -- report: #1 2026-01
+    -- payer:
+    --   name: Jan Nowak
+    --   social id: 26211012346
+    --   tax id: 7680002466
+    --   ident: 2 AB4123456
+    -- insured:
+    --   - name: Piotr Iksiński
+    --     insurance title: 0110 0 0
+    --     ident: P 50671500000
+    --     remuneration: 1/4 of <minimal pay>
+    --   minimal pay for month reported: 4806.00 zł
+    -- output: quick-dra_202601-01.xml
+    -- payments:
+       - PIOTR IKSIŃSKI: 1036.77 zł
+       - ZUS:             380.17 zł
+       - Urząd Skarbowy:    0.00 zł
+       sum total =       1416.94 zł
+  stderr: ''
+prepare:
+- cp $DATA/.quick_dra.AB4123456_50671500000.quarter.yaml $CWD/.quick_dra.yaml
+writes:
+  $CWD/quick-dra_202601-01.xml: $DATA/quick-dra_202601-01.AB4123456_50671500000.quarter.xml

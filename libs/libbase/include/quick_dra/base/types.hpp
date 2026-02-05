@@ -168,9 +168,9 @@ namespace quick_dra {
 		}
 		constexpr contribution contribution_on(
 		    calc_currency amount) const noexcept {
-			auto const total_contribution = (amount * total()).rounded();
+			auto const payer_contribution = (amount * payer).rounded();
 			auto const insured_contribution = (amount * insured).rounded();
-			return {.payer = total_contribution - insured_contribution,
+			return {.payer = payer_contribution,
 			        .insured = insured_contribution};
 		}
 	};
