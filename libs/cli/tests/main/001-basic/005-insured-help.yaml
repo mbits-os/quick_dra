@@ -1,0 +1,15 @@
+args: insured --help
+expected:
+  return-code: 0
+  stdout: |
+    usage: qdra insured [-h] <command> [<args>]
+
+    optional arguments:
+     -h, --help shows this help message and exits
+
+    known commands:
+     list       list all known insured people
+     add        add a new insured person
+     remove     remove one of configured people
+     edit       update data of a selected person
+  stderr: ''

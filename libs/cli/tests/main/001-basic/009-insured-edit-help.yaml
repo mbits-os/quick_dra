@@ -1,0 +1,11 @@
+args: insured edit --help
+expected:
+  return-code: 0
+  stdout: |
+    usage: qdra insured edit [-h]
+
+    update data of a selected person
+
+    optional arguments:
+     -h, --help show this help message and exit
+  stderr: ''

@@ -7,6 +7,11 @@ set(SRCS
     src/builtins.hpp
     src/commands.cpp
     src/commands.hpp
+    src/insured/add/command.cpp
+    src/insured/command.cpp
+    src/insured/edit/command.cpp
+    src/insured/list/command.cpp
+    src/insured/remove/command.cpp
     src/main.cpp
     src/payer/cmd_conversation.cpp
     src/payer/cmd_conversation.hpp

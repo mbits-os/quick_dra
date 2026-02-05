@@ -11,4 +11,5 @@ expected:
     known commands:
      xml           produce KEDU 5.6 XML file
      payer         manage the payer data in ~/.quick_dra.yaml file
+     insured       manage the insured data in ~/.quick_dra.yaml file
   stderr: ''

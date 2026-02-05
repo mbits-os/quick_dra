@@ -1,0 +1,11 @@
+args: insured remove --help
+expected:
+  return-code: 0
+  stdout: |
+    usage: qdra insured remove [-h]
+
+    remove one of configured people
+
+    optional arguments:
+     -h, --help show this help message and exit
+  stderr: ''

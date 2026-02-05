@@ -12,9 +12,16 @@
 namespace quick_dra::builtin {
 	using namespace std::literals;
 
-#define ROOT_BUILTINS_X(X)                     \
-	X(xml, "xml", "produce KEDU 5.6 XML file") \
-	X(payer, "payer", "manage the payer data in ~/.quick_dra.yaml file")
+#define ROOT_BUILTINS_X(X)                                               \
+	X(xml, "xml", "produce KEDU 5.6 XML file")                           \
+	X(payer, "payer", "manage the payer data in ~/.quick_dra.yaml file") \
+	X(insured, "insured", "manage the insured data in ~/.quick_dra.yaml file")
+
+#define INSURED_BUILTINS_X(X)                              \
+	X(list, "list", "list all known insured people")       \
+	X(add, "add", "add a new insured person")              \
+	X(remove, "remove", "remove one of configured people") \
+	X(edit, "edit", "update data of a selected person")
 
 #define BUILTINS_X_DECL(NAME, TOOL, DSCR)         \
 	namespace NAME {                              \
@@ -23,10 +30,19 @@ namespace quick_dra::builtin {
 		           std::string_view description); \
 	}
 	ROOT_BUILTINS_X(BUILTINS_X_DECL)
+
+	namespace insured {
+		INSURED_BUILTINS_X(BUILTINS_X_DECL)
+	}
 #undef BUILTINS_X_DECL
 
 #define BUILTINS_X_DECL(NAME, TOOL, DSCR) {TOOL##sv, DSCR##sv, NAME::handle},
 	static constexpr builtin_tool tools[] = {ROOT_BUILTINS_X(BUILTINS_X_DECL)};
+
+	namespace insured {
+		static constexpr builtin_tool tools[] = {
+		    INSURED_BUILTINS_X(BUILTINS_X_DECL)};
+	}
 #undef BUILTINS_X_DECL
 
 	struct help_command {
