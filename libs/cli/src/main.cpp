@@ -7,7 +7,7 @@
 #endif
 
 #include <fmt/format.h>
-#include <args/parser.hpp>
+#include <args_parser.hpp>
 
 extern int tool(::args::args_view const&);
 

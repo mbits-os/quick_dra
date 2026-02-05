@@ -2,7 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
-#include <args/parser.hpp>
+#include <args_parser.hpp>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
