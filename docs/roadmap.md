@@ -4,6 +4,7 @@
 - [x] Use `yaml_name` in `tax_parameters`' attributes (_v0.5.0_)
 - [x] Extract YAML parser to submodule independent of libmodels and libbase (_v0.5.0_)
 - [x] Rebuild tax parameters data handling (_v0.6.0_)
+  - [x] Get rid of "total" subtraction, when calculating contributions (_v0.7.2_)
 - [x] Allow setting today date from command line (user freedom and stable testability) (_v0.7.0_)
 - [x] Rename all `insurer`/`insurer_t` uses with `payer` (_v0.7.0_)
 - [ ] Initialization

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.7.3](https://github.com/mbits-os/quick_dra/compare/v0.7.2...v0.7.3) (2026-02-05)
+
+### Bug Fixes
+
+- **docs**: add something about CLI to readme ([d95818f](https://github.com/mbits-os/quick_dra/commit/d95818f286e5d0ea5dc1723cbd7f91b050bd17e2))
+- **docs**: fix wording on Super Linter ([7bd3fc6](https://github.com/mbits-os/quick_dra/commit/7bd3fc6e871f59e5e3c6e8d57fc087dc40d3d5d5))
+
 ## [0.7.2](https://github.com/mbits-os/quick_dra/compare/v0.7.1...v0.7.2) (2026-02-05)
 
 ### Bug Fixes
