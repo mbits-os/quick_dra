@@ -2,7 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
-#include <args/parser.hpp>
+#include <args_parser.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/version.hpp>
 #include <span>
