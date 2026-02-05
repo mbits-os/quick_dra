@@ -48,7 +48,8 @@ In the meantime, please use the [issue templates](.github/ISSUE_TEMPLATE/) when 
 
 - Follow the existing style of the surrounding code: indentation, naming, and file organization.
 - This code is formatted using `clang-format-18` for C++ and `black`/`isort` for Python, run them before committing.
-- CI will run `super-linter` on this code. It is advised to run it before committing through `./flow tool run-linters`.
+- CI will run `super-linter` on this code. It is advised to run it before committing through \
+`./flow tools run-linter --log_level=NOTICE`.
 - Keep functions and modules focused; prefer clear, readable code and comments where behavior might be non‑obvious.
 - Avoid introducing new dependencies unless they are clearly justified.
 
