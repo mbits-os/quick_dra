@@ -131,9 +131,9 @@ reports:
         1: $insurance_title
         3: [$scale.num, $scale.den]
         #
-        4: $remuneration.gross
-        5: $remuneration.gross
-        6: $remuneration.gross
+        4: $salary.gross
+        5: $salary.gross
+        6: $salary.gross
         #
         7: $pension_insurance.insured
         8: $disability_insurance.insured
