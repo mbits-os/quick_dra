@@ -11,6 +11,6 @@ partial interface person {
 };
 
 partial interface payer_t {
-    [mutable] void postprocess_document();
-    [mutable] void preprocess_document();
+    [mutable] void postprocess_document_kind();
+    [mutable] void preprocess_document_kind();
 };

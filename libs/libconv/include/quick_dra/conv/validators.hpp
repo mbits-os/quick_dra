@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 
-namespace quick_dra::builtin::payer {
+namespace quick_dra::builtin {
 	bool valid_first_name(std::string&& value,
 	                      std::optional<std::string>& dst,
 	                      bool);
@@ -52,4 +52,4 @@ namespace quick_dra::builtin::payer {
 			return true;
 		});
 	}  // namespace policies
-}  // namespace quick_dra::builtin::payer
+}  // namespace quick_dra::builtin

@@ -16,8 +16,6 @@ set(SRCS
     src/payer/cmd_conversation.cpp
     src/payer/cmd_conversation.hpp
     src/payer/command.cpp
-    src/payer/validators.cpp
-    src/payer/validators.hpp
     src/root/command.cpp
     src/xml/cli_options.cpp
     src/xml/cli_options.hpp

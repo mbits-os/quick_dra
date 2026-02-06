@@ -263,7 +263,7 @@ namespace quick_dra::v1::partial {
 		named.first_name = std::nullopt;
 	}
 
-	void payer_t::postprocess_document() noexcept {
+	void payer_t::postprocess_document_kind() noexcept {
 		kind = std::nullopt;
 		document = std::nullopt;
 
@@ -277,7 +277,7 @@ namespace quick_dra::v1::partial {
 	}
 
 	bool payer_t::postprocess() {
-		postprocess_document();
+		postprocess_document_kind();
 
 		parse_name(*this);
 
@@ -295,10 +295,10 @@ namespace quick_dra::v1::partial {
 
 	void payer_t::preprocess() {
 		preprocess_name(*this);
-		preprocess_document();
+		preprocess_document_kind();
 	}
 
-	void payer_t::preprocess_document() noexcept {
+	void payer_t::preprocess_document_kind() noexcept {
 		auto kind_ = kind.value_or(""s);
 		auto document_ = document.value_or(""s);
 
