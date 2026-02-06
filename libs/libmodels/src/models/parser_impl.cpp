@@ -1,6 +1,8 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <fmt/format.h>
+#include <fmt/std.h>
 #include <cmath>
 #include <fstream>
 #include <quick_dra/base/str.hpp>
@@ -173,6 +175,30 @@ namespace quick_dra::v1::partial {
 		return needed < present ? needed == 0 ? load_status::empty
 		                                      : load_status::partially_loaded
 		                        : load_status::fully_loaded;
+	}
+
+	config config::load_partial(std::filesystem::path const& path) {
+		partial::config cfg{};
+		auto const load = cfg.load(path);
+		switch (load) {
+			case load_status::file_not_found:
+				fmt::print(stderr,
+				           "Quick-DRA: file {} will be created as needed.\n",
+				           path);
+				break;
+			case load_status::file_not_readable:
+				fmt::print(stderr, "Quick-DRA: error: could not read {}\n",
+				           path);
+				std::exit(1);
+			case load_status::errors_encountered:
+				fmt::print(stderr,
+				           "Quick-DRA: error: {} will be overwritten at save\n",
+				           path);
+				std::exit(1);
+			default:
+				break;
+		}
+		return cfg;
 	}
 
 	bool config::store(std::filesystem::path const& path) {
