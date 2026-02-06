@@ -12,31 +12,10 @@ namespace quick_dra::builtin::payer {
 	int handle(std::string_view tool_name,
 	           args::arglist arguments,
 	           std::string_view description) {
-		std::optional<std::string> config_path;
 		cmd_conversation conv{};
-
 		conv.parse_args(tool_name, arguments, description);
 
-		partial::config cfg{};
-		auto const load = cfg.load(conv.path);
-		switch (load) {
-			case load_status::file_not_found:
-				fmt::print(stderr,
-				           "Quick-DRA: file {} will be created as needed.\n",
-				           conv.path);
-				break;
-			case load_status::file_not_readable:
-				fmt::print(stderr, "Quick-DRA: error: could not read {}\n",
-				           conv.path);
-				return 1;
-			case load_status::errors_encountered:
-				fmt::print(stderr,
-				           "Quick-DRA: error: {} will be overwritten at save\n",
-				           conv.path);
-				return 1;
-			default:
-				break;
-		}
+		auto cfg = partial::config::load_partial(conv.path);
 
 		if (!cfg.payer) {
 			cfg.payer.emplace();
