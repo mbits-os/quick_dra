@@ -1,12 +1,12 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include "validators.hpp"
 #include <quick_dra/conv/low_level.hpp>
+#include <quick_dra/conv/validators.hpp>
 #include <quick_dra/lex/validators.hpp>
 #include <utility>
 
-namespace quick_dra::builtin::payer {
+namespace quick_dra::builtin {
 	namespace {
 		bool valid_nonempty_string(std::string&& value,
 		                           std::optional<std::string>& dst) {
@@ -70,4 +70,4 @@ namespace quick_dra::builtin::payer {
 		dst = std::move(value);
 		return true;
 	}
-}  // namespace quick_dra::builtin::payer
+}  // namespace quick_dra::builtin

@@ -20,7 +20,8 @@ namespace quick_dra {
 	bool get_enum_answer(
 	    std::string_view label,
 	    std::span<std::pair<char, std::string_view> const> const& items,
-	    std::function<void(char)> const& store_enum);
+	    std::function<void(char)> const& store_enum,
+	    char selected);
 
 	bool get_string_answer(bool ask_questions,
 	                       std::string_view label,

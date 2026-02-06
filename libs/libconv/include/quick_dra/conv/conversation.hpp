@@ -5,6 +5,8 @@
 
 #include <fmt/printf.h>
 #include <quick_dra/conv/field_policy.hpp>
+#include <quick_dra/conv/low_level.hpp>
+#include <quick_dra/models/types.hpp>
 #include <string>
 
 namespace quick_dra {
@@ -26,6 +28,60 @@ namespace quick_dra {
 		bool check_string_field(
 		    field_policy<Selector, Validator> const& policy) {
 			return get_answer(policy.get_string_field());
+		}
+
+		template <typename Selector, typename Validator, enumerator... Items>
+		bool check_enum_field(std::string_view switches_to_fix,
+		                      field_policy<Selector, Validator> const& policy,
+		                      Items&&... items) {
+			auto const enum_field =
+			    policy.get_enum_field(std::forward<Items>(items)...);
+			if (!get_answer(enum_field)) {
+				if (!this->ask_questions) {
+					comment(fmt::format(
+					    "Cannot guess document kind based on information "
+					    "given. Please use either {} with -y",
+					    switches_to_fix));
+				}
+				return false;
+			}
+			auto const key = policy.select(this->dst);
+			this->dst.preprocess_document_kind();
+			if (!this->continue_with_enums(
+			        key->front(), enum_field.items,
+			        std::make_index_sequence<sizeof...(Items)>{})) {
+				return false;
+			}
+			this->dst.postprocess_document_kind();
+			return true;
+		}
+
+		template <enumerator... Items, size_t... Index>
+		bool continue_with_enums(char code,
+		                         std::tuple<Items...> const& items,
+		                         std::index_sequence<Index...>) {
+			auto const success =
+			    (this->continue_with_enum_item(code, std::get<Index>(items)) &&
+			     ...);
+			if (!success) return false;
+			(this->clean_unmatched_fields(code, std::get<Index>(items)), ...);
+			return true;
+		}
+
+		template <enumerator Item>
+		bool continue_with_enum_item(char code, Item const& policy) {
+			if (code != policy.code) {
+				return true;
+			}
+
+			return this->check_string_field(policy);
+		}
+
+		template <enumerator Item>
+		void clean_unmatched_fields(char code, Item const& policy) {
+			if (code != policy.code) {
+				policy.select(this->dst).reset();
+			}
 		}
 
 		template <typename Policy>

@@ -34,7 +34,8 @@ namespace quick_dra {
 	bool get_enum_answer(
 	    std::string_view label,
 	    std::span<std::pair<char, std::string_view> const> const& items,
-	    std::function<void(char)> const& store_enum) {
+	    std::function<void(char)> const& store_enum,
+	    char selected) {
 		std::string hint{};
 		hint.reserve([&items]() {
 			size_t hint_size = items.size() * 4 + (items.size() - 1) * 2;
@@ -42,16 +43,25 @@ namespace quick_dra {
 				hint_size += description.size();
 			}
 			return hint_size;
-		}());
+		}() + selected
+		                 ? 2
+		                 : 0);
 
 		for (auto const& [value, description] : items) {
 			if (!hint.empty()) hint.append(", "sv);
+			if (value == selected) hint.push_back('[');
 			hint.push_back(value);
+			if (value == selected) hint.push_back(']');
 			hint.append(" - "sv);
 			hint.append(description);
 		}
 
-		return get_answer(label, hint, [&](std::string&& answer) {
+		return get_answer(label, hint, [&, selected](std::string&& answer) {
+			if (selected && answer.empty()) {
+				store_enum(selected);
+				return true;
+			}
+
 			if (answer.size() != 1) {
 				return false;
 			}

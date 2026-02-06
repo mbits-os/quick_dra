@@ -2,7 +2,9 @@ set(SRCS
     include/quick_dra/conv/conversation.hpp
     include/quick_dra/conv/field_policy.hpp
     include/quick_dra/conv/low_level.hpp
+    include/quick_dra/conv/validators.hpp
     src/low_level.cpp
+    src/validators.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
