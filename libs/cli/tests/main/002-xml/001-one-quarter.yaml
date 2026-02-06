@@ -14,7 +14,7 @@ expected:
     --   - name: Piotr Iksiński
     --     insurance title: 0110 0 0
     --     ident: P 50671500000
-    --     remuneration: 1/4 of <minimal pay>
+    --     salary: 1/4 of <minimal pay>
     --   minimal pay for month reported: 4806.00 zł
     -- output: quick-dra_202601-01.xml
     -- payments:

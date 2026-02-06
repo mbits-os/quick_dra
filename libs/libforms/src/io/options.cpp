@@ -115,7 +115,7 @@ namespace quick_dra {
 		if (level >= verbose::names_and_summary) {
 			bool everyone_has_salary = true;
 			for (auto const& insured : result->insured) {
-				if (!insured.remuneration) {
+				if (!insured.salary) {
 					everyone_has_salary = false;
 					break;
 				}

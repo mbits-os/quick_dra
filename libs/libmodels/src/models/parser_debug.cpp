@@ -43,7 +43,7 @@ namespace quick_dra::v1 {
 				fmt::print("--   - {} {} ({}), {}/{} of {}\n", obj.first_name,
 				           obj.last_name, obj.document, std::max(1u, scale.num),
 				           std::max(1u, scale.den),
-				           obj.remuneration
+				           obj.salary
 				               .transform([](auto const& value) {
 					               return fmt::format("{} zł", value);
 				               })
@@ -66,9 +66,9 @@ namespace quick_dra::v1 {
 				fmt::print("--     insurance title: {}\n",
 				           fmt::join(obj.title.split(), " "));
 				fmt::print("--     ident: {} {}\n", obj.kind, obj.document);
-				fmt::print("--     remuneration: {}/{} of {}\n",
+				fmt::print("--     salary: {}/{} of {}\n",
 				           std::max(1u, scale.num), std::max(1u, scale.den),
-				           obj.remuneration
+				           obj.salary
 				               .transform([](auto const& value) {
 					               return fmt::format("{} zł", value);
 				               })

@@ -108,11 +108,11 @@ namespace quick_dra {
 		MEMBER_VAR(scale, den);
 		VAR_END(scale);
 
-		VAR_BEGIN(remuneration)
-		MEMBER_VAR(remuneration, gross);
-		MEMBER_VAR(remuneration, net);
-		MEMBER_VAR(remuneration, payer_gross);
-		VAR_END(remuneration);
+		VAR_BEGIN(salary)
+		MEMBER_VAR(salary, gross);
+		MEMBER_VAR(salary, net);
+		MEMBER_VAR(salary, payer_gross);
+		VAR_END(salary);
 
 #undef VAR
 #undef MEMBER_VAR

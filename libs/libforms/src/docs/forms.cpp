@@ -141,8 +141,7 @@ namespace quick_dra {
 		auto const scale = insured.part_time_scale.value_or(ratio{});
 		auto const scale_num = std::max(1u, scale.num);
 		auto const scale_den = std::max(1u, scale.den);
-		auto const salary =
-		    insured.remuneration.value_or(cfg.params.minimal_pay);
+		auto const salary = insured.salary.value_or(cfg.params.minimal_pay);
 
 		auto const baseline = [salary, scale_num, scale_den]() {
 			auto const calc = salary.calc();
@@ -188,11 +187,9 @@ namespace quick_dra {
 		result.state.insert(var::scale.num, uint_value{scale_num});
 		result.state.insert(var::scale.den, uint_value{scale_den});
 
-		result.state.insert(var::remuneration.gross, baseline);
-		result.state.insert(var::remuneration.net,
-		                    clamp(baseline - cost_on_insured));
-		result.state.insert(var::remuneration.payer_gross,
-		                    baseline + cost_on_payer);
+		result.state.insert(var::salary.gross, baseline);
+		result.state.insert(var::salary.net, clamp(baseline - cost_on_insured));
+		result.state.insert(var::salary.payer_gross, baseline + cost_on_payer);
 
 		result.state.insert(var::health_insurance,
 		                    all_contributions.health_insurance);

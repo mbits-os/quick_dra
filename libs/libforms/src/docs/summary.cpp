@@ -80,7 +80,7 @@ namespace quick_dra {
 			    get_typed_value<std::string>(form.state, var::insured.last)
 			        .value_or("<brak nazwiska>"s);
 			auto const net_amount =
-			    get_typed_value<currency>(form.state, var::remuneration.net);
+			    get_typed_value<currency>(form.state, var::salary.net);
 
 			result.push_back(
 			    {.label = fmt::format("{} {}", first_name, last_name),

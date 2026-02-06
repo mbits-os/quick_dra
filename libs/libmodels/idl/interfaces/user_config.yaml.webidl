@@ -13,7 +13,7 @@
     [yaml_name="tytuł ubezpieczenia"] attribute insurance_title title;
     [yaml_name=pesel] attribute string? social_id;
     [yaml_name=wymiar] attribute ratio? part_time_scale;
-    [yaml_name=pensja] attribute currency? remuneration;
+    [yaml_name=pensja] attribute currency? salary;
 };
 
 interface person {
