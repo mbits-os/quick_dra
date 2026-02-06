@@ -15,13 +15,12 @@ namespace quick_dra::builtin::payer {
 		args::null_translator tr{};
 		args::parser parser{as_str(description), {tool_name, arguments}, &tr};
 
-		parser.arg(config_path, "file")
+		parser.arg(config_path, "config")
 		    .meta("<path>")
 		    .help("select config file; defaults to ~/.quick_dra.yaml");
 		parser.set<std::false_type>(ask_questions, "y")
 		    .help(
-		        "use answers from command line and previous entries in "
-		        "config "
+		        "use answers from command line and previous entries in config "
 		        "file; do not ask additional questions")
 		    .opt();
 		parser.arg(opts.first_name, "first")
@@ -39,17 +38,13 @@ namespace quick_dra::builtin::payer {
 		parser.arg(opts.id_card, "id-card")
 		    .meta("<number>")
 		    .help(
-		        "select state-issued id number as answer; if passport "
-		        "is used "
-		        "in the config file, it will be replaced by this "
-		        "field");
+		        "select state-issued id number as answer; if passport is used "
+		        "in the config file, it will be replaced by this field");
 		parser.arg(opts.passport, "passport")
 		    .meta("<number>")
 		    .help(
-		        "select passport number as answer; if stated-issued id "
-		        "is used "
-		        "in the config file, it will be replaced by this "
-		        "field");
+		        "select passport number as answer; if stated-issued id is used "
+		        "in the config file, it will be replaced by this field");
 
 		parser.parse();
 

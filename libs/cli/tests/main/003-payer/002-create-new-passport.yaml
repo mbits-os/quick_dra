@@ -1,4 +1,4 @@
-args: payer --file .quick_dra.yaml -y --passport AB4123456
+args: payer --config .quick_dra.yaml -y --passport AB4123456
 expected:
   return-code: 0
   stdout: "\e[0;90mDocument kind changed from \e[m1\e[0;90m to \e[m2\n\e[0;90mDocument changed from \e[mABC523456\e[0;90m to \e[mAB4123456\n"
