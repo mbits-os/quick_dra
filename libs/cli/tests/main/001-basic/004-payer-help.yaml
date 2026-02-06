@@ -2,13 +2,13 @@ args: payer --help
 expected:
   return-code: 0
   stdout: |
-    usage: qdra payer [-h] [--file <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--tax-id <number>] [--id-card <number>] [--passport <number>]
+    usage: qdra payer [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--tax-id <number>] [--id-card <number>] [--passport <number>]
 
     manage the payer data in ~/.quick_dra.yaml file
 
     optional arguments:
      -h, --help           show this help message and exit
-     --file <path>        select config file; defaults to ~/.quick_dra.yaml
+     --config <path>      select config file; defaults to ~/.quick_dra.yaml
      -y                   use answers from command line and previous entries in config file; do not ask additional questions
      --first <name>       select first name of the payer as answer
      --last <name>        select last name of the payer as answer
