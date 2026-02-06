@@ -7,19 +7,19 @@ set(SRCS
     src/builtins.hpp
     src/commands.cpp
     src/commands.hpp
-    src/insured/add/command.cpp
-    src/insured/command.cpp
-    src/insured/edit/command.cpp
-    src/insured/list/command.cpp
-    src/insured/remove/command.cpp
+    src/insured/add/add_command.cpp
+    src/insured/insured_command.cpp
+    src/insured/edit/edit_command.cpp
+    src/insured/list/list_command.cpp
+    src/insured/remove/remove_command.cpp
     src/main.cpp
     src/payer/cmd_conversation.cpp
     src/payer/cmd_conversation.hpp
-    src/payer/command.cpp
-    src/root/command.cpp
+    src/payer/payer_command.cpp
+    src/root/root_command.cpp
     src/xml/cli_options.cpp
     src/xml/cli_options.hpp
-    src/xml/command.cpp
+    src/xml/xml_command.cpp
     src/xml/ctre_parsing.cpp
     src/xml/ctre_parsing.hpp
 )
