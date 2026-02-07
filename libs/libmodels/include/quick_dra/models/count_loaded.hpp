@@ -8,14 +8,12 @@
 #include <utility>
 
 namespace quick_dra::v1::partial {
-	using namespace utility;
-
-	template <required_type T, typename Q>
+	template <RequiredType T, typename Q>
 	std::pair<int, int> check_if_loaded(std::optional<Q> const& src) noexcept {
 		return {1, src ? 1 : 0};
 	}
 
-	template <optional_type T, typename Q>
+	template <OptionalType T, typename Q>
 	std::pair<int, int> check_if_loaded(std::optional<Q> const& src) noexcept {
 		return {0, src ? 1 : 0};
 	}

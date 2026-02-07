@@ -4,11 +4,23 @@
 #pragma once
 
 #include <fmt/format.h>
+#include <charconv>
 #include <concepts>
 #include <string>
 #include <vector>
 
 namespace quick_dra {
+	static inline bool from_chars(std::string_view view,
+	                              std::integral auto& dst) {
+		auto const begin = view.data();
+		auto const end = begin + view.size();
+		auto const [ptr, ec] = std::from_chars(begin, end, dst);
+		if (ptr != end || ec != std::errc{}) {
+			return false;
+		}
+		return true;
+	}
+
 	template <typename Tag, typename Type>
 	struct strong_typedef {
 		Type value{};
@@ -127,23 +139,29 @@ namespace quick_dra {
 		constexpr auto operator<=>(ratio const& rhs) const noexcept {
 			return (num * rhs.den) <=> (rhs.num * den);
 		}
+
+		static bool parse(std::string_view, ratio&);
 	};
 
 	static_assert(ratio{3, 4} == ratio{6, 8});
 	static_assert(ratio{3, 4} > ratio{5, 8});
 
 	struct insurance_title {
-		std::string code{};
+		std::string title_code{};
+		unsigned short pension_right{};
+		unsigned short disability_level{};
 
 		std::vector<std::string> split() const {
 			std::vector<std::string> result{3};
-			result[0] = code.substr(0, 4);
-			result[1].push_back(code[4]);
-			result[2].push_back(code[5]);
+			result[0] = title_code;
+			result[1] = fmt::to_string(pension_right);
+			result[2] = fmt::to_string(disability_level);
 			return result;
 		}
 
 		auto operator<=>(insurance_title const& rhs) const noexcept = default;
+
+		static bool parse(std::string_view, insurance_title&);
 	};
 
 	struct costs_of_obtaining {

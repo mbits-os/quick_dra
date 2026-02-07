@@ -4,6 +4,7 @@
 #pragma once
 
 #include <map>
+#include <optional>
 #include <variant>
 #include <vector>
 
@@ -54,4 +55,27 @@ namespace quick_dra {
 	struct expand_args<C<T...>, Args...> {
 		using type = C<T..., Args...>;
 	};
+
+	template <typename T>
+	struct is_optional : std::false_type {};
+
+	template <typename T>
+	struct is_optional<T&> : is_optional<T> {};
+
+	template <typename T>
+	struct is_optional<T const> : is_optional<T> {};
+
+	template <typename T>
+	struct is_optional<std::optional<T>> : std::true_type {};
+
+	template <typename T>
+	concept OptionalType = static_cast<bool>(is_optional<T>{});
+
+	template <typename T>
+	concept RequiredType = !OptionalType<T>;
+
+	template <typename T, typename V>
+	concept optional_of =
+	    OptionalType<T> &&
+	    std::same_as<V, typename std::remove_cvref_t<T>::value_type>;
 }  // namespace quick_dra
