@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
+#include <fmt/ranges.h>
 #include <iostream>
 #include <quick_dra/conv/low_level.hpp>
 
@@ -77,13 +78,32 @@ namespace quick_dra {
 		});
 	}
 
-	bool get_string_answer(bool ask_questions,
-	                       std::string_view label,
-	                       std::optional<std::string>& dst,
-	                       std::optional<std::string>&& opt,
-	                       std::function<bool(std::string&&,
-	                                          std::optional<std::string>&,
-	                                          bool)> const& validator) {
+	std::string as_string(insurance_title const& value) {
+		return fmt::to_string(fmt::join(value.split(), " "));
+	}
+
+	std::string as_string(ratio const& value) {
+		return fmt::format("{}/{}", value.num, value.den);
+	}
+
+	std::string as_string(currency const& value) {
+		return fmt::format("{} zł", value);
+	}
+
+	std::optional<std::string> as_string(std::optional<currency> const& value) {
+		return value
+		    .transform([](auto const& value) { return as_string(value); })
+		    .value_or("none"s);
+	}
+
+	template <typename Arg>
+	bool get_field_answer_impl(
+	    bool ask_questions,
+	    std::string_view label,
+	    std::optional<Arg>& dst,
+	    std::optional<Arg>&& opt,
+	    std::function<bool(std::string&&, std::optional<Arg>&, bool)> const&
+	        validator) {
 		if (opt) {
 			dst = std::move(opt);
 		}
@@ -91,16 +111,26 @@ namespace quick_dra {
 		if (!ask_questions) {
 			if (dst) {
 				auto copy = *dst;
-				auto const is_valid = validator(std::move(copy), dst, false);
+				auto const is_valid =
+				    validator(as_string(std::move(copy)), dst, false);
 				if (!is_valid) {
 					comment("Cannot save invalid data with -y. Stopping.");
 					return false;
 				}
 			}
+			if constexpr (std::same_as<Arg, currency>) {
+				if (!dst) {
+					auto const is_valid = validator("none"s, dst, false);
+					if (!is_valid) {
+						comment("Cannot save invalid data with -y. Stopping.");
+						return false;
+					}
+				}
+			}
 			return true;
 		}
 
-		auto def_value = dst;
+		auto def_value = as_string(dst);
 		return get_answer(label, def_value.value_or(""s),
 		                  [&](std::string&& answer) {
 			                  if (answer.empty() && def_value) {
@@ -108,5 +138,49 @@ namespace quick_dra {
 			                  }
 			                  return validator(std::move(answer), dst, true);
 		                  });
+	}
+
+	bool get_field_answer(bool ask_questions,
+	                      std::string_view label,
+	                      std::optional<std::string>& dst,
+	                      std::optional<std::string>&& opt,
+	                      std::function<bool(std::string&&,
+	                                         std::optional<std::string>&,
+	                                         bool)> const& validator) {
+		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
+		                             validator);
+	}
+
+	bool get_field_answer(bool ask_questions,
+	                      std::string_view label,
+	                      std::optional<insurance_title>& dst,
+	                      std::optional<insurance_title>&& opt,
+	                      std::function<bool(std::string&&,
+	                                         std::optional<insurance_title>&,
+	                                         bool)> const& validator) {
+		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
+		                             validator);
+	}
+
+	bool get_field_answer(bool ask_questions,
+	                      std::string_view label,
+	                      std::optional<currency>& dst,
+	                      std::optional<currency>&& opt,
+	                      std::function<bool(std::string&&,
+	                                         std::optional<currency>&,
+	                                         bool)> const& validator) {
+		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
+		                             validator);
+	}
+
+	bool get_field_answer(
+	    bool ask_questions,
+	    std::string_view label,
+	    std::optional<ratio>& dst,
+	    std::optional<ratio>&& opt,
+	    std::function<bool(std::string&&, std::optional<ratio>&, bool)> const&
+	        validator) {
+		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
+		                             validator);
 	}
 }  // namespace quick_dra

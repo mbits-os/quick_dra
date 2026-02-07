@@ -1,6 +1,8 @@
 set(SRCS
+    include/quick_dra/conv/concepts.hpp
     include/quick_dra/conv/conversation.hpp
     include/quick_dra/conv/field_policy.hpp
+    include/quick_dra/conv/interactive.hpp
     include/quick_dra/conv/low_level.hpp
     include/quick_dra/conv/validators.hpp
     src/low_level.cpp

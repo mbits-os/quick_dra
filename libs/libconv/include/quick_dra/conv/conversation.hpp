@@ -3,11 +3,13 @@
 
 #pragma once
 
-#include <fmt/printf.h>
+#include <fmt/format.h>
+#include <quick_dra/conv/concepts.hpp>
 #include <quick_dra/conv/field_policy.hpp>
 #include <quick_dra/conv/low_level.hpp>
-#include <quick_dra/models/types.hpp>
-#include <string>
+#include <string_view>
+#include <tuple>
+#include <utility>
 
 namespace quick_dra {
 	using std::literals::operator""s;
@@ -24,16 +26,21 @@ namespace quick_dra {
 			return policy.get_answer(*this);
 		}
 
-		template <typename Selector, typename Validator>
-		bool check_string_field(
-		    field_policy<Selector, Validator> const& policy) {
-			return get_answer(policy.get_string_field());
+		template <typename Arg,
+		          Selector<Arg> Selector,
+		          Validator<Arg> Validator>
+		bool check_field(field_policy<Arg, Selector, Validator> const& policy) {
+			return get_answer(policy.get_field_answer());
 		}
 
-		template <typename Selector, typename Validator, enumerator... Items>
-		bool check_enum_field(std::string_view switches_to_fix,
-		                      field_policy<Selector, Validator> const& policy,
-		                      Items&&... items) {
+		template <typename Arg,
+		          Selector<Arg> Selector,
+		          Validator<Arg> Validator,
+		          Enumerator... Items>
+		bool check_enum_field(
+		    std::string_view switches_to_fix,
+		    field_policy<Arg, Selector, Validator> const& policy,
+		    Items&&... items) {
 			auto const enum_field =
 			    policy.get_enum_field(std::forward<Items>(items)...);
 			if (!get_answer(enum_field)) {
@@ -56,7 +63,7 @@ namespace quick_dra {
 			return true;
 		}
 
-		template <enumerator... Items, size_t... Index>
+		template <Enumerator... Items, size_t... Index>
 		bool continue_with_enums(char code,
 		                         std::tuple<Items...> const& items,
 		                         std::index_sequence<Index...>) {
@@ -68,16 +75,16 @@ namespace quick_dra {
 			return true;
 		}
 
-		template <enumerator Item>
+		template <Enumerator Item>
 		bool continue_with_enum_item(char code, Item const& policy) {
 			if (code != policy.code) {
 				return true;
 			}
 
-			return this->check_string_field(policy);
+			return this->check_field(policy);
 		}
 
-		template <enumerator Item>
+		template <Enumerator Item>
 		void clean_unmatched_fields(char code, Item const& policy) {
 			if (code != policy.code) {
 				policy.select(this->dst).reset();
@@ -90,8 +97,7 @@ namespace quick_dra {
 			auto const& orig_value = policy.select(orig);
 			if (new_value == orig_value) return false;
 			fmt::print(
-			    "\033[0;90m{} changed from \033[m{}\033[0;90m to "
-			    "\033[m{}\n",
+			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n",
 			    policy.label, orig_value.value_or("<empty>"s),
 			    new_value.value_or("<empty>"s));
 			return true;

@@ -6,13 +6,13 @@
 #include <args_parser.hpp>
 #include <quick_dra/conv/low_level.hpp>
 #include <quick_dra/conv/validators.hpp>
-#include "cmd_conversation.hpp"
+#include "payer_conversation.hpp"
 
 namespace quick_dra::builtin::payer {
 	int handle(std::string_view tool_name,
 	           args::arglist arguments,
 	           std::string_view description) {
-		cmd_conversation conv{};
+		conversation conv{};
 		conv.parse_args(tool_name, arguments, description);
 
 		auto cfg = partial::config::load_partial(conv.path);
@@ -23,13 +23,11 @@ namespace quick_dra::builtin::payer {
 
 		conv.dst = *cfg.payer;
 
-		if (!conv.check_string_field(policies::first_name) ||
-		    !conv.check_string_field(policies::last_name) ||
-		    !conv.check_string_field(policies::tax_id) ||
-		    !conv.check_string_field(policies::social_id)) {
-			return 1;
-		}
-		if (!conv.check_enum_field("--id-card or --passport"sv, policies::kind,
+		if (!conv.check_field(policies::first_name) ||
+		    !conv.check_field(policies::last_name) ||
+		    !conv.check_field(policies::tax_id) ||
+		    !conv.check_field(policies::social_id) ||
+		    !conv.check_enum_field("--id-card or --passport"sv, policies::kind,
 		                           get_enum_item(policies::id_card),
 		                           get_enum_item(policies::passport))) {
 			return 1;
