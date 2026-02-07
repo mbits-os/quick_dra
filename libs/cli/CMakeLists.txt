@@ -13,8 +13,8 @@ set(SRCS
     src/insured/list/list_command.cpp
     src/insured/remove/remove_command.cpp
     src/main.cpp
-    src/payer/cmd_conversation.cpp
-    src/payer/cmd_conversation.hpp
+    src/payer/payer_conversation.cpp
+    src/payer/payer_conversation.hpp
     src/payer/payer_command.cpp
     src/root/root_command.cpp
     src/xml/cli_options.cpp

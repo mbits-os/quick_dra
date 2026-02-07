@@ -9,7 +9,7 @@
 #include <quick_dra/models/types.hpp>
 
 namespace quick_dra::builtin::payer {
-	struct cmd_conversation : conversation<partial::payer_t> {
+	struct conversation : quick_dra::conversation<partial::payer_t> {
 		std::filesystem::path path;
 
 		void parse_args(std::string_view tool_name,

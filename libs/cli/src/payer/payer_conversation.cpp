@@ -1,15 +1,15 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include "cmd_conversation.hpp"
+#include "payer_conversation.hpp"
 #include <quick_dra/base/paths.hpp>
 #include <string>
 #include <utility>
 
 namespace quick_dra::builtin::payer {
-	void cmd_conversation::parse_args(std::string_view tool_name,
-	                                  args::arglist arguments,
-	                                  std::string_view description) {
+	void conversation::parse_args(std::string_view tool_name,
+	                              args::arglist arguments,
+	                              std::string_view description) {
 		std::optional<std::string> config_path;
 
 		args::null_translator tr{};
