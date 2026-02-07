@@ -54,17 +54,6 @@ namespace quick_dra::v1 {
 	bool insured_t::postprocess() {
 		if (!parse_and_validate_name(*this)) return false;
 
-		if (title.code.length() != 8) return false;
-		if (!(std::isdigit(title.code[0]) && std::isdigit(title.code[1]) &&
-		      std::isdigit(title.code[2]) && std::isdigit(title.code[3]) &&
-		      std::isdigit(title.code[5]) && std::isdigit(title.code[7]) &&
-		      title.code[4] == ' ' && title.code[6] == ' ')) {
-			return false;
-		}
-
-		auto const view = std::string_view{title.code};
-		title.code = fmt::format("{}{}{}", view.substr(0, 4), view[5], view[7]);
-
 		kind.clear();
 		document.clear();
 
@@ -317,22 +306,6 @@ namespace quick_dra::v1::partial {
 	bool insured_t::postprocess() {
 		parse_name(*this);
 
-		if (title && title->code.length() == 8) {
-			auto const& code = title->code;
-			if (std::isdigit(code[0]) && std::isdigit(code[1]) &&
-			    std::isdigit(code[2]) && std::isdigit(code[3]) &&
-			    std::isdigit(code[5]) && std::isdigit(code[7]) &&
-			    code[4] == ' ' && code[6] == ' ') {
-				auto const view = std::string_view{code};
-				title->code =
-				    fmt::format("{}{}{}", view.substr(0, 4), view[5], view[7]);
-			} else {
-				title = std::nullopt;
-			}
-		} else {
-			title = std::nullopt;
-		}
-
 		kind = std::nullopt;
 		document = std::nullopt;
 
@@ -358,21 +331,6 @@ namespace quick_dra::v1::partial {
 
 	void insured_t::preprocess() {
 		preprocess_name(*this);
-
-		if (title && title->code.length() == 6) {
-			auto const& code = title->code;
-			if (std::isdigit(code[0]) && std::isdigit(code[1]) &&
-			    std::isdigit(code[2]) && std::isdigit(code[3]) &&
-			    std::isdigit(code[4]) && std::isdigit(code[5])) {
-				auto const view = std::string_view{code};
-				title->code = fmt::format("{} {} {}", view.substr(0, 4),
-				                          view[4], view[5]);
-			} else {
-				title = std::nullopt;
-			}
-		} else {
-			title = std::nullopt;
-		}
 
 		auto kind_ = kind.value_or(""s);
 		auto document_ = document.value_or(""s);

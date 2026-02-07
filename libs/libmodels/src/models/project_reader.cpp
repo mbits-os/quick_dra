@@ -78,7 +78,22 @@ namespace quick_dra {
 	}
 
 	bool read_value(ref_ctx const& ref, insurance_title& ctx) {
-		return read_value(ref, ctx.code);
+		if (!ref.ref().has_val()) {
+			ctx = {};
+			return false;
+		}
+
+		auto const value = ref.val();
+		if (value.empty()) {
+			ctx = {};
+			return false;
+		}
+
+		if (!insurance_title::parse(view(value), ctx)) {
+			return ref.error("could not parse the insurance title value");
+		}
+
+		return true;
 	}
 
 	bool read_value(ref_ctx const& ref, costs_of_obtaining& ctx) {
@@ -122,7 +137,9 @@ namespace quick_dra {
 		yaml::write_value(ref, fmt::format("{}/{}", ctx.num, ctx.den));
 	}
 	void write_value(ryml::NodeRef& ref, insurance_title const& ctx) {
-		yaml::write_value(ref, ctx.code);
+		yaml::write_value(
+		    ref, fmt::format("{} {} {}", ctx.title_code, ctx.pension_right,
+		                     ctx.disability_level));
 	}
 
 	bool convert_string(ref_ctx const& ref,

@@ -6,22 +6,11 @@
 #include <concepts>
 #include <ctre.hpp>
 #include <optional>
+#include <quick_dra/base/types.hpp>
 #include <string>
 #include <string_view>
 
 namespace quick_dra::builtin::xml {
-	namespace {
-		bool from_chars(std::string_view view, std::integral auto& dst) {
-			auto const begin = view.data();
-			auto const end = begin + view.size();
-			auto const [ptr, ec] = std::from_chars(begin, end, dst);
-			if (ptr != end || ec != std::errc{}) {
-				return false;
-			}
-			return true;
-		}
-	}  // namespace
-
 	std::optional<std::chrono::year_month_day> parse_date(
 	    std::optional<std::string> const& arg) {
 		if (!arg) {
