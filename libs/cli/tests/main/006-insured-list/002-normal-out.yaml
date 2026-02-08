@@ -1,0 +1,12 @@
+args: insured list --config .quick_dra.yaml
+expected:
+  return-code: 0
+  stdout: |
+    #1: Piotr Iksiński [1 ABC523456] 1/4 of <minimal>
+    #2: Jan Iksiński [2 EH0123456] 3/4 of 9000 zł
+    #3: Maria Iksińska [P 26211012346] 7500 zł
+  stderr: ''
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł

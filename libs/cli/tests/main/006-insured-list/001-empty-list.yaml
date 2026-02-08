@@ -1,0 +1,5 @@
+args: insured list --config .quick_dra.yaml
+expected:
+  return-code: 0
+  stdout: ''
+  stderr: ''

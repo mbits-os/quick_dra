@@ -2,10 +2,13 @@ args: insured list --help
 expected:
   return-code: 0
   stdout: |
-    usage: qdra insured list [-h]
+    usage: qdra insured list [-h] [--config <path>] [--pipe] [-z]
 
     list all known insured people
 
     optional arguments:
-     -h, --help show this help message and exit
+     -h, --help      show this help message and exit
+     --config <path> select config file; defaults to ~/.quick_dra.yaml
+     --pipe          generate tab-separated output
+     -z              use zero as field separator, when --pipe is also used
   stderr: ''

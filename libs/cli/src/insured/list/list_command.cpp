@@ -35,7 +35,7 @@ namespace quick_dra::builtin::insured::list {
 		parser.parse();
 
 		auto const path = platform::get_config_path(config_path);
-		auto cfg = partial::config::load_partial(path);
+		auto cfg = partial::config::load_partial(path, false);
 		if (!cfg.insured) {
 			cfg.insured.emplace();
 		}
