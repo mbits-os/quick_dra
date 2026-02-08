@@ -10,10 +10,10 @@
 - [ ] Initialization
   - [x] Add `qdra payer` updating/creating `"płatnik"` (_v0.7.0_)
   - [x] Add `qdra insured` updating `"ubezpieczeni"` sequence
-    - [ ] Add `qdra insured list`
+    - [x] Add `qdra insured list` (_v0.8.0_)
     - [ ] Add `qdra insured edit`
-    - [ ] Add `qdra insured add`
-    - [ ] Add `qdra insured remove`
+    - [x] Add `qdra insured add` (_v0.8.0_)
+    - [x] Add `qdra insured remove` (_v0.8.0_)
 - [ ] Testing and coverage
   - [x] Integrate `proj-flow tools test-runner` (_v0.7.1_)
   - [x] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI` (_v0.7.1_)
