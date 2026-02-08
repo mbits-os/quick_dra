@@ -78,6 +78,7 @@ if(QUICK_DRA_TESTING)
         003-payer
         004-insured-add
         005-insured-removed
+        006-insured-list
     )
         add_test(
             NAME qdra-runner-${TEST_SET}

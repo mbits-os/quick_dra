@@ -166,22 +166,25 @@ namespace quick_dra::v1::partial {
 		                        : load_status::fully_loaded;
 	}
 
-	config config::load_partial(std::filesystem::path const& path) {
+	config config::load_partial(std::filesystem::path const& path,
+	                            bool writeable) {
 		partial::config cfg{};
 		auto const load = cfg.load(path);
 		switch (load) {
 			case load_status::file_not_found:
-				fmt::print(stderr,
-				           "Quick-DRA: file {} will be created as needed.\n",
-				           path);
+				if (writeable) {
+					fmt::print(
+					    stderr,
+					    "Quick-DRA: file {} will be created as needed.\n",
+					    path);
+				}
 				break;
 			case load_status::file_not_readable:
 				fmt::print(stderr, "Quick-DRA: error: could not read {}\n",
 				           path);
 				std::exit(1);
 			case load_status::errors_encountered:
-				fmt::print(stderr,
-				           "Quick-DRA: error: {} will be overwritten at save\n",
+				fmt::print(stderr, "Quick-DRA: error: {} needs to be updated\n",
 				           path);
 				std::exit(1);
 			default:

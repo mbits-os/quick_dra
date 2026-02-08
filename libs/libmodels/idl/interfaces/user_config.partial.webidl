@@ -1,6 +1,6 @@
 partial interface config {
     [throws, mutable] load_status load([in] path path);
-    [throws] static config load_partial([in] path path);
+    [throws] static config load_partial([in] path path, [default=true] bool writeable);
     [throws, mutable] bool store([in] path path);
 };
 

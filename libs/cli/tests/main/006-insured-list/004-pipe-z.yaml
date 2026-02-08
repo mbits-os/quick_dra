@@ -1,0 +1,9 @@
+args: insured list --config .quick_dra.yaml --pipe -z
+expected:
+  return-code: 0
+  stdout: "1\0Iksiński\0Piotr\01\0ABC523456\00110 0 0\01/4\0\n2\0Iksiński\0Jan\02\0EH0123456\00110 0 0\03/4\09000 zł\n3\0Iksińska\0Maria\0P\026211012346\00110 0 0\0\07500 zł\n"
+  stderr: ''
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł
