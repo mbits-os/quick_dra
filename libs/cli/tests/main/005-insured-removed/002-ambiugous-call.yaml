@@ -1,0 +1,13 @@
+args: insured remove --find iksiń -y --config .quick_dra.yaml
+expected:
+  return-code: 1
+  stdout: |
+    Found:
+        #1: Piotr Iksiński [1 AAA000000]
+        #2: Jan Iksiński [2 AA0000000]
+
+    This search was ambiguous. Please refine your parameter or use --pos to pinpoint the record.
+  stderr: ''
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card AAA000000 --title "0110 0 0"
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport AA0000000 --title "0110 0 0"

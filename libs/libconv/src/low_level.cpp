@@ -32,6 +32,26 @@ namespace quick_dra {
 		}
 	}
 
+	bool get_yes_no(std::string_view label, bool hint, bool& dst) {
+		auto const handler = [&, hint](std::string&& input) -> bool {
+			if (input.empty()) {
+				dst = hint;
+				return true;
+			}
+			if (input == "y"sv || input == "Y"sv) {
+				dst = true;
+				return true;
+			}
+			if (input == "n"sv || input == "N"sv) {
+				dst = false;
+				return true;
+			}
+			return false;
+		};
+
+		return get_answer(label, hint ? "Y/n"sv : "y/N"sv, handler);
+	}
+
 	bool get_enum_answer(
 	    std::string_view label,
 	    std::span<std::pair<char, std::string_view> const> const& items,

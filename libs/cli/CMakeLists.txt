@@ -13,6 +13,8 @@ set(SRCS
     src/insured/insured_command.cpp
     src/insured/edit/edit_command.cpp
     src/insured/list/list_command.cpp
+    src/insured/remove/remove_options.cpp
+    src/insured/remove/remove_options.hpp
     src/insured/remove/remove_command.cpp
     src/main.cpp
     src/payer/payer_conversation.cpp
@@ -75,6 +77,7 @@ if(QUICK_DRA_TESTING)
         002-xml
         003-payer
         004-insured-add
+        005-insured-removed
     )
         add_test(
             NAME qdra-runner-${TEST_SET}
