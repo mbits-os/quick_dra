@@ -1,8 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#pragma once
-
 #include "builtins.hpp"
 #include <fmt/format.h>
 #include <quick_dra/version.hpp>

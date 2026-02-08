@@ -17,5 +17,5 @@ expected:
      --passport <number>  select passport number as answer
      --title <code>       select insurance title code as six digits in `#### # #' format; for instance, for title of 0110, no social benefits, no disability, it should be "0110 0 0"
      --scale <num>/<den>  for part time workers, what scale should be applied to their salary; defaults to 1/1
-     --salary <zł>        select gross salary amount, before applying the scale, represented by a number with 0.01 increment, with optional PLN or zł suffix; alternatively, single word "minimal" to represent a minimal pay in a given month; defaults to "minimal"
+     --salary <zł>        select gross salary amount, before applying the scale, represented by a number with 0.01 increment, with optional PLN or zł suffix; alternatively, single word "minimal" to represent a minimal pay in a given month
   stderr: ''

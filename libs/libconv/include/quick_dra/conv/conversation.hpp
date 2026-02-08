@@ -175,29 +175,39 @@ namespace quick_dra {
 					                    policies.arg_flag...));
 				}
 			} else if constexpr (policies_count > 1) {
-				bool const flags[] = {
-				    this->check_required_on_no_questions(policies)...};
+				bool const present_in_cli[] = {
+				    this->check_required_on_no_questions(
+				        policies, check_side::command_line_arguments)...};
 				std::string_view const arg_flags[] = {policies.arg_flag...};
 
-				size_t count = 0;
-				for (auto const present : flags) {
-					if (present) ++count;
+				size_t cli_count = 0;
+				for (auto const present : present_in_cli) {
+					if (present) ++cli_count;
 				}
 
-				if (!ask_questions && count == 0) {
-					auto const all_but_last =
-					    std::span{arg_flags}.subspan(0, policies_count - 1);
-					auto const last_one = arg_flags[policies_count - 1];
-					p.error(fmt::format(
-					    "at least one of {} and {} is required with -y",
-					    fmt::join(all_but_last, ", "), last_one));
+				if (!ask_questions && !cli_count) {
+					bool const present_in_config[] = {
+					    this->check_required_on_no_questions(
+					        policies, check_side::config_file)...};
+					auto cfg_count = 0;
+					for (auto const present : present_in_config) {
+						if (present) ++cfg_count;
+					}
+					if (!cfg_count) {
+						auto const all_but_last =
+						    std::span{arg_flags}.subspan(0, policies_count - 1);
+						auto const last_one = arg_flags[policies_count - 1];
+						p.error(fmt::format(
+						    "at least one of {} and {} is required with -y",
+						    fmt::join(all_but_last, ", "), last_one));
+					}
 				}
 
-				if (count > 1) {
+				if (cli_count > 1) {
 					std::vector<std::string_view> flags_present{};
-					flags_present.reserve(count);
+					flags_present.reserve(cli_count);
 					for (size_t index = 0; index < policies_count; ++index) {
-						if (flags[index]) {
+						if (present_in_cli[index]) {
 							flags_present.push_back(arg_flags[index]);
 						}
 					}
@@ -212,11 +222,24 @@ namespace quick_dra {
 			}
 		}
 
+		enum check_side {
+			command_line_arguments = 1,
+			config_file = 2,
+			both = 3,
+		};
+
 		template <FieldPolicyWithArgFlags Policy>
-		bool check_required_on_no_questions(Policy const& policy) {
-			auto const& cli = policy.select(opts);
-			auto const& config = policy.select(dst);
-			return cli || config;
+		bool check_required_on_no_questions(
+		    Policy const& policy,
+		    check_side side = check_side::both) {
+			auto result = false;
+			if (side & check_side::command_line_arguments) {
+				result |= !!policy.select(opts);
+			}
+			if (side & check_side::config_file) {
+				result |= !!policy.select(dst);
+			}
+			return result;
 		}
 
 		template <Enumerator... Items, size_t... Index>

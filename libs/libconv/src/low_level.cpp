@@ -44,9 +44,7 @@ namespace quick_dra {
 				hint_size += description.size();
 			}
 			return hint_size;
-		}() + selected
-		                 ? 2
-		                 : 0);
+		}() + static_cast<size_t>(selected ? 2u : 0u));
 
 		for (auto const& [value, description] : items) {
 			if (!hint.empty()) hint.append(", "sv);
