@@ -2,10 +2,20 @@ args: insured add --help
 expected:
   return-code: 0
   stdout: |
-    usage: qdra insured add [-h]
+    usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 
     add a new insured person
 
     optional arguments:
-     -h, --help show this help message and exit
+     -h, --help           show this help message and exit
+     --config <path>      select config file; defaults to ~/.quick_dra.yaml
+     -y                   use answers from command line; do not ask additional questions
+     --first <name>       select first name of the payer as answer
+     --last <name>        select last name of the payer as answer
+     --social-id <number> select PESEL number as answer
+     --id-card <number>   select state-issued id number as answer
+     --passport <number>  select passport number as answer
+     --title <code>       select insurance title code as six digits in `#### # #' format; for instance, for title of 0110, no social benefits, no disability, it should be "0110 0 0"
+     --scale <num>/<den>  for part time workers, what scale should be applied to their salary; defaults to 1/1
+     --salary <zł>        select gross salary amount, before applying the scale, represented by a number with 0.01 increment, with optional PLN or zł suffix; alternatively, single word "minimal" to represent a minimal pay in a given month; defaults to "minimal"
   stderr: ''

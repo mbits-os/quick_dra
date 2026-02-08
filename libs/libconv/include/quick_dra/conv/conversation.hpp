@@ -5,14 +5,69 @@
 
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <args_parser.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/concepts.hpp>
 #include <quick_dra/conv/field_policy.hpp>
 #include <quick_dra/conv/low_level.hpp>
+#include <string>
 #include <string_view>
 #include <tuple>
 #include <utility>
 #include <vector>
+
+namespace args {
+	template <>
+	struct converter<quick_dra::insurance_title> {
+		static inline quick_dra::insurance_title
+		value(parser& p, std::string const& arg, std::string const& name) {
+			quick_dra::insurance_title out{};
+			if (!quick_dra::insurance_title::parse(arg, out)) {
+				p.error(fmt::format("{}: expecting 6 digits in form `#### # #'",
+				                    name),
+				        p.parse_width());
+			}
+			return out;
+		}
+	};
+
+	template <>
+	struct converter<quick_dra::ratio> {
+		static inline quick_dra::ratio value(parser& p,
+		                                     std::string const& arg,
+		                                     std::string const& name) {
+			quick_dra::ratio out{};
+			if (!quick_dra::ratio::parse(arg, out) || out.den == 0) {
+				p.error(fmt::format(
+				            "{}: expecting two numbers in form `<num>/<den>`, "
+				            "with denominator not equal to zero",
+				            name),
+				        p.parse_width());
+			}
+			return out;
+		}
+	};
+
+	template <>
+	struct converter<quick_dra::currency> {
+		static inline quick_dra::currency value(parser& p,
+		                                        std::string const& arg,
+		                                        std::string const& name) {
+			using std::literals::operator""sv;
+
+			quick_dra::currency out{};
+			if (arg == "minimal"sv || arg == "none"sv) {
+				out = quick_dra::currency{-1 * quick_dra::currency::den};
+			} else if (!quick_dra::currency::parse(arg, out)) {
+				p.error(fmt::format("{}: expecting a number with 0.01 "
+				                    "increment, with optional PLN or zł suffix",
+				                    name),
+				        p.parse_width());
+			}
+			return out;
+		}
+	};
+}  // namespace args
 
 namespace quick_dra {
 	using std::literals::operator""s;
@@ -92,6 +147,18 @@ namespace quick_dra {
 			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n",
 			    policy.label, orig_value.value_or("<empty>"s),
 			    new_value.value_or("<empty>"s));
+			return true;
+		}
+
+		template <typename Policy>
+		bool show_added(Policy const& policy) {
+			auto const& new_value = policy.select(dst);
+			fmt::print("\033[0;90m{} set to \033[m{}\n", policy.label,
+			           new_value
+			               .transform([](auto const& value) {
+				               return as_string(value);
+			               })
+			               .value_or("<empty>"s));
 			return true;
 		}
 

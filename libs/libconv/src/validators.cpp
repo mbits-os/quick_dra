@@ -106,8 +106,8 @@ namespace quick_dra::builtin {
 	bool valid_salary(std::string&& value, std::optional<currency>& dst, bool) {
 		using std::literals::operator""sv;
 
-		if (value == "none"sv) {
-			dst.reset();
+		if (value == "minimal"sv) {
+			dst = currency{-1 * currency::den};
 			return true;
 		}
 

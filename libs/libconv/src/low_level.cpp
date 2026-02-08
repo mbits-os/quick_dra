@@ -87,6 +87,9 @@ namespace quick_dra {
 	}
 
 	std::string as_string(currency const& value) {
+		if (value < currency{}) {
+			return "minimal for a given month"s;
+		}
 		return fmt::format("{} zł", value);
 	}
 
@@ -162,6 +165,7 @@ namespace quick_dra {
 		                             validator);
 	}
 
+	static constexpr auto magic_currency = "minimal"sv;
 	bool get_field_answer(bool ask_questions,
 	                      std::string_view label,
 	                      std::optional<currency>& dst,
@@ -169,8 +173,17 @@ namespace quick_dra {
 	                      std::function<bool(std::string&&,
 	                                         std::optional<currency>&,
 	                                         bool)> const& validator) {
+		std::function<bool(std::string&&, std::optional<currency>&, bool)> const
+		    wrapped = [validator](std::string&& in,
+		                          std::optional<currency>& out,
+		                          bool ask_questions) {
+			    if (in.starts_with(magic_currency)) {
+				    in = magic_currency;
+			    }
+			    return validator(std::move(in), out, ask_questions);
+		    };
 		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
-		                             validator);
+		                             wrapped);
 	}
 
 	bool get_field_answer(

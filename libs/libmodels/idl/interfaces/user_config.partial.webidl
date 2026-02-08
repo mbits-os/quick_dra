@@ -14,3 +14,8 @@ partial interface payer_t {
     [mutable] void postprocess_document_kind();
     [mutable] void preprocess_document_kind();
 };
+
+partial interface insured_t {
+    [mutable] void postprocess_document_kind();
+    [mutable] void preprocess_document_kind();
+};

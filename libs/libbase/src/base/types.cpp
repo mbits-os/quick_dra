@@ -64,6 +64,15 @@ namespace quick_dra {
 	}
 
 	bool ratio::parse(std::string_view input, ratio& dst) {
+		if (input.ends_with('%')) {
+			percent p{};
+			if (percent::parse(input, p)) {
+				dst = ratio::gcd(static_cast<unsigned>(p.value),
+				                 static_cast<unsigned>(100 * percent::den));
+				return true;
+			}
+		}
+
 		auto const split = split_sv(input, '/'_sep);
 		if (split.size() < 2) {
 			dst = {};
@@ -77,7 +86,7 @@ namespace quick_dra {
 			return false;
 		}
 
-		dst = {.num = num, .den = den};
+		dst = ratio::gcd(num, den);
 		return true;
 	}
 

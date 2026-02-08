@@ -7,6 +7,8 @@ set(SRCS
     src/builtins.hpp
     src/commands.cpp
     src/commands.hpp
+    src/insured/add/add_conversation.cpp
+    src/insured/add/add_conversation.hpp
     src/insured/add/add_command.cpp
     src/insured/insured_command.cpp
     src/insured/edit/edit_command.cpp
@@ -72,6 +74,7 @@ if(QUICK_DRA_TESTING)
         001-basic
         002-xml
         003-payer
+        004-insured-add
     )
         add_test(
             NAME qdra-runner-${TEST_SET}
