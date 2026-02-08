@@ -2,18 +2,21 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include "payer_conversation.hpp"
+#include <args_parser.hpp>
 #include <quick_dra/base/paths.hpp>
+#include <quick_dra/conv/validators.hpp>
 #include <string>
-#include <utility>
+#include <string_view>
+#include <type_traits>
 
 namespace quick_dra::builtin::payer {
-	void conversation::parse_args(std::string_view tool_name,
-	                              args::arglist arguments,
-	                              std::string_view description) {
-		std::optional<std::string> config_path;
+	conversation::conversation(std::string_view tool_name,
+	                           args::arglist arguments,
+	                           std::string_view description)
+	    : arg_parser{tool_name, arguments, description} {}
 
-		args::null_translator tr{};
-		args::parser parser{as_str(description), {tool_name, arguments}, &tr};
+	void conversation::parse_args() {
+		std::optional<std::string> config_path;
 
 		parser.arg(config_path, "config")
 		    .meta("<path>")
@@ -69,5 +72,15 @@ namespace quick_dra::builtin::payer {
 		}
 
 		path = platform::get_config_path(config_path);
+	}
+
+	void conversation::check_required() {
+		verifier(parser)
+		    .required(policies::first_name.through("--first"sv))
+		    .required(policies::last_name.through("--last"sv))
+		    .required(policies::social_id.through("--social-id"sv))
+		    .required(policies::tax_id.through("--tax-id"sv))
+		    .required(policies::id_card.through("--id-card"sv),
+		              policies::passport.through("--passport"sv));
 	}
 }  // namespace quick_dra::builtin::payer

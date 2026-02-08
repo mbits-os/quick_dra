@@ -12,8 +12,8 @@ namespace quick_dra::builtin::payer {
 	int handle(std::string_view tool_name,
 	           args::arglist arguments,
 	           std::string_view description) {
-		conversation conv{};
-		conv.parse_args(tool_name, arguments, description);
+		conversation conv{tool_name, arguments, description};
+		conv.parse_args();
 
 		auto cfg = partial::config::load_partial(conv.path);
 
@@ -22,6 +22,7 @@ namespace quick_dra::builtin::payer {
 		}
 
 		conv.dst = *cfg.payer;
+		conv.check_required();
 
 		if (!conv.check_field(policies::first_name) ||
 		    !conv.check_field(policies::last_name) ||
