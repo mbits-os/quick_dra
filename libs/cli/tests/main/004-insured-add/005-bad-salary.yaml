@@ -1,0 +1,7 @@
+args: insured add -y --first A --last B --salary "1000000 USD"
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+    qdra insured add: error: --salary: expecting a number with 0.01 increment, with optional PLN or zł suffix

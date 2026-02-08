@@ -1,0 +1,15 @@
+args: insured add --config .quick_dra.yaml -y --first John --last Hancock --id-card AAA000000 --title "0110 0 0"
+expected:
+  return-code: 1
+  stdout: |+
+    Found another person with this document:
+
+        #1: Name Surname [1 AAA000000]
+
+    Either remove this person or call
+
+        qdra insured edit --pos 1
+
+  stderr: ''
+prepare:
+- cp $DATA/.quick_dra.insured.AAA000000_75%.yaml .quick_dra.yaml

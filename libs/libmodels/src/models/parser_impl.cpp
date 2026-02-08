@@ -303,9 +303,7 @@ namespace quick_dra::v1::partial {
 		}
 	}
 
-	bool insured_t::postprocess() {
-		parse_name(*this);
-
+	void insured_t::postprocess_document_kind() noexcept {
 		kind = std::nullopt;
 		document = std::nullopt;
 
@@ -319,6 +317,11 @@ namespace quick_dra::v1::partial {
 			kind = "P"sv;
 			document = std::move(*social_id);
 		}
+	}
+
+	bool insured_t::postprocess() {
+		postprocess_document_kind();
+		parse_name(*this);
 
 		NULLIFY(id_card);
 		NULLIFY(passport);
@@ -331,7 +334,10 @@ namespace quick_dra::v1::partial {
 
 	void insured_t::preprocess() {
 		preprocess_name(*this);
+		preprocess_document_kind();
+	}
 
+	void insured_t::preprocess_document_kind() noexcept {
 		auto kind_ = kind.value_or(""s);
 		auto document_ = document.value_or(""s);
 

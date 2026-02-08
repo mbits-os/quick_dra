@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <charconv>
 #include <concepts>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -130,8 +131,8 @@ namespace quick_dra {
 	}
 
 	struct ratio {
-		unsigned num;
-		unsigned den;
+		unsigned num{};
+		unsigned den{};
 
 		constexpr bool operator==(ratio const& rhs) const noexcept {
 			return (num * rhs.den) == (rhs.num * den);
@@ -141,6 +142,16 @@ namespace quick_dra {
 		}
 
 		static bool parse(std::string_view, ratio&);
+		static constexpr ratio gcd(unsigned num, unsigned den) noexcept {
+			if (!num || !den) {
+				return {};
+			}
+			auto div = std::gcd(num, den);
+			return {.num = num / div, .den = den / div};
+		}
+
+		constexpr ratio gcd() const noexcept { return gcd(num, den); }
+		constexpr bool valid() const noexcept { return den != 0; }
 	};
 
 	static_assert(ratio{3, 4} == ratio{6, 8});
