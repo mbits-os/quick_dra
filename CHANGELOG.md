@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.8.0](https://github.com/mbits-os/quick_dra/compare/v0.7.3...v0.8.0) (2026-02-08)
+
+### New Features
+
+- provide support for `qdra insured list` command ([e9beab4](https://github.com/mbits-os/quick_dra/commit/e9beab4e36d786d1424cd09986c31899ea24f17e))
+- provide support for `qdra insured remove` command ([32d29ff](https://github.com/mbits-os/quick_dra/commit/32d29ffa6af6c3712ebe5ba712c355de45e94385))
+- provide support for `qdra insured add` command ([942d6c8](https://github.com/mbits-os/quick_dra/commit/942d6c895a1e3a1b1677f6ed3b4b093b8b89283e))
+- enforce the conversation API with concepts ([71d9570](https://github.com/mbits-os/quick_dra/commit/71d95703dfe7669a77b0d0b14d4f91a03944c1bd))
+- add machinery for document kind conversation ([3184c64](https://github.com/mbits-os/quick_dra/commit/3184c64a6a50bc875c31807f81e4008f9d279699))
+- provide empty `qdra insured` sub-commands ([2e04714](https://github.com/mbits-os/quick_dra/commit/2e047147637f174d08ebaa5c8e506e399cb7f46c))
+
+### Bug Fixes
+
+- remove compilation issue with GCC13 on Ubuntu 22.04 ([35ef1bb](https://github.com/mbits-os/quick_dra/commit/35ef1bbe6d6e64b3a46fcf92c6a222bcc626df34))
+- use config data when cli is missing, again ([f15bc43](https://github.com/mbits-os/quick_dra/commit/f15bc430d5f6a43570522fe2e53a878f7b386c9a))
+- check required params, when `-y` is also present ([bf7e36e](https://github.com/mbits-os/quick_dra/commit/bf7e36eb9486059a6f2f37f7369dd0ac89116d49))
+- separate ratio and insurance_title parsers ([02a3a73](https://github.com/mbits-os/quick_dra/commit/02a3a73e53dd1bfe2f60e86d0050aad7987da485))
+- rename each `command.cpp` to be unique ([7849762](https://github.com/mbits-os/quick_dra/commit/78497623a9d15808c99d62be33290e8df3c675b1))
+- extract common partial loading handling ([963cdd5](https://github.com/mbits-os/quick_dra/commit/963cdd564561c8171542c7e72bb6e8b6c1963783))
+- always name custom config param, `--config` ([59816bd](https://github.com/mbits-os/quick_dra/commit/59816bd1c32c42fdb6f881800a78a959eebc5553))
+- rename remuneration field what it is, a salary ([87eee5b](https://github.com/mbits-os/quick_dra/commit/87eee5bea0a9cf135c38c534dfba7e99e1dbe00e))
+- decouple the subcommand code from root command ([0eeffac](https://github.com/mbits-os/quick_dra/commit/0eeffaca38e94a5c2eae9926960df827b8a16f22))
+- hide warning from 3rd party library ([7039e51](https://github.com/mbits-os/quick_dra/commit/7039e51a7df40b1f7e5b511ca3f019c5a18a5776))
+
 ## [0.7.3](https://github.com/mbits-os/quick_dra/compare/v0.7.2...v0.7.3) (2026-02-05)
 
 ### Bug Fixes
