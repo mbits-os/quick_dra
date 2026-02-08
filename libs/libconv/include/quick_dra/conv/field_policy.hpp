@@ -3,13 +3,22 @@
 
 #pragma once
 
+#include <optional>
+#include <quick_dra/base/types.hpp>
 #include <quick_dra/conv/concepts.hpp>
 #include <quick_dra/conv/interactive.hpp>
 #include <quick_dra/models/yaml/user_config_partial.hpp>
 #include <string>
+#include <string_view>
+#include <type_traits>
 #include <utility>
 
 namespace quick_dra {
+	template <AnyFieldPolicy Policy>
+	struct field_policy_with_arg_flags : Policy {
+		std::string_view arg_flag;
+	};
+
 	template <typename Arg,
 	          Selector<Arg> SelectorLambda,
 	          Validator<Arg> ValidatorLambda>
@@ -19,6 +28,9 @@ namespace quick_dra {
 		using value_type = Arg;
 
 		std::string_view label;
+
+		using field_policy_with_arg_flags =
+		    quick_dra::field_policy_with_arg_flags<field_policy>;
 
 		constexpr selector_type const& selector() const noexcept {
 			return *this;
@@ -59,6 +71,11 @@ namespace quick_dra {
 		constexpr interactive::enum_field<field_policy, Items...>
 		get_enum_field(Items&&... items) const noexcept {
 			return {*this, {std::forward<Items>(items)...}};
+		}
+
+		constexpr field_policy_with_arg_flags through(
+		    std::string_view arg_flag) const noexcept {
+			return {*this, arg_flag};
 		}
 	};
 

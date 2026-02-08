@@ -9,11 +9,16 @@
 #include <quick_dra/models/types.hpp>
 
 namespace quick_dra::builtin::payer {
-	struct conversation : quick_dra::conversation<partial::payer_t> {
+	struct conversation : quick_dra::conversation<partial::payer_t>,
+	                      arg_parser {
 		std::filesystem::path path;
 
-		void parse_args(std::string_view tool_name,
-		                args::arglist arguments,
-		                std::string_view description);
+		conversation(std::string_view tool_name,
+		             args::arglist arguments,
+		             std::string_view description);
+
+		void parse_args();
+
+		void check_required();
 	};
 }  // namespace quick_dra::builtin::payer

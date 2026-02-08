@@ -5,6 +5,7 @@
 
 #include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 
 namespace quick_dra::concepts {
@@ -31,6 +32,18 @@ namespace quick_dra::concepts {
 		requires Validator<typename T::validator_type, Arg>;
 		requires Selector<typename T::selector_type, Arg>;
 		requires std::same_as<typename T::value_type, Arg>;
+	};  // NOLINT(readability/braces)
+
+	template <typename T>
+	concept AnyFieldPolicy = requires() {
+		typename T::value_type;
+		requires FieldPolicy<T, typename T::value_type>;
+	};  // NOLINT(readability/braces)
+
+	template <typename T>
+	concept FieldPolicyWithArgFlags = requires(T const& policy) {
+		requires AnyFieldPolicy<T>;
+		{ policy.arg_flag } -> std::convertible_to<std::string_view>;
 	};  // NOLINT(readability/braces)
 
 	template <typename T>
