@@ -18,6 +18,8 @@ namespace quick_dra {
 	                std::string_view hint,
 	                std::function<bool(std::string&&)> const& validator);
 
+	bool get_yes_no(std::string_view label, bool hint, bool& dst);
+
 	bool get_enum_answer(
 	    std::string_view label,
 	    std::span<std::pair<char, std::string_view> const> const& items,

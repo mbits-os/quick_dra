@@ -1,0 +1,12 @@
+args: insured remove --pos 2 -y --config .quick_dra.yaml
+expected:
+  return-code: 0
+  stdout: |
+    Found:
+        #2: Jan Iksiński [2 AA0000000]
+  stderr: ''
+writes:
+  $CWD/.quick_dra.yaml: $DATA/.quick_dra.iksinski-only-piotr.yaml
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card AAA000000 --title "0110 0 0"
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport AA0000000 --title "0110 0 0"

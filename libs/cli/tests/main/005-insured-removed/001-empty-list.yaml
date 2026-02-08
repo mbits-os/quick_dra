@@ -1,0 +1,7 @@
+args: insured remove --pos 1 -y --config .quick_dra.yaml
+expected:
+  return-code: 1
+  stdout: ''
+  stderr: |
+    Quick-DRA: file .quick_dra.yaml will be created as needed.
+    qdra insured remove: error: there are no items to remove.
