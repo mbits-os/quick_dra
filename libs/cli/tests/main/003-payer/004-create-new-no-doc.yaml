@@ -1,6 +1,8 @@
 args: payer --config .quick_dra.yaml -y --first Jan --last Nowak --social-id 26211012346 --tax-id 7680002466
 expected:
-  return-code: 1
-  stdout: "\e[0;90m - Cannot guess document kind based on information given. Please use either --id-card or --passport with -y\e[m\n"
+  return-code: 2
+  stdout: ''
   stderr: |
     Quick-DRA: file .quick_dra.yaml will be created as needed.
+    usage: qdra payer [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--tax-id <number>] [--id-card <number>] [--passport <number>]
+    qdra payer: error: at least one of --id-card and --passport is required with -y
