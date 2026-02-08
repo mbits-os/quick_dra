@@ -113,7 +113,7 @@ namespace quick_dra {
 		    static_cast<unsigned short>(split[2].front() - '0');
 
 		dst = {
-		    .title_code{title_code},
+		    .title_code{title_code.data(), title_code.size()},
 		    .pension_right = pension_right,
 		    .disability_level = disability_level,
 		};
