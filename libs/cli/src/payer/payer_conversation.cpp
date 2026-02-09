@@ -65,12 +65,6 @@ namespace quick_dra::builtin::payer {
 
 #undef RESET_EMPTY
 
-		if (opts.id_card && opts.passport) {
-			parser.error(
-			    "only one of --id-card and --passport can be used at the same "
-			    "time");
-		}
-
 		path = platform::get_config_path(config_path);
 	}
 

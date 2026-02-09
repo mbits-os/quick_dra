@@ -5,8 +5,10 @@ set(SRCS
     include/quick_dra/conv/interactive.hpp
     include/quick_dra/conv/low_level.hpp
     include/quick_dra/conv/validators.hpp
+    include/quick_dra/conv/search.hpp
     src/low_level.cpp
     src/validators.cpp
+    src/search.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})

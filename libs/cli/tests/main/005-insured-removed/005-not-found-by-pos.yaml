@@ -1,0 +1,11 @@
+args: insured remove --pos 10 -y --config .quick_dra.yaml
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra insured remove [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y]
+    qdra insured remove: error: argument --pos must be between 1 and 3, inclusive
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł

@@ -88,20 +88,6 @@ namespace quick_dra::builtin::insured::add {
 		              policies::passport.through("--passport"sv))
 		    .required(policies::title.through("--title"sv));
 
-		if (opts.id_card && opts.passport) {
-			parser.error(
-			    "only one of --id-card and --passport can be used at the same "
-			    "time");
-		} else if (opts.id_card && opts.social_id) {
-			parser.error(
-			    "only one of --id-card and --social-id can be used at the same "
-			    "time");
-		} else if (opts.social_id && opts.passport) {
-			parser.error(
-			    "only one of --social-id and --passport can be used at the "
-			    "same time");
-		}
-
 		path = platform::get_config_path(config_path);
 	}
 }  // namespace quick_dra::builtin::insured::add

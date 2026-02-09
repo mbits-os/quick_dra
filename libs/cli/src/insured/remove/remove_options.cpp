@@ -5,92 +5,12 @@
 #include <optional>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
+#include <quick_dra/conv/search.hpp>
 #include <string>
 #include <utility>
 #include <vector>
 
 namespace quick_dra::builtin::insured::remove {
-	namespace {
-		void add_search_from_position(args::parser& parser,
-		                              options& out,
-		                              unsigned position) {
-			if (position < 1 || position > out.cfg.insured->size()) {
-				if (out.cfg.insured->size() == 1) {
-					parser.error("argument --pos must be equal to 1");
-				} else {
-					parser.error(
-					    fmt::format("argument --pos must be between 1 and "
-					                "{}, inclusive",
-					                out.cfg.insured->size()));
-				}
-			}
-
-			out.found.push_back(position - 1);
-		}
-
-		void add_search_from_records(
-		    std::vector<unsigned>& found,
-		    std::vector<std::vector<std::string>> const& records,
-		    auto const& predicate) {
-			unsigned index = 0;
-
-			for (auto const& record : records) {
-				auto matching = false;
-				for (auto const& field : record) {
-					if (predicate(field)) {
-						matching = true;
-						break;
-					}
-				}
-
-				if (matching) {
-					found.push_back(index);
-				}
-
-				++index;
-			}
-		}
-
-		void add_search_from_keyword(args::parser& parser,
-		                             options& out,
-		                             std::string_view search_keyword) {
-			std::vector<std::vector<std::string>> records{};
-			records.reserve(out.cfg.insured->size());
-			for (auto const& person : *out.cfg.insured) {
-				records.emplace_back();
-				auto& dst = records.back();
-				dst.reserve(3);
-				for (auto const& field :
-				     {person.document, person.first_name, person.last_name}) {
-					auto const key = field.transform(
-					    [](auto const& fld) { return to_upper(fld); });
-					if (key) {
-						dst.push_back(std::move(*key));
-					}
-				}
-			}
-
-			auto const upper = to_upper(search_keyword);
-			auto const view = std::string_view{upper};
-			add_search_from_records(
-			    out.found, records,
-			    [view](std::string const& field) { return field == view; });
-
-			if (out.found.empty()) {
-				add_search_from_records(
-				    out.found, records, [view](std::string const& field) {
-					    return field.starts_with(view) || field.ends_with(view);
-				    });
-			}
-
-			if (out.found.empty()) {
-				parser.error(
-				    fmt::format("--find: could not find any record using `{}'",
-				                search_keyword));
-			}
-		}
-	}  // namespace
-
 	int get_options(args::parser& parser, options& out) {
 		std::optional<std::string> config_path;
 		std::optional<unsigned> position;
@@ -139,10 +59,16 @@ namespace quick_dra::builtin::insured::remove {
 		}
 
 		out.found.clear();
+		auto const on_error = [&parser](std::string const& msg) {
+			parser.error(msg);
+		};
+
 		if (position) {
-			add_search_from_position(parser, out, *position);
+			out.found = search_insured_from_position(
+			    *position, *out.cfg.insured, on_error);
 		} else {
-			add_search_from_keyword(parser, out, *search_keyword);
+			out.found = search_insured_from_keyword(*search_keyword,
+			                                        *out.cfg.insured, on_error);
 		}
 
 		return 0;
