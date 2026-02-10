@@ -1,5 +1,6 @@
 # for future use with oneOf branching
 $schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/version-2.yaml
 description: Version number denoting compatibility level 2
 type: integer
 enum: [ 2 ]

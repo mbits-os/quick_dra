@@ -1,4 +1,5 @@
 $schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/version-1.yaml
 description: Version number denoting compatibility level 1
 type: integer
 enum: [ 1 ]
