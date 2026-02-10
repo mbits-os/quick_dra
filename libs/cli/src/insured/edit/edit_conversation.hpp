@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <quick_dra/conv/conversation.hpp>
 #include <quick_dra/models/types.hpp>
+#include <string>
 #include <variant>
 #include <vector>
 
