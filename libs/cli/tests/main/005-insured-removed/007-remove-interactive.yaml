@@ -1,0 +1,15 @@
+args: insured remove --find piotr --config .quick_dra.yaml
+input: |
+  y
+expected:
+  return-code: 0
+  stdout: "\
+    Found:\n    #1: Piotr Iksiński [1 AAA000000]\n\
+    \n\
+    \e[0;36mDo you want to delete this record?\e[0;90m [Y/n]\e[m> "
+  stderr: ''
+writes:
+  $CWD/.quick_dra.yaml: $DATA/.quick_dra.iksinski-only-jan.yaml
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card AAA000000 --title "0110 0 0"
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport AA0000000 --title "0110 0 0"

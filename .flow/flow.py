@@ -10,10 +10,11 @@ import subprocess
 import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional, cast
 
-CXX_FLOW_VERSION = "0.23.2"
-PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+CXX_FLOW_VERSION = "0.24.0"
+PROJECT_ROOT = Path(__file__).parent.parent
 VER_REGEX = re.compile(r"((?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))")
 
 
@@ -89,8 +90,8 @@ def cxx_flow_version(print_output=False):
 
 
 @contextmanager
-def cd(path: str):
-    prev = os.getcwd()
+def cd(path: Path):
+    prev = Path().absolute()
     os.chdir(path)
     try:
         yield
@@ -114,7 +115,7 @@ def get_venv_path():
 def activate_virtual_env():
     global PYTHON_EXECUTABLE
 
-    with cd(os.path.dirname(__file__)):
+    with cd(PROJECT_ROOT):
         exec_ext = ".exe" if sys.platform == "win32" else ""
         python_exec = f"python{exec_ext}"
         bindir = get_venv_path()

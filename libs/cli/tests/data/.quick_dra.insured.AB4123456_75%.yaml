@@ -1,0 +1,6 @@
+wersja: 1
+ubezpieczeni:
+  - nazwisko: 'Surname, Name'
+    paszport: AB4123456
+    tytuł ubezpieczenia: 0110 0 0
+    wymiar: 3/4
