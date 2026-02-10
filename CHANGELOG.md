@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.9.0](https://github.com/mbits-os/quick_dra/compare/v0.8.0...v0.9.0) (2026-02-10)
+
+### New Features
+
+- provide support for `qdra insured edit` command ([76531ac](https://github.com/mbits-os/quick_dra/commit/76531acb4c6cd5816f7b5a31247782645b412110))
+
+### Bug Fixes
+
+- apply super-linter suggestions ([bffad00](https://github.com/mbits-os/quick_dra/commit/bffad0031013dd30c2a640bf10f9d8aaa9d06dd7))
+- identify all the YAML schemas ([83db6ba](https://github.com/mbits-os/quick_dra/commit/83db6bab6dc450e518c7e6ea8ccf332e80e9eab6))
+- simplify enum interactions ([34af7a6](https://github.com/mbits-os/quick_dra/commit/34af7a6e391f4764b7e0d61dcef5d98aa3c08f4b))
+- move insured searching to libconv ([93fe443](https://github.com/mbits-os/quick_dra/commit/93fe443ff5d6bbee296fdaecf65115df372effdb))
+
 ## [0.8.0](https://github.com/mbits-os/quick_dra/compare/v0.7.3...v0.8.0) (2026-02-08)
 
 ### New Features
