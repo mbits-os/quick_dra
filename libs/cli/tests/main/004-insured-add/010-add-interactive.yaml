@@ -1,0 +1,16 @@
+args: insured add --config .quick_dra.yaml --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 3/4 --salary minimal
+input: |
+  Name
+  Surname
+  2
+  AB4123456
+
+
+  minimal
+expected:
+  return-code: 0
+  stdout: "\e[0;36mFirst name\e[0;90m [Name]\e[m> \e[0;36mLast name\e[0;90m [Surname]\e[m> \e[0;36mDocument kind\e[0;90m [P - PESEL, [1] - ID card, 2 - Passport]\e[m> \e[0;36mPassport\e[m> \e[0;36mInsurance title\e[0;90m [0110 0 0]\e[m> \e[0;36mPart-time scale\e[0;90m [3/4]\e[m> \e[0;36mSalary\e[0;90m [minimal for a given month]\e[m> \e[0;90mFirst name set to \e[mName\n\e[0;90mLast name set to \e[mSurname\n\e[0;90mDocument kind set to \e[m2\n\e[0;90mDocument set to \e[mAB4123456\n\e[0;90mInsurance title set to \e[m0110 0 0\n\e[0;90mPart-time scale set to \e[m3/4\n\e[0;90mSalary set to \e[mminimal for a given month\n"
+  stderr: |
+    Quick-DRA: file .quick_dra.yaml will be created as needed.
+writes:
+  $CWD/.quick_dra.yaml: $DATA/.quick_dra.insured.AB4123456_75%.yaml
