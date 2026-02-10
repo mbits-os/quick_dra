@@ -11,6 +11,8 @@ set(SRCS
     src/insured/add/add_conversation.hpp
     src/insured/add/add_command.cpp
     src/insured/insured_command.cpp
+    src/insured/edit/edit_conversation.cpp
+    src/insured/edit/edit_conversation.hpp
     src/insured/edit/edit_command.cpp
     src/insured/list/list_command.cpp
     src/insured/remove/remove_options.cpp
@@ -72,21 +74,10 @@ endif()
 if(QUICK_DRA_TESTING)
     string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_PRESET)
 
-    foreach(TEST_SET
-        001-basic
-        002-xml
-        003-payer
-        004-insured-add
-        005-insured-removed
-        006-insured-list
+    add_test(
+        NAME qdra-test-runner-main
+        COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
+            tools test-runner --preset "${CMAKE_PRESET}" --tests .
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-        add_test(
-            NAME qdra-runner-${TEST_SET}
-            COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
-                tools "test-runner"
-                --preset "${CMAKE_PRESET}"
-                --tests "main/${TEST_SET}"
-            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        )
-    endforeach()
 endif()
