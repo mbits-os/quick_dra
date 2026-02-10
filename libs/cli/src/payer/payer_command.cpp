@@ -29,6 +29,7 @@ namespace quick_dra::builtin::payer {
 		    !conv.check_field(policies::tax_id) ||
 		    !conv.check_field(policies::social_id) ||
 		    !conv.check_enum_field("--id-card or --passport"sv, policies::kind,
+		                           policies::document,
 		                           get_enum_item(policies::id_card),
 		                           get_enum_item(policies::passport))) {
 			return 1;

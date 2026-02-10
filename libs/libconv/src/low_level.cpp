@@ -105,7 +105,7 @@ namespace quick_dra {
 	}
 
 	std::string as_string(currency const& value) {
-		if (value < currency{}) {
+		if (value == minimal_salary) {
 			return "minimal for a given month"s;
 		}
 		return fmt::format("{} zł", value);

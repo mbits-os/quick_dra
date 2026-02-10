@@ -75,7 +75,7 @@ namespace quick_dra::builtin::insured::add {
 		RESET_EMPTY(opts.passport);
 
 		if (!opts.salary) {
-			opts.salary = currency{-1 * currency::den};
+			opts.salary = minimal_salary;
 		}
 
 #undef RESET_EMPTY

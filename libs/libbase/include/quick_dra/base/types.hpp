@@ -112,6 +112,16 @@ namespace quick_dra {
 		}
 	};
 
+	inline static consteval currency operator""_PLN(unsigned long long value) {
+		return currency{static_cast<long long>(value * 100)};
+	}
+
+	inline static consteval currency operator""_PLN(long double value) {
+		return currency{static_cast<long long>(value * 100 + .5)};
+	}
+
+	static inline constexpr auto minimal_salary = -1_PLN;
+
 	constexpr inline currency calc_currency::rounded() const noexcept {
 		return currency{base::template rounded_impl<currency::den>().value};
 	}
@@ -153,6 +163,8 @@ namespace quick_dra {
 		constexpr ratio gcd() const noexcept { return gcd(num, den); }
 		constexpr bool valid() const noexcept { return den != 0; }
 	};
+
+	static inline constexpr auto full_time = ratio{1u, 1u};
 
 	static_assert(ratio{3, 4} == ratio{6, 8});
 	static_assert(ratio{3, 4} > ratio{5, 8});

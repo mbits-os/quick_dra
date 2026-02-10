@@ -107,7 +107,7 @@ namespace quick_dra::builtin {
 		using std::literals::operator""sv;
 
 		if (value == "minimal"sv) {
-			dst = currency{-1 * currency::den};
+			dst = minimal_salary;
 			return true;
 		}
 
