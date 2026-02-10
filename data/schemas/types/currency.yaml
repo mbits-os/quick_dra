@@ -1,4 +1,5 @@
 $schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/currency.yaml
 description: Monetary value, with optional PLN or zł suffix
 type: [ number, string ]
 multipleOf: 0.01

@@ -1,4 +1,5 @@
 $schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml
 type: object
 required: [wersja, płatnik, ubezpieczeni]
 additionalProperties: false

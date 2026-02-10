@@ -1,4 +1,5 @@
 $schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/minimal-pay-timeline.yaml
 description: |
   For given starting month, it defines the minimal salary before taxes
 type: object
