@@ -62,8 +62,22 @@ namespace quick_dra::interactive {
 		template <typename Conversation>
 		bool get_answer(Conversation& conv) const {
 			auto const& policy = *static_cast<FieldPolicy const*>(this);
+			auto tagger = [policy](auto& tgt) {
+				auto const& ref = policy.select(tgt);
+				return ref ? *ref : std::string_view{" ", 1};
+			};
+
+			conv.opts.postprocess_document_kind();
 			auto selected = this->first_item_available(
-			    conv, std::make_index_sequence<sizeof...(Items)>{});
+			    tagger(conv.opts),
+			    std::make_index_sequence<sizeof...(Items)>{});
+			conv.opts.preprocess_document_kind();
+
+			if (selected == '\0') {
+				selected = this->first_item_available(
+				    tagger(conv.dst),
+				    std::make_index_sequence<sizeof...(Items)>{});
+			}
 			auto& dst = policy.select(conv.dst);
 			if (conv.ask_questions) {
 				return this->build_enum_answer(
@@ -80,23 +94,23 @@ namespace quick_dra::interactive {
 		}
 
 	private:
-		template <typename Conversation, details::Enumerator EnumeratorItem>
+		template <details::Enumerator EnumeratorItem>
 		static bool item_available(char& code,
-		                           Conversation& conv,
+		                           std::string_view tag,
 		                           EnumeratorItem const& item) {
-			auto const item_set = !!item.select(conv.opts);
+			auto const item_set = tag.starts_with(item.code);
 			if (item_set) {
 				code = item.code;
 			}
 			return item_set;
 		}
 
-		template <typename Conversation, size_t... Index>
+		template <size_t... Index>
 		char first_item_available(
-		    Conversation& conv,
+		    std::string_view tag,
 		    std::index_sequence<Index...>) const noexcept {
 			char code = 0;
-			(item_available(code, conv, std::get<Index>(items)) || ...);
+			(item_available(code, tag, std::get<Index>(items)) || ...);
 			return code;
 		}
 

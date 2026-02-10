@@ -112,10 +112,14 @@ namespace quick_dra {
 			return get_answer(policy.get_field_answer());
 		}
 
-		template <AnyFieldPolicy Policy, Enumerator... Items>
+		template <AnyFieldPolicy Policy,
+		          AnyFieldPolicy DocPolicy,
+		          Enumerator... Items>
 		bool check_enum_field(std::string_view switches_to_fix,
 		                      Policy const& policy,
+		                      DocPolicy const& doc_policy,
 		                      Items&&... items) {
+			auto const old_key = policy.select(this->dst);
 			auto const enum_field =
 			    policy.get_enum_field(std::forward<Items>(items)...);
 			if (!get_answer(enum_field)) {
@@ -128,6 +132,13 @@ namespace quick_dra {
 				return false;
 			}
 			auto const key = policy.select(this->dst);
+			if (key != old_key) {
+				doc_policy.select(this->dst).reset();
+			}
+			if (key != policy.select(this->opts)) {
+				doc_policy.select(this->opts).reset();
+			}
+
 			this->dst.preprocess_document_kind();
 			if (!this->continue_with_enums(
 			        key->front(), enum_field.items,
@@ -145,8 +156,15 @@ namespace quick_dra {
 			if (new_value == orig_value) return false;
 			fmt::print(
 			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n",
-			    policy.label, orig_value.value_or("<empty>"s),
-			    new_value.value_or("<empty>"s));
+			    policy.label,
+			    orig_value
+			        .transform(
+			            [](auto const& value) { return as_string(value); })
+			        .value_or("<empty>"s),
+			    new_value
+			        .transform(
+			            [](auto const& value) { return as_string(value); })
+			        .value_or("<empty>"s));
 			return true;
 		}
 

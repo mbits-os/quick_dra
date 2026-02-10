@@ -80,7 +80,7 @@ namespace quick_dra::builtin::insured::list {
 			        .value_or("<minimal>"s);
 
 			if (person.part_time_scale &&
-			    *person.part_time_scale != ratio{1u, 1u}) {
+			    *person.part_time_scale != full_time) {
 				part_time_salary =
 				    fmt::format("{} of {}", as_string(*person.part_time_scale),
 				                part_time_salary);

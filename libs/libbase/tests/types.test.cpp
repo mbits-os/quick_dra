@@ -63,14 +63,6 @@ namespace quick_dra::testing {
 		}
 	}
 
-	inline static consteval currency operator""_PLN(unsigned long long value) {
-		return currency{static_cast<long long>(value * 100)};
-	}
-
-	inline static consteval currency operator""_PLN(long double value) {
-		return currency{static_cast<long long>(value * 100 + .5)};
-	}
-
 	inline static consteval percent operator""_per(unsigned long long value) {
 		return percent{static_cast<long long>(value * 100)};
 	}

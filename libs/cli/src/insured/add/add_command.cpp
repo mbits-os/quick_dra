@@ -50,7 +50,7 @@ namespace quick_dra::builtin::insured::add {
 
 		if (!conv.check_field(policies::first_name) ||
 		    !conv.check_field(policies::last_name) ||
-		    !conv.check_enum_field(""sv, policies::kind,
+		    !conv.check_enum_field(""sv, policies::kind, policies::document,
 		                           get_enum_item(policies::social_id),
 		                           get_enum_item(policies::id_card),
 		                           get_enum_item(policies::passport)) ||
@@ -69,12 +69,11 @@ namespace quick_dra::builtin::insured::add {
 		conv.show_added(policies::part_time_scale);
 		conv.show_added(policies::salary);
 
-		if (conv.dst.part_time_scale &&
-		    *conv.dst.part_time_scale == ratio{1, 1}) {
+		if (conv.dst.part_time_scale == full_time) {
 			conv.dst.part_time_scale.reset();
 		}
 
-		if (conv.dst.salary && conv.dst.salary < currency{}) {
+		if (conv.dst.salary == minimal_salary) {
 			// minimal, in config denoted by undefined value
 			conv.dst.salary.reset();
 		}
