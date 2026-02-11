@@ -40,6 +40,7 @@ postproc:
 cmake:
   vars:
     QUICK_DRA_SANITIZE: "?config:sanitizer"
+    QUICK_DRA_W_ERROR: "?config:w-error"
 
 package:
   main-group: apps
@@ -47,15 +48,17 @@ package:
 shortcuts:
   dbg: { build_type: Debug, sanitizer: false }
   rel: { build_type: Release, sanitizer: false }
+  clangd: { build_type: Debug, sanitizer: false, compiler: clang }
+  clang: { build_type: Release, sanitizer: false, compiler: clang }
   both: { build_type: [Debug, Release], sanitizer: false }
   sane: { build_type: Debug, sanitizer: true }
 
 test-runner:
-    target: qdra
-    report_env: QDRA_
-    install: [ cli ]
-    testsuite:
-      root: libs/cli/tests
-      data: data
-      default-set: main
-    patches: {}
+  target: qdra
+  report_env: QDRA_
+  install: [cli]
+  testsuite:
+    root: libs/cli/tests
+    data: data
+    default-set: main
+  patches: {}
