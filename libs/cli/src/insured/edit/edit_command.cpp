@@ -64,9 +64,6 @@ namespace quick_dra::builtin::insured::edit {
 			cfg.insured.emplace();
 		}
 
-		auto const on_error = [&conv](std::string const& msg) {
-			conv.parser.error(msg);
-		};
 		auto found = search_insured_from_term(
 		    conv.search_term, *cfg.insured,
 		    [&conv](std::string const& msg) { conv.parser.error(msg); });
