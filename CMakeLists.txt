@@ -20,6 +20,7 @@ set(SHARE_DIR "share/${PROJECT_NAME}-${PROJECT_VERSION_SHORT}")
 set(QUICK_DRA_TESTING ON CACHE BOOL "Compile and/or run self-tests")
 set(QUICK_DRA_INSTALL ON CACHE BOOL "Install the application")
 set(QUICK_DRA_SANITIZE OFF CACHE BOOL "Compile with sanitizers enabled")
+set(QUICK_DRA_W_ERROR OFF CACHE BOOL "Compile with warnings turned to errors")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS OFF)

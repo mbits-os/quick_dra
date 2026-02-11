@@ -63,6 +63,9 @@ if(MSVC)
       /D_DISABLE_STRING_ANNOTATION
     )
   endif()
+  if(QUICK_DRA_W_ERROR)
+    list(APPEND QUICK_DRA_ADDITIONAL_COMPILE_FLAGS /WX)
+  endif()
 else()
   set(QUICK_DRA_ADDITIONAL_COMPILE_FLAGS
     -Wall -Wextra
@@ -107,4 +110,11 @@ else()
       -fsanitize=undefined
     )
   endif()
+  if(QUICK_DRA_W_ERROR)
+    list(APPEND QUICK_DRA_ADDITIONAL_COMPILE_FLAGS -Werror)
+  endif()
+endif()
+
+if(QUICK_DRA_W_ERROR)
+  message(STATUS "Compiling with warnings treated as errors")
 endif()
