@@ -68,7 +68,7 @@ namespace quick_dra::testing {
 	}
 
 	inline static consteval percent operator""_per(long double value) {
-		return percent{static_cast<long long>(value * 100 + .5)};
+		return percent{static_cast<long long>(value * 100 + .5l)};
 	}
 
 	static constinit type_testcase<currency> const good_currency_tests[] = {

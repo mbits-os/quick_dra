@@ -231,7 +231,7 @@ namespace quick_dra {
 			          bool (*validator)(std::string&&,
 			                            std::optional<value_type>&,
 			                            bool)) {
-				return {lhs.selector(), validator, lhs.value};
+				return {lhs.selector(), {validator}, lhs.value};
 			}
 		};
 

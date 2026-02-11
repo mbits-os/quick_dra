@@ -35,7 +35,7 @@ namespace quick_dra {
 		size_t codepoints(std::string_view utf8) {
 			size_t len = 0;
 			for (auto const c : utf8) {
-				len += static_cast<int>(
+				len += static_cast<size_t>(
 				    (static_cast<unsigned char>(c) & 0xC0) != 0x80);
 			}
 			return len;

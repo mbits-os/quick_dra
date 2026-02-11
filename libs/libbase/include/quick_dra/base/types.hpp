@@ -117,7 +117,7 @@ namespace quick_dra {
 	}
 
 	inline static consteval currency operator""_PLN(long double value) {
-		return currency{static_cast<long long>(value * 100 + .5)};
+		return currency{static_cast<long long>(value * 100 + .5l)};
 	}
 
 	static inline constexpr auto minimal_salary = -1_PLN;
@@ -190,12 +190,17 @@ namespace quick_dra {
 	struct costs_of_obtaining {
 		currency local{};
 		currency remote{};
+
+		constexpr auto operator<=>(costs_of_obtaining const&) const noexcept =
+		    default;
 	};
 
 	struct contribution {
 		currency payer{};
 		currency insured{};
 
+		constexpr auto operator<=>(contribution const&) const noexcept =
+		    default;
 		constexpr currency total() const noexcept { return payer + insured; }
 	};
 
@@ -203,6 +208,7 @@ namespace quick_dra {
 		percent payer{};
 		percent insured{};
 
+		constexpr auto operator<=>(rate const&) const noexcept = default;
 		constexpr percent total() const noexcept { return payer + insured; }
 		constexpr contribution contribution_on(currency amount) const noexcept {
 			return contribution_on(amount.calc());
@@ -254,6 +260,7 @@ namespace quick_dra {
 		CONTRIBUTIONS_EX(X)
 #undef X
 
+		constexpr auto operator<=>(rates const&) const noexcept = default;
 		constexpr contributions contribution_on(
 		    currency amount) const noexcept {
 			return contribution_on(amount.calc());
