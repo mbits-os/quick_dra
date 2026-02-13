@@ -3,7 +3,6 @@ set(GRAPHVIZ_GENERATE_PER_TARGET FALSE)
 set(GRAPHVIZ_GENERATE_DEPENDERS FALSE)
 set(GRAPHVIZ_IGNORE_TARGETS
     "GTest::.*"
-    ".*-test"
     # Windows:
     advapi32
     bcrypt

@@ -154,6 +154,10 @@ jobs:
           restore-keys: |
             ${{ env.CONAN_CACHE }}-
 
+      - name: Install OpenCppCoverage
+        uses: KungFuDonkey/Install-OpenCppCoverage@v1
+        if: ${{ matrix.windows && matrix.build_type == 'Debug' }}
+
       #     ########  ########   #######        ## ########  ######  ########
       #     ##     ## ##     ## ##     ##       ## ##       ##    ##    ##
       #     ##     ## ##     ## ##     ##       ## ##       ##          ##

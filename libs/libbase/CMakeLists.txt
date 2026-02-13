@@ -89,7 +89,7 @@ if(QUICK_DRA_TESTING)
         ${EXCLUDES_TEST_SRCS_CXX})
 
     add_project_test(libbase ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
-    target_link_libraries(libbase-test PUBLIC GTest::gmock_main fmt::fmt libbase)
+    target_link_libraries(libbase-test PUBLIC GTest::gmock_main libbase)
 
     add_test(NAME libbase COMMAND libbase-test "--gtest_output=xml:${TEST_REPORT_DIR}/libbase/${TEST_REPORT_FILE}")
 endif()

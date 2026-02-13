@@ -52,7 +52,7 @@ if(QUICK_DRA_TESTING)
         ${EXCLUDES_TEST_SRCS_CXX})
 
     add_project_test(liblex ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
-    target_link_libraries(liblex-test PUBLIC GTest::gmock_main fmt::fmt liblex)
+    target_link_libraries(liblex-test PUBLIC GTest::gmock_main liblex)
 
     add_test(NAME liblex COMMAND liblex-test "--gtest_output=xml:${TEST_REPORT_DIR}/liblex/${TEST_REPORT_FILE}")
 endif()
