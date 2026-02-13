@@ -14,7 +14,7 @@ from functools import total_ordering
 from pathlib import Path
 from typing import cast
 
-PROJ_FLOW_VERSION = "0.25.1"
+PROJ_FLOW_VERSION = "0.25.3"
 PROJECT_ROOT = Path(__file__).parent.parent
 VER_REGEX = re.compile(r"((?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))")
 

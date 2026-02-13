@@ -42,6 +42,7 @@ cmake:
   vars:
     QUICK_DRA_SANITIZE: "?config:sanitizer"
     QUICK_DRA_COVERALLS: "?config:coverage"
+    QUICK_DRA_COVERALLS_UPLOAD: "?config:upload_to_coveralls"
     QUICK_DRA_W_ERROR: "?config:w-error"
 
 package:
