@@ -15,6 +15,7 @@ include:
   - build_type: Debug
     preset: debug
     coverage: true
+    upload_to_coveralls: true
 
   - build_type: Release
     preset: release

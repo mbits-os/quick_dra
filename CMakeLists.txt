@@ -43,8 +43,8 @@ find_package(ryml REQUIRED)
 find_package(CURL REQUIRED)
 find_package(ctre REQUIRED)
 
-if (UNIX)
-find_package(ICU COMPONENTS uc i18n REQUIRED)
+if(UNIX)
+  find_package(ICU COMPONENTS uc i18n REQUIRED)
 endif()
 
 if(QUICK_DRA_TESTING)
@@ -77,46 +77,69 @@ cpack_add_component_group(devel
   EXPANDED
 )
 
+if(QUICK_DRA_TESTING)
+  set(COVERALLS_PREFIX QUICK_DRA_)
+  include(${PROJECT_SOURCE_DIR}/tools/coveralls/build_flags.cmake)
+endif()
+
 add_subdirectory(libs)
 
 # #################################################################
 # #  COVERAGE
 # #################################################################
+execute_process(COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
+  system --format props
+  OUTPUT_VARIABLE QUICK_DRA_COV_PROPERTIES
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
 execute_process(COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
-        system --format props
-    OUTPUT_VARIABLE QUICK_DRA_COV_PROPERTIES
-    OUTPUT_STRIP_TRAILING_WHITESPACE
+  system --format os
+  OUTPUT_VARIABLE QUICK_DRA_COV_OS
+  OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 string(TOLOWER ${CMAKE_CXX_COMPILER_ID} QUICK_DRA_COV_PROPERTIES_COMPILER)
-if (QUICK_DRA_COV_PROPERTIES_COMPILER STREQUAL "gnu")
+
+if(QUICK_DRA_COV_PROPERTIES_COMPILER STREQUAL "gnu")
   set(QUICK_DRA_COV_PROPERTIES_COMPILER "gcc")
 endif()
+
 string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pbuild_type='${CMAKE_BUILD_TYPE}'")
 string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler='${QUICK_DRA_COV_PROPERTIES_COMPILER}'")
-if (MSVC)
+
+if(MSVC)
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.version='${MSVC_VERSION}'")
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.toolset='${CMAKE_VS_PLATFORM_TOOLSET}'")
 else()
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.version='${CMAKE_CXX_COMPILER_VERSION}'")
 endif()
-if ("stdc++" IN_LIST CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+
+if("stdc++" IN_LIST CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.libcxx='stdc++'")
 elseif("c++" IN_LIST CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.libcxx='c++'")
 endif()
-if (COV_SANITIZE)
+
+if(QUICK_DRA_SANITIZE)
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-psanitizer=on")
 else()
   string(APPEND QUICK_DRA_COV_PROPERTIES "\n-psanitizer=off")
 endif()
 
-if (QUICK_DRA_TESTING)
+if(QUICK_DRA_TESTING)
   set(COVERALLS_PREFIX QUICK_DRA_)
-  
+
   set(QUICK_DRA_COVERALLS_DIRS ${LEGACY_COVERAGE})
   set(QUICK_DRA_COVERALLS_TARGET qdra)
+
+  # set(__SANITIZER)
+
+  # if(QUICK_DRA_SANITIZE)
+  # set(__SANITIZER -sanitizer)
+  # endif()
+
+  # set(QUICK_DRA_COVERALLS_FILE "${PROJECT_BINARY_DIR}/../artifacts/coverage/coveralls_${QUICK_DRA_COV_OS}-${CMAKE_BUILD_TYPE}-${QUICK_DRA_COV_PROPERTIES_COMPILER}${__SANITIZER}.json")
   include(${PROJECT_SOURCE_DIR}/tools/coveralls/Coveralls.cmake)
 endif()
 
