@@ -21,6 +21,7 @@ include:
 
   - os: ubuntu
     conan_settings: [ compiler.libcxx=libstdc++11 ]
+    conan2_settings: [ compiler.cppstd=23 ]
     build_generator: ninja
     cpack_generator: [ TGZ, DEB ]
     ubuntu: true

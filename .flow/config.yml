@@ -8,6 +8,7 @@ extensions:
   - proj_flow.ext.webidl
   - quick_dra.icons
   - quick_dra.yaml_reader
+  - quick_dra.test_coverage
 
 entry:
   config: [Conan, CMake]
@@ -40,6 +41,7 @@ postproc:
 cmake:
   vars:
     QUICK_DRA_SANITIZE: "?config:sanitizer"
+    QUICK_DRA_COVERALLS: "?config:coverage"
     QUICK_DRA_W_ERROR: "?config:w-error"
 
 package:
@@ -52,6 +54,9 @@ shortcuts:
   clang: { build_type: Release, sanitizer: false, compiler: clang }
   both: { build_type: [Debug, Release], sanitizer: false }
   sane: { build_type: Debug, sanitizer: true }
+
+test:
+  target: QUICK_DRA_coveralls
 
 test-runner:
   target: qdra

@@ -8,3 +8,14 @@ add_subdirectory(liblex)
 add_subdirectory(libforms)
 add_subdirectory(libconv)
 add_subdirectory(cli)
+
+add_to_coverage(
+    libpersist
+    libbase
+    libmodels
+    liblex
+    libforms
+    libconv
+    cli
+)
+cov_set_parent_scope()

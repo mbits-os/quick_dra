@@ -30,6 +30,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_BINARY_DIR}/conan" "${PROJECT_SOURCE_DIR}/.flow/cmake")
 list(APPEND CMAKE_PREFIX_PATH "${PROJECT_BINARY_DIR}/conan")
 
+include(coverage)
 include(common)
 include(output_dirs_setup)
 prepare_output_dirs_setup()
@@ -77,3 +78,49 @@ cpack_add_component_group(devel
 )
 
 add_subdirectory(libs)
+
+# #################################################################
+# #  COVERAGE
+# #################################################################
+
+execute_process(COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
+        system --format props
+    OUTPUT_VARIABLE QUICK_DRA_COV_PROPERTIES
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+string(TOLOWER ${CMAKE_CXX_COMPILER_ID} QUICK_DRA_COV_PROPERTIES_COMPILER)
+if (QUICK_DRA_COV_PROPERTIES_COMPILER STREQUAL "gnu")
+  set(QUICK_DRA_COV_PROPERTIES_COMPILER "gcc")
+endif()
+string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pbuild_type='${CMAKE_BUILD_TYPE}'")
+string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler='${QUICK_DRA_COV_PROPERTIES_COMPILER}'")
+if (MSVC)
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.version='${MSVC_VERSION}'")
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.toolset='${CMAKE_VS_PLATFORM_TOOLSET}'")
+else()
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.version='${CMAKE_CXX_COMPILER_VERSION}'")
+endif()
+if ("stdc++" IN_LIST CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.libcxx='stdc++'")
+elseif("c++" IN_LIST CMAKE_CXX_IMPLICIT_LINK_LIBRARIES)
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-pcompiler.libcxx='c++'")
+endif()
+if (COV_SANITIZE)
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-psanitizer=on")
+else()
+  string(APPEND QUICK_DRA_COV_PROPERTIES "\n-psanitizer=off")
+endif()
+
+if (QUICK_DRA_TESTING)
+  set(COVERALLS_PREFIX QUICK_DRA_)
+  
+  set(QUICK_DRA_COVERALLS_DIRS ${LEGACY_COVERAGE})
+  set(QUICK_DRA_COVERALLS_TARGET qdra)
+  include(${PROJECT_SOURCE_DIR}/tools/coveralls/Coveralls.cmake)
+endif()
+
+file(GENERATE OUTPUT "${PROJECT_BINARY_DIR}/report_answers.txt" CONTENT "${QUICK_DRA_COV_PROPERTIES}\n")
+string(REPLACE ";" "\n    include = " SRC_INCLUDE "${COVERED_CODE}")
+string(REPLACE ";" "\n    exclude = " SRC_EXCLUDE "${NOT_COVERED_CODE}")
+configure_file("${PROJECT_SOURCE_DIR}/.covcollect.in" "${PROJECT_BINARY_DIR}/.covcollect" @ONLY)

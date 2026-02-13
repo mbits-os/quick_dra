@@ -73,7 +73,7 @@ if(QUICK_DRA_TESTING)
         ${EXCLUDES_TEST_SRCS_CXX})
 
     add_project_test(libforms ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
-    target_link_libraries(libforms-test PUBLIC GTest::gmock_main fmt::fmt libforms)
+    target_link_libraries(libforms-test PUBLIC GTest::gmock_main libforms)
 
     add_test(NAME libforms COMMAND libforms-test "--gtest_output=xml:${TEST_REPORT_DIR}/libforms/${TEST_REPORT_FILE}")
 endif()

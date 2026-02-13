@@ -14,9 +14,6 @@
     - [x] Add `qdra insured edit` (_v0.9.0_)
     - [x] Add `qdra insured add` (_v0.8.0_)
     - [x] Add `qdra insured remove` (_v0.8.0_)
-- [ ] Additional tasks
-  - [ ] Add `rt-spaceship` extended attribute support, to remove warnings on
-    libraries, where `std::map::operator<=>` is not `constexpr`.
 - [ ] Testing and coverage
   - [x] Integrate `proj-flow tools test-runner` (_v0.7.1_)
   - [x] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI` (_v0.7.1_)

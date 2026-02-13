@@ -1,0 +1,13 @@
+[collect]
+    compiler = @CMAKE_CXX_COMPILER@
+    output = collected.json
+    bin-dir = .
+    src-dir = ../..
+    include = @SRC_INCLUDE@
+    exclude = @SRC_EXCLUDE@
+
+[clang]
+    exec = bin/qdra
+    exec = bin/*-test
+    raw = .profraw
+    profdata = llvm-profiler
