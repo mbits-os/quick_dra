@@ -1,0 +1,12 @@
+wersja: 1
+płatnik:
+  nazwisko: "Nowak (HOME), Jan"
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: Ubezpieczona, Osoba
+    tytuł ubezpieczenia: 0110 1 1
+    pesel: 50671500000
+    wymiar: 1/4
+    pensja: 8000
