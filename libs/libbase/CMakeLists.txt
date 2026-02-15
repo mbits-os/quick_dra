@@ -80,15 +80,15 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
-    file(GLOB EXCLUDES_TEST_SRCS_CC tests/*.cc)
-    file(GLOB EXCLUDES_TEST_SRCS_CPP tests/*.cpp)
-    file(GLOB EXCLUDES_TEST_SRCS_CXX tests/*.cxx)
+    file(GLOB BASE_TEST_SRCS_CC tests/*.cc)
+    file(GLOB BASE_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB BASE_TEST_SRCS_CXX tests/*.cxx)
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${EXCLUDES_TEST_SRCS_CC}
-        ${EXCLUDES_TEST_SRCS_CPP}
-        ${EXCLUDES_TEST_SRCS_CXX})
+        ${BASE_TEST_SRCS_CC}
+        ${BASE_TEST_SRCS_CPP}
+        ${BASE_TEST_SRCS_CXX})
 
-    add_project_test(libbase ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
+    add_project_test(libbase ${BASE_TEST_SRCS_CC} ${BASE_TEST_SRCS_CPP} ${BASE_TEST_SRCS_CXX})
     target_link_libraries(libbase-test PUBLIC GTest::gmock_main libbase)
 
     add_test(NAME libbase COMMAND libbase-test "--gtest_output=xml:${TEST_REPORT_DIR}/libbase/${TEST_REPORT_FILE}")

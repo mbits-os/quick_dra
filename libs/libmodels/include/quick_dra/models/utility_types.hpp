@@ -13,9 +13,7 @@ namespace quick_dra {
 		file_not_found,
 		file_not_readable,
 		errors_encountered,
-		empty,
-		partially_loaded,
-		fully_loaded,
+		loaded,
 	};
 }  // namespace quick_dra
 
