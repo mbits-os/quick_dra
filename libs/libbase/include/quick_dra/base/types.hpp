@@ -135,6 +135,14 @@ namespace quick_dra {
 		constexpr percent operator-() const noexcept { return percent{-value}; }
 	};
 
+	inline static consteval percent operator""_per(unsigned long long value) {
+		return percent{static_cast<long long>(value * 100)};
+	}
+
+	inline static consteval percent operator""_per(long double value) {
+		return percent{static_cast<long long>(value * 100 + .5l)};
+	}
+
 	inline constexpr calc_currency operator*(calc_currency const& amount,
 	                                         percent const& percent) noexcept {
 		return calc_currency{amount.value * percent.value / 100'00};

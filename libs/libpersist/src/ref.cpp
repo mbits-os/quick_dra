@@ -21,9 +21,15 @@ namespace yaml {
 	}  // namespace
 
 	base_ctx::error_handler::error_handler() : prev{head} { head = this; }
-	base_ctx::error_handler::~error_handler() { head = prev; }
+	base_ctx::error_handler::~error_handler() {
+		head = prev;
+		if (previous) {
+			c4::yml::set_callbacks(*previous);
+		}
+	}
 
 	void base_ctx::error_handler::install_in_c4() {
+		previous = c4::yml::get_callbacks();
 		c4::yml::Callbacks callbacks;
 		callbacks.m_user_data = this;
 		callbacks.m_error = c4_error_handler;

@@ -128,7 +128,9 @@ namespace quick_dra {
 
 	template <typename ValueType>
 	struct value_formatter {
+		// GCOV_EXCL_START
 		auto operator()(std::monostate) const { return "<null>"s; }
+		// GCOV_EXCL_STOP
 		auto operator()(std::string const& str) const {
 			return fmt::format("'{}'", str);
 		}
@@ -254,7 +256,7 @@ namespace quick_dra {
 		}
 
 		if (report.empty()) {
-			fmt::print("\n");
+			fmt::print("\n");  // GCOV_EXCL_LINE
 		}
 	}
 

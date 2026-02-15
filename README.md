@@ -1,6 +1,7 @@
 # Quick DRA
 
-![GitHub Release](https://img.shields.io/github/v/release/mbits-os/quick_dra)
+[![GitHub Release](https://img.shields.io/github/v/release/mbits-os/quick_dra)](https://github.com/mbits-os/quick_dra/releases)
+[![Coverage Status](https://coveralls.io/repos/github/mbits-os/quick_dra/badge.svg?branch=coverage)](https://coveralls.io/github/mbits-os/quick_dra?branch=coverage)
 
 ![Quick-DRA the Hydra](./data/assets/quick-dra-social-preview-dark.png)
 

@@ -64,15 +64,15 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
-    file(GLOB EXCLUDES_TEST_SRCS_CC tests/*.cc)
-    file(GLOB EXCLUDES_TEST_SRCS_CPP tests/*.cpp)
-    file(GLOB EXCLUDES_TEST_SRCS_CXX tests/*.cxx)
+    file(GLOB FORMS_TEST_SRCS_CC tests/*.cc)
+    file(GLOB FORMS_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB FORMS_TEST_SRCS_CXX tests/*.cxx)
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${EXCLUDES_TEST_SRCS_CC}
-        ${EXCLUDES_TEST_SRCS_CPP}
-        ${EXCLUDES_TEST_SRCS_CXX})
+        ${FORMS_TEST_SRCS_CC}
+        ${FORMS_TEST_SRCS_CPP}
+        ${FORMS_TEST_SRCS_CXX})
 
-    add_project_test(libforms ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
+    add_project_test(libforms ${FORMS_TEST_SRCS_CC} ${FORMS_TEST_SRCS_CPP} ${FORMS_TEST_SRCS_CXX})
     target_link_libraries(libforms-test PUBLIC GTest::gmock_main libforms)
 
     add_test(NAME libforms COMMAND libforms-test "--gtest_output=xml:${TEST_REPORT_DIR}/libforms/${TEST_REPORT_FILE}")

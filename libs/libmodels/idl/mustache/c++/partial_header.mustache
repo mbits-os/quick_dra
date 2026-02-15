@@ -45,7 +45,6 @@ namespace quick_dra::v{{version}}::partial {
 		bool read(yaml::ref_ctx const& ref);
 		void prepare_for_write();
 		void write(ryml::NodeRef& ref) const;
-		std::pair<int, int> count_loaded() noexcept;
 	};
 {{/ interfaces}}
 } // namespace quick_dra::v{{version}}::partial

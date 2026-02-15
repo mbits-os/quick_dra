@@ -43,15 +43,15 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
-    file(GLOB EXCLUDES_TEST_SRCS_CC tests/*.cc)
-    file(GLOB EXCLUDES_TEST_SRCS_CPP tests/*.cpp)
-    file(GLOB EXCLUDES_TEST_SRCS_CXX tests/*.cxx)
+    file(GLOB LEX_TEST_SRCS_CC tests/*.cc)
+    file(GLOB LEX_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB LEX_TEST_SRCS_CXX tests/*.cxx)
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${EXCLUDES_TEST_SRCS_CC}
-        ${EXCLUDES_TEST_SRCS_CPP}
-        ${EXCLUDES_TEST_SRCS_CXX})
+        ${LEX_TEST_SRCS_CC}
+        ${LEX_TEST_SRCS_CPP}
+        ${LEX_TEST_SRCS_CXX})
 
-    add_project_test(liblex ${EXCLUDES_TEST_SRCS_CC} ${EXCLUDES_TEST_SRCS_CPP} ${EXCLUDES_TEST_SRCS_CXX})
+    add_project_test(liblex ${LEX_TEST_SRCS_CC} ${LEX_TEST_SRCS_CPP} ${LEX_TEST_SRCS_CXX})
     target_link_libraries(liblex-test PUBLIC GTest::gmock_main liblex)
 
     add_test(NAME liblex COMMAND liblex-test "--gtest_output=xml:${TEST_REPORT_DIR}/liblex/${TEST_REPORT_FILE}")

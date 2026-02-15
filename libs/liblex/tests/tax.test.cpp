@@ -69,6 +69,9 @@ namespace quick_dra::testing {
 		ASSERT_EQ(actual, expected.tax_owed);
 	}
 
+	static constexpr auto scale_empty =
+	    std::array<std::pair<currency, percent>, 0>{};
+
 	static constexpr auto scale_17_32 = std::array{
 	    std::pair{currency{30'000'00}, percent{17'00}},
 	    std::pair{currency{120'000'00}, percent{32'00}},
@@ -86,6 +89,11 @@ namespace quick_dra::testing {
 	    currency{300'00};  // 3600 / 12
 
 	static constexpr tax_testcase tests[] = {
+	    {
+	        .scale = scale_empty,
+	        .taxable_amount = currency{1600'00},
+	        .expected{.tax_lowering_amount = 0_PLN},
+	    },
 	    {
 	        .scale = scale_17_32,
 	        .taxable_amount = currency{1600'00},

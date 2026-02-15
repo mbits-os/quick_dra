@@ -33,16 +33,11 @@ namespace quick_dra {
 
 		bool checksum_digit_is_valid(unsigned short checksum,
 		                             char tested) noexcept;
-		bool fix_checksum_digit(unsigned short checksum, char& fixed) noexcept;
 
 		struct checksum_is_a_digit {
 			static bool checksum_is_valid(unsigned short checksum,
 			                              char tested) noexcept {
 				return checksum_digit_is_valid(checksum, tested);
-			}
-			static bool fix_checksum(unsigned short checksum,
-			                         char& fixed) noexcept {
-				return fix_checksum_digit(checksum, fixed);
 			}
 		};
 
@@ -76,8 +71,6 @@ namespace quick_dra {
 			return compare_t::checksum_is_valid(checksum,
 			                                    selector_t::select(id));
 		}
-
-		static std::string fix_checksum(std::string_view id);
 	};
 
 	using tax_id_validator =

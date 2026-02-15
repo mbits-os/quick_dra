@@ -22,7 +22,7 @@ namespace quick_dra::platform {
 			if (HOMEDRIVE) {
 				result = HOMEDRIVE;
 			}
-			if (!HOMEPATH) HOMEPATH = "/";
+			if (!HOMEPATH) HOMEPATH = "";
 			result /= HOMEPATH;
 
 			return result;
