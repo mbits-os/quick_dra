@@ -127,9 +127,6 @@ namespace quick_dra {
 		return true;
 	}
 
-	void write_value(ryml::NodeRef& ref, percent const& ctx) {
-		yaml::write_value(ref, fmt::format("{}%", ctx));
-	}
 	void write_value(ryml::NodeRef& ref, currency const& ctx) {
 		yaml::write_value(ref, fmt::format("{} zł", ctx));
 	}

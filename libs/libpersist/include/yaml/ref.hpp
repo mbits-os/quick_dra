@@ -36,6 +36,7 @@ namespace yaml {
 		private:
 			bool parse_succeeded = true;
 			error_handler* prev = nullptr;
+			std::optional<c4::yml::Callbacks> previous{};
 		};
 
 		ryml::Parser const* parser{nullptr};

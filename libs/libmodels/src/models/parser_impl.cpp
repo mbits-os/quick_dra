@@ -160,10 +160,7 @@ namespace quick_dra::v1::partial {
 		}
 
 		*this = std::move(*object);
-		auto const [needed, present] = count_loaded();
-		return needed < present ? needed == 0 ? load_status::empty
-		                                      : load_status::partially_loaded
-		                        : load_status::fully_loaded;
+		return load_status::loaded;
 	}
 
 	config config::load_partial(std::filesystem::path const& path,

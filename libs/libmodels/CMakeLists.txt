@@ -1,7 +1,6 @@
 include(flow_webidl)
 
 set(SRCS
-    include/quick_dra/models/count_loaded.hpp
     include/quick_dra/models/model.hpp
     include/quick_dra/models/project_reader.hpp
     include/quick_dra/models/types.hpp
@@ -43,4 +42,23 @@ if(QUICK_DRA_INSTALL)
         TYPE INCLUDE
         COMPONENT libraries
     )
+endif()
+
+
+# #################################################################
+# #  TESTING
+# #################################################################
+if(QUICK_DRA_TESTING)
+    file(GLOB MODELS_TEST_SRCS_CC tests/*.cc)
+    file(GLOB MODELS_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB MODELS_TEST_SRCS_CXX tests/*.cxx)
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
+        ${MODELS_TEST_SRCS_CC}
+        ${MODELS_TEST_SRCS_CPP}
+        ${MODELS_TEST_SRCS_CXX})
+
+    add_project_test(libmodels ${MODELS_TEST_SRCS_CC} ${MODELS_TEST_SRCS_CPP} ${MODELS_TEST_SRCS_CXX})
+    target_link_libraries(libmodels-test PUBLIC GTest::gmock_main libmodels)
+
+    add_test(NAME libmodels COMMAND libmodels-test "--gtest_output=xml:${TEST_REPORT_DIR}/libmodels/${TEST_REPORT_FILE}")
 endif()

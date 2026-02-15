@@ -122,7 +122,7 @@ namespace quick_dra {
 				fmt::print(" ");
 				std::visit(value_printer<calculated_value>{}, *value);
 			} else if (children.empty()) {
-				fmt::print(" <null>");
+				fmt::print(" <null>");  // GCOV_EXCL_LINE
 			}
 			fmt::print("\n");
 
