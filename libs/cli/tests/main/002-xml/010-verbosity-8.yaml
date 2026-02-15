@@ -1,0 +1,116 @@
+args: xml --pretty --today 2026-2-1 -vvvvvvvv
+env:
+  HOME: $DATA/homes/var_home
+  USERPROFILE: null
+  HOMEDRIVE: null
+  HOMEPATH: null
+check:
+  stdout: end
+expected:
+  return-code: 0
+  stdout: |
+    -- payer:
+    --   name: Jan Nowak (HOME)
+    --   social id: 26211012346
+    --   tax id: 7680002466
+    --   ident: 2 AB4123456
+    -- insured:
+    --   - name: Osoba Ubezpieczona
+    --     insurance title: 0110 1 1
+    --     ident: P 50671500000
+    --     salary: 1/4 of 8000 zł
+    -- parameters
+    --   cost of obtaining: 250 zł / 300 zł
+    --   health: insured 9%
+    --   pension insurance: payer 9.76%, insured 9.76%
+    --   disability insurance: payer 6.5%, insured 1.5%
+    --   health insurance: insured 2.45%
+    --   accident insurance: payer 1.67%
+    --   tax scale for month reported:
+    --     over 30000 zł at 12%
+    --     over 120000 zł at 32%
+    -- form data:
+    --   RCA [50671500000]:
+    --      accident_insurance:
+    --        insured: 0.00 zł
+    --        payer: 33.40 zł
+    --      disability_insurance:
+    --        insured: 30.00 zł
+    --        payer: 130.00 zł
+    --      guaranteed_employee_benefits_fund:
+    --        insured: 0.00 zł
+    --        payer: 0.00 zł
+    --      health_baseline: 1476.00 zł
+    --      health_contribution: 0.00 zł
+    --      health_insurance:
+    --        insured: 49.00 zł
+    --        payer: 0.00 zł
+    --      insurance_title: ['0110', '1', '1']
+    --      insurance_total: 632.80 zł
+    --      insured:
+    --        document: '50671500000'
+    --        document_kind: 'P'
+    --        first: 'OSOBA'
+    --        last: 'UBEZPIECZONA'
+    --      payer:
+    --        birthday: '2026-01-10'
+    --        document: 'AB4123456'
+    --        document_kind: '2'
+    --        first: 'JAN'
+    --        last: 'NOWAK (HOME)'
+    --        name: 'JAN NOWAK (HOME)'
+    --        social_id: '26211012346'
+    --        tax_id: '7680002466'
+    --      pension_insurance:
+    --        insured: 195.20 zł
+    --        payer: 195.20 zł
+    --      salary:
+    --        gross: 2000.00 zł
+    --        net: 1725.80 zł
+    --        payer_gross: 2358.60 zł
+    --      scale:
+    --        den: 4
+    --        num: 1
+    --      serial:
+    --        DATE: '2026-01'
+    --        NN: '01'
+    --      tax_total: 0.00 zł
+    --      today: '2026-02-01'
+    --
+    --   DRA:
+    --      accident_insurance:
+    --        insured: 0.00 zł
+    --        payer: 33.40 zł
+    --      accident_insurance_contribution: 1.67%
+    --      disability_insurance:
+    --        insured: 30.00 zł
+    --        payer: 130.00 zł
+    --      health_insurance:
+    --        insured: 49.00 zł
+    --        payer: 0.00 zł
+    --      insurance_total: 632.80 zł
+    --      insured_count: 1
+    --      payer:
+    --        birthday: '2026-01-10'
+    --        document: 'AB4123456'
+    --        document_kind: '2'
+    --        first: 'JAN'
+    --        last: 'NOWAK (HOME)'
+    --        name: 'JAN NOWAK (HOME)'
+    --        social_id: '26211012346'
+    --        tax_id: '7680002466'
+    --      pension_insurance:
+    --        insured: 195.20 zł
+    --        payer: 195.20 zł
+    --      serial:
+    --        DATE: '2026-01'
+    --        NN: '01'
+    --      tax_total: 0.00 zł
+    --      today: '2026-02-01'
+    --
+    -- output: quick-dra_202601-01.xml
+    -- use --info to print summary of amounts to pay
+    -- (no more info to unveil)
+  stderr: ""
+writes:
+  $CWD/quick-dra_202601-01.xml: $DATA/homes/var_home/quick-dra_202601-01.xml

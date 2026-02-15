@@ -16,9 +16,12 @@ namespace quick_dra::v1 {
 			if (r.insured != percent{}) {
 				result.push_back(fmt::format("insured {}%", r.insured));
 			}
+			// GCOV_EXCL_START
 			if (result.empty()) {
+				[[unlikely]];
 				result.push_back("payer 0%"s);
 			}
+			// GCOV_EXCL_STOP
 			return join(result, ", "_sep);
 		}
 	}  // namespace
@@ -50,7 +53,7 @@ namespace quick_dra::v1 {
 				               .value_or("<minimal pay>"));
 			}
 			return;
-		} else {
+		} else {  // GCOV_EXCL_LINE[WIN32]
 			fmt::print("-- payer:\n");
 			fmt::print("--   name: {} {}\n", payer.first_name, payer.last_name);
 			fmt::print("--   social id: {}\n", payer.social_id);

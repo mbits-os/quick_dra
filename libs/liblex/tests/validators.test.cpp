@@ -116,6 +116,15 @@ namespace quick_dra::testing {
 	    {"50671500000"sv, 2250y / 7 / 15}, {"50701500000"sv, 2250y / 10 / 15},
 	};
 
+	static constexpr auto null_day = 0y / 0 / 0;
+
+	static constexpr birthday_testcase bad_birthday_tests[] = {
+	    {"504715"sv, null_day},
+	    {"504715504715"sv, null_day},
+	    {"504A1500000"sv, null_day},
+	    {"5047A500000"sv, null_day},
+	};
+
 	static constexpr id_testcase id_card_tests[] = {
 	    ""_inv,
 	    "aaa000000"_inv,
@@ -141,6 +150,9 @@ namespace quick_dra::testing {
 	INSTANTIATE_TEST_SUITE_P(test,
 	                         social_id_birthday,
 	                         ::testing::ValuesIn(birthday_tests));
+	INSTANTIATE_TEST_SUITE_P(bad_test,
+	                         social_id_birthday,
+	                         ::testing::ValuesIn(bad_birthday_tests));
 
 	VALIDATOR_TEST_SUITE(tax_id);
 	VALIDATOR_TEST_SUITE(social_id);
