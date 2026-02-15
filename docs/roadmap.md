@@ -7,7 +7,7 @@
   - [x] Get rid of "total" subtraction, when calculating contributions (_v0.7.2_)
 - [x] Allow setting today date from command line (user freedom and stable testability) (_v0.7.0_)
 - [x] Rename all `insurer`/`insurer_t` uses with `payer` (_v0.7.0_)
-- [ ] Initialization
+- [x] Initialization
   - [x] Add `qdra payer` updating/creating `"płatnik"` (_v0.7.0_)
   - [x] Add `qdra insured` updating `"ubezpieczeni"` sequence
     - [x] Add `qdra insured list` (_v0.8.0_)
@@ -17,7 +17,8 @@
 - [ ] Testing and coverage
   - [x] Integrate `proj-flow tools test-runner` (_v0.7.1_)
   - [x] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI` (_v0.7.1_)
-  - [ ] Integrate test coverage gathering tools
+  - [x] Integrate test coverage gathering tools
+  - [ ] Increase test coverage to 95% aboard all the compilers
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
