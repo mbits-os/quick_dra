@@ -1,0 +1,269 @@
+args: xml --pretty --today 2026-2-1 -vvvvvvv
+env:
+  HOME: $DATA/homes/var_home
+  USERPROFILE: null
+  HOMEDRIVE: null
+  HOMEPATH: null
+check:
+  stdout: end
+expected:
+  return-code: 0
+  stdout: |
+    -- payer:
+    --   name: Jan Nowak (HOME)
+    --   social id: 26211012346
+    --   tax id: 7680002466
+    --   ident: 2 AB4123456
+    -- insured:
+    --   - name: Osoba Ubezpieczona
+    --     insurance title: 0110 1 1
+    --     ident: P 50671500000
+    --     salary: 1/4 of 8000 zł
+    -- parameters
+    --   cost of obtaining: 250 zł / 300 zł
+    --   health: insured 9%
+    --   pension insurance: payer 9.76%, insured 9.76%
+    --   disability insurance: payer 6.5%, insured 1.5%
+    --   health insurance: insured 2.45%
+    --   accident insurance: payer 1.67%
+    --   tax scale for month reported:
+    --     over 30000 zł at 12%
+    --     over 120000 zł at 32%
+    -- form data:
+    --   RCA [50671500000]:
+    --      accident_insurance:
+    --        insured: 0.00 zł
+    --        payer: 33.40 zł
+    --      disability_insurance:
+    --        insured: 30.00 zł
+    --        payer: 130.00 zł
+    --      guaranteed_employee_benefits_fund:
+    --        insured: 0.00 zł
+    --        payer: 0.00 zł
+    --      health_baseline: 1476.00 zł
+    --      health_contribution: 0.00 zł
+    --      health_insurance:
+    --        insured: 49.00 zł
+    --        payer: 0.00 zł
+    --      insurance_title: ['0110', '1', '1']
+    --      insurance_total: 632.80 zł
+    --      insured:
+    --        document: '50671500000'
+    --        document_kind: 'P'
+    --        first: 'OSOBA'
+    --        last: 'UBEZPIECZONA'
+    --      payer:
+    --        birthday: '2026-01-10'
+    --        document: 'AB4123456'
+    --        document_kind: '2'
+    --        first: 'JAN'
+    --        last: 'NOWAK (HOME)'
+    --        name: 'JAN NOWAK (HOME)'
+    --        social_id: '26211012346'
+    --        tax_id: '7680002466'
+    --      pension_insurance:
+    --        insured: 195.20 zł
+    --        payer: 195.20 zł
+    --      salary:
+    --        gross: 2000.00 zł
+    --        net: 1725.80 zł
+    --        payer_gross: 2358.60 zł
+    --      scale:
+    --        den: 4
+    --        num: 1
+    --      serial:
+    --        DATE: '2026-01'
+    --        NN: '01'
+    --      tax_total: 0.00 zł
+    --      today: '2026-02-01'
+    --
+    --   DRA:
+    --      accident_insurance:
+    --        insured: 0.00 zł
+    --        payer: 33.40 zł
+    --      accident_insurance_contribution: 1.67%
+    --      disability_insurance:
+    --        insured: 30.00 zł
+    --        payer: 130.00 zł
+    --      health_insurance:
+    --        insured: 49.00 zł
+    --        payer: 0.00 zł
+    --      insurance_total: 632.80 zł
+    --      insured_count: 1
+    --      payer:
+    --        birthday: '2026-01-10'
+    --        document: 'AB4123456'
+    --        document_kind: '2'
+    --        first: 'JAN'
+    --        last: 'NOWAK (HOME)'
+    --        name: 'JAN NOWAK (HOME)'
+    --        social_id: '26211012346'
+    --        tax_id: '7680002466'
+    --      pension_insurance:
+    --        insured: 195.20 zł
+    --        payer: 195.20 zł
+    --      serial:
+    --        DATE: '2026-01'
+    --        NN: '01'
+    --      tax_total: 0.00 zł
+    --      today: '2026-02-01'
+    --
+    -- filled forms:
+    --   ZUSRCA [50671500000]
+    --     I:
+    --       fields:
+    --         1: ['01', '2026-01']
+    --
+    --     II:
+    --       fields:
+    --         1: '7680002466'
+    --         3: '26211012346'
+    --         4: '2'
+    --         5: 'AB4123456'
+    --         6: 'JAN NOWAK (HOME)'
+    --         7: 'NOWAK (HOME)'
+    --         8: 'JAN'
+    --         9: '2026-01-10'
+    --
+    --     III[*]:
+    --       - id: A
+    --         fields:
+    --           1: 'UBEZPIECZONA'
+    --           2: 'OSOBA'
+    --           3: 'P'
+    --           4: '50671500000'
+    --
+    --       - id: B
+    --         fields:
+    --            1: ['0110', '1', '1']
+    --            3: [1, 4]
+    --            4: 2000.00 zł
+    --            5: 2000.00 zł
+    --            6: 2000.00 zł
+    --            7: 195.20 zł
+    --            8: 30.00 zł
+    --            9: 49.00 zł
+    --           10: 0.00 zł
+    --           11: 195.20 zł
+    --           12: 130.00 zł
+    --           13: 0.00 zł
+    --           14: 33.40 zł
+    --           29: 632.80 zł
+    --
+    --       - id: C
+    --         fields:
+    --           1: 1476.00 zł
+    --           4: 0.00 zł
+    --
+    --       - id: D
+    --         fields:
+    --           1: 0.00 zł
+    --           2: 0.00 zł
+    --           3: 0.00 zł
+    --           4: 0.00 zł
+    --
+    --     IV:
+    --       fields:
+    --         1: '2026-02-01'
+    --
+    --   ZUSDRA
+    --     I:
+    --       fields:
+    --         1: '6'
+    --         2: ['01', '2026-01']
+    --
+    --     II:
+    --       fields:
+    --         1: '7680002466'
+    --         3: '26211012346'
+    --         4: '2'
+    --         5: 'AB4123456'
+    --         6: 'JAN NOWAK (HOME)'
+    --         7: 'NOWAK (HOME)'
+    --         8: 'JAN'
+    --         9: '2026-01-10'
+    --
+    --     III:
+    --       fields:
+    --         1: 1
+    --         3: 1.67%
+    --
+    --     IV:
+    --       fields:
+    --          1: 390.40 zł
+    --          2: 160.00 zł
+    --          3: 550.40 zł
+    --          4: 195.20 zł
+    --          5: 30.00 zł
+    --          6: 225.20 zł
+    --          7: 195.20 zł
+    --          8: 130.00 zł
+    --          9: 325.20 zł
+    --         10: 0.00 zł
+    --         11: 0.00 zł
+    --         12: 0.00 zł
+    --         13: 0.00 zł
+    --         14: 0.00 zł
+    --         15: 0.00 zł
+    --         16: 0.00 zł
+    --         17: 0.00 zł
+    --         18: 0.00 zł
+    --         19: 49.00 zł
+    --         20: 33.40 zł
+    --         21: 82.40 zł
+    --         22: 49.00 zł
+    --         23: 0.00 zł
+    --         24: 49.00 zł
+    --         25: 0.00 zł
+    --         26: 33.40 zł
+    --         27: 33.40 zł
+    --         28: 0.00 zł
+    --         29: 0.00 zł
+    --         30: 0.00 zł
+    --         31: 0.00 zł
+    --         32: 0.00 zł
+    --         33: 0.00 zł
+    --         34: 0.00 zł
+    --         35: 0.00 zł
+    --         36: 0.00 zł
+    --         37: 632.80 zł
+    --
+    --     V:
+    --       fields:
+    --         1: 0.00 zł
+    --         2: 0.00 zł
+    --         3: 0.00 zł
+    --         4: 0.00 zł
+    --         5: 0.00 zł
+    --
+    --     VI:
+    --       fields:
+    --         2: 0.00 zł
+    --         5: 0.00 zł
+    --         6: 0.00 zł
+    --         7: 0.00 zł
+    --
+    --     VII:
+    --       fields:
+    --         1: 0.00 zł
+    --         2: 0.00 zł
+    --         3: 0.00 zł
+    --
+    --     VIII:
+    --       fields:
+    --         3: 0.00 zł
+    --
+    --     IX:
+    --       fields:
+    --         1: 0.00 zł
+    --         2: 632.80 zł
+    --
+    --     XIII:
+    --       fields:
+    --         1: '2026-02-01'
+    --
+    -- output: quick-dra_202601-01.xml
+    -- use --info to print summary of amounts to pay
+  stderr: ""
+writes:
+  $CWD/quick-dra_202601-01.xml: $DATA/homes/var_home/quick-dra_202601-01.xml

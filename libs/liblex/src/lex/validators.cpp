@@ -71,7 +71,10 @@ namespace quick_dra::detail {
 		auto const century =
 		    century_code >= centuries.size() ? 1900 : centuries[century_code];
 
-		return std::chrono::year{century + in_century} / month / day;
+		auto const result =
+		    std::chrono::year{century + in_century} / month / day;
+		if (!result.ok()) return {};
+		return result;
 	}
 
 	unsigned short id_card::checksum(std::string_view id) noexcept {
@@ -86,10 +89,5 @@ namespace quick_dra::detail {
 	                             char tested) noexcept {
 		auto const ch = checksum + '0';
 		return tested == static_cast<char>(ch);
-	}
-
-	bool fix_checksum_digit(unsigned short checksum, char& fixed) noexcept {
-		fixed = static_cast<char>(checksum + '0');
-		return true;
 	}
 }  // namespace quick_dra::detail
