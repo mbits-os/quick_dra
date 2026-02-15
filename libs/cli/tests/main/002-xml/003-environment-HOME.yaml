@@ -1,0 +1,23 @@
+args: xml --pretty --info --today 2026-2-1 -v
+env:
+  HOME: $DATA/homes/var_home
+  USERPROFILE: null
+  HOMEDRIVE: null
+  HOMEPATH: null
+expected:
+  return-code: 0
+  stdout: |
+    -- config used: $DATA/homes/var_home/.quick_dra.yaml
+    -- report: #1 2026-01
+    -- payer: Jan Nowak (HOME)
+    -- insured:
+    --   - Osoba Ubezpieczona
+    -- output: quick-dra_202601-01.xml
+    -- payments:
+       - OSOBA UBEZPIECZONA: 1725.80 zł
+       - ZUS:                 632.80 zł
+       - Urząd Skarbowy:        0.00 zł
+       sum total =           2358.60 zł
+  stderr: ''
+writes:
+  $CWD/quick-dra_202601-01.xml: $DATA/homes/var_home/quick-dra_202601-01.xml
