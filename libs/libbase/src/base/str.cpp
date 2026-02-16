@@ -71,7 +71,7 @@ namespace quick_dra {
 		result.push_back(helper<String>::as_str(data.substr(prev)));
 
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	size_t calc_separators(sep_char_t sep, std::string_view data, size_t max) {
 		auto pos = data.find(sep.value);
@@ -113,7 +113,7 @@ namespace quick_dra {
 		result.push_back(helper<String>::as_str(data.substr(prev)));
 
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	std::vector<std::string_view> split_sv(std::string& data,
 	                                       sep_view_t sep,
@@ -214,7 +214,7 @@ namespace quick_dra {
 		}
 
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	std::string join(std::vector<std::string_view> const& items,
 	                 sep_view_t sep) {
