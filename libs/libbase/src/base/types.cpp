@@ -74,7 +74,7 @@ namespace quick_dra {
 		}
 
 		auto const split = split_sv(input, '/'_sep);
-		if (split.size() < 2) {
+		if (split.size() != 2) {
 			dst = {};
 			return false;
 		}

@@ -19,7 +19,7 @@ namespace quick_dra::platform {
 		for (auto path : self_links) {
 			auto link = std::filesystem::read_symlink(path, ec);
 			if (!ec) return link;
-		}
+		}  // GCOV_EXCL_LINE[POSIX]
 		[[unlikely]];  // GCOV_EXCL_LINE[POSIX]
 		return {};     // GCOV_EXCL_LINE[POSIX]
 	}

@@ -11,5 +11,5 @@ namespace quick_dra {
 		std::string result{};
 		icu::UnicodeString::fromUTF8(input).toUpper().toUTF8String(result);
 		return result;
-	}
+	}  // GCOV_EXCL_LINE
 }  // namespace quick_dra

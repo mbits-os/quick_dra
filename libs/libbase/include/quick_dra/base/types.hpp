@@ -45,10 +45,10 @@ namespace quick_dra {
 		template <intmax_t D2 = 100>
 		constexpr fixed_point<Tag, D2> rounded_impl() const noexcept {
 			if constexpr (Den < D2) {
-				return fixed_point<Tag, D2>{value * Den / D2};
+				return fixed_point<Tag, D2>{value * D2 / Den};
 			} else {
 				auto const value_f = static_cast<long double>(value) / Den;
-				auto const rescaled = value_f * D2 + 0.5l;
+				auto const rescaled = value_f * D2 + (value < 0 ? -0.5l : 0.5l);
 				return fixed_point<Tag, D2>{static_cast<long long>(rescaled)};
 			}
 		}
@@ -117,7 +117,8 @@ namespace quick_dra {
 	}
 
 	inline static consteval currency operator""_PLN(long double value) {
-		return currency{static_cast<long long>(value * 100 + .5l)};
+		return currency{
+		    static_cast<long long>(value * 100 + (value < 0 ? -0.5l : 0.5l))};
 	}
 
 	static inline constexpr auto minimal_salary = -1_PLN;
@@ -140,7 +141,8 @@ namespace quick_dra {
 	}
 
 	inline static consteval percent operator""_per(long double value) {
-		return percent{static_cast<long long>(value * 100 + .5l)};
+		return percent{
+		    static_cast<long long>(value * 100 + (value < 0 ? -0.5l : 0.5l))};
 	}
 
 	inline constexpr calc_currency operator*(calc_currency const& amount,
@@ -188,7 +190,7 @@ namespace quick_dra {
 			result[1] = fmt::to_string(pension_right);
 			result[2] = fmt::to_string(disability_level);
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		auto operator<=>(insurance_title const& rhs) const noexcept = default;
 
@@ -311,5 +313,26 @@ namespace fmt {
 
 	template <>
 	struct formatter<quick_dra::percent> : formatter<quick_dra::percent::base> {
+	};
+
+	template <>
+	struct formatter<quick_dra::ratio> : formatter<std::string> {
+		template <typename FormatContext>
+		auto format(quick_dra::ratio const& value, FormatContext& ctx) const {
+			return formatter<std::string>::format(
+			    fmt::format("{}/{}", value.num, value.den), ctx);
+		}
+	};
+
+	template <>
+	struct formatter<quick_dra::insurance_title> : formatter<std::string> {
+		template <typename FormatContext>
+		auto format(quick_dra::insurance_title const& value,
+		            FormatContext& ctx) const {
+			return formatter<std::string>::format(
+			    fmt::format("{} {} {}", value.title_code, value.pension_right,
+			                value.disability_level),
+			    ctx);
+		}
 	};
 }  // namespace fmt
