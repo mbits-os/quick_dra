@@ -92,7 +92,7 @@ namespace quick_dra {
 			}
 
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		std::vector<compiled_section> compile_report(
 		    std::vector<report_section> const& input) {
@@ -167,6 +167,7 @@ namespace quick_dra {
 				To operator()(auto const& value) const noexcept {
 					return value;
 				}
+
 				To operator()(addition const&) const noexcept { return {}; }
 				To operator()(varname const&) const noexcept { return {}; }
 
@@ -201,7 +202,7 @@ namespace quick_dra {
 				    fmt::runtime(index == invalid_index ? "{} p{}"
 				                                        : "{} p{}.{}"),
 				    id, key, index);
-			}
+			}  // GCOV_EXCL_LINE[WIN32]
 
 			void fill_var(unsigned key,
 			              size_t index,
@@ -291,12 +292,8 @@ namespace quick_dra {
 					crossrefs.erase(key);
 				}
 
-				// fmt::print("\n");
-				// print_crossrefs();
-				// fmt::print(" -- {}\n", result);
-
 				return result;
-			}
+			}  // GCOV_EXCL_LINE[GCC]
 
 			void calculate_sum(unsigned key) {
 				auto& tgt = std::get<compiled_value>(fields.find(key)->second);
@@ -365,7 +362,7 @@ namespace quick_dra {
 					result[key] = extract<calculated_value>(field);
 				}
 				return result;
-			}
+			}  // GCOV_EXCL_LINE[GCC]
 		};
 	}  // namespace
 
@@ -377,7 +374,9 @@ namespace quick_dra {
 			extended_name = fmt::format("{}.{}", log_name, self.id);
 			log_name = extended_name;
 		}
+		// GCOV_EXCL_START[GCC]
 		return calculated_block{
+		    // GCOV_EXCL_STOP
 		    .id = self.id,
 		    .fields = data_calculator::calculate(log_name, self.fields, ctx)};
 	}
@@ -390,7 +389,7 @@ namespace quick_dra {
 			result.blocks.push_back(calculate(block, ctx, self.id));
 		}
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	std::vector<calculated_section> calculate(
 	    std::vector<compiled_section> const& report,
@@ -401,7 +400,7 @@ namespace quick_dra {
 			result.push_back(calculate(section, ctx));
 		}
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	compiled_templates compiled_templates::compile(templates const& input) {
 		compiled_templates result{};
@@ -409,5 +408,5 @@ namespace quick_dra {
 			result.reports[key] = compile_report(report);
 		}
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 }  // namespace quick_dra

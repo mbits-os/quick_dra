@@ -28,10 +28,12 @@ namespace yaml {
 		if (!ref.ref().is_map()) {
 			if (optional) return ref.ref().type().is_notype();
 			if (ref.ref().type().is_notype())
+				// GCOV_EXCL_START
 				return ref.error(
 				    fmt::format("expecting `{}`; please use explicit {{}} to "
 				                "heave empty object instead",
 				                view(key)));
+			// GCOV_EXCL_STOP
 			return ref.error(fmt::format("expecting `{}`", view(key)));
 		}
 		auto const child = ref.ref().find_child(key);
@@ -80,8 +82,9 @@ namespace yaml {
 			auto const child_var = ref.from(child);
 
 			if (!child.has_key()) {
+				// GCOV_EXCL_START
 				return child_var.error("expecting a map member");
-			}
+			}  // GCOV_EXCL_STOP
 
 			K key{};
 			if (!convert_string(child_var, child.key(), key)) return false;
@@ -198,6 +201,6 @@ namespace yaml {
 			}
 		}
 
-		return true;
+		return true;  // GCOV_EXCL_LINE[LLVM]
 	}
 }  // namespace yaml

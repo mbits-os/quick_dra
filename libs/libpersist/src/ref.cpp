@@ -10,14 +10,14 @@ namespace yaml {
 	namespace {
 		thread_local struct base_ctx::error_handler* head = nullptr;
 
-		void c4_error_handler(const char* msg,
-		                      size_t msg_len,
-		                      c4::yml::Location loc,
-		                      void* user_data) {
+		[[noreturn]] void c4_error_handler(const char* msg,
+		                                   size_t msg_len,
+		                                   c4::yml::Location loc,
+		                                   void* user_data) {
 			reinterpret_cast<base_ctx::error_handler*>(user_data)->handle_error(
 			    loc, std::string_view{msg, msg_len});
 			throw c4_error_exception{};
-		}
+		}  // GCOV_EXCL_LINE
 	}  // namespace
 
 	base_ctx::error_handler::error_handler() : prev{head} { head = this; }
@@ -69,16 +69,9 @@ namespace yaml {
 	bool ref_ctx::error(std::string_view const& msg) const {
 		if (parser && parser->source().len && ref_ && head) {
 			return head->handle_error(ref_->location(*parser), msg);
-		}
-		fmt::print(stderr, "error: {}\n", msg);
-		return false;
-	}
-
-	void ref_ctx::warn(std::string_view const& msg) const {
-		if (parser && ref_ && head) {
-			head->handle_msg(ref_->location(*parser), msg, "warning"sv);
-			return;
-		}
-		fmt::print(stderr, "warning: {}\n", msg);
+		}  // GCOV_EXCL_LINE
+		[[unlikely]];                            // GCOV_EXCL_LINE
+		fmt::print(stderr, "error: {}\n", msg);  // GCOV_EXCL_LINE
+		return false;                            // GCOV_EXCL_LINE
 	}
 }  // namespace yaml

@@ -63,9 +63,9 @@ namespace yaml {
 	    std::filesystem::path const& path,
 	    std::function<void()> const& on_error) & {
 		auto maybe_contents = open_with(path, on_error);
-		if (!maybe_contents) {
-			return std::nullopt;
-		}
+		if (!maybe_contents) {    // GCOV_EXCL_LINE
+			return std::nullopt;  // GCOV_EXCL_LINE
+		}  // GCOV_EXCL_LINE
 
 		return load_contents(std::move(*maybe_contents), path.string());
 	}

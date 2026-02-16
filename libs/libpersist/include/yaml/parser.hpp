@@ -101,6 +101,6 @@ namespace yaml {
 			}
 
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 	};
 }  // namespace yaml

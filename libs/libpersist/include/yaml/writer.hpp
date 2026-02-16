@@ -44,7 +44,6 @@ namespace yaml {
 		ctx.write(ref);
 	}
 
-	void write_value(ryml::NodeRef& ref, bool ctx);
 	void write_value(ryml::NodeRef& ref, std::integral auto ctx);
 	void write_value(ryml::NodeRef& ref, std::string const& ctx);
 
