@@ -26,12 +26,16 @@ namespace quick_dra::builtin::xml {
 			int year{};
 			int month{};
 			int day{};
-			if (!from_chars(year_str, year) || !from_chars(month_str, month) ||
-			    !from_chars(day_str, day)) {
+			from_chars(year_str, year);
+			from_chars(month_str, month);
+			from_chars(day_str, day);
+
+			auto const result = std::chrono::year{year} / month / day;
+			if (!result.ok()) {
 				return std::nullopt;
 			}
 
-			return std::chrono::year{year} / month / day;
+			return result;
 		}
 		return std::nullopt;
 	}
