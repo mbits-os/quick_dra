@@ -18,8 +18,8 @@
   - [x] Integrate `proj-flow tools test-runner` (_v0.7.1_)
   - [x] Fix getting upper case from `Iksiński` as `IKSIŃSKI`, not `IKSIńSKI` (_v0.7.1_)
   - [x] Integrate test coverage gathering tools
-  - [x] Increase test coverage to 95% aboard all the compilers
-  - [ ] Increase test coverage to 100% aboard all the compilers
+  - [x] Increase test coverage to 95% for MSVC/G++, 92% for Clang
+  - [ ] Increase test coverage to 100% for MSVC/G++, 98% for Clang
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
