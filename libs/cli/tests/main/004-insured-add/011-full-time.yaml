@@ -1,4 +1,4 @@
-args: insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --salary 120000PLN
+args: insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 4/4
 expected:
   return-code: 0
   stdout: "\
@@ -7,9 +7,9 @@ expected:
     \e[0;90mDocument kind set to \e[m1\n\
     \e[0;90mDocument set to \e[mAAA000000\n\
     \e[0;90mInsurance title set to \e[m0110 0 0\n\
-    \e[0;90mPart-time scale set to \e[m<empty>\n\
-    \e[0;90mSalary set to \e[m120000 zł\n"
+    \e[0;90mPart-time scale set to \e[m1/1\n\
+    \e[0;90mSalary set to \e[mminimal for a given month\n"
   stderr: |
     Quick-DRA: file .quick_dra.yaml will be created as needed.
 writes:
-  $CWD/.quick_dra.yaml: $DATA/.quick_dra.insured.AAA000000_120k.yaml
+  $CWD/.quick_dra.yaml: $DATA/.quick_dra.insured.AAA000000_full_time.yaml

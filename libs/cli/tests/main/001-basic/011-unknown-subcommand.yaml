@@ -1,0 +1,12 @@
+args: unknown
+expected:
+  return-code: 1
+  stdout: ''
+  stderr: |
+    usage: qdra [-h] [--version] <command> [<args>]
+    qdra: "unknown" is not a qdra command
+
+    known commands:
+     xml     produce KEDU 5.6 XML file
+     payer   manage the payer data in ~/.quick_dra.yaml file
+     insured manage the insured data in ~/.quick_dra.yaml file

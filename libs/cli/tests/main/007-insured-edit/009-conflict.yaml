@@ -1,0 +1,16 @@
+args: insured edit --find Maria -y --config .quick_dra.yaml --first Antoni --last Kowalski --passport EH0123456 --scale 1/1 --salary 6500PLN
+expected:
+  return-code: 1
+  stdout: "\
+    Found:\
+    \n    #3: Maria Iksińska [P 26211012346]\n\
+    Found another person with this document:\n\
+    \n    #1: Jan Iksiński [2 EH0123456]\n\
+    \n\
+    \e[0;90m - The passport number provided seems to be invalid.\e[m\n\
+    \e[0;90m - Cannot save invalid data with -y. Stopping.\e[m\n"
+  stderr: ''
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł

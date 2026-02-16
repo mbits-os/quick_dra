@@ -1,0 +1,9 @@
+args: payer --config .quick_dra.yaml -y --passport AB0123456
+expected:
+  return-code: 1
+  stdout: "\
+    \e[0;90m - The passport number provided seems to be invalid.\e[m\n\
+    \e[0;90m - Cannot save invalid data with -y. Stopping.\e[m\n"
+  stderr: ''
+prepare:
+- cp $DATA/.quick_dra.ABC523456.yaml $CWD/.quick_dra.yaml

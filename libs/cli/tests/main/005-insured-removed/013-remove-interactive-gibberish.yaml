@@ -1,0 +1,15 @@
+args: insured remove --config .quick_dra.yaml --pos 3
+input: gibberish
+expected:
+  return-code: 1
+  stdout: "\
+    Found:\
+    \n    #3: Maria Iksińska [P 26211012346]\n\
+    \n\
+    \e[0;36mDo you want to delete this record?\e[0;90m [Y/n]\e[m> \
+    \e[0;36mDo you want to delete this record?\e[0;90m [Y/n]\e[m> "
+  stderr: ''
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł

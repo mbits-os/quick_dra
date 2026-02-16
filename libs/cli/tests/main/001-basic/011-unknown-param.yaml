@@ -1,0 +1,7 @@
+args: --param
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra [-h] [--version] <command> [<args>]
+    qdra: error: unrecognized argument: --param

@@ -1,0 +1,17 @@
+args: insured edit --find Maria -y --config .quick_dra.yaml --first Antoni --last Kowalski --social-id 78070707132 --scale 1/1 --salary 6500PLN
+expected:
+  return-code: 1
+  stdout: "\
+    Found:\
+    \n    #3: Maria Iksińska [P 26211012346]\n\
+    \e[0;90mFirst name changed from \e[mMaria\e[0;90m to \e[mAntoni\n\
+    \e[0;90mLast name changed from \e[mIksińska\e[0;90m to \e[mKowalski\n\
+    \e[0;90mDocument changed from \e[m26211012346\e[0;90m to \e[m78070707132\n\
+    \e[0;90mSalary changed from \e[m7500 zł\e[0;90m to \e[m6500 zł\n"
+  stderr: |
+    Quick-DRA: error: could not write to .quick_dra.yaml
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł
+- ro .quick_dra.yaml

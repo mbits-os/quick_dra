@@ -101,5 +101,5 @@ namespace quick_dra::builtin::xml {
 		        .date = date,
 		        .indent_xml = indent_xml,
 		        .print_info = print_info};
-	}
+	}  // GCOV_EXCL_LINE[WIN32]
 }  // namespace quick_dra::builtin::xml

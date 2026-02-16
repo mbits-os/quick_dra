@@ -46,20 +46,20 @@ namespace quick_dra::builtin::insured::list {
 				++index;
 				std::string items[] = {
 				    fmt::to_string(index),
-				    person.last_name.value_or(""s),
+				    person.last_name.value_or(""s),  // GCOV_EXCL_LINE[GCC]
 				    person.first_name.value_or(""s),
 				    person.kind.value_or(""s),
 				    person.document.value_or(""s),
 				    person.title
-				        .transform(
+				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
 				    person.part_time_scale
-				        .transform(
+				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
 				    person.salary
-				        .transform(
+				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
 				};
