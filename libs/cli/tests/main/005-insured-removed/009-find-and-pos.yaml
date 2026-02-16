@@ -1,0 +1,7 @@
+args: insured remove --pos 1 --find something -y --config .quick_dra.yaml
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra insured remove [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y]
+    qdra insured remove: error: only one of --pos and --find is allowed

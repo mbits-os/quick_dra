@@ -1,0 +1,8 @@
+args: xml --config .quick_dra.yaml
+check:
+  stdout: end
+expected:
+  return-code: 1
+  stdout: |
+    Quick-DRA: error: cannot find .quick_dra.yaml
+  stderr: ''

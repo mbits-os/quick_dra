@@ -1,0 +1,9 @@
+args: xml --pretty --info --today 2026-1-1 -n 199 --config .quick_dra.yaml
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
+    qdra xml: error: serial number must be in range 1 to 99 inclusive
+prepare:
+- cp $DATA/.quick_dra.AB4123456_50671500000.yaml $CWD/.quick_dra.yaml

@@ -26,8 +26,6 @@ namespace quick_dra {
 		           args::arglist tool_args,
 		           std::string_view parent_name) const;
 
-		std::set<std::string> list_commands() const;
-
 		template <typename ArgParser>
 		static int run(ArgParser& parser,
 		               std::span<builtin_tool const> const& commands,

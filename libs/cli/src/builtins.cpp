@@ -10,7 +10,7 @@ namespace quick_dra::builtin {
 		[[noreturn]] void show_version() {
 			fmt::print("{} version {}\n", version::program, version::ui);
 			std::exit(0);
-		}
+		}  // GCOV_EXCL_LINE[WIN32]
 	}  // namespace
 
 	void help_group::copy_to(args::chunk& chunk) const {
@@ -51,7 +51,7 @@ namespace quick_dra::builtin {
 		parser.short_help();
 		args::printer{stdout}.format_list(commands);
 		std::exit(0);
-	}
+	}  // GCOV_EXCL_LINE[WIN32, GCC]
 
 	parser::parser(std::string_view description,
 	               args::args_view const& args,

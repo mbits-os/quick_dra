@@ -1,0 +1,7 @@
+args: insured edit -y --config .quick_dra.yaml --first Antoni --last Kowalski --social-id 78070707132 --scale 1/1 --salary 6500PLN
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+    qdra insured edit: error: one of --pos and --find argument is required

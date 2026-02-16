@@ -1,7 +1,17 @@
 args: payer --config .quick_dra.yaml
 expected:
   return-code: 0
-  stdout: "\e[0;36mFirst name\e[0;90m [Jan]\e[m> \e[0;36mLast name\e[0;90m [Nowak]\e[m> \e[0;36mNIP\e[0;90m [7680002466]\e[m> \e[0;36mPESEL\e[0;90m [26211012346]\e[m> \e[0;36mDocument kind\e[0;90m [[1] - ID card, 2 - Passport]\e[m> \e[0;36mPassport\e[m> \e[0;90mFirst name changed from \e[mJan\e[0;90m to \e[mPiotr\n\e[0;90mLast name changed from \e[mNowak\e[0;90m to \e[mKowalski\n\e[0;90mDocument kind changed from \e[m1\e[0;90m to \e[m2\n\e[0;90mDocument changed from \e[mABC523456\e[0;90m to \e[mAB4123456\n"
+  stdout: "\
+    \e[0;36mFirst name\e[0;90m [Jan]\e[m> \
+    \e[0;36mLast name\e[0;90m [Nowak]\e[m> \
+    \e[0;36mNIP\e[0;90m [7680002466]\e[m> \
+    \e[0;36mPESEL\e[0;90m [26211012346]\e[m> \
+    \e[0;36mDocument kind\e[0;90m [[1] - ID card, 2 - Passport]\e[m> \
+    \e[0;36mPassport\e[m> \
+    \e[0;90mFirst name changed from \e[mJan\e[0;90m to \e[mPiotr\n\
+    \e[0;90mLast name changed from \e[mNowak\e[0;90m to \e[mKowalski\n\
+    \e[0;90mDocument kind changed from \e[m1\e[0;90m to \e[m2\n\
+    \e[0;90mDocument changed from \e[mABC523456\e[0;90m to \e[mAB4123456\n"
   stderr: ''
 input: |+
   Piotr

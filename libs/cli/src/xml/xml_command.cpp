@@ -50,7 +50,8 @@ namespace quick_dra::builtin::xml {
 		auto raw_templates = quick_dra::templates::parse_yaml(
 		    platform::config_data_dir() / "templates.yaml"sv);
 		if (!raw_templates) {
-			return 1;
+			return 1;  // GCOV_EXCL_LINE -- test would need to break
+			           // installation
 		}
 
 		auto const forms = prepare_form_set(opt.verbose_level, opt.report_index,

@@ -1,0 +1,8 @@
+args: insured edit --find EH0123456 --config .quick_dra.yaml
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    Quick-DRA: file .quick_dra.yaml will be created as needed.
+    usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+    qdra insured edit: error: --find: could not find any record using `EH0123456'
