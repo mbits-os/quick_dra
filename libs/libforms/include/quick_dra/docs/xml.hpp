@@ -19,6 +19,9 @@ namespace quick_dra {
 		std::map<std::string, std::string> attributes;
 		std::variant<vector, std::string> inside{};
 
+		bool has_text() const noexcept {
+			return std::holds_alternative<std::string>(inside);
+		}
 		vector& children() { return std::get<vector>(inside); }
 		std::string const& text() const {
 			return std::get<std::string>(inside);

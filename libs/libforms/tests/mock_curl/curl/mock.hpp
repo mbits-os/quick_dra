@@ -66,8 +66,9 @@ public:
 	    std::string_view contents,
 	    std::map<std::string_view, std::string_view> const& headers = {});
 
-	template <std::derived_from<CURL> Impl>
-	static std::unique_ptr<CURL> create() {
+	template <typename Impl>
+	static std::unique_ptr<CURL> create(void*) {
+		static_assert(std::derived_from<Impl, CURL>);
 		return std::make_unique<Impl>();
 	}
 
@@ -91,20 +92,13 @@ private:
 
 using mock_curl_factory = std::unique_ptr<CURL> (*)(void* ptr);
 
-std::pair<mock_curl_factory, void*> set_curl_factory(mock_curl_factory,
-                                                     CURLcode = CURLE_OK,
-                                                     void* ptr = nullptr);
-template <typename Lambda>
-    requires requires(Lambda const& lambda) {
-	    { lambda() } -> std::convertible_to<std::unique_ptr<CURL>>;
-    }
-std::pair<mock_curl_factory, void*> set_curl_factory(Lambda const& lambda,
-                                                     CURLcode init = CURLE_OK) {
-	auto const wrapper = +[](void* ptr) {
-		auto const cb = reinterpret_cast<Lambda const*>(ptr);
-		auto result = (*cb)();
-		return std::unique_ptr<CURL>{std::move(result)};
-	};
+std::pair<mock_curl_factory, void*> set_curl_factory(
+    mock_curl_factory,
+    CURLcode init_result = CURLE_OK,
+    void* ptr = nullptr);
 
-	return set_curl_factory(wrapper, init, &lambda);
+template <std::derived_from<CURL> Impl>
+static inline std::pair<mock_curl_factory, void*> set_curl_factory(
+    CURLcode init_result = CURLE_OK) {
+	return set_curl_factory(CURL::create<Impl>, init_result);
 }

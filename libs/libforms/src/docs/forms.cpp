@@ -131,7 +131,7 @@ namespace quick_dra {
 		}
 
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	form calc_rca(insured_t const& insured,
 	              unsigned report_index,
@@ -208,7 +208,7 @@ namespace quick_dra {
 		result.state.insert(var::insurance_total, all_contributions.total());
 		result.state.insert(var::tax_total, tax_owed);
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	form calc_dra(unsigned report_index,
 	              year_month const& date,
@@ -261,5 +261,5 @@ namespace quick_dra {
 		}
 
 		return forms;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 };  // namespace quick_dra

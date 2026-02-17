@@ -30,7 +30,7 @@ namespace quick_dra {
 				result.emplace_back(std::move(item));
 			}
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		size_t codepoints(std::string_view utf8) {
 			size_t len = 0;
