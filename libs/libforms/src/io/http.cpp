@@ -17,10 +17,8 @@ namespace quick_dra {
 		struct curl_global_initer {
 			curl_global_initer() {
 				if (::curl_global_init(CURL_GLOBAL_DEFAULT) != 0) {
-					// GCOV_EXCL_START
 					throw std::runtime_error(
 					    "CURL global initialization failed");
-					// GCOV_EXCL_STOP
 				}
 			}
 			~curl_global_initer() { ::curl_global_cleanup(); }
@@ -80,29 +78,20 @@ namespace quick_dra {
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
 		if (curl_easy_perform(curl) != CURLE_OK) {
-			// GCOV_EXCL_START
-			[[unlikely]];
 			return response.cleaned();
-			// GCOV_EXCL_STOP
 		}
 
 		long code;
 		if (curl_easy_getinfo(curl.get(), CURLINFO_RESPONSE_CODE, &code) !=
 		    CURLE_OK) {
-			// GCOV_EXCL_START
-			[[unlikely]];
 			return response.cleaned();
-			// GCOV_EXCL_STOP
 		}
 		response.status = static_cast<unsigned>(std::max(code, 0l));
 
 		curl_header* header{};
 		if (curl_easy_header(curl.get(), "Content-Type", 0, CURLH_HEADER, -1,
 		                     &header) != CURLHE_OK) {
-			// GCOV_EXCL_START
-			[[unlikely]];
 			return response.cleaned();
-			// GCOV_EXCL_STOP
 		}
 		auto const view = std::string_view{header->value};
 		auto const split_view = split_sv(view, ';'_sep);
@@ -126,7 +115,7 @@ namespace quick_dra {
 		}
 
 		return response;
-	} catch (std::exception& error) {  // GCOV_EXCL_START
+	} catch (std::exception& error) {
 		// the line below is broken, because when it is reported as excluded,
 		// the <words>, <colon>, <space>, <keyword>, <colon> makes msbuild to
 		// assume this is an error reporting on behalf of tool, which
@@ -139,5 +128,5 @@ namespace quick_dra {
 		           "           while downloading {}\n",
 		           error.what(), url);
 		return http_response{};
-	}  // GCOV_EXCL_STOP
+	}  // GCOV_EXCL_LINE[WIN32]
 }  // namespace quick_dra
