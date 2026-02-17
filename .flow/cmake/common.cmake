@@ -1,7 +1,17 @@
 function(add_project_test TARGET)
   cmake_parse_arguments(PARSE_ARGV 1 TST "" "" "")
+
+  set(_OUTPUT ${PROJECT_BINARY_DIR}/bin/tests)
+
   add_executable(${TARGET}-test ${TST_UNPARSED_ARGUMENTS})
-  set_target_properties(${TARGET}-test PROPERTIES FOLDER tests)
+  set_target_properties(${TARGET}-test PROPERTIES
+    FOLDER tests
+    RUNTIME_OUTPUT_DIRECTORY ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_OUTPUT}
+  )
   target_compile_options(${TARGET}-test PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
   target_link_options(${TARGET}-test PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
   target_include_directories(${TARGET}-test

@@ -8,6 +8,6 @@
 
 [clang]
     exec = bin/qdra
-    exec = bin/*-test
+    exec = bin/tests/*-test
     raw = .profraw
     profdata = llvm-profiler
