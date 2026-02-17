@@ -26,10 +26,8 @@ target_link_options(libforms PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
 target_include_directories(libforms
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_BINARY_DIR}/include
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_BINARY_DIR}/src
 )
 target_link_libraries(libforms PUBLIC CURL::libcurl libmodels liblex)
 
@@ -64,6 +62,20 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
+    add_subdirectory(tests/mock_curl)
+    
+    add_library(libforms_tested STATIC ${SRCS})
+
+    target_compile_options(libforms_tested PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+    target_link_options(libforms_tested PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+    target_include_directories(libforms_tested
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(libforms_tested PUBLIC mock_curl libmodels liblex)
+
     file(GLOB FORMS_TEST_SRCS_CC tests/*.cc)
     file(GLOB FORMS_TEST_SRCS_CPP tests/*.cpp)
     file(GLOB FORMS_TEST_SRCS_CXX tests/*.cxx)
@@ -73,7 +85,7 @@ if(QUICK_DRA_TESTING)
         ${FORMS_TEST_SRCS_CXX})
 
     add_project_test(libforms ${FORMS_TEST_SRCS_CC} ${FORMS_TEST_SRCS_CPP} ${FORMS_TEST_SRCS_CXX})
-    target_link_libraries(libforms-test PUBLIC GTest::gmock_main libforms)
+    target_link_libraries(libforms-test PUBLIC GTest::gmock_main libforms_tested)
 
     add_test(NAME libforms COMMAND libforms-test "--gtest_output=xml:${TEST_REPORT_DIR}/libforms/${TEST_REPORT_FILE}")
 endif()
