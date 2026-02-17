@@ -30,7 +30,7 @@ namespace quick_dra {
 			}
 
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		std::optional<tax_config> download_tax_config(verbose level) {
 			std::string url{};

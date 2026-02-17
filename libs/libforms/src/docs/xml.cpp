@@ -27,7 +27,7 @@ namespace quick_dra {
 					if (c != key) continue;
 					length += esc.length() - 1;
 					break;
-				}
+				}  // GCOV_EXCL_LINE[WIN32]
 			}
 
 			std::string result{};
@@ -39,11 +39,12 @@ namespace quick_dra {
 					result.append(esc);
 					found = true;
 					break;
-				}
+				}  // GCOV_EXCL_LINE[WIN32]
+
 				if (!found) result.push_back(c);
 			}
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 	}  // namespace
 
 	xml& xml::with(std::string_view child) {

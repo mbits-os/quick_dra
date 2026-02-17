@@ -60,7 +60,7 @@ CURLHcode curl_easy_header(CURL* easy,
 
 CURL::~CURL() = default;
 
-CURLHcode CURL::header(const char* name, size_t index, curl_header** hout) {
+CURLHcode CURL::header(const char* name, size_t, curl_header** hout) {
 	if (!hout || !name || !*name) {
 		return CURLHE_BAD_ARGUMENT;
 	}

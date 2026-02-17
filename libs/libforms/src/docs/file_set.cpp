@@ -29,5 +29,5 @@ namespace quick_dra {
 		}
 
 		return root;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 }  // namespace quick_dra

@@ -8,7 +8,9 @@
 namespace quick_dra {
 	namespace {
 		struct xml_printer {
+			// GCOV_EXCL_START
 			std::string operator()(std::monostate) const noexcept { return {}; }
+			// GCOV_EXCL_STOP
 			std::string operator()(std::string const& str) const noexcept {
 				return str;
 			}
@@ -75,7 +77,7 @@ namespace quick_dra {
 			}
 
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		xml map_sections(xml&& root,
 		                 std::vector<calculated_section> const& sections) {
