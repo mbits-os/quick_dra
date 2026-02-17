@@ -18,8 +18,6 @@ namespace quick_dra {
 		std::string charset{};
 		std::vector<std::byte> content{};
 
-		// GCOV_EXCL_START
-		// Function used exclusively by cUrl exceptional code, itself excluded
 		http_response& cleaned() noexcept {
 			status = 0;
 			content_type.type.clear();
@@ -28,7 +26,6 @@ namespace quick_dra {
 			content.clear();
 			return *this;
 		}
-		// GCOV_EXCL_STOP
 
 		std::string_view text() const noexcept {
 			return {reinterpret_cast<char const*>(content.data()),
