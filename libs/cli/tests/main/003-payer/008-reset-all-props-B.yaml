@@ -1,0 +1,7 @@
+args: payer --config .quick_dra.yaml -y --first "" --last "" --social-id "" --tax-id "" --passport ""
+expected:
+  return-code: 0
+  stdout: ''
+  stderr: ''
+prepare:
+- cp $DATA/.quick_dra.ABC523456.yaml $CWD/.quick_dra.yaml

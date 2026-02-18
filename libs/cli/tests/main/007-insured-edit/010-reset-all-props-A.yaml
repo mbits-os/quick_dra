@@ -1,0 +1,11 @@
+args: insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --social-id ""
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+    qdra insured edit: error: at least one of --social-id, --id-card and --passport is required with -y
+prepare:
+- qdra insured add --config .quick_dra.yaml -y --first Piotr --last Iksiński --id-card ABC523456 --title "0110 0 0" --scale 1/4
+- qdra insured add --config .quick_dra.yaml -y --first Jan --last Iksiński --passport EH0123456 --title "0110 0 0" --scale 3/4 --salary 9000zł
+- qdra insured add --config .quick_dra.yaml -y --first Maria --last Iksińska --social-id 26211012346 --title "0110 0 0" --salary 7500zł

@@ -89,11 +89,15 @@ namespace quick_dra::checker {
 	template <CHECKER_TEMPLATE_COPY_TYPE Input, typename List>
 	struct mask_type : weights_wrapper<Input, List> {
 		template <typename PostprocLambda>
+		// GCOV_EXCL_START[CLANG]
+		// This function is used, including tests, and still marked by llvm as
+		// not visited
 		constexpr full_mask_type<Input, List, PostprocLambda> postproc(
 		    PostprocLambda&& cb) const noexcept {
 			return {std::forward<PostprocLambda>(cb),
 			        weights_wrapper<Input, List>{}};
 		}
+		// GCOV_EXCL_STOP
 	};
 
 	template <typename List>
@@ -104,9 +108,13 @@ namespace quick_dra::checker {
 
 		template <int... Index>
 		    requires(sizeof...(Index) == size_)
+		// GCOV_EXCL_START[CLANG]
+		// This function is used, including tests, and still marked by llvm as
+		// not visited
 		constexpr mask_type<std::array{Index...}, list> with() const noexcept {
 			return {};
 		}
+		// GCOV_EXCL_STOP
 	};
 
 	template <char ch>
@@ -143,37 +151,6 @@ namespace quick_dra::checker {
 	};
 
 	template <>
-	struct action_from_t<'F'> {
-		struct hex_digit {
-			bool check(unsigned char ch) const noexcept {
-				return std::isxdigit(ch);
-			}
-
-			int value(unsigned char ch) const noexcept {
-				switch (ch) {
-					case 'A':
-					case 'B':
-					case 'C':
-					case 'D':
-					case 'E':
-					case 'F':
-						return ch - 'A' + 10;
-					case 'a':
-					case 'b':
-					case 'c':
-					case 'd':
-					case 'e':
-					case 'f':
-						return ch - 'a' + 10;
-				}
-				return ch - '0';
-			}
-		};
-
-		using type = hex_digit;
-	};
-
-	template <>
 	struct action_from_t<'?'> {
 		struct ignore {
 			bool check(unsigned char) const noexcept { return true; }
@@ -187,10 +164,13 @@ namespace quick_dra::checker {
 	template <CHECKER_TEMPLATE_COPY_TYPE Input>
 	struct mask_builder {
 		static constexpr auto input = fixed_string{Input};
+		// GCOV_EXCL_START[CLANG]
+		// This function is designed to only be part of decltype, never called
 		template <size_t... I>
 		static auto create(std::index_sequence<I...>) {
 			return partial_mask_type<list<action_from<input, I>...>>{};
 		}
+		// GCOV_EXCL_STOP
 
 		using type = decltype(create(std::make_index_sequence<input.size()>{}));
 	};
