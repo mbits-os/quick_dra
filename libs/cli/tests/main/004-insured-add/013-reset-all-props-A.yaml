@@ -1,0 +1,9 @@
+args: insured add --config .quick_dra.yaml -y --first "" --last "" --social-id ""
+expected:
+  return-code: 2
+  stdout: ''
+  stderr: |
+    usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+    qdra insured add: error: argument --first is required with -y
+prepare:
+- cp $DATA/.quick_dra.ABC523456.yaml $CWD/.quick_dra.yaml

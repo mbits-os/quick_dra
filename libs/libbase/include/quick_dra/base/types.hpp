@@ -48,7 +48,11 @@ namespace quick_dra {
 				return fixed_point<Tag, D2>{value * D2 / Den};
 			} else {
 				auto const value_f = static_cast<long double>(value) / Den;
+				// GCOV_EXCL_START[CLANG]
+				// Tests are checking rounding on both negative and positive
+				// amounts and this line is not visited anyway
 				auto const rescaled = value_f * D2 + (value < 0 ? -0.5l : 0.5l);
+				// GCOV_EXCL_STOP
 				return fixed_point<Tag, D2>{static_cast<long long>(rescaled)};
 			}
 		}

@@ -7,8 +7,37 @@
 #include <quick_dra/lex/validators.hpp>
 #include <span>
 #include <utility>
+#include "lex/validate/actions.hpp"
 
 namespace quick_dra::testing {
+	using std::literals::operator""sv;
+
+	TEST(validators, fixed_string) {
+		auto const four_digits = checker::fixed_string{"1234"};
+		ASSERT_EQ(four_digits.size(), 4);
+		ASSERT_EQ(four_digits[0], '1');
+		ASSERT_EQ(four_digits[1], '2');
+		ASSERT_EQ(four_digits[2], '3');
+		ASSERT_EQ(four_digits[3], '4');
+		ASSERT_EQ(four_digits.get<0>(), '1');
+		ASSERT_EQ(four_digits.get<1>(), '2');
+		ASSERT_EQ(four_digits.get<2>(), '3');
+		ASSERT_EQ(four_digits.get<3>(), '4');
+		ASSERT_EQ(static_cast<std::string_view>(four_digits), "1234"sv);
+
+		auto const empty = checker::fixed_string{""};
+		ASSERT_EQ(empty.size(), 0);
+		ASSERT_EQ(static_cast<std::string_view>(empty), ""sv);
+
+		auto const partial = checker::mask<"000?">.with<9, 3, 7, 0>();
+		auto const expected_weights = std::array{9, 3, 7, 0};
+		ASSERT_EQ(partial.weights, expected_weights);
+
+		auto const validator =
+		    partial.postproc([](auto sum) { return sum % 10; });
+
+		ASSERT_EQ(validator.checksum("6451"sv), 1);
+	}
 	struct id_testcase {
 		std::string_view id;
 		unsigned short checksum{};

@@ -19,10 +19,8 @@ target_link_options(liblex PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
 target_include_directories(liblex
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_BINARY_DIR}/include
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${CMAKE_CURRENT_BINARY_DIR}/src
 )
 target_link_libraries(liblex PUBLIC libbase)
 
@@ -53,6 +51,10 @@ if(QUICK_DRA_TESTING)
 
     add_project_test(liblex ${LEX_TEST_SRCS_CC} ${LEX_TEST_SRCS_CPP} ${LEX_TEST_SRCS_CXX})
     target_link_libraries(liblex-test PUBLIC GTest::gmock_main liblex)
+    target_include_directories(liblex-test
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
 
     add_test(NAME liblex COMMAND liblex-test "--gtest_output=xml:${TEST_REPORT_DIR}/liblex/${TEST_REPORT_FILE}")
 endif()
