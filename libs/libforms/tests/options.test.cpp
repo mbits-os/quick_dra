@@ -41,13 +41,13 @@ namespace quick_dra::testing {
 		auto const cfg = parse_config(verbose::parameters, 2026y / 1,
 		                              config_path, custom_tax_config);
 		auto const log = ::testing::internal::GetCapturedStdout();
+		auto const expected_log = fmt::format(
+		    "Quick-DRA: error: cannot find {}\n"
+		    "-- nothing downloaded (status: 404, {})\n"
+		    "Quick-DRA: error: cannot find {}\n"sv,
+		    custom_tax_config, GITHUB_MAIN_REF "/data/config/tax_config.yaml"sv,
+		    platform::config_data_dir() / "tax_config.yaml"sv);
 		ASSERT_FALSE(cfg);
-		ASSERT_EQ(log, fmt::format(
-		                   "Quick-DRA: error: cannot find {}\n"
-		                   "-- nothing downloaded (status: 404, {})\n"
-		                   "Quick-DRA: error: cannot find {}\n"sv,
-		                   custom_tax_config,
-		                   GITHUB_MAIN_REF "/data/config/tax_config.yaml"sv,
-		                   platform::config_data_dir() / "tax_config.yaml"sv));
+		ASSERT_EQ(log, expected_log);
 	}
 }  // namespace quick_dra::testing
