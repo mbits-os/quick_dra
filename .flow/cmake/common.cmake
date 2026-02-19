@@ -18,6 +18,8 @@ function(add_project_test TARGET)
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/tests
     ${CMAKE_CURRENT_BINARY_DIR})
+
+    add_test(NAME ${TARGET} COMMAND ${TARGET}-test "--gtest_output=xml:${PROJECT_BINARY_DIR}/test-results/google-test/${TARGET}.xml")
 endfunction()
 
 function(add_win32_icon TARGET NAME)

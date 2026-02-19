@@ -74,10 +74,44 @@ endif()
 if(QUICK_DRA_TESTING)
     string(TOLOWER ${CMAKE_BUILD_TYPE} CMAKE_PRESET)
 
+    execute_process(COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
+        system --format os
+        OUTPUT_VARIABLE QUICK_DRA_COV_OS_WITH_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    string(REPLACE "-" ";" QUICK_DRA_COV_OS_WITH_VERSION ${QUICK_DRA_COV_OS_WITH_VERSION})
+    list(GET QUICK_DRA_COV_OS_WITH_VERSION 0 QUICK_DRA_COV_OS)
+
+    if(QUICK_DRA_COV_OS STREQUAL "linux")
+        set(QUICK_DRA_COV_OS "Linux")
+        set(QUICK_DRA_DEFAULT_COMPILER "gnu")
+    elseif(QUICK_DRA_COV_OS STREQUAL "ubuntu")
+        set(QUICK_DRA_COV_OS "Ubuntu")
+        set(QUICK_DRA_DEFAULT_COMPILER "gnu")
+    elseif(QUICK_DRA_COV_OS STREQUAL "ubuntu")
+        set(QUICK_DRA_COV_OS "Window")
+        set(QUICK_DRA_DEFAULT_COMPILER "msvc")
+    endif()
+
+    message(STATUS "QUICK_DRA_COV_OS=${QUICK_DRA_COV_OS}")
+
+    set(QUICK_DRA_CTRF_REPORT_NAME "${QUICK_DRA_COV_OS} ${CMAKE_BUILD_TYPE}")
+    string(TOLOWER ${CMAKE_CXX_COMPILER_ID} QUICK_DRA_COV_COMPILER)
+
+    if(NOT QUICK_DRA_COV_COMPILER STREQUAL QUICK_DRA_DEFAULT_COMPILER)
+        string(APPEND QUICK_DRA_CTRF_REPORT_NAME ", ${QUICK_DRA_COV_COMPILER}")
+    endif()
+
+    if(QUICK_DRA_SANITIZE)
+        string(APPEND QUICK_DRA_CTRF_REPORT_NAME ", with sanitizer")
+    endif()
+
     add_test(
         NAME qdra-test-runner-main
         COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
-            tools test-runner --preset "${CMAKE_PRESET}" --tests .
+        tests runner --preset "${CMAKE_PRESET}"
+        --ctrf "${PROJECT_BINARY_DIR}/test-results/ctrf/qdra.json"
+        --ctrf-report-name "${QUICK_DRA_CTRF_REPORT_NAME}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 endif()

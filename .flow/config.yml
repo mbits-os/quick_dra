@@ -5,6 +5,7 @@ extensions:
   - proj_flow.ext.store
   - proj_flow.ext.test_runner
   - proj_flow.ext.tools
+  - proj_flow.ext.tests
   - proj_flow.ext.webidl
   - quick_dra.icons
   - quick_dra.yaml_reader
@@ -14,6 +15,7 @@ entry:
   config: [Conan, CMake]
   build: [Build]
   test: [Build, Test]
+  test-report: [GTestToCtrf, MergeCtrfFiles]
   verify:
     - Build
     - Test
@@ -58,6 +60,9 @@ shortcuts:
 
 test:
   target: QUICK_DRA_coveralls
+  gtest-dir: test-results/google-test
+  ctrf-dir: test-results/ctrf
+  ctrf-report: ../artifacts/test-results/ctrf.json
 
 test-runner:
   target: qdra

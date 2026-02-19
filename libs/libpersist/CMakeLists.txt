@@ -48,6 +48,4 @@ if(QUICK_DRA_TESTING)
 
     add_project_test(libpersist ${PERSIST_TEST_SRCS_CC} ${PERSIST_TEST_SRCS_CPP} ${PERSIST_TEST_SRCS_CXX})
     target_link_libraries(libpersist-test PUBLIC GTest::gmock_main libpersist)
-
-    add_test(NAME libpersist COMMAND libpersist-test "--gtest_output=xml:${TEST_REPORT_DIR}/libpersist/${TEST_REPORT_FILE}")
 endif()
