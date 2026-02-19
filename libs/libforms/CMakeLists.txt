@@ -63,7 +63,7 @@ endif()
 # #################################################################
 if(QUICK_DRA_TESTING)
     add_subdirectory(tests/mock_curl)
-    
+
     add_library(libforms_tested STATIC ${SRCS})
 
     target_compile_options(libforms_tested PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
@@ -86,6 +86,4 @@ if(QUICK_DRA_TESTING)
 
     add_project_test(libforms ${FORMS_TEST_SRCS_CC} ${FORMS_TEST_SRCS_CPP} ${FORMS_TEST_SRCS_CXX})
     target_link_libraries(libforms-test PUBLIC GTest::gmock_main libforms_tested)
-
-    add_test(NAME libforms COMMAND libforms-test "--gtest_output=xml:${TEST_REPORT_DIR}/libforms/${TEST_REPORT_FILE}")
 endif()

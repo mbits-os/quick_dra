@@ -52,7 +52,6 @@ if(QUICK_DRA_TESTING)
 
   find_package(GTest REQUIRED)
 
-  set(TEST_REPORT_DIR "${PROJECT_BINARY_DIR}/test-results")
   set(TEST_SANITIZER_TAG "")
 
   if(QUICK_DRA_SANITIZE)

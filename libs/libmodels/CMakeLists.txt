@@ -58,6 +58,4 @@ if(QUICK_DRA_TESTING)
 
     add_project_test(libmodels ${MODELS_TEST_SRCS_CC} ${MODELS_TEST_SRCS_CPP} ${MODELS_TEST_SRCS_CXX})
     target_link_libraries(libmodels-test PUBLIC GTest::gmock_main libmodels)
-
-    add_test(NAME libmodels COMMAND libmodels-test "--gtest_output=xml:${TEST_REPORT_DIR}/libmodels/${TEST_REPORT_FILE}")
 endif()

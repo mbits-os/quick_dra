@@ -55,6 +55,4 @@ if(QUICK_DRA_TESTING)
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
     )
-
-    add_test(NAME liblex COMMAND liblex-test "--gtest_output=xml:${TEST_REPORT_DIR}/liblex/${TEST_REPORT_FILE}")
 endif()

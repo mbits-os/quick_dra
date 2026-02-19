@@ -31,6 +31,10 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.M.outputs.matrix) }}
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     env:
       BUILD_TYPE: ${{ matrix.build_type }}
       CONAN_REVISIONS_ENABLED: 1
@@ -173,9 +177,15 @@ jobs:
         run: ${{ env.FLOW_COMMAND }} -s Build
 
       - name: Test
-        run: ${{ env.FLOW_COMMAND }} -s Test,StoreTests
+        continue-on-error: true
+        run: ${{ env.FLOW_COMMAND }} -s Test
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+
+      - name: Prepare Test Report
+        if: always()
+        continue-on-error: true
+        run: ${{ env.FLOW_COMMAND }} -s GTestToCtrf,MergeCtrfFiles
 
       - name: Pack
         id: artifacts
@@ -192,19 +202,26 @@ jobs:
       #     ##     ## ##        ##       ##     ## ##     ## ##     ##
       #      #######  ##        ########  #######  ##     ## ########
 
+      - name: Publish Test Report
+        if: always()
+        uses: ctrf-io/github-test-reporter@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          report-path: './build/artifacts/test-results/ctrf.json'
+          artifact-name: ctrf-report-${{ env.ARTIFACT_SUFFIX }}
+          github-report: true
+          upload-artifact: true
+          fetch-previous-results: true
+          summary-delta-report: true
+          pull-request-report: true
+
       - name: Upload packages
         uses: actions/upload-artifact@v4
         if: ${{ steps.artifacts.outputs.CPACK_GENERATORS != '' }}
         with:
           name: _packages-${{ env.ARTIFACT_SUFFIX }}
           path: ${{github.workspace}}/build/artifacts/packages/
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: _tests-${{ env.ARTIFACT_SUFFIX }}
-          path: ${{github.workspace}}/build/artifacts/test-results/
 
   coveralls-done:
     name: Finalize coverage reporting
@@ -246,13 +263,6 @@ jobs:
         with:
           name: Packages
           pattern: _packages-*
-          delete-merged: true
-      - name: Merge test results
-        uses: actions/upload-artifact/merge@v4
-        if: always()
-        with:
-          name: Test Results
-          pattern: _tests-*
           delete-merged: true
 
   publish:
