@@ -9,18 +9,13 @@ The **quick_dra.test_coverage** replaces the ``"Test"`` step and introduces ``co
 The new step will fall back on already registered ``"Test"`` step, if coverage
 set to ``"OFF"`` in run matrix or if ``"test.target"`` is not set in Flow config.
 
-The ``coveralls`` command will set a "done" state for given parallel Coveralls build.
+The ``coveralls`` command is able to upload a signle parallel build report and
+set a "done" state for given parallel Coveralls build.
 """
 
-import json
-import os
-import sys
-from typing import Annotated, Any, cast
-from urllib.parse import urlencode
+from typing import Any, cast
 
-from proj_flow.api import arg, env, step
-
-ENDPOINT = "https://coveralls.io"
+from proj_flow.api import env, step
 
 PREVIOUS_TEST = step.get_registered("Test")
 
@@ -68,43 +63,3 @@ class CoverallsTest(step.Step):
         if PREVIOUS_TEST:
             return PREVIOUS_TEST.run(config, rt)
         return 1
-
-
-@arg.command("coveralls")
-def coveralls(
-    build_num: Annotated[
-        str | None,
-        arg.Argument(
-            help="Finish the Coveralls parallel job", names=["--done"], opt=True
-        ),
-    ],
-    rt: env.Runtime,
-):
-    """Read all Coveralls artifacts, merge them into one report and send to the service."""
-
-    if not build_num:
-        print("Only --done is currently implemented.")
-        return 0
-
-    repo_token = os.environ.get("COVERALLS_REPO_TOKEN")
-    if not repo_token:
-        print(
-            "The $COVERALLS_REPO_TOKEN environment variable is missing. Not sending anything.",
-            file=sys.stderr,
-        )
-        return 1
-
-    url = f"{ENDPOINT}/webhook?{urlencode({"repo_token": repo_token})}"
-
-    payload = {"payload": {"build_num": build_num, "status": "done"}}
-
-    return rt.cmd(
-        "curl",
-        "-X",
-        "POST",
-        "-H",
-        "Content-Type: application/json",
-        "-d",
-        json.dumps(payload, ensure_ascii=False),
-        url,
-    )

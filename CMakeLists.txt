@@ -132,13 +132,13 @@ if(QUICK_DRA_TESTING)
   set(QUICK_DRA_COVERALLS_DIRS ${LEGACY_COVERAGE})
   set(QUICK_DRA_COVERALLS_TARGET qdra)
 
-  # set(__SANITIZER)
+  set(__SANITIZER)
 
-  # if(QUICK_DRA_SANITIZE)
-  # set(__SANITIZER -sanitizer)
-  # endif()
+  if(QUICK_DRA_SANITIZE)
+    set(__SANITIZER -sanitizer)
+  endif()
 
-  # set(QUICK_DRA_COVERALLS_FILE "${PROJECT_BINARY_DIR}/../artifacts/coverage/coveralls_${QUICK_DRA_COV_OS}-${CMAKE_BUILD_TYPE}-${QUICK_DRA_COV_PROPERTIES_COMPILER}${__SANITIZER}.json")
+  set(QUICK_DRA_COVERALLS_FILE "${PROJECT_BINARY_DIR}/../artifacts/coverage/coveralls_${QUICK_DRA_COV_OS}-${CMAKE_BUILD_TYPE}-${QUICK_DRA_COV_PROPERTIES_COMPILER}${__SANITIZER}.json")
   include(${PROJECT_SOURCE_DIR}/tools/coveralls/Coveralls.cmake)
 endif()
 
