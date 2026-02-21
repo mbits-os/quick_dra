@@ -4,6 +4,9 @@
 #include <cctype>
 #include <iostream>
 #include <quick_dra/base/str.hpp>
+#include <string>
+#include <string_view>
+#include <vector>
 
 namespace quick_dra {
 	namespace {

@@ -15,6 +15,7 @@
 #include <quick_dra/docs/xml_builder.hpp>
 #include <quick_dra/models/types.hpp>
 #include <quick_dra/version.hpp>
+#include <string>
 #include "../commands.hpp"
 #include "cli_options.hpp"
 

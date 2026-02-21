@@ -5,6 +5,7 @@
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
 #include <quick_dra/version.hpp>
+#include <vector>
 
 namespace quick_dra {
 	xml build_file_set(options const& opt,

@@ -3,6 +3,9 @@
 
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/search.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace quick_dra {
 	namespace {

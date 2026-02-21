@@ -1,10 +1,15 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <algorithm>
+#include <limits>
 #include <map>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/types.hpp>
 #include <set>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace quick_dra {
 	namespace {

@@ -5,6 +5,7 @@
 
 #include <fmt/format.h>
 #include <algorithm>
+#include <cstdio>
 #include <functional>
 #include <map>
 #include <quick_dra/base/meta.hpp>

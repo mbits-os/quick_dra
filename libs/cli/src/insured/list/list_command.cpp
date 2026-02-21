@@ -9,6 +9,7 @@
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/low_level.hpp>
 #include <quick_dra/models/types.hpp>
+#include <string>
 
 namespace quick_dra::builtin::insured::list {
 	int handle(std::string_view tool_name,

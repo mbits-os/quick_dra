@@ -17,6 +17,7 @@ This project will use [Conventional Commits v1.0.0](https://www.conventionalcomm
 |`refactor`|refactoring production code, eg. renaming a variable|||
 |`revert`|neither fixing a bug nor adding a feature|||
 |`style`|formatting, missing semi colons, etc; no production code change|||
+|`lint`|formatting as answer to linter output|||
 |`test`|adding missing tests, refactoring tests; no production code change|||
 
 Additionally, after v1.0.0 release, any breaking change will have a `!` appended to type and `BREAKING CHANGE: <description>` in the message footer.

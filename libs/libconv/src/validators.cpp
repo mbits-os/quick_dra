@@ -4,6 +4,7 @@
 #include <quick_dra/conv/low_level.hpp>
 #include <quick_dra/conv/validators.hpp>
 #include <quick_dra/lex/validators.hpp>
+#include <string>
 #include <utility>
 
 namespace quick_dra::builtin {

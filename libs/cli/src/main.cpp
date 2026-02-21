@@ -1,6 +1,11 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <algorithm>
+#include <memory>
+#include <string>
+#include <vector>
+
 #ifdef _WIN32
 #define NOMINMAX
 #include <Windows.h>

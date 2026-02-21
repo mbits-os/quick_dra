@@ -6,6 +6,7 @@
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/types.hpp>
 #include <quick_dra/conv/validators.hpp>
+#include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
