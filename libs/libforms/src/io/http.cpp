@@ -5,12 +5,14 @@
 
 #include <curl/curl.h>
 #include <fmt/format.h>
+#include <algorithm>
 #include <memory>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/io/http.hpp>
 #include <quick_dra/version.hpp>
 #include <span>
 #include <stdexcept>
+#include <string>
 
 namespace quick_dra {
 	namespace {

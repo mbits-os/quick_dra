@@ -6,6 +6,8 @@
 #include <args_parser.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/validators.hpp>
+#include <utility>
+#include <vector>
 #include "add_conversation.hpp"
 
 namespace quick_dra::builtin::insured::add {

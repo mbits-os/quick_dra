@@ -2,10 +2,14 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
+#include <algorithm>
 #include <numeric>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/docs/summary.hpp>
 #include <ranges>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace quick_dra {
 	namespace {

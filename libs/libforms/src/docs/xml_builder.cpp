@@ -4,6 +4,9 @@
 #include <fstream>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace quick_dra {
 	namespace {

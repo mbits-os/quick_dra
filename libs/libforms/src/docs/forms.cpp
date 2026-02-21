@@ -1,13 +1,17 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <concepts>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/lex/tax.hpp>
 #include <quick_dra/lex/validators.hpp>
+#include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 namespace quick_dra {
 	namespace {

@@ -2,8 +2,11 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/ranges.h>
+#include <algorithm>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/types.hpp>
+#include <string>
+#include <vector>
 
 namespace quick_dra::v1 {
 	namespace {

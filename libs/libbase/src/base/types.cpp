@@ -4,6 +4,7 @@
 #include <charconv>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/base/types.hpp>
+#include <string>
 
 namespace quick_dra {
 	namespace {

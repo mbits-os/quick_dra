@@ -8,6 +8,8 @@
 #include <quick_dra/io/http.hpp>
 #include <quick_dra/io/options.hpp>
 #include <quick_dra/version.hpp>
+#include <string>
+#include <utility>
 
 namespace quick_dra {
 	namespace {

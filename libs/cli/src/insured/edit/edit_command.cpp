@@ -6,6 +6,8 @@
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/search.hpp>
 #include <quick_dra/conv/validators.hpp>
+#include <string>
+#include <vector>
 #include "edit_conversation.hpp"
 
 namespace quick_dra::builtin::insured::edit {

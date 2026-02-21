@@ -5,6 +5,7 @@
 #include <unicode/unistr.h>
 
 #include <quick_dra/base/str.hpp>
+#include <string>
 
 namespace quick_dra {
 	std::string to_upper(std::string_view input) {

@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <quick_dra/base/str.hpp>
 #include <span>
+#include <string>
 
 namespace quick_dra {
 	namespace {
