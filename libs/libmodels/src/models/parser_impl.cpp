@@ -158,7 +158,10 @@ namespace quick_dra::v1::partial {
 
 		auto result = load_status::errors_encountered;
 
+		// GCOV_EXCL_START[GCC]
+		// the insides of the lambda are green, but following line is not...
 		auto object = parser::parse_yaml_file<config>(path, [&]() {
+			// GCOV_EXCL_STOP
 			// separate line for coverage visibility
 			result = load_status::file_not_readable;
 		});
@@ -197,7 +200,7 @@ namespace quick_dra::v1::partial {
 				break;
 		}
 		return cfg;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	bool config::store(std::filesystem::path const& path) {
 		prepare_for_write();

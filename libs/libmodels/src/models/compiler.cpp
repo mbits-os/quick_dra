@@ -270,12 +270,6 @@ namespace quick_dra {
 				}
 			}
 
-			void print_crossrefs() {
-				for (auto const& pair : crossrefs) {
-					fmt::print("{} {}\n", id, pair);
-				}
-			}
-
 			std::set<unsigned> get_crossrefs_layer() {
 				std::set<unsigned> result{};
 
@@ -335,7 +329,6 @@ namespace quick_dra {
 			}
 
 			void remove_crossrefs() {
-				// print_crossrefs();
 				auto layer = get_crossrefs_layer();
 				while (!layer.empty()) {
 					for (auto key : layer) {
