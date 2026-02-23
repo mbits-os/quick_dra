@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.9.1](https://github.com/mbits-os/quick_dra/compare/v0.9.0...v0.9.1) (2026-02-23)
+
+### Bug Fixes
+
+- reset document props after use ([3b070be](https://github.com/mbits-os/quick_dra/commit/3b070bef397295c93f5691265a1f82b090cc945c))
+- allow reading empty strings ([668bc60](https://github.com/mbits-os/quick_dra/commit/668bc60b63851a43124919b4549309906f0c0a7c))
+- reject `--today 1999-11-31` as invalid date ([d24a5cd](https://github.com/mbits-os/quick_dra/commit/d24a5cd7c046f582a541d63a8d966c41ba8758a1))
+- drop the idea of "partially-loaded" config, just check for errors ([7cd0bf2](https://github.com/mbits-os/quick_dra/commit/7cd0bf247b0a85ac544d2f3c0ef560d5802e14ab))
+- remove idea of "fixing a checksum" ([93f1d1b](https://github.com/mbits-os/quick_dra/commit/93f1d1be33558797f8d7986d0d39954b34632dd5))
+- patch corner case for some esoteric Windows setups ([857af32](https://github.com/mbits-os/quick_dra/commit/857af32896a3f40f027823ca42d20924bafb2d3f))
+- gcc compilation warnings ([7d773e4](https://github.com/mbits-os/quick_dra/commit/7d773e4d908d8c72f1ab4d69293e9d3db1f145e3))
+- remove compilation warnings on clang ([04cce7a](https://github.com/mbits-os/quick_dra/commit/04cce7a47f4095ea236d69fbbfb3660da31eada4))
+- stricter version comparison for proj_flow package ([96cb596](https://github.com/mbits-os/quick_dra/commit/96cb5969efd26860f0770c211824609b691fadc4))
+- **docs**: add Coveralls badge to readme ([b902f42](https://github.com/mbits-os/quick_dra/commit/b902f42e344e4f1e075ce80915e9bb575745cece))
+
 ## [0.9.0](https://github.com/mbits-os/quick_dra/compare/v0.8.0...v0.9.0) (2026-02-10)
 
 ### New Features
