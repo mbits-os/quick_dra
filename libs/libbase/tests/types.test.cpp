@@ -75,6 +75,11 @@ namespace quick_dra::testing {
 	TEST_P(ratios, parse) { parse_test(); }
 	TEST_P(insurance_titles, parse) { parse_test(); }
 
+	TEST(uint_value, compare) {
+		ASSERT_GT(uint_value{3}, uint_value{1});
+		ASSERT_LT(uint_value{3}, uint_value{4});
+	}
+
 	TEST(ratios, compare) {
 		ASSERT_GT(ratio(1, 3), ratio(1, 4));
 		ASSERT_LT(ratio(2, 3), ratio(3, 4));

@@ -1,8 +1,8 @@
 partial interface templates {
     [throws] static templates? parse_yaml([in] path path);
-    [mutable] bool validate();
+    bool validate();
 };
 
 partial interface report_section {
-    [mutable] bool validate();
+    bool validate();
 };

@@ -42,16 +42,17 @@ namespace quick_dra::v1 {
 			}
 			kind = "1"sv;
 			document = std::move(*id_card);
+			id_card.reset();
 		}
 
 		if (passport) {
 			kind = "2"sv;
 			document = std::move(*passport);
+			passport.reset();
 		}
 
 		return parse_and_validate_name(*this) &&
-		       !(social_id.empty() || tax_id.empty() || kind.empty() ||
-		         document.empty());
+		       !(kind.empty() || document.empty());
 	}
 
 	bool insured_t::postprocess() {
@@ -66,22 +67,22 @@ namespace quick_dra::v1 {
 			}
 			kind = "P"sv;
 			document = std::move(*social_id);
+			social_id.reset();
 		}
 
 		if (id_card) {
-			if (social_id || passport) {
+			if (passport) {
 				return false;
 			}
 			kind = "1"sv;
 			document = std::move(*id_card);
+			id_card.reset();
 		}
 
 		if (passport) {
-			if (social_id || id_card) {
-				return false;
-			}
 			kind = "2"sv;
 			document = std::move(*passport);
+			passport.reset();
 		}
 
 		if (kind.empty() || document.empty()) return false;
@@ -93,7 +94,7 @@ namespace quick_dra::v1 {
 		return parser::parse_yaml_file<templates>(path, app_name);
 	}
 
-	bool templates::validate() noexcept {
+	bool templates::validate() const noexcept {
 		for (auto& [kedu, report] : reports) {
 			if (kedu.empty()) return false;
 			for (auto& section : report) {
@@ -103,8 +104,9 @@ namespace quick_dra::v1 {
 		return true;
 	}
 
-	bool report_section::validate() noexcept {
+	bool report_section::validate() const noexcept {
 		if (id.empty()) return false;
+		if (block && block->empty()) return false;
 
 		struct validator {
 			bool operator()(std::string const& str) const noexcept {
@@ -156,8 +158,10 @@ namespace quick_dra::v1::partial {
 
 		auto result = load_status::errors_encountered;
 
-		auto object = parser::parse_yaml_file<config>(
-		    path, [&]() { result = load_status::file_not_readable; });
+		auto object = parser::parse_yaml_file<config>(path, [&]() {
+			// separate line for coverage visibility
+			result = load_status::file_not_readable;
+		});
 		if (!object) {
 			return result;
 		}
@@ -184,7 +188,9 @@ namespace quick_dra::v1::partial {
 				           path);
 				std::exit(1);
 			case load_status::errors_encountered:
-				fmt::print(stderr, "Quick-DRA: error: {} needs to be updated\n",
+				fmt::print(stderr,
+				           "Quick-DRA: error: {} needs to be updated before "
+				           "continuing\n",
 				           path);
 				std::exit(1);
 			default:
