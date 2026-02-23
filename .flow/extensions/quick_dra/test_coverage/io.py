@@ -260,7 +260,9 @@ class CommentContext:
             full_range[key] = []
         return full_range
 
-    def mustache_context(self, pr_filter: dict[str, list[Range]] | None):
+    def mustache_context(
+        self, pr_filter: dict[str, list[Range]] | None, coveralls_url: str | None
+    ):
         """Prepares the mustache context for gathered coverage info"""
         args = (
             ("Line coverage rate is", self.unfiltered_ranges()),
@@ -277,25 +279,20 @@ class CommentContext:
         combined = CommentContext._report_on(self.combined, *args)
         comment_type = "combined"
 
-        if len(tags) == 1:
-            title = cast(str, tags[0].get("tag", title))
-            tags = []
-            comment_type = "partial"
-
         return {
             "title": title,
             "type": comment_type,
             "combined": {"lines": combined},
             "tags": tags,
             "has-tags": len(tags),
+            "coveralls": coveralls_url,
         }
 
     @staticmethod
     def render_html(ctx: dict):
         """Renders the context for HTML/MD"""
         return chevron.render(
-            """<!-- coverage-report:{{type}} -->
-### {{title}}
+            """# {{title}}
 {{#combined}}{{> report}}{{/combined}}
 {{#has-tags}}
 
@@ -303,6 +300,25 @@ class CommentContext:
 <summary><b>Coverage for each build</b></summary>{{#tags}}{{> report}}{{/tags}}
 </details>
 {{/has-tags}}
+{{#coveralls}}
+<p>Build uploaded to <a href="{{.}}">
+<svg role="img"
+  height="12"
+  viewBox="0 0 24 24"
+  xmlns="http://www.w3.org/2000/svg">
+  <path
+    fill="currentColor"
+    d="M0 12v12h24V0H0zm13.195-6.187l1.167 3.515 2.255.005c1.238.005 2.916.019
+       3.727.037l1.472.028-2.968 2.152c-1.63 1.181-2.976 2.18-2.99 2.212
+       -.01.033.487 1.627 1.106 3.54.619 1.917 1.12 3.487 1.116 3.492-.005.01
+       -1.35-.947-2.986-2.119-1.636-1.177-3-2.147-3.033-2.161-.028-.01
+       -1.411.947-3.07 2.138-1.655 1.185-3.02 2.151-3.024 2.142-.004-.005.497
+       -1.575 1.116-3.492.619-1.913 1.115-3.507 1.106-3.54-.014-.032-1.36-1.03
+       -2.99-2.212L2.23 9.398l1.472-.028c.811-.018 2.49-.032 3.727-.037l2.254
+       -.005 1.168-3.515a512.54 512.54 0 011.171-3.516c.005 0 .53 1.58 1.172
+       3.516z"/>
+</svg> Coveralls</a>.</p>{{/coveralls}}
+<!-- coverage-report:{{type}} -->
 """,
             data=ctx,
             partials_dict={
@@ -320,7 +336,10 @@ class CommentContext:
         return chevron.render(
             """\033[1;97m{{title}}\033[m{{#combined}}{{> report}}{{/combined}}{{!
     break for linters
-}}{{#tags}}{{> report}}{{/tags}}""",
+}}{{#tags}}{{> report}}{{/tags}}{{!
+    break for linters
+}}{{#coveralls}}
+\033[0;90mBuild uploaded to Coveralls: \033[4;94m{{.}}\033[m{{/coveralls}}""",
             data=ctx,
             partials_dict={
                 "report": """{{#tag}}
