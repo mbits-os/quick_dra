@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 #include <args_parser.hpp>
+#include <iostream>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/concepts.hpp>
 #include <quick_dra/conv/field_policy.hpp>
@@ -87,6 +88,9 @@ namespace quick_dra {
 		bool ask_questions{true};
 		value_type opts{};
 		value_type dst{};
+
+		std::istream* cin = &std::cin;
+		void attach(std::istream& in) { cin = &in; }
 
 		struct no_questions_verifier {
 			conversation& conv;
