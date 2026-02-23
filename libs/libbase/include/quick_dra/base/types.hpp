@@ -28,6 +28,12 @@ namespace quick_dra {
 
 		strong_typedef() = default;
 		explicit strong_typedef(Type v) : value{v} {}
+		auto operator<=>(strong_typedef rhs) const noexcept {
+			return value <=> rhs.value;
+		}
+		bool operator==(strong_typedef rhs) const noexcept {
+			return value == rhs.value;
+		}
 	};
 
 	using uint_value = strong_typedef<class number_tag, unsigned>;

@@ -21,6 +21,7 @@ namespace quick_dra {
 
 	struct addition {
 		std::vector<unsigned> refs;
+		constexpr auto operator<=>(addition const&) const noexcept = default;
 	};
 
 	struct varname {
@@ -30,6 +31,8 @@ namespace quick_dra {
 			if (path.starts_with('$')) path = path.substr(1);
 			return varname{.path = split_s(path, '.'_sep)};
 		}
+
+		constexpr auto operator<=>(varname const&) const noexcept = default;
 	};
 
 	struct compiletime_varname {
@@ -196,6 +199,8 @@ namespace quick_dra {
 	struct block {
 		std::string id{};
 		mapped_value<ValueType> fields{};
+
+		constexpr auto operator<=>(block const&) const noexcept = default;
 		void debug_print(int indent, bool standalone = true) const noexcept {
 			bool first = standalone;
 			if (!id.empty()) {
@@ -232,6 +237,7 @@ namespace quick_dra {
 		bool repeatable{false};
 		std::vector<block<ValueType>> blocks{};
 
+		constexpr auto operator<=>(section const&) const noexcept = default;
 		void debug_print() const noexcept {
 			fmt::print("--     {}", id);
 			if (repeatable) {
@@ -285,6 +291,8 @@ namespace quick_dra {
 	struct compiled_templates {
 		std::map<std::string, std::vector<compiled_section>> reports;
 
+		constexpr auto operator<=>(compiled_templates const&) const noexcept =
+		    default;
 		static compiled_templates compile(v1::templates const&);
 		void debug_print() const noexcept;
 	};
