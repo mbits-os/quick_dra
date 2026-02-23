@@ -214,6 +214,8 @@ jobs:
           report-path: "./build/artifacts/test-results/ctrf.json"
           artifact-name: ctrf-report-${{ env.ARTIFACT_SUFFIX }}
           github-report: true
+          overwrite-comment: true
+          comment-tag: ${{ env.ARTIFACT_SUFFIX }}
           upload-artifact: true
           fetch-previous-results: true
           pull-request-report: true
@@ -224,6 +226,7 @@ jobs:
         with:
           name: _packages-${{ env.ARTIFACT_SUFFIX }}
           path: ${{github.workspace}}/build/artifacts/packages/
+          if-no-files-found: ignore
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
@@ -231,6 +234,7 @@ jobs:
         with:
           name: _coverage-${{ env.ARTIFACT_SUFFIX }}
           path: ${{github.workspace}}/build/artifacts/coverage/
+          if-no-files-found: ignore
 
   coveralls-done:
     name: Finalize coverage reporting
