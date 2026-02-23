@@ -166,7 +166,7 @@ namespace quick_dra {
 			}
 			result.push_back(']');
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		auto operator()(maybe_list<ValueType> const& value) const {
 			return std::visit(*this, value);
@@ -264,7 +264,7 @@ namespace quick_dra {
 
 		if (report.empty()) {
 			fmt::print("\n");  // GCOV_EXCL_LINE
-		}
+		}  // GCOV_EXCL_LINE[CLANG]
 	}
 
 	using calculated_block = block<calculated_value>;

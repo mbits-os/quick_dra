@@ -145,7 +145,7 @@ namespace quick_dra {
 				std::visit(value_printer<calculated_value>{}, *value);
 			} else if (children.empty()) {
 				fmt::print(" <null>");  // GCOV_EXCL_LINE
-			}
+			}  // GCOV_EXCL_LINE[CLANG]
 			fmt::print("\n");
 
 			for (auto const& [key, child] : children) {
