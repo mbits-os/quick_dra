@@ -7,6 +7,7 @@
 #include <fmt/format.h>
 #include <fmt/std.h>
 #include <cstdio>
+#include <iostream>
 #include <iterator>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/low_level.hpp>
@@ -57,7 +58,7 @@ namespace quick_dra::builtin::insured::remove {
 			bool remove_allowed = false;
 			fmt::print("\n");
 			if (!get_yes_no("Do you want to delete this record?", true,
-			                remove_allowed)) {
+			                remove_allowed, std::cin)) {
 				return 1;
 			}
 

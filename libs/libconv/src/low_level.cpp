@@ -3,7 +3,7 @@
 
 #include <fmt/format.h>
 #include <fmt/ranges.h>
-#include <iostream>
+#include <istream>
 #include <quick_dra/conv/low_level.hpp>
 #include <string>
 #include <utility>
@@ -18,14 +18,15 @@ namespace quick_dra {
 
 	bool get_answer(std::string_view label,
 	                std::string_view hint,
-	                std::function<bool(std::string&&)> const& answer_is_valid) {
+	                std::function<bool(std::string&&)> const& answer_is_valid,
+	                std::istream& in) {
 		auto const hint_brackets =
 		    hint.empty() ? ""s : fmt::format("\033[0;90m [{}]", hint);
 
 		while (true) {
 			std::string answer;
 			fmt::print("\033[0;36m{}{}\033[m> ", label, hint_brackets);
-			if (!std::getline(std::cin, answer)) {
+			if (!std::getline(in, answer)) {
 				return false;
 			}
 			if (answer_is_valid(std::move(answer))) {
@@ -34,7 +35,10 @@ namespace quick_dra {
 		}
 	}
 
-	bool get_yes_no(std::string_view label, bool hint, bool& dst) {
+	bool get_yes_no(std::string_view label,
+	                bool hint,
+	                bool& dst,
+	                std::istream& in) {
 		auto const handler = [&, hint](std::string&& input) -> bool {
 			if (input.empty()) {
 				dst = hint;
@@ -51,14 +55,15 @@ namespace quick_dra {
 			return false;
 		};
 
-		return get_answer(label, hint ? "Y/n"sv : "y/N"sv, handler);
+		return get_answer(label, hint ? "Y/n"sv : "y/N"sv, handler, in);
 	}
 
 	bool get_enum_answer(
 	    std::string_view label,
 	    std::span<std::pair<char, std::string_view> const> const& items,
 	    std::function<void(char)> const& store_enum,
-	    char selected) {
+	    char selected,
+	    std::istream& in) {
 		std::string hint{};
 		hint.reserve([&items]() {
 			size_t hint_size = items.size() * 4 + (items.size() - 1) * 2;
@@ -77,25 +82,28 @@ namespace quick_dra {
 			hint.append(description);
 		}
 
-		return get_answer(label, hint, [&, selected](std::string&& answer) {
-			if (selected && answer.empty()) {
-				store_enum(selected);
-				return true;
-			}
+		return get_answer(
+		    label, hint,
+		    [&, selected](std::string&& answer) {
+			    if (selected && answer.empty()) {
+				    store_enum(selected);
+				    return true;
+			    }
 
-			if (answer.size() != 1) {
-				return false;
-			}
+			    if (answer.size() != 1) {
+				    return false;
+			    }
 
-			for (auto const& [value, _] : items) {
-				if (value == answer.front()) {
-					store_enum(value);
-					return true;
-				}
-			}
+			    for (auto const& [value, _] : items) {
+				    if (value == answer.front()) {
+					    store_enum(value);
+					    return true;
+				    }
+			    }
 
-			return false;
-		});
+			    return false;
+		    },
+		    in);
 	}
 
 	std::string as_string(insurance_title const& value) {
@@ -126,7 +134,8 @@ namespace quick_dra {
 	    std::optional<Arg>& dst,
 	    std::optional<Arg>&& opt,
 	    std::function<bool(std::string&&, std::optional<Arg>&, bool)> const&
-	        validator) {
+	        validator,
+	    std::istream& in) {
 		if (opt) {
 			dst = std::move(opt);
 		}
@@ -154,13 +163,15 @@ namespace quick_dra {
 		}
 
 		auto def_value = as_string(dst);
-		return get_answer(label, def_value.value_or(""s),
-		                  [&](std::string&& answer) {
-			                  if (answer.empty() && def_value) {
-				                  answer = *def_value;
-			                  }
-			                  return validator(std::move(answer), dst, true);
-		                  });
+		return get_answer(
+		    label, def_value.value_or(""s),
+		    [&](std::string&& answer) {
+			    if (answer.empty() && def_value) {
+				    answer = *def_value;
+			    }
+			    return validator(std::move(answer), dst, true);
+		    },
+		    in);
 	}
 
 	bool get_field_answer(bool ask_questions,
@@ -169,9 +180,10 @@ namespace quick_dra {
 	                      std::optional<std::string>&& opt,
 	                      std::function<bool(std::string&&,
 	                                         std::optional<std::string>&,
-	                                         bool)> const& validator) {
+	                                         bool)> const& validator,
+	                      std::istream& in) {
 		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
-		                             validator);
+		                             validator, in);
 	}
 
 	bool get_field_answer(bool ask_questions,
@@ -180,9 +192,10 @@ namespace quick_dra {
 	                      std::optional<insurance_title>&& opt,
 	                      std::function<bool(std::string&&,
 	                                         std::optional<insurance_title>&,
-	                                         bool)> const& validator) {
+	                                         bool)> const& validator,
+	                      std::istream& in) {
 		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
-		                             validator);
+		                             validator, in);
 	}
 
 	static constexpr auto magic_currency = "minimal"sv;
@@ -192,7 +205,8 @@ namespace quick_dra {
 	                      std::optional<currency>&& opt,
 	                      std::function<bool(std::string&&,
 	                                         std::optional<currency>&,
-	                                         bool)> const& validator) {
+	                                         bool)> const& validator,
+	                      std::istream& in) {
 		std::function<bool(std::string&&, std::optional<currency>&, bool)> const
 		    wrapped = [validator](std::string&& in,
 		                          std::optional<currency>& out,
@@ -203,7 +217,7 @@ namespace quick_dra {
 			    return validator(std::move(in), out, ask_questions);
 		    };
 		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
-		                             wrapped);
+		                             wrapped, in);
 	}
 
 	bool get_field_answer(
@@ -212,8 +226,9 @@ namespace quick_dra {
 	    std::optional<ratio>& dst,
 	    std::optional<ratio>&& opt,
 	    std::function<bool(std::string&&, std::optional<ratio>&, bool)> const&
-	        validator) {
+	        validator,
+	    std::istream& in) {
 		return get_field_answer_impl(ask_questions, label, dst, std::move(opt),
-		                             validator);
+		                             validator, in);
 	}
 }  // namespace quick_dra

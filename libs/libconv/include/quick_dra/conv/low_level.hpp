@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <optional>
 #include <quick_dra/base/types.hpp>
 #include <span>
@@ -16,15 +17,20 @@ namespace quick_dra {
 
 	bool get_answer(std::string_view label,
 	                std::string_view hint,
-	                std::function<bool(std::string&&)> const& validator);
+	                std::function<bool(std::string&&)> const& validator,
+	                std::istream& in);
 
-	bool get_yes_no(std::string_view label, bool hint, bool& dst);
+	bool get_yes_no(std::string_view label,
+	                bool hint,
+	                bool& dst,
+	                std::istream& in);
 
 	bool get_enum_answer(
 	    std::string_view label,
 	    std::span<std::pair<char, std::string_view> const> const& items,
 	    std::function<void(char)> const& store_enum,
-	    char selected);
+	    char selected,
+	    std::istream& in);
 
 	static inline std::string&& as_string(std::string&& value) {
 		return std::move(value);
@@ -52,14 +58,17 @@ namespace quick_dra {
 	                      std::optional<std::string>&& opt,
 	                      std::function<bool(std::string&&,
 	                                         std::optional<std::string>&,
-	                                         bool)> const& validator);
+	                                         bool)> const& validator,
+	                      std::istream& in);
+
 	bool get_field_answer(bool ask_questions,
 	                      std::string_view label,
 	                      std::optional<insurance_title>& dst,
 	                      std::optional<insurance_title>&& opt,
 	                      std::function<bool(std::string&&,
 	                                         std::optional<insurance_title>&,
-	                                         bool)> const& validator);
+	                                         bool)> const& validator,
+	                      std::istream& in);
 
 	bool get_field_answer(bool ask_questions,
 	                      std::string_view label,
@@ -67,7 +76,8 @@ namespace quick_dra {
 	                      std::optional<currency>&& opt,
 	                      std::function<bool(std::string&&,
 	                                         std::optional<currency>&,
-	                                         bool)> const& validator);
+	                                         bool)> const& validator,
+	                      std::istream& in);
 
 	bool get_field_answer(
 	    bool ask_questions,
@@ -75,5 +85,6 @@ namespace quick_dra {
 	    std::optional<ratio>& dst,
 	    std::optional<ratio>&& opt,
 	    std::function<bool(std::string&&, std::optional<ratio>&, bool)> const&
-	        validator);
+	        validator,
+	    std::istream& in);
 }  // namespace quick_dra

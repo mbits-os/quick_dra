@@ -4,6 +4,7 @@
 #pragma once
 
 #include <functional>
+#include <istream>
 #include <quick_dra/conv/low_level.hpp>
 #include <string>
 #include <tuple>
@@ -19,10 +20,10 @@ namespace quick_dra::interactive {
 		template <typename Conversation>
 		bool get_answer(Conversation& conv) const {
 			auto const& policy = *static_cast<FieldPolicy const*>(this);
-			return get_field_answer(conv.ask_questions, policy.label,
-			                        policy.select(conv.dst),
-			                        std::move(policy.select(conv.opts)),
-			                        validator_fn{policy.validator()});
+			return get_field_answer(
+			    conv.ask_questions, policy.label, policy.select(conv.dst),
+			    std::move(policy.select(conv.opts)),
+			    validator_fn{policy.validator()}, *conv.cin);
 		}
 	};
 
@@ -42,6 +43,8 @@ namespace quick_dra::interactive {
 	namespace details {
 		template <typename T>
 		struct is_enumerator_item : std::false_type {};
+		template <typename T>
+		struct is_enumerator_item<T const> : is_enumerator_item<T> {};
 
 		template <typename T>
 		struct is_enumerator_item<interactive::enumerator_item<T>>
@@ -81,7 +84,7 @@ namespace quick_dra::interactive {
 			auto& dst = policy.select(conv.dst);
 			if (conv.ask_questions) {
 				return this->build_enum_answer(
-				    dst, selected,
+				    *conv.cin, dst, selected,
 				    std::make_index_sequence<sizeof...(Items)>{});
 			}
 			if (!selected) {
@@ -110,7 +113,7 @@ namespace quick_dra::interactive {
 		    std::string_view tag,
 		    std::index_sequence<Index...>) const noexcept {
 			char code = 0;
-			(item_available(code, tag, std::get<Index>(items)) || ...);
+			(void)(item_available(code, tag, std::get<Index>(items)) || ...);
 			return code;
 		}
 
@@ -120,7 +123,8 @@ namespace quick_dra::interactive {
 		}
 
 		template <size_t... Index>
-		bool build_enum_answer(std::optional<std::string>& dst,
+		bool build_enum_answer(std::istream& in,
+		                       std::optional<std::string>& dst,
 		                       char selected,
 		                       std::index_sequence<Index...>) const {
 			auto const& policy = *static_cast<FieldPolicy const*>(this);
@@ -128,7 +132,7 @@ namespace quick_dra::interactive {
 			    std::array{enum_label(std::get<Index>(items))...};
 			return get_enum_answer(
 			    policy.label, labels, [&](char key) { dst = std::string{key}; },
-			    selected);
+			    selected, in);
 		}
 	};
 }  // namespace quick_dra::interactive
