@@ -1,0 +1,12 @@
+args: insured list --config .quick_dra.yaml
+expected:
+  return-code: 0
+  stdout: |
+    #1: ?? ?? [?? ??] <minimal>
+  stderr: ''
+prepare:
+- |
+  touch .quick_dra.yaml "wersja: 1
+  ubezpieczeni:
+    - nazwisko: John Smith the Third
+  "

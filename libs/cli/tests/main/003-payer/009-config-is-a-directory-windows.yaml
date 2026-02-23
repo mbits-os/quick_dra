@@ -1,0 +1,9 @@
+disabled: linux
+args: payer --config .quick_dra.yaml -y --first Jan --last Nowak --social-id 26211012346 --tax-id 7680002466 --id-card ABC523456
+expected:
+  return-code: 1
+  stdout: ''
+  stderr: |
+    Quick-DRA: error: could not read .quick_dra.yaml
+prepare:
+- mkdirs .quick_dra.yaml
