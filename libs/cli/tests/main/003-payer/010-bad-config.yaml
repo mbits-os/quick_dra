@@ -1,0 +1,10 @@
+args: payer --config .quick_dra.yaml -y --first Jan --last Nowak --social-id 26211012346 --tax-id 7680002466 --id-card ABC523456
+expected:
+  return-code: 1
+  stdout: ""
+  stderr: |
+    .quick_dra.yaml:1:1: error: expecting a positive number
+    .quick_dra.yaml:1:1: error: while reading `wersja`
+    Quick-DRA: error: .quick_dra.yaml needs to be updated before continuing
+prepare:
+  - 'touch .quick_dra.yaml "wersja: John"'
