@@ -129,7 +129,7 @@ namespace yaml::testing {
 		    "- one\n"
 		    "- two\n"sv,
 		    ""sv);
-		test_payload<std::string>("''\n"sv, ""sv);
+		test_payload<std::string>("''\n"sv, ""sv, ""s);
 	}
 
 	TEST(yaml, read_key_missing) {
