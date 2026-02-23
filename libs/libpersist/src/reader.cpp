@@ -56,7 +56,7 @@ namespace yaml {
 		auto const value = ref.val();
 		if (value.empty()) {
 			ctx = {};
-			return false;
+			return true;
 		}
 
 		ctx = {value.data(), value.size()};
