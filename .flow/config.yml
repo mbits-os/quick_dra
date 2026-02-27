@@ -71,5 +71,5 @@ test-runner:
   testsuite:
     root: libs/cli/tests
     data: data
-    default-set: main
+    default-set: core
   patches: {}

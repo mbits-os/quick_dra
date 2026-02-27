@@ -1,0 +1,11 @@
+args: insured list
+env:
+  HOME: null
+  USERPROFILE: $DATA/homes/var_userprofile
+  HOMEDRIVE: null
+  HOMEPATH: null
+expected:
+  return-code: 0
+  stdout: |
+    #1: Osoba Ubezpieczona [P 50671500000] 8000 zł
+  stderr: ''

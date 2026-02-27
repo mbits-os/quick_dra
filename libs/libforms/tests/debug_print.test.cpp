@@ -3,6 +3,7 @@
 
 #include <fmt/format.h>
 #include <gtest/gtest.h>
+#include <array>
 #include <quick_dra/docs/file_set.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/models/project_reader.hpp>
