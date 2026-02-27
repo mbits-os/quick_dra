@@ -33,7 +33,7 @@ namespace quick_dra {
 				return true;
 			}
 		}
-	}
+	}  // GCOV_EXCL_LINE
 
 	bool get_yes_no(std::string_view label,
 	                bool hint,
@@ -149,7 +149,7 @@ namespace quick_dra {
 					comment("Cannot save invalid data with -y. Stopping.");
 					return false;
 				}
-			}
+			}  // GCOV_EXCL_LINE[WIN32]
 			if constexpr (std::same_as<Arg, currency>) {
 				if (!dst) {
 					auto const is_valid = validator("none"s, dst, false);

@@ -6,6 +6,7 @@
 #include <optional>
 #include <quick_dra/conv/field_policy.hpp>
 #include <string>
+#include <utility>
 
 namespace quick_dra::builtin {
 	bool valid_first_name(std::string&& value,
@@ -36,9 +37,10 @@ namespace quick_dra::builtin {
 
 	namespace policies {
 		template <typename T>
-		static inline bool always_valid(std::string&&,
-		                                std::optional<T>&,
+		static inline bool always_valid(std::string&& val,
+		                                std::optional<T>& dst,
 		                                bool) {
+			dst = std::move(val);
 			return true;
 		}
 

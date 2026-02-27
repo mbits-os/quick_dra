@@ -29,7 +29,7 @@ namespace args {
 				        p.parse_width());
 			}
 			return out;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 	};
 
 	template <>
@@ -98,7 +98,10 @@ namespace quick_dra {
 			template <FieldPolicyWithArgFlags... Policy>
 			no_questions_verifier& required(Policy const&... policies) {
 				conv.required_when_no_questions(parser, policies...);
-				return *this;
+				// I'm pretty sure I have few `EXPECT_NO_DEATH` tests for this
+				// line, but hey, if there are no counters, then there are no
+				// counters...
+				return *this;  // GCOV_EXCL_LINE[GCC]
 			}
 		};
 
@@ -237,12 +240,12 @@ namespace quick_dra {
 					auto const all_but_last = std::span{flags_present}.subspan(
 					    0, flags_present.size() - 1);
 					auto const last_one = flags_present.back();
-					p.error(fmt::format(
+					p.error(fmt::format(  // GCOV_EXCL_LINE[WIN32]
 					    "only one of {} and {} can be used at the same time",
 					    fmt::join(all_but_last, ", "), last_one));
-				}
+				}  // GCOV_EXCL_LINE[WIN32, GCC]
 			}
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		enum check_side {
 			command_line_arguments = 1,
