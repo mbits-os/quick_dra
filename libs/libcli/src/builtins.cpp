@@ -1,8 +1,8 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include "builtins.hpp"
 #include <fmt/format.h>
+#include <quick_dra/cli/builtins.hpp>
 #include <quick_dra/version.hpp>
 
 namespace quick_dra::builtin {

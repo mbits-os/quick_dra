@@ -7,6 +7,7 @@
 #include <fstream>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/verbose.hpp>
+#include <quick_dra/cli/commands.hpp>
 #include <quick_dra/conv/args_parser.hpp>
 #include <quick_dra/docs/file_set.hpp>
 #include <quick_dra/docs/forms.hpp>
@@ -16,7 +17,6 @@
 #include <quick_dra/models/types.hpp>
 #include <quick_dra/version.hpp>
 #include <string>
-#include "../commands.hpp"
 #include "cli_options.hpp"
 
 using namespace std::literals;

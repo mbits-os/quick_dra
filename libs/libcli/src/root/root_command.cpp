@@ -3,8 +3,8 @@
 
 #include <fmt/format.h>
 #include <quick_dra/base/str.hpp>
+#include <quick_dra/cli/builtins.hpp>
 #include <span>
-#include "../builtins.hpp"
 
 namespace quick_dra::builtin {
 	namespace {
