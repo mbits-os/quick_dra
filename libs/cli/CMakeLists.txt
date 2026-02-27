@@ -2,31 +2,7 @@
 # This file is licensed under MIT license (see LICENSE for details)
 
 set(SRCS
-    src/builtins.cpp
-    src/builtins.hpp
-    src/commands.cpp
-    src/commands.hpp
-    src/insured/add/add_conversation.cpp
-    src/insured/add/add_conversation.hpp
-    src/insured/add/add_command.cpp
-    src/insured/insured_command.cpp
-    src/insured/edit/edit_conversation.cpp
-    src/insured/edit/edit_conversation.hpp
-    src/insured/edit/edit_command.cpp
-    src/insured/list/list_command.cpp
-    src/insured/remove/remove_options.cpp
-    src/insured/remove/remove_options.hpp
-    src/insured/remove/remove_command.cpp
     src/main.cpp
-    src/payer/payer_conversation.cpp
-    src/payer/payer_conversation.hpp
-    src/payer/payer_command.cpp
-    src/root/root_command.cpp
-    src/xml/cli_options.cpp
-    src/xml/cli_options.hpp
-    src/xml/xml_command.cpp
-    src/xml/ctre_parsing.cpp
-    src/xml/ctre_parsing.hpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
@@ -37,7 +13,7 @@ add_win32_icon(qdra appicon.ico)
 target_compile_options(qdra PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_include_directories(qdra PRIVATE src)
 target_link_options(qdra PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(qdra libconv ctre::ctre)
+target_link_libraries(qdra libcli)
 set_target_properties(qdra PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )

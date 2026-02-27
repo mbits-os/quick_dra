@@ -8,7 +8,7 @@
 #include <quick_dra/conv/validators.hpp>
 #include <string>
 #include <vector>
-#include "edit_conversation.hpp"
+#include "insured_edit_conversation.hpp"
 
 namespace quick_dra::builtin::insured::edit {
 	bool wrap_document_edit(conversation& conv,

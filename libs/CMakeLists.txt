@@ -7,6 +7,7 @@ add_subdirectory(libmodels)
 add_subdirectory(liblex)
 add_subdirectory(libforms)
 add_subdirectory(libconv)
+add_subdirectory(libcli)
 add_subdirectory(cli)
 
 add_to_coverage(
