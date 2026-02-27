@@ -52,3 +52,29 @@ if(QUICK_DRA_INSTALL)
         COMPONENT libraries
     )
 endif()
+
+# #################################################################
+# #  TESTING
+# #################################################################
+if(QUICK_DRA_TESTING)
+    file(GLOB CLI_TEST_SRCS_CC tests/*.cc)
+    file(GLOB CLI_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB CLI_TEST_SRCS_CXX tests/*.cxx)
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
+        ${CLI_TEST_SRCS_CC}
+        ${CLI_TEST_SRCS_CPP}
+        ${CLI_TEST_SRCS_CXX})
+
+    add_project_test(libcli ${CLI_TEST_SRCS_CC} ${CLI_TEST_SRCS_CPP} ${CLI_TEST_SRCS_CXX})
+    target_link_libraries(libcli-test PUBLIC GTest::gmock_main libcli)
+
+    set(_OUTPUT ${PROJECT_BINARY_DIR}/bin)
+
+    set_target_properties(libcli-test PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${_OUTPUT}
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_OUTPUT}
+        RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${_OUTPUT}
+        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${_OUTPUT}
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_OUTPUT}
+    )
+endif()

@@ -217,7 +217,7 @@ namespace quick_dra::testing {
 		auto const path =
 		    std::filesystem::temp_directory_path() / fmt::format("dirXXXXXX");
 		auto dirname = as_str(path.u8string());
-		mkdtemp(dirname.data());
+		(void)mkdtemp(dirname.data());
 		return std::filesystem::path{as_u8v(dirname)} / childname;
 	}
 

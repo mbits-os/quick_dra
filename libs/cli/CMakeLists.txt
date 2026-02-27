@@ -81,7 +81,6 @@ if(QUICK_DRA_TESTING)
         string(APPEND QUICK_DRA_CTRF_REPORT_NAME ", with sanitizer")
     endif()
 
-    #[[
     add_test(
         NAME qdra-test-runner-core
         COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
@@ -90,5 +89,4 @@ if(QUICK_DRA_TESTING)
         --ctrf-report-name "${QUICK_DRA_CTRF_REPORT_NAME}"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
-    ##]]
 endif()
