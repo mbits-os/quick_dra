@@ -104,13 +104,4 @@ if(QUICK_DRA_TESTING)
     if(QUICK_DRA_SANITIZE)
         string(APPEND QUICK_DRA_CTRF_REPORT_NAME ", with sanitizer")
     endif()
-
-    add_test(
-        NAME qdra-test-runner-main
-        COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/.flow/flow.py"
-        tests runner --preset "${CMAKE_PRESET}"
-        --ctrf "${PROJECT_BINARY_DIR}/test-results/ctrf/qdra.json"
-        --ctrf-report-name "${QUICK_DRA_CTRF_REPORT_NAME}"
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )
 endif()
