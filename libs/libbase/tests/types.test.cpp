@@ -115,6 +115,29 @@ namespace quick_dra::testing {
 		ASSERT_EQ(calc_currency(-30641).rounded(), currency(-306));
 	}
 
+	TEST(money, contribution) {
+		auto local = rate{};
+		local.payer = 2_per;
+		local.insured = 1.675_per;
+		auto local_rates = rates{};
+
+#define X(NAME, _) local_rates.NAME = {2_per, 1_per};
+		CONTRIBUTIONS(X)
+#undef X
+
+		auto const single = local.contribution_on(1'000_PLN);
+		auto const combined = local_rates.contribution_on(10'000_PLN);
+
+		EXPECT_EQ(single.payer, 20_PLN);
+		EXPECT_EQ(single.insured, 16.80_PLN);
+		EXPECT_EQ(single.total(), 36.80_PLN);
+		EXPECT_EQ(local.total(), 3.68_per);
+
+		EXPECT_EQ(combined.payer(), 800_PLN);
+		EXPECT_EQ(combined.insured(), 400_PLN);
+		EXPECT_EQ(combined.total(), 1'200_PLN);
+	}
+
 	static constinit type_testcase<currency> const good_currency_tests[] = {
 	    {"0"sv, 0.0_PLN},
 	    {"123"sv, 123_PLN},

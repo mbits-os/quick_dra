@@ -12,6 +12,10 @@ set(SRCS
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
 
 add_library(libpersist STATIC ${SRCS})
+configure_file(
+    "${PROJECT_SOURCE_DIR}/data/test/parser.test.yaml"
+    "${CMAKE_CURRENT_BINARY_DIR}/data/test/parser.test.yaml"
+    COPYONLY)
 
 target_compile_options(libpersist PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(libpersist PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})

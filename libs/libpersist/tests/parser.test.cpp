@@ -2,12 +2,19 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
+#include <fmt/ranges.h>
+#include <fmt/std.h>
 #include <gtest/gtest.h>
 #include <array>
+#include <filesystem>
 #include <span>
 #include <utility>
 #include <vector>
 #include <yaml/parser.hpp>
+
+namespace std {
+	std::ostream& operator<<(std::ostream& a, std::monostate) { return a; }
+}  // namespace std
 
 namespace yaml::testing {
 	using std::literals::operator""s;
@@ -16,6 +23,7 @@ namespace yaml::testing {
 	template <typename T>
 	struct test_struct {
 		T child{};
+		using value_type = T;
 
 		auto operator<=>(test_struct const&) const noexcept = default;
 		bool read(yaml::ref_ctx const& ref) {
@@ -24,6 +32,26 @@ namespace yaml::testing {
 			return true;
 		}
 	};
+
+}  // namespace yaml::testing
+
+namespace fmt {
+	template <typename T>
+	struct formatter<yaml::testing::test_struct<T>> : formatter<std::string> {
+		template <typename FormatContext>
+		auto format(yaml::testing::test_struct<T> const& value,
+		            FormatContext& ctx) const {
+			return formatter<std::string>::format(
+			    fmt::format("{{.child={}}}", value.child), ctx);
+		}
+	};
+}  // namespace fmt
+
+namespace yaml::testing {
+	template <typename T>
+	void PrintTo(test_struct<T> const& val, std::ostream* os) {
+		*os << fmt::to_string(val);
+	}
 
 	template <typename Payload, typename StringLike>
 	struct parsed_result {
@@ -45,12 +73,26 @@ namespace yaml::testing {
 	}
 
 	template <typename Payload>
+	parsed_result<std::optional<Payload>, std::string> parse_yaml_file(
+	    std::filesystem::path const& path) {
+		::testing::internal::CaptureStderr();
+		auto result = parsed_result<std::optional<Payload>, std::string>{
+		    .value = parser::parse_yaml_file<Payload>(
+		        path, []() { fmt::print(stderr, "example file not found\n"); }),
+		    .log{},
+		};
+		result.log = ::testing::internal::GetCapturedStderr();
+
+		return result;
+	}
+
+	template <typename Payload, typename Arg = std::monostate>
 	void _test_payload(
 	    parsed_result<std::optional<Payload>, std::string> const& actual,
-	    parsed_result<std::optional<Payload>, std::string_view> const&
-	        expected) {
-		ASSERT_EQ(actual.value, expected.value);
-		ASSERT_EQ(actual.log, expected.log);
+	    parsed_result<std::optional<Payload>, std::string_view> const& expected,
+	    Arg const& arg = {}) {
+		ASSERT_EQ(actual.value, expected.value) << arg;
+		ASSERT_EQ(actual.log, expected.log) << arg;
 	}
 
 	template <typename Payload>
@@ -71,6 +113,15 @@ namespace yaml::testing {
 		                           yaml_text.size(),
 		                       }),
 		                       {exp, log});
+		return !::testing::Test::HasFailure();
+	}
+
+	template <typename Payload>
+	bool test_payload_file(std::filesystem::path const& path,
+	                       std::string_view log,
+	                       std::optional<Payload> const& exp = {}) {
+		_test_payload<Payload>(parse_yaml_file<Payload>(path), {exp, log},
+		                       path);
 		return !::testing::Test::HasFailure();
 	}
 
@@ -159,4 +210,20 @@ namespace yaml::testing {
 		                                    test_struct{.child = 0u});
 	}
 
+	TEST(yaml, read_file) {
+		auto const path = std::filesystem::current_path() / "data"sv /
+		                  "test"sv / "parser.test.yaml"sv;
+		using strings = test_struct<std::vector<std::string>>;
+		test_payload_file(
+		    path, ""sv,
+		    std::optional{strings{
+		        .child = strings::value_type{"one"s, "two"s, "three"s}}});
+	}
+
+	TEST(yaml, read_nonexistent_file) {
+		auto const path = std::filesystem::current_path() / "data"sv /
+		                  "test"sv / "parser.test.yml"sv;
+		using strings = test_struct<std::vector<std::string>>;
+		test_payload_file<strings>(path, "example file not found\n"sv);
+	}
 }  // namespace yaml::testing

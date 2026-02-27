@@ -4,6 +4,7 @@
 #pragma once
 
 #include <fmt/format.h>
+#include <fmt/ranges.h>
 #include <algorithm>
 #include <cstdio>
 #include <functional>
@@ -38,6 +39,8 @@ namespace quick_dra {
 	struct compiletime_varname {
 		std::string_view name;
 		operator varname() const { return varname::parse(name); }
+		constexpr auto operator<=>(compiletime_varname const&) const noexcept =
+		    default;
 	};
 
 	inline consteval compiletime_varname operator""_var(char const* data,
@@ -160,7 +163,9 @@ namespace quick_dra {
 			std::string result{"["};
 			bool first = true;
 			for (auto const& value : values) {
-				if (!first) result.append(", "sv);
+				if (!first) {  // GCOV_EXCL_LINE[CLANG]
+					result.append(", "sv);
+				}
 				first = false;
 				result.append(std::visit(*this, value));
 			}

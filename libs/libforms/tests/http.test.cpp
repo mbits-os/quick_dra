@@ -111,12 +111,6 @@ namespace quick_dra::testing {
 		};
 	};
 
-	class ImplCharset : public Impl {
-		std::string_view getContentType() const override {
-			return "video/clip; charset=utf-future"sv;
-		};
-	};
-
 	TEST(http, curl_content_no_charset) {
 		set_curl_factory<ImplNoCharset>();
 		::testing::internal::CaptureStderr();
@@ -127,8 +121,15 @@ namespace quick_dra::testing {
 		ASSERT_EQ(actual.content_type.type, "text"sv);
 		ASSERT_EQ(actual.content_type.subtype, "dummy"sv);
 		ASSERT_TRUE(actual.charset.empty());
+		ASSERT_EQ(actual.text(), dummy_content);
 		ASSERT_TRUE(log.empty());
 	}
+
+	class ImplCharset : public Impl {
+		std::string_view getContentType() const override {
+			return "video/clip; charset=utf-future"sv;
+		};
+	};
 
 	TEST(http, curl_good_content) {
 		set_curl_factory<ImplCharset>();
@@ -140,6 +141,7 @@ namespace quick_dra::testing {
 		ASSERT_EQ(actual.content_type.type, "video"sv);
 		ASSERT_EQ(actual.content_type.subtype, "clip"sv);
 		ASSERT_EQ(actual.charset, "utf-future"sv);
+		ASSERT_EQ(actual.text(), dummy_content);
 		ASSERT_TRUE(log.empty());
 	}
 }  // namespace quick_dra::testing

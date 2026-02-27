@@ -6,6 +6,17 @@
 #include <quick_dra/models/types.hpp>
 
 namespace quick_dra::testing {
+	TEST(varname, suffix) {
+		ASSERT_EQ("single"_var, varname{.path = {"single"s}});
+		ASSERT_EQ("parent.child"_var, (varname{.path = {"parent"s, "child"s}}));
+	}
+
+	TEST(varname, var_macros) {
+		ASSERT_EQ(var::NN, "NN"_var);
+		ASSERT_EQ(var::insured.document, "insured.document"_var);
+		ASSERT_EQ(var::insured, "insured"_var);
+		ASSERT_EQ(var::insured, varname{.path = {"insured"s}});
+	}
 	class global_object : public ::testing::Test {
 	protected:
 		quick_dra::global_object state_;

@@ -13,10 +13,10 @@ namespace quick_dra::v1 {
 		std::string from_rate(rate const& r) {
 			std::vector<std::string> result{};
 			result.reserve(2);
-			if (r.payer != percent{}) {
+			if (r.payer != 0_per) {
 				result.push_back(fmt::format("payer {}%", r.payer));
 			}
-			if (r.insured != percent{}) {
+			if (r.insured != 0_per) {
 				result.push_back(fmt::format("insured {}%", r.insured));
 			}
 			// GCOV_EXCL_START
