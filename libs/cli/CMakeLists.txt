@@ -2,7 +2,6 @@
 # This file is licensed under MIT license (see LICENSE for details)
 
 set(SRCS
-    src/args_parser.hpp
     src/builtins.cpp
     src/builtins.hpp
     src/commands.cpp
@@ -38,7 +37,7 @@ add_win32_icon(qdra appicon.ico)
 target_compile_options(qdra PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_include_directories(qdra PRIVATE src)
 target_link_options(qdra PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(qdra libconv mbits::args ctre::ctre)
+target_link_libraries(qdra libconv ctre::ctre)
 set_target_properties(qdra PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
