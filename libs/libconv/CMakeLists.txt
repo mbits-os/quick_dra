@@ -1,4 +1,5 @@
 set(SRCS
+    include/quick_dra/conv/args_parser.hpp
     include/quick_dra/conv/concepts.hpp
     include/quick_dra/conv/conversation.hpp
     include/quick_dra/conv/field_policy.hpp
@@ -21,7 +22,7 @@ target_include_directories(libconv
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-target_link_libraries(libconv PUBLIC libforms)
+target_link_libraries(libconv PUBLIC libforms mbits::args)
 
 # #################################################################
 # #  INSTALL
