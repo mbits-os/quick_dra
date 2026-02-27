@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <array>
 #include <functional>
 #include <istream>
 #include <quick_dra/conv/low_level.hpp>

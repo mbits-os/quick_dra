@@ -27,7 +27,7 @@ namespace quick_dra {
 			}
 
 			return records;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		void search_insured_from_records(
 		    std::vector<unsigned>& found,
@@ -58,9 +58,11 @@ namespace quick_dra {
 	    std::span<partial::insured_t> const& insured,
 	    std::function<void(std::string const&)> const& on_error) {
 		if (position < 1 || position > insured.size()) {
-			if (insured.size() == 1) {
+			if (insured.empty()) {
+				on_error("insured list is empty"s);
+			} else if (insured.size() == 1) {
 				on_error("argument --pos must be equal to 1"s);
-			} else {
+			} else {  // GCOV_EXCL_LINE[WIN32]
 				on_error(
 				    fmt::format("argument --pos must be between 1 and "
 				                "{}, inclusive",

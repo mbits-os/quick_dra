@@ -36,3 +36,19 @@ if(QUICK_DRA_INSTALL)
         COMPONENT libraries
     )
 endif()
+
+# #################################################################
+# #  TESTING
+# #################################################################
+if(QUICK_DRA_TESTING)
+    file(GLOB BASE_TEST_SRCS_CC tests/*.cc)
+    file(GLOB BASE_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB BASE_TEST_SRCS_CXX tests/*.cxx)
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
+        ${BASE_TEST_SRCS_CC}
+        ${BASE_TEST_SRCS_CPP}
+        ${BASE_TEST_SRCS_CXX})
+
+    add_project_test(libconv ${BASE_TEST_SRCS_CC} ${BASE_TEST_SRCS_CPP} ${BASE_TEST_SRCS_CXX})
+    target_link_libraries(libconv-test PUBLIC GTest::gmock_main libconv)
+endif()

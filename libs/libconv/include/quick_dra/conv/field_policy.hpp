@@ -238,6 +238,8 @@ namespace quick_dra {
 		struct label {
 			std::string_view value;
 
+			constexpr auto operator<=>(label const&) const noexcept = default;
+
 			template <typename SelectorLambda>
 			[[nodiscard]] consteval label_selector<
 			    details::value_type_t<SelectorLambda>,
