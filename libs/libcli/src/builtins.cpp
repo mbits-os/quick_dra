@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
+#include <args/sys.hpp>
 #include <quick_dra/cli/builtins.hpp>
 #include <quick_dra/version.hpp>
 
@@ -9,7 +10,7 @@ namespace quick_dra::builtin {
 	namespace {
 		[[noreturn]] void show_version() {
 			fmt::print("{} version {}\n", version::program, version::ui);
-			std::exit(0);
+			args::exit(0);
 		}  // GCOV_EXCL_LINE[WIN32]
 	}  // namespace
 
@@ -50,7 +51,7 @@ namespace quick_dra::builtin {
 
 		parser.short_help();
 		args::printer{stdout}.format_list(commands);
-		std::exit(0);
+		args::exit(0);
 	}  // GCOV_EXCL_LINE[WIN32, GCC]
 
 	parser::parser(std::string_view description,

@@ -38,7 +38,6 @@ prepare_output_dirs_setup()
 set(CONAN_CMAKE_SILENT_OUTPUT ON)
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 find_package(fmt REQUIRED)
-find_package(mbits-args REQUIRED)
 find_package(ryml REQUIRED)
 find_package(CURL REQUIRED)
 find_package(ctre REQUIRED)
@@ -81,6 +80,7 @@ if(QUICK_DRA_TESTING)
   include(${PROJECT_SOURCE_DIR}/tools/coveralls/build_flags.cmake)
 endif()
 
+add_subdirectory(external)
 add_subdirectory(libs)
 
 # #################################################################

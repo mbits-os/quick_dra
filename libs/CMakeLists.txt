@@ -17,6 +17,7 @@ add_to_coverage(
     liblex
     libforms
     libconv
+    libcli
     cli
 )
 cov_set_parent_scope()

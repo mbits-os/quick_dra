@@ -22,7 +22,7 @@ target_include_directories(libconv
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-target_link_libraries(libconv PUBLIC libforms mbits::args)
+target_link_libraries(libconv PUBLIC libforms args)
 
 # #################################################################
 # #  INSTALL
@@ -41,14 +41,14 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
-    file(GLOB BASE_TEST_SRCS_CC tests/*.cc)
-    file(GLOB BASE_TEST_SRCS_CPP tests/*.cpp)
-    file(GLOB BASE_TEST_SRCS_CXX tests/*.cxx)
+    file(GLOB CONV_TEST_SRCS_CC tests/*.cc)
+    file(GLOB CONV_TEST_SRCS_CPP tests/*.cpp)
+    file(GLOB CONV_TEST_SRCS_CXX tests/*.cxx)
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${BASE_TEST_SRCS_CC}
-        ${BASE_TEST_SRCS_CPP}
-        ${BASE_TEST_SRCS_CXX})
+        ${CONV_TEST_SRCS_CC}
+        ${CONV_TEST_SRCS_CPP}
+        ${CONV_TEST_SRCS_CXX})
 
-    add_project_test(libconv ${BASE_TEST_SRCS_CC} ${BASE_TEST_SRCS_CPP} ${BASE_TEST_SRCS_CXX})
+    add_project_test(libconv ${CONV_TEST_SRCS_CC} ${CONV_TEST_SRCS_CPP} ${CONV_TEST_SRCS_CXX})
     target_link_libraries(libconv-test PUBLIC GTest::gmock_main libconv)
 endif()

@@ -1,3 +1,6 @@
 [submodule "tools/coveralls"]
 	path = tools/coveralls
 	url = https://github.com/mbits-libs/coveralls.git
+[submodule "external/args"]
+	path = external/args
+	url = https://github.com/mbits-libs/args.git
