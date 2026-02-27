@@ -85,6 +85,70 @@ reports:
 		ASSERT_EQ(actual_template, expected_template);
 	}
 
+	TEST_F(compiler, valid_template_two_subblocks) {
+		auto const value = read(R"(
+version: 1
+reports:
+  CODE:
+    - id: III
+      block: A
+      fields:
+        1: $insured.last
+        2: $insured.first
+        3: $insured.document_kind
+        4: $insured.document
+        5: 1234zł
+        6: $+1,2,3,4,5
+    - id: III
+      block: B
+      fields:
+        5: 1234zł
+        6: $+1,2,3,4,5
+)"sv);
+		ASSERT_TRUE(value);
+		ASSERT_TRUE(value->validate());
+		ASSERT_EQ(log, R"()"sv);
+
+		auto const actual_template = compiled_templates::compile(*value);
+		auto const expected_template =
+		    compiled_templates{
+		        .reports = {{
+		            "CODE"s,
+		            std::vector<compiled_section>{
+		                {
+		                    .id = "III"s,
+		                    .repeatable = false,
+		                    .blocks =
+		                        {compiled_block{
+		                             .id = "A"s,
+		                             .fields =
+		                                 {
+		                                     {1u, "insured.last"_var},
+		                                     {2u, "insured.first"_var},
+		                                     {3u, "insured.document_kind"_var},
+		                                     {4u, "insured.document"_var},
+		                                     {5u, 1234_PLN},
+		                                     {6u, addition{.refs = {1u, 2u, 3u,
+		                                                            4u, 5u}}},
+		                                 },
+		                         },
+		                         compiled_block{
+		                             .id = "B"s,
+		                             .fields =
+		                                 {
+		                                     {5u, 1234_PLN},
+		                                     {6u,
+		                                      addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
+		                                 },
+		                         }},
+		                },
+		            },
+		        }},
+		    };
+
+		ASSERT_EQ(actual_template, expected_template);
+	}
+
 	TEST_F(compiler, bad_currency) {
 		auto const value = read(R"(
 version: 1

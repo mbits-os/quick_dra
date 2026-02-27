@@ -121,7 +121,7 @@ namespace quick_dra {
 					everyone_has_salary = false;
 					break;
 				}
-			}
+			}  // GCOV_EXCL_LINE[WIN32]
 			if (!everyone_has_salary) {
 				fmt::print("--   minimal pay for month reported: {:.02f} zł\n",
 				           result->params.minimal_pay);

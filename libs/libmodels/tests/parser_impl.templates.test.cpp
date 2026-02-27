@@ -1,6 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <quick_dra/base/paths.hpp>
 #include "parser_impl.common.hpp"
 
 namespace quick_dra::testing {
@@ -255,5 +256,22 @@ reports:
 		ASSERT_TRUE(value);
 		ASSERT_FALSE(value->validate());
 		ASSERT_EQ(log, R"()"sv);
+	}
+
+	TEST_F(parser_impl, template_from_file) {
+		auto const here = platform::exec_dir();
+		// reverse of build/<config>/bin/tests
+		auto const root =
+		    here.parent_path().parent_path().parent_path().parent_path();
+		auto const templates_path =
+		    root / "data"sv / "config"sv / "templates.yaml";
+
+		::testing::internal::CaptureStderr();
+		auto const value = templates::parse_yaml(templates_path);
+		auto const out = ::testing::internal::GetCapturedStderr();
+
+		ASSERT_TRUE(value);
+		ASSERT_TRUE(value->validate());
+		ASSERT_EQ(out, R"()"sv);
 	}
 }  // namespace quick_dra::testing

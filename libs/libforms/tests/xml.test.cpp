@@ -3,6 +3,8 @@
 
 #include <fmt/format.h>
 #include <gtest/gtest.h>
+#include <stdlib.h>
+#include <fstream>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
 #include <sstream>
@@ -200,5 +202,74 @@ namespace quick_dra::testing {
 		    "I p22: error: p4 is not a number\n"sv;
 		ASSERT_EQ(actual, expected);
 		ASSERT_EQ(log, expected_log);
+	}
+
+#ifdef WIN32
+	char* mkdtemp(char* buffer) {
+		_mktemp(buffer);
+		auto const path = std::filesystem::path{as_u8v(buffer)};
+		create_directories(path);
+		return buffer;
+	}
+#endif
+
+	std::filesystem::path temp_filename(std::string_view childname) {
+		auto const path =
+		    std::filesystem::temp_directory_path() / fmt::format("dirXXXXXX");
+		auto dirname = as_str(path.u8string());
+		mkdtemp(dirname.data());
+		return std::filesystem::path{as_u8v(dirname)} / childname;
+	}
+
+	TEST(xml, store_indented) {
+		auto const path = temp_filename("store-indented.xml"sv);
+		auto const filename = as_str(path.u8string());
+		::testing::internal::CaptureStdout();
+		store_xml(test_tree(), filename, true);
+		auto const out = ::testing::internal::GetCapturedStdout();
+
+		std::string contents{};
+		{
+			auto file = std::ifstream{path};
+			auto str = std::ostringstream{};
+			str << file.rdbuf();
+			contents = std::move(str).str();
+		}
+		std::error_code ec{};
+		std::filesystem::remove_all(path.parent_path(), ec);
+
+		ASSERT_EQ(out, fmt::format("-- output: {}\n"sv, filename));
+		ASSERT_EQ(contents,
+		          "<root version=\"1\">\n"
+		          "\t<child quoted=\"before &#39; between &quot; "
+		          "after\">&lt;code&gt;&amp;ref&lt;/code&gt;</child>\n"
+		          "</root>\n"
+		          ""sv);
+	}
+
+	TEST(xml, store_terse) {
+		auto const path = temp_filename("store-terse.xml"sv);
+		auto const filename = as_str(path.u8string());
+		::testing::internal::CaptureStdout();
+		store_xml(test_tree(), filename, false);
+		auto const out = ::testing::internal::GetCapturedStdout();
+
+		std::string contents{};
+		{
+			auto file = std::ifstream{path};
+			auto str = std::ostringstream{};
+			str << file.rdbuf();
+			contents = std::move(str).str();
+		}
+		std::error_code ec{};
+		std::filesystem::remove_all(path.parent_path(), ec);
+
+		ASSERT_EQ(out, fmt::format("-- output: {}\n"sv, filename));
+		ASSERT_EQ(contents,
+		          "<root version=\"1\">"
+		          "<child quoted=\"before &#39; between &quot; after\">"
+		          "&lt;code&gt;&amp;ref&lt;/code&gt;</child>"
+		          "</root>"
+		          ""sv);
 	}
 }  // namespace quick_dra::testing
