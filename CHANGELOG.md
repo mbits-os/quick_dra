@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.9.2](https://github.com/mbits-os/quick_dra/compare/v0.9.1...v0.9.2) (2026-02-28)
+
+### Bug Fixes
+
+- extract libcli for testability ([826efc8](https://github.com/mbits-os/quick_dra/commit/826efc87e15d42f0d126b9bec7f3358211b69e8f))
+- make stdin injectable in conv library ([6602cad](https://github.com/mbits-os/quick_dra/commit/6602cad1b2036a88c09ebf02e3f0c2825840ae25))
+- **docs**: add more usage to README ([c598e63](https://github.com/mbits-os/quick_dra/commit/c598e636bd6cf75756104271c4762bdde46f391a))
+
 ## [0.9.1](https://github.com/mbits-os/quick_dra/compare/v0.9.0...v0.9.1) (2026-02-23)
 
 ### Bug Fixes
