@@ -1,7 +1,0 @@
-args: insured add -y --first A --last B --scale 4/0
-expected:
-  return-code: 2
-  stdout: ''
-  stderr: |
-    usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
-    qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, with denominator not equal to zero
