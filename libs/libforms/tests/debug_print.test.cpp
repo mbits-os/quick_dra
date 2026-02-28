@@ -7,7 +7,6 @@
 #include <quick_dra/docs/file_set.hpp>
 #include <quick_dra/docs/forms.hpp>
 #include <quick_dra/models/project_reader.hpp>
-#include <ranges>
 #include <sstream>
 
 namespace quick_dra::testing {
@@ -1067,9 +1066,15 @@ reports:
 		return test_config.on(pair.first, pair.second);
 	}
 
-	std::vector<testcase> const tests = verbose_levels |
-	                                    std::views::transform(transformer) |
-	                                    std::ranges::to<std::vector>();
+	inline std::vector<testcase> levels_to_vector() {
+		std::vector<testcase> result{};
+		for (auto const& [level, output] : verbose_levels) {
+			result.push_back(test_config.on(level, output));
+		}
+		return result;
+	}
+
+	auto const tests = levels_to_vector();
 
 	INSTANTIATE_TEST_SUITE_P(level, debug_print, ::testing::ValuesIn(tests));
 

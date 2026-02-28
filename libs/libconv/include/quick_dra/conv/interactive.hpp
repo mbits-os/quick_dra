@@ -5,6 +5,7 @@
 
 #include <array>
 #include <functional>
+#include <iostream>
 #include <istream>
 #include <quick_dra/conv/low_level.hpp>
 #include <string>
