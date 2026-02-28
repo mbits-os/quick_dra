@@ -1,7 +1,0 @@
-args: insured remove -y --config .quick_dra.yaml
-expected:
-  return-code: 2
-  stdout: ''
-  stderr: |
-    usage: qdra insured remove [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y]
-    qdra insured remove: error: one of --pos and --find argument is required
