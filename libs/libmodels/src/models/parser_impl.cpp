@@ -3,6 +3,7 @@
 
 #include <fmt/format.h>
 #include <fmt/std.h>
+#include <args/sys.hpp>
 #include <cmath>
 #include <fstream>
 #include <quick_dra/base/str.hpp>
@@ -189,13 +190,13 @@ namespace quick_dra::v1::partial {
 			case load_status::file_not_readable:
 				fmt::print(stderr, "Quick-DRA: error: could not read {}\n",
 				           path);
-				std::exit(1);
+				args::exit(1);
 			case load_status::errors_encountered:
 				fmt::print(stderr,
 				           "Quick-DRA: error: {} needs to be updated before "
 				           "continuing\n",
 				           path);
-				std::exit(1);
+				args::exit(1);
 			default:
 				break;
 		}
