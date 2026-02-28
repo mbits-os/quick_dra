@@ -407,7 +407,7 @@ namespace quick_dra::testing {
 		test_arguments(opts, "--title"sv, "9999 8 7"sv, "--scale"sv, "3/4"sv,
 		               "--salary"sv, "minimal"sv);
 		EXPECT_EQ(opts.title, (insurance_title{
-		                          .title_code{"9999"sv},
+		                          .title_code{"9999"s},
 		                          .pension_right{8},
 		                          .disability_level{7},
 		                      }));
