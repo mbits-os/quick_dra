@@ -18,33 +18,44 @@ to fullfil the insurance obligations.
 
 ```plain
 > qdra payer \
-    --first Jan \
-    --last Nowak \
-    --social-id 26211012346 \
+    --first Piotr \
+    --last Kowalski \
+    --social-id 78070707132 \
     --tax-id 7680002466 \
     --id-card ABC523456 \
     -y
-Quick-DRA: file ~/.quick_dra.yaml will be created as needed.
 First name changed from <empty> to Jan
 Last name changed from <empty> to Nowak
 NIP changed from <empty> to 7680002466
-PESEL changed from <empty> to 26211012346
+PESEL changed from <empty> to 78070707132
 Document kind changed from <empty> to 1
 Document changed from <empty> to ABC523456
 ```
 
 #### Add insured
 
-_Still to be done._
-
 ```plain
 > qdra insured add \
     --first Jan \
     --last Nowak \
-    --insurance-title "0110 0 0" \
+    --title "0110 0 0" \
     --social-id 26211012346 \
-    --???
-????
+    --scale 1/2 \
+    -y
+First name set to Jan
+Last name set to Nowak
+Document kind set to P
+Document set to 26211012346
+Insurance title set to 0110 0 0
+Part-time scale set to 1/2
+Salary set to minimal for a given month
+```
+
+#### List insured
+
+```plain
+> qdra insured list
+#1: Jan Nowak [P 26211012346] 1/2 of <minimal>
 ```
 
 ### Prepare ZUD RCA/DRA
@@ -55,4 +66,25 @@ Generate RCA/DRA xml file for last month
 > qdra xml
 -- report: #1 2026-01
 -- output: quick-dra_202601-01.xml
+```
+
+Generate RCA/DRA xml file for current month
+
+```plain
+> qdra xml -m0
+-- report: #1 2026-02
+-- output: quick-dra_202601-02.xml
+```
+
+Generate RCA/DRA xml file with payment information
+
+```plain
+> qdra xml --info
+-- report: #1 2026-01
+-- output: quick-dra_202601-01.xml
+-- payments:
+   - JAN NOWAK:      2073.55 zł
+   - ZUS:             760.31 zł
+   - Urząd Skarbowy:    0.00 zł
+   sum total =       2833.86 zł
 ```
