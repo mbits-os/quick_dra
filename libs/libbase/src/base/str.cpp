@@ -39,7 +39,7 @@ namespace quick_dra {
 			data = strip_sv(data);
 
 			if (data.empty()) {
-				result.push_back(helper<String>::as_str(""sv));
+				result.emplace_back(helper<String>::as_str(""sv));
 				return result;
 			}
 
@@ -52,9 +52,9 @@ namespace quick_dra {
 				pos = data.find_first_of(whitespaces);
 				if (max != std::string::npos) --max;
 
-				result.push_back(helper<String>::as_str(view));
+				result.emplace_back(helper<String>::as_str(view));
 			}
-			result.push_back(helper<String>::as_str(lstrip_sv(data)));
+			result.emplace_back(helper<String>::as_str(lstrip_sv(data)));
 
 			return result;
 		}
@@ -68,10 +68,10 @@ namespace quick_dra {
 			pos = data.find(sep.value, prev);
 			if (max != std::string::npos) --max;
 
-			result.push_back(helper<String>::as_str(view));
+			result.emplace_back(helper<String>::as_str(view));
 		}
 
-		result.push_back(helper<String>::as_str(data.substr(prev)));
+		result.emplace_back(helper<String>::as_str(data.substr(prev)));
 
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]
@@ -110,10 +110,10 @@ namespace quick_dra {
 			pos = data.find(sep.value, prev);
 			if (max != std::string::npos) --max;
 
-			result.push_back(helper<String>::as_str(view));
+			result.emplace_back(helper<String>::as_str(view));
 		}
 
-		result.push_back(helper<String>::as_str(data.substr(prev)));
+		result.emplace_back(helper<String>::as_str(data.substr(prev)));
 
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]

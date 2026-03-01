@@ -199,7 +199,7 @@ namespace quick_dra::testing {
 			});
 
 			EXPECT_TRUE(result);
-			EXPECT_EQ(dst, std::optional{ratio{2 / 5}});
+			EXPECT_EQ(dst, (ratio{2, 5}));
 			EXPECT_EQ(out, "\033[0;36mLABEL\033[m> "sv);
 		}
 
@@ -210,7 +210,7 @@ namespace quick_dra::testing {
 			});
 
 			EXPECT_TRUE(result);
-			EXPECT_EQ(dst, std::optional{ratio{3 / 4}});
+			EXPECT_EQ(dst, (ratio{3, 4}));
 			EXPECT_EQ(out, "\033[0;36mLABEL\033[0;90m [3/4]\033[m> "sv);
 		}
 
@@ -221,7 +221,7 @@ namespace quick_dra::testing {
 			});
 
 			EXPECT_TRUE(result);
-			EXPECT_EQ(dst, std::optional{ratio{3 / 4}});
+			EXPECT_EQ(dst, (ratio{3, 4}));
 			EXPECT_EQ(out, ""sv);
 		}
 	}

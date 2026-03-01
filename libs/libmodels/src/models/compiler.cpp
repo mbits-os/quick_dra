@@ -105,7 +105,7 @@ namespace quick_dra {
 			for (auto const& section : input) {
 				auto it = stats.lower_bound(section.id);
 				if (it == stats.end() || it->first != section.id) {
-					it = stats.insert(it, {section.id, section_stats{}});
+					it = stats.emplace_hint(it, section.id, section_stats{});
 				}
 
 				auto& stat = it->second;
@@ -144,7 +144,7 @@ namespace quick_dra {
 				}
 
 				auto& output = *it;
-				output.blocks.push_back(compile_block(section));
+				output.blocks.emplace_back(compile_block(section));
 			}
 			return result;
 		}
@@ -185,7 +185,7 @@ namespace quick_dra {
 					std::vector<To> result{};
 					result.reserve(fields.size());
 					for (auto const& field : fields) {
-						result.push_back(std::visit(*this, field));
+						result.emplace_back(std::visit(*this, field));
 					}
 					return result;
 				}
@@ -232,7 +232,9 @@ namespace quick_dra {
 
 				auto const& src = *data.value;
 				if (index == invalid_index) {
-					fields.find(key)->second = extract<compiled_value>(src);
+					// this is where the key comes from
+					fields.find(key)->second =  //-V783
+					    extract<compiled_value>(src);
 					return;
 				}
 
@@ -295,7 +297,9 @@ namespace quick_dra {
 			}  // GCOV_EXCL_LINE[GCC]
 
 			void calculate_sum(unsigned key) {
-				auto& tgt = std::get<compiled_value>(fields.find(key)->second);
+				// this is where the key comes from
+				auto& tgt =
+				    std::get<compiled_value>(fields.find(key)->second);  //-V783
 				auto& refs = std::get<addition>(tgt).refs;
 
 				currency result{};
@@ -384,7 +388,7 @@ namespace quick_dra {
 		calculated_section result{.id = self.id, .repeatable = self.repeatable};
 		result.blocks.reserve(self.blocks.size());
 		for (auto const& block : self.blocks) {
-			result.blocks.push_back(calculate(block, ctx, self.id));
+			result.blocks.emplace_back(calculate(block, ctx, self.id));
 		}
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]
@@ -395,7 +399,7 @@ namespace quick_dra {
 		std::vector<calculated_section> result{};
 		result.reserve(report.size());
 		for (auto const& section : report) {
-			result.push_back(calculate(section, ctx));
+			result.emplace_back(calculate(section, ctx));
 		}
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]

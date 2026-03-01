@@ -27,7 +27,7 @@ namespace quick_dra {
 
 	bool get_enum_answer(
 	    std::string_view label,
-	    std::span<std::pair<char, std::string_view> const> const& items,
+	    std::span<std::pair<char, std::string_view> const> items,
 	    std::function<void(char)> const& store_enum,
 	    char selected,
 	    std::istream& in);

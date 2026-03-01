@@ -86,13 +86,15 @@ namespace quick_dra {
 			auto const net_amount =
 			    get_typed_value<currency>(form.state, var::salary.net);
 
-			result.push_back(
-			    {.label = fmt::format("{} {}", first_name, last_name),
-			     .value = net_amount});
+			result.emplace_back(summary_line{
+			    .label = fmt::format("{} {}", first_name, last_name),
+			    .value = net_amount});
 		}
 
-		result.push_back({.label = "ZUS"s, .value = insurance_total});
-		result.push_back({.label = "Urząd Skarbowy"s, .value = tax_total});
+		result.emplace_back(
+		    summary_line{.label = "ZUS"s, .value = insurance_total});
+		result.emplace_back(
+		    summary_line{.label = "Urząd Skarbowy"s, .value = tax_total});
 
 		return result;
 	}

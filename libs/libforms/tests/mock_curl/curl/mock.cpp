@@ -107,8 +107,8 @@ void CURL::set_response(
 
 		auto it = headers_.lower_bound(key);
 		if (it == headers_.end() || it->first != key) {
-			it = headers_.insert(
-			    it, {std::move(key), std::make_unique<header_storage>()});
+			it = headers_.emplace_hint(it, std::move(key),
+			                           std::make_unique<header_storage>());
 			auto& stg = it->second;
 			stg->name = key_view;
 			stg->result = {.name{nullptr},

@@ -9,7 +9,7 @@
 
 namespace quick_dra {
 	namespace {
-		auto make_records(std::span<partial::insured_t> const& insured) {
+		auto make_records(std::span<partial::insured_t> insured) {
 			std::vector<std::vector<std::string>> records{};
 			records.reserve(insured.size());
 			for (auto const& person : insured) {
@@ -55,7 +55,7 @@ namespace quick_dra {
 
 	std::vector<unsigned> search_insured_from_position(
 	    unsigned position,
-	    std::span<partial::insured_t> const& insured,
+	    std::span<partial::insured_t> insured,
 	    std::function<void(std::string const&)> const& on_error) {
 		if (position < 1 || position > insured.size()) {
 			if (insured.empty()) {
@@ -75,7 +75,7 @@ namespace quick_dra {
 
 	std::vector<unsigned> search_insured_from_keyword(
 	    std::string_view search_keyword,
-	    std::span<partial::insured_t> const& insured,
+	    std::span<partial::insured_t> insured,
 	    std::function<void(std::string const&)> const& on_error) {
 		std::vector<unsigned> result{};
 		auto const records = make_records(insured);

@@ -59,8 +59,8 @@ namespace quick_dra {
 		}
 	};
 
-	inline xml E(std::string_view const& tag,
-	             std::map<std::string, std::string> attributes = {}) {
+	inline xml E(std::string_view tag,
+	             std::map<std::string, std::string> const& attributes = {}) {
 		return xml{{tag.data(), tag.size()}, attributes};
 	}
 }  // namespace quick_dra

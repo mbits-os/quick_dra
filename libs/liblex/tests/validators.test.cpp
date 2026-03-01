@@ -92,13 +92,13 @@ namespace quick_dra::testing {
 	                public ValidatorSuite {
 	protected:
 		void test_checksum() {
-			auto const [id, checksum] = this->GetParam();
+			auto const& [id, checksum] = this->GetParam();
 			auto actual = ValidatorSuite::checksum(id);
 			ASSERT_EQ(actual, checksum);
 		}
 
 		void test_valid() {
-			auto const [id, checksum] = this->GetParam();
+			auto const& [id, checksum] = this->GetParam();
 			auto actual = ValidatorSuite::is_valid(id);
 			auto expected = checksum != kInvalidChecksum;
 			ASSERT_EQ(actual, expected);
@@ -114,7 +114,7 @@ namespace quick_dra::testing {
 	class social_id_birthday
 	    : public ::testing::TestWithParam<birthday_testcase> {};
 	TEST_P(social_id_birthday, decode) {
-		auto const [id, expected] = GetParam();
+		auto const& [id, expected] = GetParam();
 		auto const actual = social_id_validator::get_birthday(id);
 		ASSERT_EQ(actual, expected);
 	}

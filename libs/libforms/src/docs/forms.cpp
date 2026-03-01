@@ -245,10 +245,11 @@ namespace quick_dra {
 		forms.reserve(cfg.insured.size() + 1);
 
 		for (auto const& insured : cfg.insured) {
-			forms.push_back(calc_rca(insured, report_index, date, today, cfg));
+			forms.emplace_back(
+			    calc_rca(insured, report_index, date, today, cfg));
 		}
 
-		forms.push_back(calc_dra(report_index, date, today, cfg, forms));
+		forms.emplace_back(calc_dra(report_index, date, today, cfg, forms));
 		if (level >= verbose::raw_form_data) {
 			fmt::print("-- form data:\n");
 			for (auto const& form : forms) {

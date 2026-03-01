@@ -12,10 +12,6 @@
 #include <vector>
 #include <yaml/parser.hpp>
 
-namespace std {
-	std::ostream& operator<<(std::ostream& a, std::monostate) { return a; }
-}  // namespace std
-
 namespace yaml::testing {
 	using std::literals::operator""s;
 	using std::literals::operator""sv;
@@ -86,13 +82,30 @@ namespace yaml::testing {
 		return result;
 	}
 
+	template <typename T>
+	struct wrap_t {
+		T const* ref;
+		wrap_t(T const& ref) : ref{&ref} {}
+		friend std::ostream& operator<<(std::ostream& out, wrap_t const& w) {
+			return out << w.ref;
+		}
+	};
+
+	template <>
+	struct wrap_t<std::monostate> {
+		wrap_t(std::monostate) {}
+		friend std::ostream& operator<<(std::ostream& out, wrap_t const&) {
+			return out;
+		}
+	};
+
 	template <typename Payload, typename Arg = std::monostate>
 	void _test_payload(
 	    parsed_result<std::optional<Payload>, std::string> const& actual,
 	    parsed_result<std::optional<Payload>, std::string_view> const& expected,
 	    Arg const& arg = {}) {
-		ASSERT_EQ(actual.value, expected.value) << arg;
-		ASSERT_EQ(actual.log, expected.log) << arg;
+		ASSERT_EQ(actual.value, expected.value) << wrap_t{arg};
+		ASSERT_EQ(actual.log, expected.log) << wrap_t{arg};
 	}
 
 	template <typename Payload>

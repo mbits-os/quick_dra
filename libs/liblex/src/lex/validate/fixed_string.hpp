@@ -31,6 +31,10 @@ namespace quick_dra::checker {
 				content[i] = other.content[i];
 			}
 		}
+
+		constexpr fixed_string& operator=(const fixed_string& other) noexcept =
+		    delete;
+
 		constexpr size_t size() const noexcept { return N; }
 		constexpr const char* begin() const noexcept { return content; }
 		constexpr const char* end() const noexcept { return content + size(); }
@@ -39,10 +43,12 @@ namespace quick_dra::checker {
 			if constexpr (I < N) {
 				return content[I];
 			}
-		}
+		}  //-V591
+
 		constexpr char operator[](size_t i) const noexcept {
 			return content[i];
 		}
+
 		constexpr operator std::basic_string_view<char>() const noexcept {
 			return std::basic_string_view<char>{content, size()};
 		}

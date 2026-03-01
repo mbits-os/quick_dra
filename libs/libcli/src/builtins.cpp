@@ -18,11 +18,12 @@ namespace quick_dra::builtin {
 		chunk.title.assign(name);
 		chunk.items.reserve(commands.size());
 		for (auto [cmd_name, description] : commands)
-			chunk.items.push_back({as_str(cmd_name), as_str(description)});
+			chunk.items.emplace_back(
+			    std::pair{as_str(cmd_name), as_str(description)});
 	}
 
 	void help_group::add_to_parser(args::parser& parser,
-	                               std::span<help_group const> const& groups) {
+	                               std::span<help_group const> groups) {
 		parser.provide_help(false);
 		parser
 		    .custom(
@@ -35,7 +36,7 @@ namespace quick_dra::builtin {
 	}
 
 	void help_group::fill_help(args::fmt_list& commands,
-	                           std::span<help_group const> const& groups) {
+	                           std::span<help_group const> groups) {
 		commands.reserve(commands.size() + groups.size());
 		for (auto const& group : groups) {
 			commands.emplace_back();
@@ -45,7 +46,7 @@ namespace quick_dra::builtin {
 
 	[[noreturn]] void help_group::show_help(
 	    args::parser& parser,
-	    std::span<help_group const> const& groups) {
+	    std::span<help_group const> groups) {
 		auto commands = parser.printer_arguments();
 		fill_help(commands, groups);
 
@@ -56,7 +57,7 @@ namespace quick_dra::builtin {
 
 	parser::parser(std::string_view description,
 	               args::args_view const& args,
-	               std::span<help_group const> const& groups,
+	               std::span<help_group const> groups,
 	               bool is_root)
 	    : parser_{as_str(description), args, &tr_}, groups_{groups} {
 		if (is_root) {
@@ -68,7 +69,7 @@ namespace quick_dra::builtin {
 	}
 
 	root_parser::root_parser(args::args_view const& args,
-	                         std::span<help_group const> const& groups)
+	                         std::span<help_group const> groups)
 	    : parser{""sv, args, groups, true} {
 		get_parser()
 		    .custom(show_version, "v", "version")

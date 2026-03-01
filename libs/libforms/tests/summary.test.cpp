@@ -44,7 +44,7 @@ namespace quick_dra::testing {
 
 		RCA_1.insert(var::insured.first, "NAME"s);
 		RCA_1.insert(var::insured.last, "SURNAME"s);
-		RCA_1.insert(var::salary.net, 3.14159_PLN);
+		RCA_1.insert(var::salary.net, 3.14159_PLN);  //-V624
 
 		RCA_2.insert(var::insured.first, "JOHN"s);
 		RCA_2.insert(var::insured.last, "SMITH"s);

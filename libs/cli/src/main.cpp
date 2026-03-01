@@ -24,7 +24,7 @@ std::string ut8_str(wchar_t const* arg) {
 
 	auto size =
 	    WideCharToMultiByte(CP_UTF8, 0, arg, -1, nullptr, 0, nullptr, nullptr);
-	std::unique_ptr<char[]> out{new char[size + 1]};
+	auto out = std::make_unique<char[]>(size + 1);
 	WideCharToMultiByte(CP_UTF8, 0, arg, -1, out.get(), size + 1, nullptr,
 	                    nullptr);
 	return out.get();

@@ -12,7 +12,7 @@ namespace yaml {
 
 		[[noreturn]] void c4_error_handler(const char* msg,
 		                                   size_t msg_len,
-		                                   c4::yml::Location loc,
+		                                   c4::yml::Location loc,  //-V813
 		                                   void* user_data) {
 			reinterpret_cast<base_ctx::error_handler*>(user_data)->handle_error(
 			    loc, std::string_view{msg, msg_len});
@@ -66,7 +66,7 @@ namespace yaml {
 		};
 	}
 
-	bool ref_ctx::error(std::string_view const& msg) const {
+	bool ref_ctx::error(std::string_view msg) const {
 		if (parser && parser->source().len && ref_ && head) {
 			return head->handle_error(ref_->location(*parser), msg);
 		}  // GCOV_EXCL_LINE

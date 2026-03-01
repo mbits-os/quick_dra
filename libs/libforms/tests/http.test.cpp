@@ -3,24 +3,23 @@
 
 #include <fmt/format.h>
 #include <gtest/gtest.h>
+#include <cstddef>
 #include <curl/mock.hpp>
 #include <quick_dra/io/http.hpp>
 #include <span>
 
-namespace std {
-	template <typename T1, typename T2>
-	bool operator==(std::span<T1> const& lhs, std::span<T2> const& rhs) {
-		if (lhs.size_bytes() != rhs.size_bytes()) {
-			return false;
-		}
-
-		return std::memcmp(lhs.data(), rhs.data(), lhs.size_bytes()) == 0;
-	}
-};  // namespace std
-
 namespace quick_dra::testing {
 	using std::literals::operator""s;
 	using std::literals::operator""sv;
+
+	namespace {
+		std::string_view force_view(std::span<std::byte const> buffer) {
+			return {
+			    reinterpret_cast<char const*>(buffer.data()),
+			    buffer.size(),
+			};
+		}
+	}  // namespace
 
 	static constexpr auto dummy_content =
 	    "content content content content content content content "
@@ -117,7 +116,7 @@ namespace quick_dra::testing {
 		auto const actual = http_get("http://example.com/"s);
 		auto const log = ::testing::internal::GetCapturedStderr();
 		ASSERT_TRUE(actual);
-		ASSERT_EQ(std::span{actual.content}, std::span{dummy_content});
+		ASSERT_EQ(force_view(actual.content), dummy_content);
 		ASSERT_EQ(actual.content_type.type, "text"sv);
 		ASSERT_EQ(actual.content_type.subtype, "dummy"sv);
 		ASSERT_TRUE(actual.charset.empty());
@@ -137,7 +136,7 @@ namespace quick_dra::testing {
 		auto const actual = http_get("http://example.com/"s);
 		auto const log = ::testing::internal::GetCapturedStderr();
 		ASSERT_TRUE(actual);
-		ASSERT_EQ(std::span{actual.content}, std::span{dummy_content});
+		ASSERT_EQ(force_view(actual.content), dummy_content);
 		ASSERT_EQ(actual.content_type.type, "video"sv);
 		ASSERT_EQ(actual.content_type.subtype, "clip"sv);
 		ASSERT_EQ(actual.charset, "utf-future"sv);

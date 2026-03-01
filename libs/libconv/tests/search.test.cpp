@@ -12,17 +12,6 @@
 #include <tuple>
 #include <variant>
 
-namespace std {
-	template <typename T>
-	bool operator==(std::span<T> const& lhs, std::span<T> const& rhs) noexcept {
-		if (!(lhs.size() == rhs.size())) return false;
-		for (size_t index = 0; index < lhs.size(); ++index) {
-			if (!(lhs[index] == rhs[index])) return false;
-		}
-		return true;
-	}
-}  // namespace std
-
 namespace quick_dra::testing {
 	using std::literals::operator""s;
 	using std::literals::operator""sv;
@@ -47,7 +36,7 @@ namespace quick_dra::testing {
 	class search : public ::testing::TestWithParam<testcase> {
 	public:
 		void test_lookup(testcase const& param,
-		                 std::span<partial::insured_t> const& insured) {
+		                 std::span<partial::insured_t> insured) {
 			auto const& [term_view, expected_indexes_span, expected_output] =
 			    param;
 			struct conv {
@@ -73,8 +62,8 @@ namespace quick_dra::testing {
 					    log = err;
 					    throw carry_on{};
 				    });
-			} catch (carry_on const&) {
-				// pass
+			} catch (carry_on const&) {  // -V565
+				                         // pass
 			}
 
 			EXPECT_EQ(actual, expected_indexes);
@@ -131,7 +120,7 @@ namespace quick_dra::testing {
 		std::vector<partial::insured_t> insured{};
 		test_lookup({with(2), none, "insured list is empty"sv}, insured);
 
-		insured.push_back({});
+		insured.emplace_back();
 		test_lookup({with(2), none, "argument --pos must be equal to 1"sv},
 		            insured);
 	}
