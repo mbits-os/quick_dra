@@ -42,3 +42,4 @@ super-linter.log
 
 /.context.yaml
 /quick-dra_*.xml
+.PVS-Studio/
