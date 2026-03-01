@@ -88,3 +88,7 @@ Generate RCA/DRA xml file with payment information
    - Urząd Skarbowy:    0.00 zł
    sum total =       2833.86 zł
 ```
+
+## SAST Tools
+
+[PVS-Studio](https://pvs-studio.com/en/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
