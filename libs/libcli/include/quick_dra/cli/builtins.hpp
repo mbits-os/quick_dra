@@ -57,12 +57,11 @@ namespace quick_dra::builtin {
 		void copy_to(args::chunk& chunk) const;
 
 		static void add_to_parser(args::parser& parser,
-		                          std::span<help_group const> const& groups);
+		                          std::span<help_group const> groups);
 		static void fill_help(args::fmt_list& commands,
-		                      std::span<help_group const> const& groups);
-		[[noreturn]] static void show_help(
-		    args::parser& parser,
-		    std::span<help_group const> const& groups);
+		                      std::span<help_group const> groups);
+		[[noreturn]] static void show_help(args::parser& parser,
+		                                   std::span<help_group const> groups);
 	};
 
 	struct options {
@@ -74,7 +73,7 @@ namespace quick_dra::builtin {
 	public:
 		parser(std::string_view description,
 		       args::args_view const& args,
-		       std::span<help_group const> const& groups,
+		       std::span<help_group const> groups,
 		       bool is_root = false);
 		options parse_args();
 		void noent(std::string_view tool, std::string_view my_name) const;
@@ -91,6 +90,6 @@ namespace quick_dra::builtin {
 	class root_parser : public parser {
 	public:
 		root_parser(args::args_view const& args,
-		            std::span<help_group const> const& groups);
+		            std::span<help_group const> groups);
 	};
 }  // namespace quick_dra::builtin

@@ -49,7 +49,7 @@ namespace quick_dra::checker {
 		static int sum_values(std::string_view str,
 		                      weights_t const& weights,
 		                      std::index_sequence<I...>) noexcept {
-			if (str.size() != sizeof...(I)) return false;
+			if (str.size() != sizeof...(I)) return 0;
 
 			return ((Action{}.value(static_cast<unsigned char>(str[I])) *
 			         weights[I]) +

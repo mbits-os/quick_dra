@@ -14,18 +14,18 @@ namespace quick_dra::v1 {
 			std::vector<std::string> result{};
 			result.reserve(2);
 			if (r.payer != 0_per) {
-				result.push_back(fmt::format("payer {}%", r.payer));
+				result.emplace_back(fmt::format("payer {}%", r.payer));
 			}
 			if (r.insured != 0_per) {
-				result.push_back(fmt::format("insured {}%", r.insured));
+				result.emplace_back(fmt::format("insured {}%", r.insured));
 			}
 			// GCOV_EXCL_START
 			if (result.empty()) {
 				[[unlikely]];
-				result.push_back("payer 0%"s);
+				result.emplace_back("payer 0%"s);
 			}
 			// GCOV_EXCL_STOP
-			return join(result, ", "_sep);
+			return join(result, ", "_sep);  //-V601
 		}
 	}  // namespace
 

@@ -136,7 +136,7 @@ namespace quick_dra::builtin::testing {
 			auto end = args.end();
 			skip_ws(it, end);
 			while (it != end) {
-				result.push_back(get_argument(it, end));
+				result.emplace_back(get_argument(it, end));
 			}
 			return result;
 		}
@@ -210,7 +210,7 @@ namespace quick_dra::builtin::testing {
 
 		std::string patched(std::string_view content) {
 			return join(split_sv(content, sep_view_t{version::string}),
-			            "$VERSION"_sep);
+			            "$VERSION"_sep);  //-V601
 		}
 
 		void expect_output(std::string_view actual,
@@ -241,7 +241,8 @@ namespace quick_dra::builtin::testing {
 		}
 
 		void expect_test(runnable_testcase const& expected) {
-			temp_directory tmp_dir{};
+			temp_directory tmp_dir{};  //-V821
+
 			if (!expected.config_name.empty() || !expected.config.empty()) {
 				auto path = expected.config_name;
 				if (path.empty()) path = ".quick_dra.yaml"sv;
@@ -268,8 +269,8 @@ namespace quick_dra::builtin::testing {
 			std::string_view expected_stdout{};
 			std::string_view expected_stderr{};
 
-			std::string lazy_stdout{};
-			std::string lazy_stderr{};
+			std::string lazy_stdout{};  //-V821
+			std::string lazy_stderr{};  //-V821
 
 			if (std::holds_alternative<std::string_view>(expected.stdout)) {
 				expected_stdout = std::get<std::string_view>(expected.stdout);

@@ -9,23 +9,17 @@
 
 namespace quick_dra {
 	namespace {
-		auto conv_one_way(std::span<char const> const& src,
-		                  wchar_t* dst,
-		                  DWORD size) {
+		auto conv_one_way(std::span<char const> src, wchar_t* dst, DWORD size) {
 			return MultiByteToWideChar(CP_UTF8, 0, src.data(),
 			                           static_cast<DWORD>(src.size()), dst,
 			                           size);
 		}
-		auto conv_one_way(std::span<wchar_t const> const& src,
-		                  char* dst,
-		                  DWORD size) {
+		auto conv_one_way(std::span<wchar_t const> src, char* dst, DWORD size) {
 			return WideCharToMultiByte(CP_UTF8, 0, src.data(),
 			                           static_cast<DWORD>(src.size()), dst,
 			                           size, nullptr, nullptr);
 		}
-		auto lc_map(std::span<wchar_t const> const& src,
-		            wchar_t* dst,
-		            DWORD size) {
+		auto lc_map(std::span<wchar_t const> src, wchar_t* dst, DWORD size) {
 			return LCMapStringW(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE,
 			                    src.data(), static_cast<DWORD>(src.size()), dst,
 			                    size);

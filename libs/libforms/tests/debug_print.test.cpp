@@ -69,7 +69,7 @@ namespace quick_dra::testing {
 		ASSERT_EQ(actual, expected) << "Debug level: " << to_str(test.level);
 	}
 
-	auto& postproc_load(auto& obj) { return obj; }
+	auto& postproc_load(auto& obj) { return obj; }  //-V669
 
 	config& postproc_load(config& cfg) {
 		cfg.params.scale = {
@@ -1069,7 +1069,7 @@ reports:
 	inline std::vector<testcase> levels_to_vector() {
 		std::vector<testcase> result{};
 		for (auto const& [level, output] : verbose_levels) {
-			result.push_back(test_config.on(level, output));
+			result.emplace_back(test_config.on(level, output));
 		}
 		return result;
 	}

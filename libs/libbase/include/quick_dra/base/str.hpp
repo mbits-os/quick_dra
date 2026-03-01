@@ -44,6 +44,8 @@ namespace quick_dra {
 		std::string_view value;
 		constexpr explicit sep_view_t(std::string_view value) noexcept
 		    : value{value} {}
+		constexpr explicit sep_view_t(char const* value, size_t length) noexcept
+		    : sep_view_t{{value, length}} {}
 
 		constexpr auto empty() const noexcept { return value.empty(); }
 		constexpr auto size() const noexcept { return value.size(); }
@@ -52,7 +54,7 @@ namespace quick_dra {
 
 	inline consteval sep_view_t operator""_sep(char const* value,
 	                                           size_t length) noexcept {
-		return sep_view_t{std::string_view{value, length}};
+		return sep_view_t{value, length};
 	}
 
 	struct sep_char_t {

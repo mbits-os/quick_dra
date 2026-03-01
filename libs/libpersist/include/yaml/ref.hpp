@@ -47,7 +47,7 @@ namespace yaml {
 	struct ref_ctx : base_ctx {
 		ryml::ConstNodeRef const* ref_{};
 
-		bool error(std::string_view const& msg) const;
+		bool error(std::string_view msg) const;
 		ryml::ConstNodeRef const& ref() const noexcept { return *ref_; }
 		c4::csubstr val() const { return ref_ ? ref_->val() : c4::csubstr{}; }
 	};

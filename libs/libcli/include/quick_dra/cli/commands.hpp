@@ -19,8 +19,7 @@ namespace quick_dra {
 
 	class tools {
 	public:
-		tools(std::span<builtin_tool const> const& commands)
-		    : commands_{commands} {}
+		tools(std::span<builtin_tool const> commands) : commands_{commands} {}
 
 		int handle(std::string_view tool,
 		           args::arglist tool_args,
@@ -28,7 +27,7 @@ namespace quick_dra {
 
 		template <typename ArgParser>
 		static int run(ArgParser& parser,
-		               std::span<builtin_tool const> const& commands,
+		               std::span<builtin_tool const> commands,
 		               std::string_view parent_name) {
 			auto const [tool, tool_args] = parser.parse_args();
 

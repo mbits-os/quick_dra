@@ -161,7 +161,7 @@ namespace quick_dra {
 			auto const& new_value = policy.select(dst);
 			auto const& orig_value = policy.select(orig);
 			if (new_value == orig_value) return false;
-			fmt::print(
+			fmt::print(  //-V810 (about turning as_string into cached value)
 			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n",
 			    policy.label,
 			    orig_value
@@ -203,7 +203,8 @@ namespace quick_dra {
 				bool const present_in_cli[] = {
 				    this->check_required_on_no_questions(
 				        policies, check_side::command_line_arguments)...};
-				std::string_view const arg_flags[] = {policies.arg_flag...};
+				std::string_view const arg_flags[policies_count] = {
+				    policies.arg_flag...};
 
 				size_t cli_count = 0;
 				for (auto const present : present_in_cli) {

@@ -29,7 +29,7 @@ namespace quick_dra {
 		                       std::same_as<std::string_view> auto... suffix) {
 			input = strip_suffix(strip_sv(input), suffix...);
 
-			std::string alt_storage{};
+			std::string alt_storage{};  //-V821
 			auto const comma = input.find(',');
 			auto const has_comma = comma != std::string_view::npos;
 			auto const has_dot = input.find('.') != std::string_view::npos;

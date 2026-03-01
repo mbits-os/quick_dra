@@ -22,7 +22,7 @@ namespace quick_dra::builtin {
 	                      bool) {
 		return valid_nonempty_string(std::move(value), dst);
 	}
-	bool valid_last_name(std::string&& value,
+	bool valid_last_name(std::string&& value,  //-V524
 	                     std::optional<std::string>& dst,
 	                     bool) {
 		return valid_nonempty_string(std::move(value), dst);

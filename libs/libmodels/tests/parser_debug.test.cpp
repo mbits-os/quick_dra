@@ -51,8 +51,8 @@ namespace quick_dra::testing {
 	};
 
 	struct read_print_testcase {
-		std::string_view yaml;
-		void (*debug_print)(std::string_view, verbose);
+		std::string_view yaml{};
+		void (*debug_print)(std::string_view, verbose) = nullptr;
 		std::array<std::string_view, std::to_underlying(verbose::last) + 1>
 		    expected{};
 
@@ -84,7 +84,7 @@ namespace quick_dra::testing {
 		}
 	}
 
-	auto& postproc_load(auto& obj) { return obj; }
+	auto& postproc_load(auto& obj) { return obj; }  //-V669
 
 	config& postproc_load(config& cfg) {
 		cfg.params.scale = {

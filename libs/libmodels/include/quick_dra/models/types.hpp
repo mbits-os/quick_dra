@@ -66,7 +66,7 @@ namespace quick_dra {
 			for (auto const& path : var.path) {
 				auto it = ptr->children.lower_bound(path);
 				if (it == ptr->children.end() || it->first != path) {
-					it = ptr->children.insert(it, {path, global_object{}});
+					it = ptr->children.emplace_hint(it, path, global_object{});
 				}
 				ptr = &it->second;
 			}

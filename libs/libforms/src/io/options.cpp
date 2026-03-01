@@ -104,8 +104,10 @@ namespace quick_dra {
 			return result;
 		}
 
+		auto& params = result->params;
+
 #define FIND_IN_TIMELINE(NAME) \
-	result->params.NAME = find_in_timeline(date, tax_cfg.NAME)
+	params.NAME = find_in_timeline(date, tax_cfg.NAME)
 		FIND_IN_TIMELINE(scale);
 		FIND_IN_TIMELINE(minimal_pay);
 		FIND_IN_TIMELINE(costs_of_obtaining);
