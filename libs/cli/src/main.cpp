@@ -19,7 +19,7 @@ extern int tool(::args::args_view const&);
 #ifdef _WIN32
 #include <tchar.h>
 
-std::string ut8_str(wchar_t const* arg) {
+static std::string ut8f_str(wchar_t const* arg) {
 	if (!arg) return {};
 
 	auto size =
@@ -33,7 +33,7 @@ std::string ut8_str(wchar_t const* arg) {
 std::vector<std::string> wide_char_to_utf8(int argc, wchar_t* argv[]) {
 	std::vector<std::string> result{};
 	result.resize(argc);
-	std::transform(argv, argv + argc, result.begin(), ut8_str);
+	std::transform(argv, argv + argc, result.begin(), ut8f_str);
 	return result;
 }
 
