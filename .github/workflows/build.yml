@@ -263,6 +263,7 @@ jobs:
           path: ${{github.workspace}}/build/artifacts/coverage/
 
       - name: Finalize Coveralls
+        id: finalize
         if: always()
         run: |
           python ./.flow/flow.py coveralls --done "${{ github.run_id }}"
@@ -279,7 +280,7 @@ jobs:
 
       - name: Merge coverage
         uses: actions/upload-artifact/merge@v4
-        if: always()
+        if: ${{fromJson(steps.finalize.outputs.has_coverage)}}
         with:
           name: Coverage
           pattern: _coverage-*

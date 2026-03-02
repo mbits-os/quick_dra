@@ -55,12 +55,21 @@ def _comment_on_coverage(
     report_path: Path | None = None
     if build_num:
         report_path = Path("build", "artifacts", "coverage")
+        report_path.mkdir(parents=True, exist_ok=True)
 
     if report_path:
         context = load_report(report_path, rt)
         ctx = context.mustache_context(github_pr_new_code(), coveralls_url)
         print(CommentContext.render_terminal(ctx), file=sys.stderr)
         github_create_comment(CommentContext.render_html(ctx))
+
+        if "GITHUB_OUTPUT" in os.environ:
+            with open(
+                os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8"
+            ) as github_output:
+                github_output.write(
+                    f"has_coverage={json.dumps(len(context.tagged) > 0)}\n"
+                )
 
 
 def _curl_post(url: str, body: str, rt: env.Runtime):
