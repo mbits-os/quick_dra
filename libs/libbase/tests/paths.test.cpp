@@ -8,28 +8,32 @@
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
 
-#ifndef _WIN32
-#define _putenv(E) putenv(E)
+#ifdef _WIN32
+static int setenv(const char* name, const char* value, int) {
+	return _putenv_s(name, value);
+}
 #endif
 
 namespace quick_dra::testing {
-	struct env_save {
+	struct env_swap {
+		char const* name;
 		std::optional<std::string> value{};
-		env_save(char const* name) {
+		env_swap(char const* name, const char* next) : name{name} {
 			auto const c_value = std::getenv(name);
-			if (c_value) value = fmt::format("{}={}", name, c_value);
+			if (c_value) value = c_value;
+			setenv(name, next, 1);
 		};
-		~env_save() {
+		env_swap(env_swap const&) = delete;
+		env_swap(env_swap&&) = delete;
+		~env_swap() {
 			if (value) {
-				_putenv(value->data());
+				setenv(name, value->data(), 1);
 			}
 		}
 	};
 
 	TEST(paths, home) {
-		env_save orig_HOME{"HOME"};
-		char HOME[] = "HOME=some/value";
-		_putenv(HOME);
+		env_swap HOME{"HOME", "some/value"};
 		auto const argument = std::filesystem::path{"overriden"} / "directory" /
 		                      ".quick_dra.yaml"sv;
 

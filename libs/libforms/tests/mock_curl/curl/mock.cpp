@@ -111,10 +111,10 @@ void CURL::set_response(
 			                           std::make_unique<header_storage>());
 			auto& stg = it->second;
 			stg->name = key_view;
-			stg->result = {.name{nullptr},
-			               .value{nullptr},
-			               .amount{1},
-			               .index{0},
+			stg->result = {.name = nullptr,
+			               .value = nullptr,
+			               .amount = 1,
+			               .index = 0,
 			               .origin{},
 			               .anchor{}};
 		}

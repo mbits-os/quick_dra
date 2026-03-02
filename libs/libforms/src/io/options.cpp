@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/std.h>
+#include <array>
 #include <map>
 #include <optional>
 #include <quick_dra/base/paths.hpp>
@@ -76,16 +77,18 @@ namespace quick_dra {
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
-		tax_config_loader const loaders[] = {
-		    [&tax_config_path](verbose) -> std::optional<tax_config> {
-			    if (!tax_config_path) return std::nullopt;
-			    return tax_config::parse_yaml(*tax_config_path);
-		    },
-		    download_tax_config,
-		    +[](verbose) {
+		auto const loaders = std::array{
+		    // tax_config_loader
+		    std::function{
+		        [&tax_config_path](verbose) -> std::optional<tax_config> {
+			        if (!tax_config_path) return std::nullopt;
+			        return tax_config::parse_yaml(*tax_config_path);
+		        }},
+		    std::function{download_tax_config},
+		    std::function{+[](verbose) {
 			    return tax_config::parse_yaml(platform::config_data_dir() /
 			                                  "tax_config.yaml"sv);
-		    },
+		    }},
 		};
 
 		tax_config tax_cfg{};

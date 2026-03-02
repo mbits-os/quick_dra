@@ -97,7 +97,7 @@ namespace quick_dra {
 		    summary_line{.label = "Urząd Skarbowy"s, .value = tax_total});
 
 		return result;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	void print_summary(std::vector<summary_line> const& rows) {
 		auto const total_range =

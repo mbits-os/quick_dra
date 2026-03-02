@@ -9,56 +9,56 @@ namespace quick_dra::builtin::testing::insured_add {
 	        .name = "yes no document"sv,
 	        .args =
 	            "insured add -y --first A --last B --config .quick_dra.yaml"sv,
-	        .returncode = 2,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: at least one of --social-id, --id-card and --passport is required with -y
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "bad title"sv,
 	        .args =
-	            "insured add -y --first A --last B --title \"010 0 0\" --config .quick_dra.yaml"sv,
-	        .returncode = 2,
+	            R"(insured add -y --first A --last B --title "010 0 0" --config .quick_dra.yaml)"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --title: expecting 6 digits in form `#### # #'
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "bad scale"sv,
 	        .args =
 	            "insured add -y --first A --last B --scale 4/5a --config .quick_dra.yaml"sv,
-	        .returncode = 2,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, with denominator not equal to zero
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "bad scale NaN"sv,
 	        .args =
 	            "insured add -y --first A --last B --scale 4/0 --config .quick_dra.yaml"sv,
-	        .returncode = 2,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, with denominator not equal to zero
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "bad salary"sv,
 	        .args =
-	            "insured add -y --first A --last B --salary \"1000000 USD\" --config .quick_dra.yaml"sv,
-	        .returncode = 2,
+	            R"(insured add -y --first A --last B --salary "1000000 USD" --config .quick_dra.yaml)"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --salary: expecting a number with 0.01 increment, with optional PLN or zł suffix
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "percent scale"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title \"0110 0 0\" --scale 25%"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 25%)"sv,
 	        .stdout =
 	            "\033[0;90mFirst name set to \033[mName\n"
 	            "\033[0;90mLast name set to \033[mSurname\n"
@@ -80,7 +80,7 @@ qdra insured add: error: --salary: expecting a number with 0.01 increment, with 
 	    {
 	        .name = "salary amount"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title \"0110 0 0\" --salary 120000PLN"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --salary 120000PLN)"sv,
 	        .stdout = "\033[0;90mFirst name set to \033[mName\n"
 	                  "\033[0;90mLast name set to \033[mSurname\n"
 	                  "\033[0;90mDocument kind set to \033[m1\n"
@@ -101,7 +101,7 @@ qdra insured add: error: --salary: expecting a number with 0.01 increment, with 
 	    {
 	        .name = "salary minimal"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title \"0110 0 0\" --scale 3/4 --salary minimal"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 3/4 --salary minimal)"sv,
 	        .stdout =
 	            "\033[0;90mFirst name set to \033[mName\n"
 	            "\033[0;90mLast name set to \033[mSurname\n"
@@ -123,8 +123,14 @@ qdra insured add: error: --salary: expecting a number with 0.01 increment, with 
 	    {
 	        .name = "duplicate found"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first John --last Hancock --id-card AAA000000 --title \"0110 0 0\""sv,
-	        .returncode = 1,
+	            R"(insured add --config .quick_dra.yaml -y --first John --last Hancock --id-card AAA000000 --title "0110 0 0")"sv,
+	        .config = R"(wersja: 1
+ubezpieczeni:
+  - nazwisko: 'Surname, Name'
+    dowód: AAA000000
+    tytuł ubezpieczenia: 0110 0 0
+    wymiar: 3/4
+)"sv,
 	        .stdout = R"(Found another person with this document:
 
     #1: Name Surname [1 AAA000000]
@@ -134,19 +140,12 @@ Either remove this person or call
     qdra insured edit --pos 1
 
 )"sv,
-	        .config_name = ".quick_dra.yaml"sv,
-	        .config = R"(wersja: 1
-ubezpieczeni:
-  - nazwisko: 'Surname, Name'
-    dowód: AAA000000
-    tytuł ubezpieczenia: 0110 0 0
-    wymiar: 3/4
-)"sv,
+	        .returncode = 1,
 	    },
 	    {
 	        .name = "full time"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title \"0110 0 0\" --scale 4/4"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 4/4)"sv,
 	        .stdout =
 	            "\033[0;90mFirst name set to \033[mName\n"
 	            "\033[0;90mLast name set to \033[mSurname\n"
@@ -168,8 +167,8 @@ ubezpieczeni:
 	    {
 	        .name = "config ro"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title \"0110 0 0\""sv,
-	        .returncode = 1,
+	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0")"sv,
+	        .config_name = ".quick_dra.yaml"sv,
 	        .stdout =
 	            "\033[0;90mFirst name set to \033[mName\n"
 	            "\033[0;90mLast name set to \033[mSurname\n"
@@ -181,19 +180,13 @@ ubezpieczeni:
 	            ""sv,
 	        .stderr = R"(Quick-DRA: error: could not write to .quick_dra.yaml
 )"sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	        .returncode = 1,
 	        .mode = readonly_perms,
 	    },
 	    {
 	        .name = "reset all props A"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first \"\" --last \"\" --social-id \"\""sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
-qdra insured add: error: argument --first is required with -y
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first "" --last "" --social-id "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -202,17 +195,16 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
+	        .stderr =
+	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+qdra insured add: error: argument --first is required with -y
+)"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "reset all props B"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first \"\" --last \"\" --id-card \"\""sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
-qdra insured add: error: argument --first is required with -y
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first "" --last "" --id-card "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -221,17 +213,16 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
+	        .stderr =
+	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+qdra insured add: error: argument --first is required with -y
+)"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "reset all props C"sv,
 	        .args =
-	            "insured add --config .quick_dra.yaml -y --first \"\" --last \"\" --passport \"\""sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
-qdra insured add: error: argument --first is required with -y
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	            R"(insured add --config .quick_dra.yaml -y --first "" --last "" --passport "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -240,6 +231,11 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
+	        .stderr =
+	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+qdra insured add: error: argument --first is required with -y
+)"sv,
+	        .returncode = 2,
 	    },
 	};
 

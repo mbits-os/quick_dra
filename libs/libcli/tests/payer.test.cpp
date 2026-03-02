@@ -34,12 +34,6 @@ namespace quick_dra::builtin::testing::payer {
 	    {
 	        .name = "create new passport"sv,
 	        .args = "payer --config .quick_dra.yaml -y --passport AB4123456"sv,
-	        .stdout = "\033[0;90mDocument kind changed from \033[m1\033[0;90m "
-	                  "to \033[m2\n"
-	                  "\033[0;90mDocument changed from "
-	                  "\033[mABC523456\033[0;90m to \033[mAB4123456\n"
-	                  ""sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -48,6 +42,11 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
+	        .stdout = "\033[0;90mDocument kind changed from \033[m1\033[0;90m "
+	                  "to \033[m2\n"
+	                  "\033[0;90mDocument changed from "
+	                  "\033[mABC523456\033[0;90m to \033[mAB4123456\n"
+	                  ""sv,
 	        .writes =
 	            new_file{
 	                .name = ".quick_dra.yaml"sv,
@@ -58,7 +57,7 @@ ubezpieczeni: []
 	        .name = "create new ro"sv,
 	        .args =
 	            "payer --config .quick_dra.yaml -y --first Jan --last Nowak --social-id 26211012346 --tax-id 7680002466 --id-card ABC523456"sv,
-	        .returncode = 1,
+	        .config_name = ".quick_dra.yaml"sv,
 	        .stdout = "\033[0;90mFirst name changed from "
 	                  "\033[m<empty>\033[0;90m to \033[mJan\n"
 	                  "\033[0;90mLast name changed from "
@@ -74,30 +73,23 @@ ubezpieczeni: []
 	                  ""sv,
 	        .stderr = R"(Quick-DRA: error: could not write to .quick_dra.yaml
 )"sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	        .returncode = 1,
 	        .mode = readonly_perms,
 	    },
 	    {
 	        .name = "create new no doc"sv,
 	        .args =
 	            "payer --config .quick_dra.yaml -y --first Jan --last Nowak --social-id 26211012346 --tax-id 7680002466"sv,
-	        .returncode = 2,
 	        .stderr =
 	            R"(Quick-DRA: file .quick_dra.yaml will be created as needed.
 usage: qdra payer [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--tax-id <number>] [--id-card <number>] [--passport <number>]
 qdra payer: error: at least one of --id-card and --passport is required with -y
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "bad passport"sv,
 	        .args = "payer --config .quick_dra.yaml -y --passport AB0123456"sv,
-	        .returncode = 1,
-	        .stdout = "\033[0;90m - The passport number provided seems to be "
-	                  "invalid.\033[m\n"
-	                  "\033[0;90m - Cannot save invalid data with -y. "
-	                  "Stopping.\033[m\n"
-	                  ""sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -106,12 +98,17 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
+	        .stdout = "\033[0;90m - The passport number provided seems to be "
+	                  "invalid.\033[m\n"
+	                  "\033[0;90m - Cannot save invalid data with -y. "
+	                  "Stopping.\033[m\n"
+	                  ""sv,
+	        .returncode = 1,
 	    },
 	    {
 	        .name = "reset all props A"sv,
 	        .args =
-	            "payer --config .quick_dra.yaml -y --first \"\" --last \"\" --social-id \"\" --tax-id \"\" --id-card \"\""sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	            R"(payer --config .quick_dra.yaml -y --first "" --last "" --social-id "" --tax-id "" --id-card "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -124,8 +121,7 @@ ubezpieczeni: []
 	    {
 	        .name = "reset all props B"sv,
 	        .args =
-	            "payer --config .quick_dra.yaml -y --first \"\" --last \"\" --social-id \"\" --tax-id \"\" --passport \"\""sv,
-	        .config_name = ".quick_dra.yaml"sv,
+	            R"(payer --config .quick_dra.yaml -y --first "" --last "" --social-id "" --tax-id "" --passport "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -139,13 +135,12 @@ ubezpieczeni: []
 	        .name = "bad config"sv,
 	        .args =
 	            "payer --config .quick_dra.yaml -y --first Jan --last Nowak --social-id 26211012346 --tax-id 7680002466 --id-card ABC523456"sv,
-	        .returncode = 1,
+	        .config = "wersja: John"sv,
 	        .stderr = R"(.quick_dra.yaml:1:1: error: expecting a positive number
 .quick_dra.yaml:1:1: error: while reading `wersja`
 Quick-DRA: error: .quick_dra.yaml needs to be updated before continuing
 )"sv,
-	        .config_name = ".quick_dra.yaml"sv,
-	        .config = "wersja: John"sv,
+	        .returncode = 1,
 	    },
 	};
 

@@ -101,11 +101,11 @@ namespace quick_dra::testing {
 			return CURLE_OK;
 		}
 
-		virtual std::string_view getContentType() const = 0;
+		[[nodiscard]] virtual std::string_view getContentType() const = 0;
 	};
 
 	class ImplNoCharset : public Impl {
-		std::string_view getContentType() const override {
+		[[nodiscard]] std::string_view getContentType() const override {
 			return "text/dummy; token-a; token-b; name=value"sv;
 		};
 	};
@@ -125,7 +125,7 @@ namespace quick_dra::testing {
 	}
 
 	class ImplCharset : public Impl {
-		std::string_view getContentType() const override {
+		[[nodiscard]] std::string_view getContentType() const override {
 			return "video/clip; charset=utf-future"sv;
 		};
 	};

@@ -2,19 +2,20 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <fmt/format.h>
+#include <array>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/cli/builtins.hpp>
 #include <span>
 
 namespace quick_dra::builtin {
 	namespace {
-#define BUILTINS_X_KNOWN(NAME, TOOL, DSCR) {TOOL##sv, DSCR##sv},
-		static constexpr help_command root_commands[] = {
-		    ROOT_BUILTINS_X(BUILTINS_X_KNOWN)};
+#define BUILTINS_X_KNOWN(NAME, TOOL, DSCR) help_command{TOOL##sv, DSCR##sv},
+		static constexpr auto root_commands =
+		    std::array{ROOT_BUILTINS_X(BUILTINS_X_KNOWN)};
 #undef BUILTINS_X_KNOWN
 
-		static constexpr help_group command_groups[] = {
-		    {"known commands"sv, root_commands},
+		static constexpr auto command_groups = std::array{
+		    help_group{"known commands"sv, root_commands},
 		};
 	}  // namespace
 }  // namespace quick_dra::builtin

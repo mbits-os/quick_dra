@@ -3,7 +3,7 @@
 
 #include <fmt/format.h>
 #include <gtest/gtest.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <fstream>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
@@ -74,7 +74,7 @@ namespace quick_dra::testing {
 		root.with(E("a"sv, {{"href"s, "https://example.com/"s}}));
 		actual = format(root);
 		expected =
-		    "<root><a href=\"https://example.com/\"><!-- empty --></a></root>"sv;
+		    R"(<root><a href="https://example.com/"><!-- empty --></a></root>)"sv;
 		ASSERT_EQ(actual, expected);
 		ASSERT_FALSE(root.has_text());
 		ASSERT_EQ(root.children().size(), 1);
@@ -144,7 +144,7 @@ namespace quick_dra::testing {
 		        .id = "II"s,
 		        .blocks =
 		            {
-		                compiled_block{.id{"A"s}, .fields{{1, "\"quoted\""s}}},
+		                compiled_block{.id{"A"s}, .fields{{1, R"("quoted")"s}}},
 		                compiled_block{.id{"B"s},
 		                               .fields{{1, 1_per}, {2, 1.99_PLN}}},
 		                compiled_block{.id{},

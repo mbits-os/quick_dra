@@ -27,10 +27,10 @@ namespace quick_dra::testing {
 		std::string_view document;
 	};
 
-	static constexpr person people[] = {
-	    {"Piotr"sv, "Iksiński"sv, "1"sv, "ABC523456"sv},
-	    {"Jan"sv, "Iksiński"sv, "2"sv, "EH0123456"sv},
-	    {"Maria"sv, "Iksińska"sv, "P"sv, "26211012346"sv},
+	static constexpr auto people = std::array{
+	    person{"Piotr"sv, "Iksiński"sv, "1"sv, "ABC523456"sv},
+	    person{"Jan"sv, "Iksiński"sv, "2"sv, "EH0123456"sv},
+	    person{"Maria"sv, "Iksińska"sv, "P"sv, "26211012346"sv},
 	};
 
 	class search : public ::testing::TestWithParam<testcase> {
@@ -99,10 +99,10 @@ namespace quick_dra::testing {
 	static consteval search_term_view with(std::string_view id) { return id; };
 
 	static constexpr auto none = std::array<unsigned, 0>{};
-	static constexpr unsigned one[] = {0};
-	static constexpr unsigned two[] = {1};
-	static constexpr unsigned three[] = {2};
-	static constexpr unsigned everybody[] = {0, 1, 2};
+	static constexpr auto one = std::array{0u};
+	static constexpr auto two = std::array{1u};
+	static constexpr auto three = std::array{2u};
+	static constexpr auto everybody = std::array{0u, 1u, 2u};
 
 	static constexpr testcase tests[] = {
 	    {with(1), one, ""sv},

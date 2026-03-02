@@ -57,14 +57,14 @@ namespace quick_dra::testing {
 		    expected{};
 
 		template <verbose... Level>
-		consteval read_print_testcase on(
+		[[nodiscard]] consteval read_print_testcase on(
 		    std::string_view output) const noexcept {
 			auto copy = *this;
 			((copy.expected[std::to_underlying(Level)] = output), ...);
 			return copy;
 		}
 
-		std::string run_at(verbose level) const {
+		[[nodiscard]] std::string run_at(verbose level) const {
 			::testing::internal::CaptureStdout();
 			(*debug_print)(yaml, level);
 			return ::testing::internal::GetCapturedStdout();

@@ -97,7 +97,8 @@ namespace quick_dra::testing {
 	struct currency_ex : public currency {
 		using currency::currency;
 
-		constexpr inline calc_currency un_rounded() const noexcept {
+		[[nodiscard]] constexpr inline calc_currency un_rounded()
+		    const noexcept {
 			return calc_currency{
 			    currency::template rounded_impl<calc_currency::den>().value};
 		}

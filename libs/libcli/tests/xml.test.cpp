@@ -37,15 +37,6 @@ Quick-DRA: error: cannot find .quick_dra.yaml
 	    {
 	        .name = "minimal_pay not pretty"sv,
 	        .args = "xml --info --today 2026-1-1 --config .quick_dra.yaml"sv,
-	        .stdout = R"(-- report: #1 2025-12
--- output: quick-dra_202512-01.xml
--- payments:
-   - PIOTR IKSIŃSKI: 3873.17 zł
-   - ZUS:            1476.32 zł
-   - Urząd Skarbowy:  153.12 zł
-   sum total =       5502.61 zł
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -56,6 +47,14 @@ ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
     tytuł ubezpieczenia: 0110 0 0
     pesel: 50671500000
+)"sv,
+	        .stdout = R"(-- report: #1 2025-12
+-- output: quick-dra_202512-01.xml
+-- payments:
+   - PIOTR IKSIŃSKI: 3873.17 zł
+   - ZUS:            1476.32 zł
+   - Urząd Skarbowy:  153.12 zł
+   sum total =       5502.61 zł
 )"sv,
 	        .writes =
 	            new_file{
@@ -68,15 +67,6 @@ ubezpieczeni:
 	        .name = "minimal_pay"sv,
 	        .args =
 	            "xml --pretty --info --today 2026-1-1 --config .quick_dra.yaml"sv,
-	        .stdout = R"(-- report: #1 2025-12
--- output: quick-dra_202512-01.xml
--- payments:
-   - PIOTR IKSIŃSKI: 3873.17 zł
-   - ZUS:            1476.32 zł
-   - Urząd Skarbowy:  153.12 zł
-   sum total =       5502.61 zł
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -88,6 +78,14 @@ ubezpieczeni:
     tytuł ubezpieczenia: 0110 0 0
     pesel: 50671500000
 )"sv,
+	        .stdout = R"(-- report: #1 2025-12
+-- output: quick-dra_202512-01.xml
+-- payments:
+   - PIOTR IKSIŃSKI: 3873.17 zł
+   - ZUS:            1476.32 zł
+   - Urząd Skarbowy:  153.12 zł
+   sum total =       5502.61 zł
+)"sv,
 	        .writes =
 	            new_file{
 	                .name = "quick-dra_202512-01.xml"sv,
@@ -98,6 +96,18 @@ ubezpieczeni:
 	        .name = "one quarter"sv,
 	        .args =
 	            "xml --pretty --info --today 2026-2-1 --config .quick_dra.yaml -vvv"sv,
+	        .config = R"(wersja: 1
+płatnik:
+  nazwisko: 'Nowak, Jan'
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: 'Iksiński, Piotr'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 50671500000
+    wymiar: 1/4
+)"sv,
 	        .stdout = R"(-- config used: .quick_dra.yaml
 -- today: 2026-02-01
 -- report: #1 2026-01
@@ -119,19 +129,6 @@ ubezpieczeni:
    - Urząd Skarbowy:    0.00 zł
    sum total =       1416.94 zł
 )"sv,
-	        .config_name = ".quick_dra.yaml"sv,
-	        .config = R"(wersja: 1
-płatnik:
-  nazwisko: 'Nowak, Jan'
-  paszport: AB4123456
-  nip: 7680002466
-  pesel: 26211012346
-ubezpieczeni:
-  - nazwisko: 'Iksiński, Piotr'
-    tytuł ubezpieczenia: 0110 0 0
-    pesel: 50671500000
-    wymiar: 1/4
-)"sv,
 	        .writes =
 	            new_file{
 	                .name = "quick-dra_202601-01.xml"sv,
@@ -144,6 +141,19 @@ ubezpieczeni:
 	        .name = "verbosity 6"sv,
 	        .args =
 	            "xml --pretty --today 2026-2-1 -vvvvvv --config .quick_dra.yaml"sv,
+	        .config = R"(wersja: 1
+płatnik:
+  nazwisko: "Nowak (HOME), Jan"
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: Ubezpieczona, Osoba
+    tytuł ubezpieczenia: 0110 1 1
+    pesel: 50671500000
+    wymiar: 1/4
+    pensja: 8000
+)"sv,
 	        .stdout = R"(-- payer:
 --   name: Jan Nowak (HOME)
 --   social id: 26211012346
@@ -400,8 +410,18 @@ ubezpieczeni:
 -- output: quick-dra_202601-01.xml
 -- use --info to print summary of amounts to pay
 )"sv,
+	        .writes =
+	            new_file{
+	                .name = "quick-dra_202601-01.xml"sv,
+	                .cmp = "homes/var_home/quick-dra_202601-01.xml"sv,
+	            },
 	        .check_stdout = compare::end,
-	        .config_name = ".quick_dra.yaml"sv,
+	    },
+	    {
+	        // has "check"
+	        .name = "verbosity 7"sv,
+	        .args =
+	            "xml --pretty --today 2026-2-1 -vvvvvvv --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: "Nowak (HOME), Jan"
@@ -415,17 +435,6 @@ ubezpieczeni:
     wymiar: 1/4
     pensja: 8000
 )"sv,
-	        .writes =
-	            new_file{
-	                .name = "quick-dra_202601-01.xml"sv,
-	                .cmp = "homes/var_home/quick-dra_202601-01.xml"sv,
-	            },
-	    },
-	    {
-	        // has "check"
-	        .name = "verbosity 7"sv,
-	        .args =
-	            "xml --pretty --today 2026-2-1 -vvvvvvv --config .quick_dra.yaml"sv,
 	        .stdout = R"(-- payer:
 --   name: Jan Nowak (HOME)
 --   social id: 26211012346
@@ -682,8 +691,18 @@ ubezpieczeni:
 -- output: quick-dra_202601-01.xml
 -- use --info to print summary of amounts to pay
 )"sv,
+	        .writes =
+	            new_file{
+	                .name = "quick-dra_202601-01.xml"sv,
+	                .cmp = "homes/var_home/quick-dra_202601-01.xml"sv,
+	            },
 	        .check_stdout = compare::end,
-	        .config_name = ".quick_dra.yaml"sv,
+	    },
+	    {
+	        // has "check"
+	        .name = "verbosity 8"sv,
+	        .args =
+	            "xml --pretty --today 2026-2-1 -vvvvvvvv --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: "Nowak (HOME), Jan"
@@ -697,17 +716,6 @@ ubezpieczeni:
     wymiar: 1/4
     pensja: 8000
 )"sv,
-	        .writes =
-	            new_file{
-	                .name = "quick-dra_202601-01.xml"sv,
-	                .cmp = "homes/var_home/quick-dra_202601-01.xml"sv,
-	            },
-	    },
-	    {
-	        // has "check"
-	        .name = "verbosity 8"sv,
-	        .args =
-	            "xml --pretty --today 2026-2-1 -vvvvvvvv --config .quick_dra.yaml"sv,
 	        .stdout = R"(-- payer:
 --   name: Jan Nowak (HOME)
 --   social id: 26211012346
@@ -811,43 +819,23 @@ ubezpieczeni:
 -- use --info to print summary of amounts to pay
 -- (no more info to unveil)
 )"sv,
-	        .check_stdout = compare::end,
-	        .config_name = ".quick_dra.yaml"sv,
-	        .config = R"(wersja: 1
-płatnik:
-  nazwisko: "Nowak (HOME), Jan"
-  paszport: AB4123456
-  nip: 7680002466
-  pesel: 26211012346
-ubezpieczeni:
-  - nazwisko: Ubezpieczona, Osoba
-    tytuł ubezpieczenia: 0110 1 1
-    pesel: 50671500000
-    wymiar: 1/4
-    pensja: 8000
-)"sv,
 	        .writes =
 	            new_file{
 	                .name = "quick-dra_202601-01.xml"sv,
 	                .cmp = "homes/var_home/quick-dra_202601-01.xml"sv,
 	            },
+	        .check_stdout = compare::end,
 	    },
 	    {
 	        .name = "no config"sv,
 	        .args = "xml --config .quick_dra.yaml"sv,
-	        .returncode = 1,
 	        .stdout = no_config_stdout,
+	        .returncode = 1,
 	    },
 	    {
 	        .name = "today not matching A"sv,
 	        .args =
 	            "xml --pretty --info --today 2026-14-34 --config .quick_dra.yaml"sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
-qdra xml: error: --today: expected YYYY-MM-DD, got `2026-14-34'
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -859,17 +847,16 @@ ubezpieczeni:
     tytuł ubezpieczenia: 0110 0 0
     pesel: 50671500000
 )"sv,
+	        .stderr =
+	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
+qdra xml: error: --today: expected YYYY-MM-DD, got `2026-14-34'
+)"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "today not matching B"sv,
 	        .args =
 	            "xml --pretty --info --today something --config .quick_dra.yaml"sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
-qdra xml: error: --today: expected YYYY-MM-DD, got `something'
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -881,17 +868,16 @@ ubezpieczeni:
     tytuł ubezpieczenia: 0110 0 0
     pesel: 50671500000
 )"sv,
+	        .stderr =
+	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
+qdra xml: error: --today: expected YYYY-MM-DD, got `something'
+)"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "today invalid"sv,
 	        .args =
 	            "xml --pretty --info --today 2026-02-31 --config .quick_dra.yaml"sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
-qdra xml: error: --today: expected YYYY-MM-DD, got `2026-02-31'
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -903,17 +889,16 @@ ubezpieczeni:
     tytuł ubezpieczenia: 0110 0 0
     pesel: 50671500000
 )"sv,
+	        .stderr =
+	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
+qdra xml: error: --today: expected YYYY-MM-DD, got `2026-02-31'
+)"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "report index out of bounds"sv,
 	        .args =
 	            "xml --pretty --info --today 2026-1-1 -n 199 --config .quick_dra.yaml"sv,
-	        .returncode = 2,
-	        .stderr =
-	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
-qdra xml: error: serial number must be in range 1 to 99 inclusive
-)"sv,
-	        .config_name = ".quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -925,6 +910,11 @@ ubezpieczeni:
     tytuł ubezpieczenia: 0110 0 0
     pesel: 50671500000
 )"sv,
+	        .stderr =
+	            R"(usage: qdra xml [-h] [-v ...] [--config <path>] [--tax-config <path>] [-n <NN>] [-m <month>] [--today <YYYY-MM-DD>] [--pretty] [--info]
+qdra xml: error: serial number must be in range 1 to 99 inclusive
+)"sv,
+	        .returncode = 2,
 	    },
 	};
 

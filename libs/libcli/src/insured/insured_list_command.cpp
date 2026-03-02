@@ -3,6 +3,7 @@
 
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <array>
 #include <filesystem>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
@@ -45,7 +46,7 @@ namespace quick_dra::builtin::insured::list {
 			unsigned index = 0;
 			for (auto const& person : *cfg.insured) {
 				++index;
-				std::string items[] = {
+				auto items = std::array{
 				    fmt::to_string(index),
 				    person.last_name.value_or(""s),  // GCOV_EXCL_LINE[GCC]
 				    person.first_name.value_or(""s),

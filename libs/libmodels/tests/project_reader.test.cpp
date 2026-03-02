@@ -203,7 +203,7 @@ namespace quick_dra::testing {
 
 		// valid
 		insurance_title const expected = {
-		    .title_code{"1234"s}, .pension_right{5}, .disability_level{6}};
+		    .title_code = "1234"s, .pension_right = 5, .disability_level = 6};
 		value = read<insurance_title>("1234 5 6"sv);
 		ASSERT_TRUE(value);
 		ASSERT_EQ(*value, expected);
