@@ -44,7 +44,7 @@ namespace quick_dra::testing {
 
 		RCA_1.insert(var::insured.first, "NAME"s);
 		RCA_1.insert(var::insured.last, "SURNAME"s);
-		RCA_1.insert(var::salary.net, 3.14159_PLN);  //-V624
+		RCA_1.insert(var::salary.net, 31.4159_PLN);
 
 		RCA_2.insert(var::insured.first, "JOHN"s);
 		RCA_2.insert(var::insured.last, "SMITH"s);
@@ -55,11 +55,11 @@ namespace quick_dra::testing {
 		print_summary(summary);
 		auto const actual = ::testing::internal::GetCapturedStdout();
 		auto const expected = R"(-- payments:
-   - NAME SURNAME:            3.14 zł
+   - NAME SURNAME:           31.42 zł
    - JOHN SMITH:           3141.59 zł
    - ZUS:                  2000.00 zł
    - Urząd Skarbowy: 1500100900.00 zł
-   sum total =       1500106044.73 zł
+   sum total =       1500106073.01 zł
 )"sv;
 		ASSERT_EQ(actual, expected);
 	}

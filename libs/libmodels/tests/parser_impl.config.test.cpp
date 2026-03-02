@@ -15,7 +15,7 @@ namespace quick_dra::testing {
 		std::optional<std::string_view> id_card;
 		std::optional<std::string_view> passport;
 
-		payer_t to_payer() const {
+		[[nodiscard]] payer_t to_payer() const {
 			return {{
 			            .last_name = as_str(last_name),
 			            .id_card = as_str(id_card),
@@ -41,7 +41,7 @@ namespace quick_dra::testing {
 		std::optional<std::string_view> passport;
 		std::optional<std::string_view> social_id;
 
-		insured_t to_insured() const {
+		[[nodiscard]] insured_t to_insured() const {
 			insurance_title out_title;
 			insurance_title::parse(title, out_title);
 			return {{
@@ -64,7 +64,7 @@ namespace quick_dra::testing {
 		payer_view payer;
 		std::span<insured_view const> insured;
 
-		config to_config() const {
+		[[nodiscard]] config to_config() const {
 			std::vector<insured_t> out_insured;
 			out_insured.reserve(insured.size());
 			std::transform(

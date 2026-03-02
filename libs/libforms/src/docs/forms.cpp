@@ -34,7 +34,7 @@ namespace quick_dra {
 			std::vector<calculated_value> result{};
 			result.reserve(parts.size());
 			for (auto& part : parts) {
-				result.push_back(std::move(part));
+				result.emplace_back(std::move(part));
 			}
 			return result;
 		}

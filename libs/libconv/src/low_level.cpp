@@ -39,7 +39,7 @@ namespace quick_dra {
 	                bool hint,
 	                bool& dst,
 	                std::istream& in) {
-		auto const handler = [&, hint](std::string&& input) -> bool {
+		auto const handler = [&, hint](std::string const& input) -> bool {
 			if (input.empty()) {
 				dst = hint;
 				return true;
@@ -84,7 +84,7 @@ namespace quick_dra {
 
 		return get_answer(
 		    label, hint,
-		    [&, selected](std::string&& answer) {
+		    [&, selected](std::string const& answer) {
 			    if (selected && answer.empty()) {
 				    store_enum(selected);
 				    return true;

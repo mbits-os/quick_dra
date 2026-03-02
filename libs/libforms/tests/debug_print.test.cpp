@@ -41,15 +41,16 @@ namespace quick_dra::testing {
 		verbose level{};
 		std::string_view expected{};
 
-		constexpr testcase on(verbose lvl,
-		                      std::string_view output) const noexcept {
+		[[nodiscard]] constexpr testcase on(
+		    verbose lvl,
+		    std::string_view output) const noexcept {
 			auto copy = *this;
 			copy.level = lvl;
 			copy.expected = output;
 			return copy;
 		}
 
-		std::string capture() const {
+		[[nodiscard]] std::string capture() const {
 			::testing::internal::CaptureStdout();
 			run_captured();
 			return ::testing::internal::GetCapturedStdout();

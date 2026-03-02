@@ -3,6 +3,7 @@
 
 #include <sys/wait.h>
 #include <unistd.h>
+#include <array>
 #include <cstdlib>
 #include <filesystem>
 
@@ -10,7 +11,7 @@ namespace quick_dra::platform {
 	std::filesystem::path _exec_path() {
 		using namespace std::literals;
 		std::error_code ec;
-		static constexpr std::string_view self_links[] = {
+		static constexpr auto self_links = std::array{
 		    "/proc/self/exe"sv,
 		    "/proc/curproc/file"sv,
 		    "/proc/curproc/exe"sv,

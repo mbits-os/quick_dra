@@ -32,17 +32,18 @@ namespace quick_dra::builtin::testing {
 		std::string_view args{};
 		std::span<std::string_view const> post{};
 
-		int returncode{0};
-		std::variant<std::string_view, std::string (*)()> stdout{};
-		compare check_stdout{compare::all};
-		std::variant<std::string_view, std::string (*)()> stderr{};
-		compare check_stderr{compare::all};
-
 		std::string_view config_name{};
 		std::string_view config{};
-		perms mode{perms::none};
+
+		std::variant<std::string_view, std::string (*)()> stdout{};
+		std::variant<std::string_view, std::string (*)()> stderr{};
 
 		std::optional<new_file> writes{};
+
+		int returncode{0};
+		compare check_stdout{compare::all};
+		compare check_stderr{compare::all};
+		perms mode{perms::none};
 
 		bool run_test() const;
 

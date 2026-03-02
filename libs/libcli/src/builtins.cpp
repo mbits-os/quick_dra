@@ -18,8 +18,7 @@ namespace quick_dra::builtin {
 		chunk.title.assign(name);
 		chunk.items.reserve(commands.size());
 		for (auto [cmd_name, description] : commands)
-			chunk.items.emplace_back(
-			    std::pair{as_str(cmd_name), as_str(description)});
+			chunk.items.emplace_back(as_str(cmd_name), as_str(description));
 	}
 
 	void help_group::add_to_parser(args::parser& parser,

@@ -24,11 +24,11 @@ known commands:
 	    {
 	        .name = "unknown param"sv,
 	        .args = "--force"sv,
-	        .returncode = 2,
 	        .stderr =
 	            R"(usage: qdra [-h] [--version] <command> [<args>]
 qdra: error: unrecognized argument: --force
 )"sv,
+	        .returncode = 2,
 	    },
 	    {
 	        .name = "help"sv,
@@ -53,7 +53,6 @@ known commands:
 	    {
 	        .name = "unknown subcommand"sv,
 	        .args = "noent"sv,
-	        .returncode = 1,
 	        .stderr =
 	            R"(usage: qdra [-h] [--version] <command> [<args>]
 qdra: "noent" is not a qdra command
@@ -63,6 +62,7 @@ known commands:
  payer   manage the payer data in ~/.quick_dra.yaml file
  insured manage the insured data in ~/.quick_dra.yaml file
 )"sv,
+	        .returncode = 1,
 	    },
 	};
 

@@ -34,13 +34,15 @@ namespace quick_dra::builtin::testing {
 
 		struct temp_directory {
 			temp_directory() { std::filesystem::current_path(dirname_); }
+			temp_directory(temp_directory const&) = delete;
+			temp_directory(temp_directory&&) = delete;
 			~temp_directory() {
 				std::error_code ec{};
 				std::filesystem::current_path(cwd_);
 				std::filesystem::remove_all(dirname_, ec);
 			}
 
-			std::filesystem::path const& cwd() const noexcept {
+			[[nodiscard]] std::filesystem::path const& cwd() const noexcept {
 				return dirname_;
 			};
 
@@ -56,8 +58,6 @@ namespace quick_dra::builtin::testing {
 			std::filesystem::path dirname_{make_temp_dir()};
 			std::filesystem::path cwd_{std::filesystem::current_path()};
 		};
-
-		constexpr auto contains_unsafe = ctre::search<R"([^\w@%+=:,.\/\-])">;
 
 		void skip_ws(std::string_view::iterator& it,
 		             std::string_view::iterator const& end) {
