@@ -17,6 +17,7 @@ optional arguments:
 
 known commands:
  xml           produce KEDU 5.6 XML file
+ list          list people in configuration
  payer         manage the payer data in ~/.quick_dra.yaml file
  insured       manage the insured data in ~/.quick_dra.yaml file
 )"sv,
@@ -41,6 +42,7 @@ optional arguments:
 
 known commands:
  xml           produce KEDU 5.6 XML file
+ list          list people in configuration
  payer         manage the payer data in ~/.quick_dra.yaml file
  insured       manage the insured data in ~/.quick_dra.yaml file
 )"sv,
@@ -59,6 +61,7 @@ qdra: "noent" is not a qdra command
 
 known commands:
  xml     produce KEDU 5.6 XML file
+ list    list people in configuration
  payer   manage the payer data in ~/.quick_dra.yaml file
  insured manage the insured data in ~/.quick_dra.yaml file
 )"sv,

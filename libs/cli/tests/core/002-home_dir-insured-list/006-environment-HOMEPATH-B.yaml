@@ -1,4 +1,4 @@
-args: insured list
+args: list
 env:
   HOME: null
   USERPROFILE: null

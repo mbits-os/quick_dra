@@ -1,4 +1,4 @@
-args: insured list
+args: list
 env:
   HOME: $DATA/homes/var_home
   USERPROFILE: null
@@ -8,4 +8,4 @@ expected:
   return-code: 0
   stdout: |
     #1: Osoba Ubezpieczona [P 50671500000] 1/4 of 8000 zł
-  stderr: ''
+  stderr: ""

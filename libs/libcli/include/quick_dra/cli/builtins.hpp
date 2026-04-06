@@ -14,11 +14,11 @@ namespace quick_dra::builtin {
 
 #define ROOT_BUILTINS_X(X)                                               \
 	X(xml, "xml", "produce KEDU 5.6 XML file")                           \
+	X(list, "list", "list people in configuration")                      \
 	X(payer, "payer", "manage the payer data in ~/.quick_dra.yaml file") \
 	X(insured, "insured", "manage the insured data in ~/.quick_dra.yaml file")
 
 #define INSURED_BUILTINS_X(X)                              \
-	X(list, "list", "list all known insured people")       \
 	X(add, "add", "add a new insured person")              \
 	X(remove, "remove", "remove one of configured people") \
 	X(edit, "edit", "update data of a selected person")

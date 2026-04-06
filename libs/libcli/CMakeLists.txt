@@ -13,10 +13,10 @@ set(SRCS
     src/insured/insured_edit_command.cpp
     src/insured/insured_edit_conversation.cpp
     src/insured/insured_edit_conversation.hpp
-    src/insured/insured_list_command.cpp
     src/insured/insured_remove_command.cpp
     src/insured/insured_remove_options.cpp
     src/insured/insured_remove_options.hpp
+    src/list/list_command.cpp
     src/payer/payer_command.cpp
     src/payer/payer_conversation.cpp
     src/payer/payer_conversation.hpp

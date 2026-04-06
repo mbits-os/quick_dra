@@ -1,7 +1,7 @@
 args: insured remove --config .quick_dra.yaml --pos 3
 input: y
 post:
-- insured list --config .quick_dra.yaml
+- list --config .quick_dra.yaml
 expected:
   return-code: 0
   stdout: "\
