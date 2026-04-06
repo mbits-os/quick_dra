@@ -14,6 +14,20 @@
 #include <utility>
 
 namespace quick_dra {
+	namespace policy_builder {
+		template <typename Arg>
+		struct validator_function {
+			bool (*validator)(std::string&&, std::optional<Arg>&, bool);
+			bool operator()(std::string&& value,
+			                std::optional<Arg>& dst,
+			                bool ask_questions) const noexcept {
+				return (*validator)(std::move(value), dst, ask_questions);
+			}
+		};
+
+		static_assert(Validator<validator_function<int>, int>);
+	}  // namespace policy_builder
+
 	template <AnyFieldPolicy Policy>
 	struct field_policy_with_arg_flags : Policy {
 		std::string_view arg_flag;
@@ -21,7 +35,8 @@ namespace quick_dra {
 
 	template <typename Arg,
 	          Selector<Arg> SelectorLambda,
-	          Validator<Arg> ValidatorLambda>
+	          Validator<Arg> ValidatorLambda =
+	              policy_builder::validator_function<Arg>>
 	struct field_policy : SelectorLambda, ValidatorLambda {
 		using selector_type = SelectorLambda;
 		using validator_type = ValidatorLambda;
@@ -191,18 +206,6 @@ namespace quick_dra {
 			template <typename T>
 			using value_type_t = typename value_type_of<T>::type;
 		}  // namespace details
-
-		template <typename Arg>
-		struct validator_function {
-			bool (*validator)(std::string&&, std::optional<Arg>&, bool);
-			bool operator()(std::string&& value,
-			                std::optional<Arg>& dst,
-			                bool ask_questions) const noexcept {
-				return (*validator)(std::move(value), dst, ask_questions);
-			}
-		};
-
-		static_assert(Validator<validator_function<int>, int>);
 
 		template <typename Arg, Selector<Arg> SelectorLambda>
 		struct label_selector : SelectorLambda {

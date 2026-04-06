@@ -1,0 +1,9 @@
+{
+    "quick_dra::field_policy<$1, $2, quick_dra::policy_builder::validator_function<$1>>": "quick_dra::field_policy<$1, $2>",
+    "quick_dra::field_policy<$1, $2, $3>::select<$4>($4&)": "quick_dra::field_policy<$1, $2, $3>::select($4&)",
+    "quick_dra::field_policy<$1, $2>::select<$4>($4&)": "quick_dra::field_policy<$1, $2>::select($4&)",
+    "quick_dra::field_policy<$1, $2, $3>::select<$4>($4 const&)": "quick_dra::field_policy<$1, $2, $3>::select($4 const&)",
+    "quick_dra::field_policy<$1, $2>::select<$4>($4 const&)": "quick_dra::field_policy<$1, $2>::select($4 const&)",
+    "quick_dra::get_enum_item<$1>($1 const&)": "quick_dra::get_enum_item($1 const&)",
+    "quick_dra::getters::social_id::operator()<$1>($1&) const": "quick_dra::getters::social_id::operator()($1&) const"
+}
