@@ -1,0 +1,18 @@
+[module "Command Line Interface"]
+	path = libs/cli
+	path = libs/libcli
+	path = libs/libconv
+[module "Base"]
+	path = libs/libbase
+	path = libs/liblex
+[module "YAML"]
+	path = libs/libmodels
+	path = libs/libpersist
+[module "Setup"]
+	path = libs/libforms/
+[module "HTTP"]
+	path = libs/libforms/src/io/http.cpp
+	path = libs/libforms/include/quick_dra/io/http.hpp
+[module "KEDU"]
+	path = libs/libforms/src/docs
+	path = libs/libforms/include/quick_dra/docs
