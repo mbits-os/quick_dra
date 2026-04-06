@@ -7,11 +7,11 @@ namespace quick_dra::builtin::testing::insured_list {
 	static constexpr runnable_testcase tests[] = {
 	    {
 	        .name = "empty list"sv,
-	        .args = "insured list --config .quick_dra.yaml"sv,
+	        .args = "list --config .quick_dra.yaml"sv,
 	    },
 	    {
 	        .name = "normal out"sv,
-	        .args = "insured list --config .quick_dra.yaml"sv,
+	        .args = "list --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -35,7 +35,7 @@ ubezpieczeni:
 	    },
 	    {
 	        .name = "pipe"sv,
-	        .args = "insured list --config .quick_dra.yaml --pipe"sv,
+	        .args = "list --config .quick_dra.yaml --pipe"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -59,7 +59,7 @@ ubezpieczeni:
 	    },
 	    {
 	        .name = "pipe z"sv,
-	        .args = "insured list --config .quick_dra.yaml --pipe -z"sv,
+	        .args = "list --config .quick_dra.yaml --pipe -z"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -104,7 +104,7 @@ ubezpieczeni:
 	    },
 	    {
 	        .name = "bad config"sv,
-	        .args = "insured list --config .quick_dra.yaml"sv,
+	        .args = "list --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: John Smith the Third

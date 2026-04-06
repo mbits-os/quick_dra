@@ -12,7 +12,7 @@
 #include <quick_dra/models/types.hpp>
 #include <string>
 
-namespace quick_dra::builtin::insured::list {
+namespace quick_dra::builtin::list {
 	int handle(std::string_view tool_name,
 	           args::arglist arguments,
 	           std::string_view description) {
@@ -97,4 +97,4 @@ namespace quick_dra::builtin::insured::list {
 
 		return 0;
 	}
-}  // namespace quick_dra::builtin::insured::list
+}  // namespace quick_dra::builtin::list
