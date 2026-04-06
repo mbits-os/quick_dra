@@ -12,13 +12,32 @@
 #include <tuple>
 #include <variant>
 
+namespace quick_dra {
+	std::ostream& operator<<(std::ostream& out, match_level level) {
+#define CASE(X) \
+	case X:     \
+		return out << #X;
+		switch (level) {
+			CASE(match_level::none);
+			CASE(match_level::partial);
+			CASE(match_level::direct);
+		}
+		return out << "match_level{" << std::to_underlying(level) << '}';
+	}
+}  // namespace quick_dra
+
 namespace quick_dra::testing {
 	using std::literals::operator""s;
 	using std::literals::operator""sv;
 
 	using search_term_view = std::variant<unsigned, std::string_view>;
-	using testcase = std::
-	    tuple<search_term_view, std::span<unsigned const>, std::string_view>;
+	struct testcase {
+		search_term_view term_view;
+		std::span<unsigned const> expected_index_span;
+		std::string_view expected_output;
+		match_level expected_level;
+		match_level payer_matched{match_level::none};
+	};
 
 	struct person {
 		std::string_view first_name;
@@ -37,8 +56,8 @@ namespace quick_dra::testing {
 	public:
 		void test_lookup(testcase const& param,
 		                 std::span<partial::insured_t> insured) {
-			auto const& [term_view, expected_indexes_span, expected_output] =
-			    param;
+			auto const& [term_view, expected_indexes_span, expected_output,
+			             expected_level, payer_matched] = param;
 			struct conv {
 				search_term operator()(unsigned index) const { return index; }
 				search_term operator()(std::string_view term) const {
@@ -56,9 +75,11 @@ namespace quick_dra::testing {
 			struct carry_on {};
 
 			std::vector<unsigned> actual{};
+			match_level level{match_level::none};
 			try {
 				actual = search_insured_from_term(
-				    term, insured, [&log](std::string const& err) {
+				    term, insured, payer_matched, &level,
+				    [&log](std::string const& err) {
 					    log = err;
 					    throw carry_on{};
 				    });
@@ -66,8 +87,12 @@ namespace quick_dra::testing {
 				                         // pass
 			}
 
-			EXPECT_EQ(actual, expected_indexes);
-			EXPECT_EQ(log, expected_output);
+			EXPECT_EQ(actual, expected_indexes)
+			    << "Search term: " << fmt::to_string(term);
+			EXPECT_EQ(log, expected_output)
+			    << "Search term: " << fmt::to_string(term);
+			EXPECT_EQ(level, expected_level)
+			    << "Search term: " << fmt::to_string(term);
 		}
 	};
 
@@ -105,23 +130,28 @@ namespace quick_dra::testing {
 	static constexpr auto everybody = std::array{0u, 1u, 2u};
 
 	static constexpr testcase tests[] = {
-	    {with(1), one, ""sv},
-	    {with(5), none, "argument --pos must be between 1 and 3, inclusive"sv},
-	    {with("iksiń"), everybody, ""sv},
-	    {with("eh012"), two, ""sv},
-	    {with("maria"), three, ""sv},
+	    {with(1), one, ""sv, match_level::none},
+	    {with(5), none, "argument --pos must be between 1 and 3, inclusive"sv,
+	     match_level::none},
+	    {with("iksiń"), everybody, ""sv, match_level::partial},
+	    {with("eh012"), two, ""sv, match_level::partial},
+	    {with("maria"), three, ""sv, match_level::direct},
 	    {with("jean-luc"), none,
-	     "--find: could not find any record using `jean-luc'"sv},
+	     "--find: could not find any record using `jean-luc'"sv,
+	     match_level::none},
 	};
 
 	INSTANTIATE_TEST_SUITE_P(test, search, ::testing::ValuesIn(tests));
 
 	TEST_F(search, pos_lookup_in_short_list) {
 		std::vector<partial::insured_t> insured{};
-		test_lookup({with(2), none, "insured list is empty"sv}, insured);
+		test_lookup(
+		    {with(2), none, "insured list is empty"sv, match_level::none},
+		    insured);
 
 		insured.emplace_back();
-		test_lookup({with(2), none, "argument --pos must be equal to 1"sv},
+		test_lookup({with(2), none, "argument --pos must be equal to 1"sv,
+		             match_level::none},
 		            insured);
 	}
 }  // namespace quick_dra::testing

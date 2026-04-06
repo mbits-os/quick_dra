@@ -67,7 +67,7 @@ namespace quick_dra::builtin::insured::edit {
 		}
 
 		auto found = search_insured_from_term(
-		    conv.search_term, *cfg.insured,
+		    conv.search_term, *cfg.insured, match_level::none, nullptr,
 		    [&conv](std::string const& msg) { conv.parser.error(msg); });
 
 		if (found.size() == 1) {

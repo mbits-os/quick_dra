@@ -7,5 +7,6 @@ env:
 expected:
   return-code: 0
   stdout: |
+    Payer: Jan Nowak (USERPROFILE) [2 AB4123456] PESEL:26211012346 NIP:7680002466
     #1: Osoba Ubezpieczona [P 50671500000] 8000 zł
   stderr: ''

@@ -67,8 +67,9 @@ namespace quick_dra::builtin::insured::remove {
 			out.found = search_insured_from_position(
 			    *position, *out.cfg.insured, on_error);
 		} else {
-			out.found = search_insured_from_keyword(*search_keyword,
-			                                        *out.cfg.insured, on_error);
+			out.found = search_insured_from_keyword(
+			    *search_keyword, *out.cfg.insured, match_level::none, nullptr,
+			    on_error);
 		}
 
 		return 0;
