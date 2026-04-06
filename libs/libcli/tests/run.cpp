@@ -51,8 +51,7 @@ namespace quick_dra::builtin::testing {
 				auto const path = std::filesystem::temp_directory_path() /
 				                  fmt::format("dirXXXXXX");
 				auto name = as_str(path.u8string());
-				(void)mkdtemp(name.data());
-				return as_u8v(name);
+				return as_u8v(mkdtemp(name.data()));
 			}
 
 			std::filesystem::path dirname_{make_temp_dir()};
