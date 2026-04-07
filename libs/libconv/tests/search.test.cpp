@@ -139,6 +139,8 @@ namespace quick_dra::testing {
 	    {with("jean-luc"), none,
 	     "--find: could not find any record using `jean-luc'"sv,
 	     match_level::none},
+	    {with("jean-luc"), none, ""sv, match_level::none, match_level::partial},
+	    {with("jean-luc"), none, ""sv, match_level::none, match_level::direct},
 	};
 
 	INSTANTIATE_TEST_SUITE_P(test, search, ::testing::ValuesIn(tests));
@@ -153,5 +155,27 @@ namespace quick_dra::testing {
 		test_lookup({with(2), none, "argument --pos must be equal to 1"sv,
 		             match_level::none},
 		            insured);
+	}
+
+	TEST_F(search, match_payer_from_keyword) {
+		auto const person = partial::payer_t{
+		    partial::person{
+		        .last_name = "abcdef"s,
+		        .id_card = std::nullopt,
+		        .passport = std::nullopt,
+		        .first_name = "xyzzy"s,
+		        .kind = std::nullopt,
+		        .document = "qwertyuiop"s,
+		    },
+		    std::nullopt,
+		    std::nullopt,
+		};
+
+		EXPECT_EQ(match_payer_from_keyword("abcdef"sv, person),
+		          match_level::direct);
+		EXPECT_EQ(match_payer_from_keyword("uiop"sv, person),
+		          match_level::partial);
+		EXPECT_EQ(match_payer_from_keyword("foobar"sv, person),
+		          match_level::none);
 	}
 }  // namespace quick_dra::testing

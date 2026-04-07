@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <optional>
 #include <quick_dra/cli/builtins.hpp>
+#include <source_location>
 #include <span>
 #include <variant>
 
@@ -28,6 +29,7 @@ namespace quick_dra::builtin::testing {
 	    perms::owner_read | perms::group_read | perms::others_read;
 
 	struct runnable_testcase {
+		std::source_location loc{std::source_location::current()};
 		std::string_view name{};
 		std::string_view args{};
 		std::span<std::string_view const> post{};
