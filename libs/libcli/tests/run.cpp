@@ -333,6 +333,7 @@ namespace quick_dra::builtin::testing {
 					fmt::print("- {}\n", cmd);
 				}
 			}
+			fmt::print("{}:{}:{}\n", loc.file_name(), loc.line(), loc.column());
 		}
 		return !::testing::Test::HasFatalFailure();
 	}
