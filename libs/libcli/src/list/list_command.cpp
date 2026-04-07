@@ -12,6 +12,7 @@
 #include <quick_dra/conv/search.hpp>
 #include <quick_dra/models/types.hpp>
 #include <string>
+#include <vector>
 
 namespace quick_dra::builtin::list {
 	int handle(std::string_view tool_name,
