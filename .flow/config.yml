@@ -11,6 +11,11 @@ extensions:
   - quick_dra.yaml_reader
   - quick_dra.test_coverage
 
+lts:
+  ubuntu:
+    - ubuntu-22.04
+    - ubuntu-24.04
+
 entry:
   config: [Conan, CMake]
   build: [Build]
