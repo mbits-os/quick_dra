@@ -22,6 +22,8 @@
   - [x] Increase test coverage to 100% for all compilers (_v0.9.2_)
 - [ ] Pre-release tasks
   - [x] Document CLI (_v0.10.0_)
+  - [ ] Action for `./flow boostrap` + venv caching
+  - [ ] Move _Flow_ extensions to separate GitHub projects
   - [ ] Enable clang-tidy
   - [ ] _(opt)_ ~~Enable Open Source PVS-Studio~~
   - [x] Move `insured list` to `list`, with payer info and searching by keyword (_v0.10.0_)
