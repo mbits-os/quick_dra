@@ -1,0 +1,31 @@
+strict digraph {
+    rankdir=LR
+    bgcolor="#00000030"
+
+    graph [ fontname="Roboto" ];
+    node [ fontsize="12", fontname="monospace", colorscheme=reds9, color=9, fillcolor=4, fontcolor=9, style=filled ];
+    edge [ fontsize="12", fontname="monospace", colorscheme=reds9, color=8];
+
+    invisnode1, invisnode2, invisnode3, invisnode4 [style=invis, shape=point, width=0.2];
+
+    invisnode1 -> invisnode2 -> GitHub [style=invis]
+    GitHub:s -> qdra_xml:n [constraint=false]
+
+    qdra_payer:s -> config_yaml -> qdra_xml -> form -> ePlatnik
+    qdra_insured:n -> config_yaml
+
+    invisnode3 -> invisnode4 -> Calendar [style=invis]
+    Calendar:n -> qdra_xml:s [constraint=false]
+
+    qdra_payer [label="qdra payer", shape="rectangle"]
+    qdra_insured [label="qdra insured", shape="rectangle", color=9]
+
+    config_yaml [label=".quick_dra.yaml", shape="note", fillcolor=1]
+
+    GitHub [shape="cylinder", fillcolor=7, fontcolor=1]
+    Calendar [label="Current date", shape="rectangle", style=filled, fillcolor=5, fontcolor=2]
+
+    qdra_xml [label="qdra xml", shape="rectangle"]
+    form [label="KEDU", shape="note", fillcolor=1]
+    ePlatnik [label="ePłatnik", shape="cylinder", fillcolor=7, fontcolor=1]
+}
