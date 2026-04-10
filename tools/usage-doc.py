@@ -2,7 +2,6 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from pprint import pprint
 
 qdra_executable = sys.argv[1]
 
