@@ -28,25 +28,25 @@ namespace quick_dra::builtin::payer {
 		    .opt();
 		parser.arg(opts.first_name, "first")
 		    .meta("<name>")
-		    .help("select first name of the payer as answer");
+		    .help("provide first name of the payer");
 		parser.arg(opts.last_name, "last")
 		    .meta("<name>")
-		    .help("select last name of the payer as answer");
+		    .help("provide last name of the payer");
 		parser.arg(opts.social_id, "social-id")
 		    .meta("<number>")
-		    .help("select PESEL number as answer");
+		    .help("provide PESEL number");
 		parser.arg(opts.tax_id, "tax-id")
 		    .meta("<number>")
-		    .help("select NIP number as answer");
+		    .help("provide NIP number");
 		parser.arg(opts.id_card, "id-card")
 		    .meta("<number>")
 		    .help(
-		        "select state-issued id number as answer; if passport is used "
+		        "provide state-issued id number; if passport is used "
 		        "in the config file, it will be replaced by this field");
 		parser.arg(opts.passport, "passport")
 		    .meta("<number>")
 		    .help(
-		        "select passport number as answer; if stated-issued id is used "
+		        "provide passport number; if stated-issued id is used "
 		        "in the config file, it will be replaced by this field");
 
 		parser.parse();

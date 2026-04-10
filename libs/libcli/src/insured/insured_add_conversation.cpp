@@ -29,23 +29,23 @@ namespace quick_dra::builtin::insured::add {
 		    .opt();
 		parser.arg(opts.first_name, "first")
 		    .meta("<name>")
-		    .help("select first name of the payer as answer");
+		    .help("provide first name of the payer");
 		parser.arg(opts.last_name, "last")
 		    .meta("<name>")
-		    .help("select last name of the payer as answer");
+		    .help("provide last name of the payer");
 		parser.arg(opts.social_id, "social-id")
 		    .meta("<number>")
-		    .help("select PESEL number as answer");
+		    .help("provide PESEL number");
 		parser.arg(opts.id_card, "id-card")
 		    .meta("<number>")
-		    .help("select state-issued id number as answer");
+		    .help("provide state-issued id number");
 		parser.arg(opts.passport, "passport")
 		    .meta("<number>")
-		    .help("select passport number as answer");
+		    .help("provide passport number");
 		parser.arg(opts.title, "title")
 		    .meta("<code>")
 		    .help(
-		        "select insurance title code as six digits in `#### # #' "
+		        "provide insurance title code as six digits in `#### # #' "
 		        "format; for instance, for title of 0110, no social benefits, "
 		        "no disability, it should be \"0110 0 0\"");
 		parser.arg(opts.part_time_scale, "scale")
@@ -56,7 +56,7 @@ namespace quick_dra::builtin::insured::add {
 		parser.arg(opts.salary, "salary")
 		    .meta("<zł>")
 		    .help(
-		        "select gross salary amount, before applying the scale, "
+		        "provide gross salary amount, before applying the scale, "
 		        "represented by a number with 0.01 increment, with optional "
 		        "PLN or zł suffix; alternatively, single word \"minimal\" to "
 		        "represent a minimal pay in a given month");

@@ -52,7 +52,7 @@ namespace quick_dra::builtin::xml {
 		parser.arg(tax_config_path, "tax-config")
 		    .meta("<path>")
 		    .help(
-		        "select tax parameters file; will take precedent before data "
+		        "provide tax parameters file; will take precedent before data "
 		        "from repository and installation");
 		parser.arg(report_index, "n")
 		    .meta("<NN>")
@@ -63,7 +63,7 @@ namespace quick_dra::builtin::xml {
 		parser.arg(rel_month, "m")
 		    .meta("<month>")
 		    .help(
-		        "choose how many month away from today the report should use; "
+		        "choose how many months away from today the report should use; "
 		        "defaults to -1")
 		    .opt();
 		parser.arg(today_str, "today")

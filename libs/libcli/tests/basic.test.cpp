@@ -16,10 +16,10 @@ optional arguments:
  -v, --version show version and exit
 
 known commands:
- xml           produce KEDU 5.6 XML file
+ payer         provide/modify the identity of the insurance payer
+ insured       manage the insured people data
  list          list people in configuration
- payer         manage the payer data in ~/.quick_dra.yaml file
- insured       manage the insured data in ~/.quick_dra.yaml file
+ xml           produce KEDU 5.6 XML file
 )"sv,
 	    },
 	    {
@@ -41,10 +41,10 @@ optional arguments:
  -v, --version show version and exit
 
 known commands:
- xml           produce KEDU 5.6 XML file
+ payer         provide/modify the identity of the insurance payer
+ insured       manage the insured people data
  list          list people in configuration
- payer         manage the payer data in ~/.quick_dra.yaml file
- insured       manage the insured data in ~/.quick_dra.yaml file
+ xml           produce KEDU 5.6 XML file
 )"sv,
 	    },
 	    {
@@ -60,10 +60,10 @@ known commands:
 qdra: "noent" is not a qdra command
 
 known commands:
- xml     produce KEDU 5.6 XML file
+ payer   provide/modify the identity of the insurance payer
+ insured manage the insured people data
  list    list people in configuration
- payer   manage the payer data in ~/.quick_dra.yaml file
- insured manage the insured data in ~/.quick_dra.yaml file
+ xml     produce KEDU 5.6 XML file
 )"sv,
 	        .returncode = 1,
 	    },

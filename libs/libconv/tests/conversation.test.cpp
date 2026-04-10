@@ -373,7 +373,7 @@ namespace quick_dra::testing {
 		parser.arg(opts.title, "title")
 		    .meta("<code>")
 		    .help(
-		        "select insurance title code as six digits in `#### # #' "
+		        "provide insurance title code as six digits in `#### # #' "
 		        "format; for instance, for title of 0110, no social benefits, "
 		        "no disability, it should be \"0110 0 0\"");
 		parser.arg(opts.part_time_scale, "scale")
@@ -384,7 +384,7 @@ namespace quick_dra::testing {
 		parser.arg(opts.salary, "salary")
 		    .meta("<zł>")
 		    .help(
-		        "select gross salary amount, before applying the scale, "
+		        "provide gross salary amount, before applying the scale, "
 		        "represented by a number with 0.01 increment, with optional "
 		        "PLN or zł suffix; alternatively, single word \"minimal\" to "
 		        "represent a minimal pay in a given month");

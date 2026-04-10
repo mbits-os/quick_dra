@@ -51,8 +51,8 @@ namespace quick_dra::builtin::testing {
 
 		friend std::ostream& operator<<(std::ostream& out,
 		                                runnable_testcase const& test) {
-			if (!test.name.empty()) return out << test.name;
-			return out << test.args;
+			if (!test.name.empty()) return out << "name: " << test.name;
+			return out << "args: " << test.args;
 		}
 	};
 

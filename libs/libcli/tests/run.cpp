@@ -326,6 +326,7 @@ namespace quick_dra::builtin::testing {
 	bool runnable_testcase::run_test() const {
 		testing::expect_test(*this);
 		if (::testing::Test::HasFailure()) {
+			fmt::print("Name: {}\n", name);
 			fmt::print("Args: {}\n", args);
 			if (!post.empty()) {
 				fmt::print("Post:\n", args);
