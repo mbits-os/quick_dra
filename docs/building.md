@@ -27,7 +27,7 @@ Currently, there are few specialized flows: `config`, `build`, `report` and `ver
 
 ## Building the code
 
-Each of the commands below can substitute `--rel` parameter for `--dbg` to build a debug build.
+Each of the commands below can substitute `--rel` parameter with `--dbg` to build a debug build.
 
 ### Configuration
 
