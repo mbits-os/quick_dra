@@ -206,7 +206,7 @@ Generate RCA/DRA xml file for current month
 ```plain
 > qdra xml -m0
 -- report: #1 2026-02
--- output: quick-dra_202601-02.xml
+-- output: quick-dra_202602-01.xml
 ```
 
 Generate RCA/DRA xml file with payment information
