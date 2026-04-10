@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.10.0](https://github.com/mbits-os/quick_dra/compare/v0.9.2...v0.10.0) (2026-04-10)
+
+### New Features
+
+- add payer to `list` output ([480f38a](https://github.com/mbits-os/quick_dra/commit/480f38a017810cb6a1e9b8a188f5ebcc56175372))
+
+### Bug Fixes
+
+- align help generator with shape of usage.md ([00de468](https://github.com/mbits-os/quick_dra/commit/00de468a896e15a23e46fad98648435818d337d8))
+- clean warnings on GCC ([d61ecf8](https://github.com/mbits-os/quick_dra/commit/d61ecf81f33f99ff79a18d7ba3b0fed15887b995))
+- apply clang-tidy suggestions ([4b89e10](https://github.com/mbits-os/quick_dra/commit/4b89e1007536afb0884bea4dd1c6f6c75b65ab06))
+- apply PVS Studio suggestions ([5460953](https://github.com/mbits-os/quick_dra/commit/546095394afcf6d7e14804f2dfc5fb48a2710ba6))
+- **docs**: build a full-er usage doc ([3738272](https://github.com/mbits-os/quick_dra/commit/3738272e74ce3148ae8188b78de4495f20afcb9c))
+
 ## [0.9.2](https://github.com/mbits-os/quick_dra/compare/v0.9.1...v0.9.2) (2026-02-28)
 
 ### Bug Fixes
