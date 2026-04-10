@@ -22,6 +22,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Bootstrap Flow
+        uses: ./.github/actions/bootstrap_flow
+        with:
+          cache-prefix: ubuntu-latest
+
       - name: Find builds
         id: flow
         run: python ./.flow/flow.py github matrix
@@ -65,14 +70,10 @@ jobs:
       #     ##       ##  ####  ##   ##   ##  ##   ##   ##     ## ##  #### ##     ## ##       ##  ####    ##
       #     ##       ##   ###   ## ##    ##  ##    ##  ##     ## ##   ### ##     ## ##       ##   ###    ##
       #     ######## ##    ##    ###    #### ##     ##  #######  ##    ## ##     ## ######## ##    ##    ##
-      - name: Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
       - name: Bootstrap Flow
-        run: |
-          python ./.flow/flow.py bootstrap
+        uses: ./.github/actions/bootstrap_flow
+        with:
+          cache-prefix: ${{ matrix.github_os }}
 
       - name: Add msbuild to PATH
         if: ${{ matrix.windows }}
@@ -252,8 +253,9 @@ jobs:
 
       - name: Bootstrap Flow
         if: always()
-        run: |
-          python ./.flow/flow.py bootstrap
+        uses: ./.github/actions/bootstrap_flow
+        with:
+          cache-prefix: ubuntu-latest
 
       - name: Download coverage
         uses: actions/download-artifact@v4
@@ -319,6 +321,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Bootstrap Flow
+        uses: ./.github/actions/bootstrap_flow
+        with:
+          cache-prefix: ubuntu-latest
 
       - name: Get packages
         uses: actions/download-artifact@v4

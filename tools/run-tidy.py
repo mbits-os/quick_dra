@@ -26,11 +26,23 @@ class TidyRun:
 
 
 def _get_files():
-    commands = json.loads(Path(build_dir, "compile_commands.json").read_bytes())
-    return map(
-        lambda command: Path(command.get("file", "")),
-        cast(list[dict[str, str]], commands),
-    )
+    path = Path(build_dir, "compile_commands.json")
+    try:
+        commands = json.loads(path.read_bytes())
+        return map(
+            lambda command: Path(command.get("file", "")),
+            cast(list[dict[str, str]], commands),
+        )
+    except FileNotFoundError:
+        preset = build_dir.split("/")[-1]
+        print(
+            f"""{path} not found, please run
+
+   cmake --preset {preset} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+""",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 def _get_run_dir(dirname: Path):
