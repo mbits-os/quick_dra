@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.11.0](https://github.com/mbits-os/quick_dra/compare/v0.10.0...v0.11.0) (2026-04-12)
+
+### Bug Fixes
+
+- **docs**: fix file name for `-m0` ([3308951](https://github.com/mbits-os/quick_dra/commit/3308951d31548dcaf19a14daf68fe835fd9a33b4))
+
+### Build System
+
+- extract `quick_dra.test_coverage` to its own repo ([e20586d](https://github.com/mbits-os/quick_dra/commit/e20586d5fa41b72f188a28613086d87b9e487a89))
+
+### Continuous Integration
+
+- enable clang-tidy in action ([468d15b](https://github.com/mbits-os/quick_dra/commit/468d15bcc99dc7de61348013af4fc000aeaf9450))
+- move Flow bootstrapping to an action ([2cac4d4](https://github.com/mbits-os/quick_dra/commit/2cac4d4509bc912bef4120619e7d59e9fb1aeedd))
+
 ## [0.10.0](https://github.com/mbits-os/quick_dra/compare/v0.9.2...v0.10.0) (2026-04-10)
 
 ### New Features
