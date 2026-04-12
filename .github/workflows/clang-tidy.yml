@@ -1,0 +1,98 @@
+name: Clang Tidy
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    strategy:
+      matrix:
+        compiler: [ gcc ]
+        build_type: [ Debug ]
+        sanitizer: [ false ]
+        os: [ ubuntu ]
+
+        include:
+          - os: ubuntu
+            report_os: Linux
+            report_compiler: GNU
+            gcc: true
+            conan_settings: [ compiler.libcxx=libstdc++11 ]
+            conan2_settings: [ compiler.cppstd=23 ]
+            build_generator: ninja
+            cpack_generator: [ TGZ, DEB ]
+            ubuntu: true
+            home: /home/runner
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    env:
+      BUILD_TYPE: ${{ matrix.build_type }}
+      CONAN_REVISIONS_ENABLED: 1
+      FLOW_COMMAND: python ./.flow/flow.py run -D os=${{ matrix.os }} build_type=${{ matrix.build_type }} compiler=${{ matrix.compiler }} sanitizer=${{ matrix.sanitizer }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CONAN_CACHE: ${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.compiler }}
+
+    runs-on: ubuntu-latest
+    name: Check on ${{ matrix.build_type }} with ${{ matrix.compiler }} on ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Bootstrap Flow
+        uses: ./.github/actions/bootstrap_flow
+        with:
+          cache-prefix: ${{ matrix.os }}
+
+      - name: Set up GCC as c++/cc
+        if: ${{ matrix.ubuntu && matrix.gcc }}
+        run: |
+          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-12 120
+          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-12 120
+
+          sudo update-alternatives --set c++ /usr/bin/g++-12
+          sudo update-alternatives --set cc /usr/bin/gcc-12
+
+      - name: Install ICU
+        if: ${{ matrix.ubuntu }}
+        run: |
+          sudo apt-get install libicu-dev -y
+
+      - name: Check C++ binary
+        if: ${{ matrix.ubuntu }}
+        run: |
+          realpath `which c++`
+          c++ --version
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+
+      - name: Conan cache
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ matrix.home }}/.conan2/p
+          key: ${{ env.CONAN_CACHE }}-${{ hashFiles('conanfile.txt') }}
+          restore-keys: |
+            ${{ env.CONAN_CACHE }}-
+
+      - name: Configure
+        run: ${{ env.FLOW_COMMAND }} -s Conan,CMake
+
+      - name: Build
+        run: |
+          ${{ env.FLOW_COMMAND }} -s Build
+          cmake --preset debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Check
+        run: python ./tools/run-tidy.py clang-tidy-18 build/debug
