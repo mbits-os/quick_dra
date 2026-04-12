@@ -19,13 +19,13 @@ jobs:
       matrix: ${{steps.flow.outputs.matrix}}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Bootstrap Flow
-        uses: ./.github/actions/bootstrap_flow
+      - name: Bootstrap
+        uses: proj-flow-actions/bootstrap@v1
         with:
           cache-prefix: ubuntu-latest
+          python-version: "3.12"
+          checkout: true
+          submodules: false
 
       - name: Find builds
         id: flow
@@ -58,11 +58,6 @@ jobs:
       release: ${{fromJson(env.RELEASE)}}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          submodules: true
-
       #     ######## ##    ## ##     ## #### ########   #######  ##    ## ##     ## ######## ##    ## ########
       #     ##       ###   ## ##     ##  ##  ##     ## ##     ## ###   ## ###   ### ##       ###   ##    ##
       #     ##       ####  ## ##     ##  ##  ##     ## ##     ## ####  ## #### #### ##       ####  ##    ##
@@ -70,95 +65,38 @@ jobs:
       #     ##       ##  ####  ##   ##   ##  ##   ##   ##     ## ##  #### ##     ## ##       ##  ####    ##
       #     ##       ##   ###   ## ##    ##  ##    ##  ##     ## ##   ### ##     ## ##       ##   ###    ##
       #     ######## ##    ##    ###    #### ##     ##  #######  ##    ## ##     ## ######## ##    ##    ##
-      - name: Bootstrap Flow
-        uses: ./.github/actions/bootstrap_flow
+      - name: Bootstrap
+        uses: proj-flow-actions/bootstrap@v1
         with:
           cache-prefix: ${{ matrix.github_os }}
+          python-version: "3.12"
+          checkout: true
+          submodules: true
 
-      - name: Add msbuild to PATH
+      - name: Setup Windows
         if: ${{ matrix.windows }}
-        uses: microsoft/setup-msbuild@v1.1
+        uses: proj-flow-actions/setup-windows@v1
+        with:
+          install-occ: ${{ matrix.build_type == 'Debug' }}
 
-      - name: Install WiX 4
-        if: ${{ matrix.windows }}
-        shell: cmd
-        run: |
-          dotnet tool install --global wix --version 4.0.4
-          wix extension add -g WixToolset.UI.wixext/4.0.4
+      - name: Setup Ubuntu
+        if: ${{ matrix.ubuntu }}
+        uses: proj-flow-actions/setup-ubuntu@v1
+        with:
+          gcc-ppa: ${{ matrix.needs_gcc_ppa }}
+          gcc-version: ${{ matrix.gcc_ver }}
+          compiler: ${{ matrix.compiler }}
 
       - name: Install ICU
         if: ${{ matrix.ubuntu }}
         run: |
           sudo apt-get install libicu-dev -y
 
-      - name: Install GCC
-        if: ${{ matrix.ubuntu && matrix.needs_gcc_ppa }}
-        run: |
-          sudo apt install software-properties-common -y
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          sudo apt install gcc-${{ matrix.gcc_ver }} g++-${{ matrix.gcc_ver }} -y
-
-      - name: Set up GCC
-        if: ${{ matrix.ubuntu }}
-        run: |
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.gcc_ver }} ${{ matrix.gcc_ver }}0
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.gcc_ver }} ${{ matrix.gcc_ver }}0
-          sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-${{ matrix.gcc_ver }} ${{ matrix.gcc_ver }}0
-
-          sudo update-alternatives --set g++ /usr/bin/g++-${{ matrix.gcc_ver }}
-          sudo update-alternatives --set gcc /usr/bin/gcc-${{ matrix.gcc_ver }}
-          sudo update-alternatives --set gcov /usr/bin/gcov-${{ matrix.gcc_ver }}
-
-      - name: Set up GCC as c++/cc
-        if: ${{ matrix.ubuntu && matrix.gcc }}
-        run: |
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-${{ matrix.gcc_ver }} ${{ matrix.gcc_ver }}0
-          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-${{ matrix.gcc_ver }} ${{ matrix.gcc_ver }}0
-
-          sudo update-alternatives --set c++ /usr/bin/g++-${{ matrix.gcc_ver }}
-          sudo update-alternatives --set cc /usr/bin/gcc-${{ matrix.gcc_ver }}
-
-      - name: Install Clang 18
-        if: ${{ matrix.ubuntu && matrix.clang }}
-        run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 18 all
-
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-18 180
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 180
-
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-18 180
-          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang-18 180
-
-          sudo update-alternatives --set clang++ /usr/bin/clang++-18
-          sudo update-alternatives --set clang /usr/bin/clang-18
-
-          sudo update-alternatives --set c++ /usr/bin/clang++-18
-          sudo update-alternatives --set cc /usr/bin/clang-18
-
-      - name: Check C++ binary
-        if: ${{ matrix.ubuntu }}
-        run: |
-          realpath `which c++`
-          c++ --version
-
-      - name: Install Conan
-        id: conan
-        uses: turtlebrowser/get-conan@main
-
-      - name: Conan cache
-        uses: actions/cache@v5
-        id: cache
+      - name: Setup Conan
+        uses: proj-flow-actions/setup-conan@v1
         with:
-          path: ${{ matrix.home }}/.conan2/p
-          key: ${{ env.CONAN_CACHE }}-${{ hashFiles('conanfile.txt') }}
-          restore-keys: |
-            ${{ env.CONAN_CACHE }}-
-
-      - name: Install OpenCppCoverage
-        uses: KungFuDonkey/Install-OpenCppCoverage@v1
-        if: ${{ matrix.windows && matrix.build_type == 'Debug' }}
+          user-directory: ${{ matrix.home }}
+          cache-prefix: ${{ env.CONAN_CACHE }}
 
       #     ########  ########   #######        ## ########  ######  ########
       #     ##     ## ##     ## ##     ##       ## ##       ##    ##    ##
@@ -239,17 +177,14 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout
+      - name: Bootstrap
         if: always()
-        uses: actions/checkout@v5
-        with:
-          submodules: false
-
-      - name: Bootstrap Flow
-        if: always()
-        uses: ./.github/actions/bootstrap_flow
+        uses: proj-flow-actions/bootstrap@v1
         with:
           cache-prefix: ubuntu-latest
+          python-version: "3.12"
+          checkout: true
+          submodules: false
 
       - name: Download coverage
         uses: actions/download-artifact@v7
@@ -313,13 +248,13 @@ jobs:
       RELEASE: ${{needs.merge.outputs.release}}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Bootstrap Flow
-        uses: ./.github/actions/bootstrap_flow
+      - name: Bootstrap
+        uses: proj-flow-actions/bootstrap@v1
         with:
           cache-prefix: ubuntu-latest
+          python-version: "3.12"
+          checkout: true
+          submodules: false
 
       - name: Get packages
         uses: actions/download-artifact@v7
