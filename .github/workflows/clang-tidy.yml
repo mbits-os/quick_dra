@@ -18,13 +18,7 @@ jobs:
 
         include:
           - os: ubuntu
-            report_os: Linux
-            report_compiler: GNU
             gcc: true
-            conan_settings: [ compiler.libcxx=libstdc++11 ]
-            conan2_settings: [ compiler.cppstd=23 ]
-            build_generator: ninja
-            cpack_generator: [ TGZ, DEB ]
             ubuntu: true
             home: /home/runner
 
@@ -43,48 +37,30 @@ jobs:
     name: Check on ${{ matrix.build_type }} with ${{ matrix.compiler }} on ${{ matrix.os }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          submodules: true
-
-      - name: Bootstrap Flow
-        uses: ./.github/actions/bootstrap_flow
+      - name: Bootstrap
+        uses: proj-flow-actions/bootstrap@v1
         with:
           cache-prefix: ${{ matrix.os }}
+          python-version: "3.12"
+          checkout: true
+          submodules: true
 
-      - name: Set up GCC as c++/cc
-        if: ${{ matrix.ubuntu && matrix.gcc }}
-        run: |
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-12 120
-          sudo update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-12 120
-
-          sudo update-alternatives --set c++ /usr/bin/g++-12
-          sudo update-alternatives --set cc /usr/bin/gcc-12
+      - name: Setup Ubuntu
+        if: ${{ matrix.ubuntu }}
+        uses: proj-flow-actions/setup-ubuntu@v1
+        with:
+          compiler: ${{ matrix.compiler }}
 
       - name: Install ICU
         if: ${{ matrix.ubuntu }}
         run: |
           sudo apt-get install libicu-dev -y
 
-      - name: Check C++ binary
-        if: ${{ matrix.ubuntu }}
-        run: |
-          realpath `which c++`
-          c++ --version
-
-      - name: Install Conan
-        id: conan
-        uses: turtlebrowser/get-conan@main
-
-      - name: Conan cache
-        uses: actions/cache@v5
-        id: cache
+      - name: Setup Conan
+        uses: proj-flow-actions/setup-conan@v1
         with:
-          path: ${{ matrix.home }}/.conan2/p
-          key: ${{ env.CONAN_CACHE }}-${{ hashFiles('conanfile.txt') }}
-          restore-keys: |
-            ${{ env.CONAN_CACHE }}-
+          user-directory: ${{ matrix.home }}
+          cache-prefix: ${{ env.CONAN_CACHE }}
 
       - name: Configure
         run: ${{ env.FLOW_COMMAND }} -s Conan,CMake
