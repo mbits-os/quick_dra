@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Bootstrap Flow
         uses: ./.github/actions/bootstrap_flow
@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: true
 
@@ -148,7 +148,7 @@ jobs:
         uses: turtlebrowser/get-conan@main
 
       - name: Conan cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache
         with:
           path: ${{ matrix.home }}/.conan2/p
@@ -216,7 +216,7 @@ jobs:
           pull-request-report: true
 
       - name: Upload packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ steps.artifacts.outputs.CPACK_GENERATORS != '' }}
         with:
           name: _packages-${{ env.ARTIFACT_SUFFIX }}
@@ -224,7 +224,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: _coverage-${{ env.ARTIFACT_SUFFIX }}
@@ -241,7 +241,7 @@ jobs:
     steps:
       - name: Checkout
         if: always()
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           submodules: false
 
@@ -252,7 +252,7 @@ jobs:
           cache-prefix: ubuntu-latest
 
       - name: Download coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         if: always()
         with:
           pattern: _coverage-*
@@ -275,7 +275,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge coverage
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         if: ${{fromJson(steps.finalize.outputs.has_coverage)}}
         with:
           name: Coverage
@@ -293,7 +293,7 @@ jobs:
 
     steps:
       - name: Merge packages
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         if: ${{ fromJson(env.RELEASE) }}
         with:
           name: Packages
@@ -314,7 +314,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Bootstrap Flow
         uses: ./.github/actions/bootstrap_flow
@@ -322,7 +322,7 @@ jobs:
           cache-prefix: ubuntu-latest
 
       - name: Get packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: Packages
           path: ${{github.workspace}}/build/download/packages
