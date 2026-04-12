@@ -9,7 +9,7 @@ extensions:
   - proj_flow.ext.webidl
   - quick_dra.icons
   - quick_dra.yaml_reader
-  - quick_dra.test_coverage
+  - proj_flow_test_coverage.ext
 
 lts:
   ubuntu:
