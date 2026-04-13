@@ -1,4 +1,4 @@
-name: Clang Tidy
+name: Code Analysis
 
 on:
   pull_request:
@@ -12,6 +12,10 @@ jobs:
       cpp-count: ${{ steps.changed-code.outputs.cpp-count }}
       file-list: ${{ steps.changed-code.outputs.file-list }}
 
+    permissions:
+      contents: read
+      pull-requests: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -23,14 +27,14 @@ jobs:
       - name: Changed code
         id: changed-code
         run: |
-          git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} >> .file-list
+          git diff --diff-filter=d --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} >> .file-list
           cat .file-list
           echo "cpp-count=$(egrep '\.(cpp|cc|cxx)$' .file-list | wc -l)" >> "$GITHUB_OUTPUT"
           echo "file-list=$(cat .file-list | base64 | tr --delete '\n')" >> "$GITHUB_OUTPUT"
 
   clang-check:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+      group: ${{ github.workflow }}-${{ github.ref }}-clang
       cancel-in-progress: true
 
     permissions:
@@ -71,3 +75,55 @@ jobs:
       - name: Check
         if: needs.find-changes.outputs.cpp-count != '0'
         run: python ./tools/run-tidy.py clang-tidy-18 build/debug
+
+  pvs-check:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-pvs
+      cancel-in-progress: true
+
+    permissions:
+      contents: read
+      pull-requests: read
+      security-events: write
+
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    runs-on: ubuntu-latest
+    name: Check with PVS Studio
+
+    steps:
+      - name: Bootstrap
+        uses: proj-flow-actions/bootstrap@v1
+        with:
+          cache-prefix: ubuntu
+          python-version: "3.12"
+          checkout: true
+          submodules: true
+
+      - name: Install tools
+        run: |
+          wget -q -O - https://files.pvs-studio.com/etc/pubkey.txt | sudo apt-key add -
+          sudo wget -O /etc/apt/sources.list.d/viva64.list https://files.pvs-studio.com/etc/viva64.list
+          sudo apt update
+          sudo apt install pvs-studio
+          pvs-studio-analyzer credentials ${{ secrets.PVS_STUDIO_CREDENTIALS }}
+
+      - name: Get sources
+        uses: ./.github/actions/configure-sources
+        with:
+          cache-prefix: ubuntu-Debug-gcc
+
+      - name: Analyze
+        run: |
+          pvs-studio-analyzer analyze -f build/debug/compile_commands.json -j
+
+      - name: Convert report
+        run: plog-converter -t sarif -o pvs-report.sarif PVS-Studio.log
+
+      - name: Publish report
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: pvs-report.sarif
+          category: PVS-Studio
