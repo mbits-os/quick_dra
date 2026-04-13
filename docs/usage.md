@@ -33,7 +33,7 @@ The `qdra payer` command allows to provide/modify the identity of the insurance 
 |`--social-id <number>`|Provide PESEL number|
 |`--tax-id <number>`|Provide NIP number|
 |`--id-card <number>`|Provide state-issued id number; if passport is used in the config file, it will be replaced by this field|
-|`--passport <number>`|Provide passport number; if stated-issued id is used in the config file, it will be replaced by this field|
+|`--passport <number>`|Provide passport number; if state-issued id is used in the config file, it will be replaced by this field|
 
 For example, calling the command for the first time might produce output such as this:
 
@@ -78,7 +78,7 @@ The `qdra insured add` command allows to add a new insured person to the configu
 |`--social-id <number>`|Provide PESEL number|
 |`--id-card <number>`|Provide state-issued id number|
 |`--passport <number>`|Provide passport number|
-|`--title <code>`|Provide insurance title code as six digits in ``#### # #'` format; for instance, for title of 0110, no social benefits, no disability, it should be `"0110 0 0"`|
+|`--title <code>`|Provide insurance title code as six digits in `'#### # #'` format; for instance, for title of 0110, no social benefits, no disability, it should be `"0110 0 0"`|
 |`--scale <num>/<den>`|For part time workers, what scale should be applied to their salary; defaults to 1/1|
 |`--salary <zł>`|Provide gross salary amount, before applying the scale, represented by a number with 0.01 increment, with optional PLN or zł suffix; alternatively, single word `"minimal"` to represent a minimal pay in a given month|
 
@@ -129,7 +129,7 @@ The `qdra insured edit` command allows to update data of a selected insured pers
 |`--social-id <number>`|Provide PESEL number|
 |`--id-card <number>`|Provide state-issued id number|
 |`--passport <number>`|Provide passport number|
-|`--title <code>`|Provide insurance title code as six digits in ``#### # #'` format; for instance, for title of 0110, no social benefits, no disability, it should be `"0110 0 0"`|
+|`--title <code>`|Provide insurance title code as six digits in `'#### # #'` format; for instance, for title of 0110, no social benefits, no disability, it should be `"0110 0 0"`|
 |`--scale <num>/<den>`|For part time workers, what scale should be applied to their salary; defaults to 1/1|
 |`--salary <zł>`|Provide gross salary amount, before applying the scale, represented by a number with 0.01 increment, with optional PLN or zł suffix; alternatively, single word `"minimal"` to represent a minimal pay in a given month|
 

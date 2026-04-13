@@ -3,13 +3,19 @@ import subprocess
 import sys
 from pathlib import Path
 
+if len(sys.argv) < 2:
+    sys.exit(
+        f"Usage: {Path(sys.argv[0]).name} <path-to-qdra-executable>\n"
+        "Error: path to the qdra executable is required."
+    )
+
 qdra_executable = sys.argv[1]
 
 arg_pattern = re.compile(r"^(-[-a-z1-9]+(?: <[^>]+>(?:/<[^>]+>)?)?\s*)")
 
 arg_patches = {
     "~/.quick_dra.yaml": "`~/.quick_dra.yaml`",
-    "`#### # #'": "``#### # #'`",
+    "`#### # #'": "`'#### # #'`",
     '"0110 0 0"': '`"0110 0 0"`',
     '"minimal"': '`"minimal"`',
 }
@@ -71,9 +77,10 @@ def run_help(cmd: list[str]):
         if lines and lines[0].startswith("usage: "):
             usage = lines[0]
             cmd_str = " ".join(cmd)
-            sep = usage.split(cmd_str)[0] + " ".join(cmd)
+            sep_list = usage.split(cmd_str, 1)
+            sep = (sep_list[0] + " ".join(cmd) + " ") if len(sep_list) == 2 else ""
             sep = " " * len(sep)
-            sep = f" \\\n{sep} "
+            sep = f" \\\n{sep}"
             for split_arg in split_args:
                 usage = f"{split_arg}{sep}".join(usage.split(f"{split_arg} "))
 
@@ -95,9 +102,9 @@ def run_help(cmd: list[str]):
 
             for line in lines:
                 m = re.search(arg_pattern, line)
-                pos = m.span()[1] if m else len(line)
-                args = line[:pos].strip()
-                line = line[pos:]
+                args_end_pos = m.span()[1] if m else len(line)
+                args = line[:args_end_pos].strip()
+                line = line[args_end_pos:]
                 first_word = line.split()[0]
                 dscr = first_word.capitalize() + line[len(first_word) :]
                 for key, patch in arg_patches.items():
@@ -105,7 +112,7 @@ def run_help(cmd: list[str]):
                 arguments.append(f"|`{args}`|{dscr}|")
             continue
 
-        print("BLOCK:", header.split(":", 1)[0])
+        print("BLOCK:", header.split(":", 1)[0], file=sys.stderr)
 
     if len(arguments) == 2:
         arguments = []
@@ -116,9 +123,13 @@ def run_help(cmd: list[str]):
 usage_md = Path(__file__).parent.parent / "docs" / "usage.md"
 usage_text = usage_md.read_text()
 
-usage = usage_text.split("usage: qdra ")
-result = usage[0]
-usage = usage[1:]
+usage_parts = re.split(r"usage:\s+qdra\s+", usage_text)
+if len(usage_parts) < 2:
+    raise ValueError(
+        "Expected at least one 'usage: qdra' fenced section in docs/usage.md"
+    )
+result = usage_parts[0]
+usage = usage_parts[1:]
 
 for chunk in usage:
     pre, args = chunk.split("|Argument|Usage|\n", 1)

@@ -7,13 +7,15 @@ from typing import Iterable, cast
 
 import yaml
 
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
-
 cwd = Path().resolve()
 src_roots = [cwd / "libs"]
+
+if len(sys.argv) < 3:
+    print(
+        f"Usage: {Path(sys.argv[0]).name} <clang-tidy-exec> <build-dir> [clang-tidy-args...]",
+        file=sys.stderr,
+    )
+    raise SystemExit(1)
 
 clang_tidy_exec = sys.argv[1]
 build_dir = sys.argv[2]
@@ -97,10 +99,11 @@ for run in runs.values():
     counter += 1
     checks = (
         cast(
-            dict[str, str], yaml.load(Path(run.config_file).read_bytes(), Loader=Loader)
+            dict[str, str], yaml.safe_load(Path(run.config_file).read_bytes()) or {}
         ).get("Checks")
         or "-*"
     )
+
     if checks == "-*":
         print(
             f"[{counter}/{len(runs)}] skip",
@@ -108,8 +111,7 @@ for run in runs.values():
         )
         continue
 
-    print(
-        f"[{counter}/{len(runs)}]",
+    base_cmd = [
         clang_tidy_exec,
         "-p",
         build_dir,
@@ -117,20 +119,11 @@ for run in runs.values():
         "--config-file",
         str(Path(run.config_file).relative_to(cwd)),
         *sys.argv[3:],
-        *run.scope,
-    )
+    ]
 
+    print(f"[{counter}/{len(runs)}]", *base_cmd, "...")
     proc = subprocess.run(
-        [
-            clang_tidy_exec,
-            "-p",
-            build_dir,
-            "--use-color",
-            "--config-file",
-            run.config_file,
-            *sys.argv[3:],
-            *run.scope,
-        ],
+        [*base_cmd, *run.scope],
         shell=False,
     )
     if proc.returncode:
