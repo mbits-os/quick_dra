@@ -95,7 +95,7 @@ def _get_files(ref: str | None):
 """,
             file=sys.stderr,
         )
-        sys.exit(1)
+        raise SystemExit(1)
 
 
 def _get_run_dir(dirname: Path):
