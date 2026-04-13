@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [0.11.1](https://github.com/mbits-os/quick_dra/compare/v0.11.0...v0.11.1) (2026-04-13)
+
+### Bug Fixes
+
+- apply suggestion from PVS-Studio ([d394721](https://github.com/mbits-os/quick_dra/commit/d39472101611d6e04b7935289f1552cc0d33f1f6))
+- **docs**: fix typos in usage.md ([29874ac](https://github.com/mbits-os/quick_dra/commit/29874ac37b486f09792264ae29da34da62d33c23))
+
 ## [0.11.0](https://github.com/mbits-os/quick_dra/compare/v0.10.0...v0.11.0) (2026-04-12)
 
 ### Bug Fixes
