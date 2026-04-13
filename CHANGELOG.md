@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.0.0](https://github.com/mbits-os/quick_dra/compare/v0.11.1...v1.0.0) (2026-04-13)
+
+### New Features
+
+- **breaking**: releasing version 1.0.0 of this project ([7a9fee3](https://github.com/mbits-os/quick_dra/commit/7a9fee342b441ea4b691fa8c4ffd76f69208ec32))
+
 ## [0.11.1](https://github.com/mbits-os/quick_dra/compare/v0.11.0...v0.11.1) (2026-04-13)
 
 ### Bug Fixes
