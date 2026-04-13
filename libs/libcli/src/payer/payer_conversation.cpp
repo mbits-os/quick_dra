@@ -46,7 +46,7 @@ namespace quick_dra::builtin::payer {
 		parser.arg(opts.passport, "passport")
 		    .meta("<number>")
 		    .help(
-		        "provide passport number; if stated-issued id is used "
+		        "provide passport number; if state-issued id is used "
 		        "in the config file, it will be replaced by this field");
 
 		parser.parse();

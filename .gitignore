@@ -43,3 +43,7 @@ super-linter.log
 /.context.yaml
 /quick-dra_*.xml
 .PVS-Studio/
+
+.file-list
+pvs-report.sarif
+PVS-Studio.log
