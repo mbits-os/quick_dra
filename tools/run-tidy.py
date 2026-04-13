@@ -9,16 +9,22 @@ import yaml
 
 cwd = Path().resolve()
 src_roots = [cwd / "libs"]
+from_ref: str | None = None
 
 if len(sys.argv) < 3:
     print(
-        f"Usage: {Path(sys.argv[0]).name} <clang-tidy-exec> <build-dir> [clang-tidy-args...]",
+        f"Usage: {Path(sys.argv[0]).name} <clang-tidy-exec> <build-dir> [--from=<ref>] [clang-tidy-args...]",
         file=sys.stderr,
     )
     raise SystemExit(1)
 
 clang_tidy_exec = sys.argv[1]
 build_dir = sys.argv[2]
+clang_tidy_args = sys.argv[3:]
+
+if clang_tidy_args and clang_tidy_args[0].startswith("--from="):
+    from_ref = clang_tidy_args[0][len("--from=") :]
+    clang_tidy_args = clang_tidy_args[1:]
 
 
 @dataclass
@@ -27,18 +33,48 @@ class TidyRun:
     scope: list[str] = field(default_factory=list)
 
 
-def _get_files():
-    file_list: list[Path] | None = None
+def __get_diff_from(ref: str | None):
+    if not ref:
+        return None
 
+    proc = subprocess.run(
+        [
+            "git",
+            "diff",
+            "--diff-filter=d",
+            "--name-only",
+            f"{ref}..HEAD",
+        ],
+        shell=False,
+        capture_output=True,
+        encoding="utf-8",
+    )
+
+    if proc.returncode:
+        if proc.stdout:
+            print(proc.stdout.rstrip(), file=sys.stdout)
+        if proc.stderr:
+            print(proc.stderr.rstrip(), file=sys.stderr)
+        raise SystemExit(1)
+
+    file_list_text = proc.stdout.rstrip()
+    return [Path(line.strip()).resolve() for line in file_list_text.split("\n")]
+
+
+def __get_file_list():
     try:
         file_list_text = (cwd / ".file-list").read_text().rstrip()
         if file_list_text:
-            file_list = [
-                Path(line.strip()).resolve() for line in file_list_text.split("\n")
-            ]
+            return [Path(line.strip()).resolve() for line in file_list_text.split("\n")]
     except FileNotFoundError:
         # It's OK for this file not to exist
         pass
+
+    return None
+
+
+def _get_files(ref: str | None):
+    file_list = __get_diff_from(ref) or __get_file_list()
 
     path = Path(build_dir, "compile_commands.json")
     try:
@@ -90,7 +126,7 @@ def _get_runs(files: Iterable[Path]):
     return runs
 
 
-runs = _get_runs(_get_files())
+runs = _get_runs(_get_files(from_ref))
 if not runs:
     print("Nothing to check now")
 
@@ -118,7 +154,7 @@ for run in runs.values():
         "--use-color",
         "--config-file",
         str(Path(run.config_file).relative_to(cwd)),
-        *sys.argv[3:],
+        *clang_tidy_args,
     ]
 
     print(f"[{counter}/{len(runs)}]", *base_cmd, "...")
