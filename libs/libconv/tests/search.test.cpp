@@ -32,10 +32,10 @@ namespace quick_dra::testing {
 
 	using search_term_view = std::variant<unsigned, std::string_view>;
 	struct testcase {
-		search_term_view term_view;
-		std::span<unsigned const> expected_index_span;
-		std::string_view expected_output;
-		match_level expected_level;
+		search_term_view term_view{};
+		std::span<unsigned const> expected_index_span{};
+		std::string_view expected_output{};
+		match_level expected_level{match_level::none};
 		match_level payer_matched{match_level::none};
 	};
 
@@ -130,15 +130,13 @@ namespace quick_dra::testing {
 	static constexpr auto everybody = std::array{0u, 1u, 2u};
 
 	static constexpr testcase tests[] = {
-	    {with(1), one, ""sv, match_level::none},
-	    {with(5), none, "argument --pos must be between 1 and 3, inclusive"sv,
-	     match_level::none},
+	    {with(1), one, ""sv},
+	    {with(5), none, "argument --pos must be between 1 and 3, inclusive"sv},
 	    {with("iksiń"), everybody, ""sv, match_level::partial},
 	    {with("eh012"), two, ""sv, match_level::partial},
 	    {with("maria"), three, ""sv, match_level::direct},
 	    {with("jean-luc"), none,
-	     "--find: could not find any record using `jean-luc'"sv,
-	     match_level::none},
+	     "--find: could not find any record using `jean-luc'"sv},
 	    {with("jean-luc"), none, ""sv, match_level::none, match_level::partial},
 	    {with("jean-luc"), none, ""sv, match_level::none, match_level::direct},
 	};
