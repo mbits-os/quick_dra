@@ -5,70 +5,69 @@ on:
   workflow_dispatch:
 
 jobs:
-  check:
+  find-changes:
+    runs-on: ubuntu-latest
+    name: Find code changes
+    outputs:
+      cpp-count: ${{ steps.changed-code.outputs.cpp-count }}
+      file-list: ${{ steps.changed-code.outputs.file-list }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: false
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Changed code
+        id: changed-code
+        run: |
+          git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} >> .file-list
+          cat .file-list
+          echo "cpp-count=$(egrep '\.(cpp|cc|cxx)$' .file-list | wc -l)" >> "$GITHUB_OUTPUT"
+          echo "file-list=$(cat .file-list | base64 | tr --delete '\n')" >> "$GITHUB_OUTPUT"
+
+  clang-check:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
-    strategy:
-      matrix:
-        compiler: [ gcc ]
-        build_type: [ Debug ]
-        sanitizer: [ false ]
-        os: [ ubuntu ]
-
-        include:
-          - os: ubuntu
-            gcc: true
-            ubuntu: true
-            home: /home/runner
 
     permissions:
       contents: read
       pull-requests: read
 
     env:
-      BUILD_TYPE: ${{ matrix.build_type }}
       CONAN_REVISIONS_ENABLED: 1
-      FLOW_COMMAND: python ./.flow/flow.py run -D os=${{ matrix.os }} build_type=${{ matrix.build_type }} compiler=${{ matrix.compiler }} sanitizer=${{ matrix.sanitizer }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      CONAN_CACHE: ${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.compiler }}
 
     runs-on: ubuntu-latest
-    name: Check on ${{ matrix.build_type }} with ${{ matrix.compiler }} on ${{ matrix.os }}
+    name: Check with clang-tidy
+    needs: find-changes
 
     steps:
       - name: Bootstrap
+        if: needs.find-changes.outputs.cpp-count != '0'
         uses: proj-flow-actions/bootstrap@v1
         with:
-          cache-prefix: ${{ matrix.os }}
+          cache-prefix: ubuntu
           python-version: "3.12"
           checkout: true
           submodules: true
 
-      - name: Setup Ubuntu
-        if: ${{ matrix.ubuntu }}
-        uses: proj-flow-actions/setup-ubuntu@v1
-        with:
-          compiler: ${{ matrix.compiler }}
-
-      - name: Install ICU
-        if: ${{ matrix.ubuntu }}
+      - name: Get changes
+        if: needs.find-changes.outputs.cpp-count != '0'
         run: |
-          sudo apt-get install libicu-dev -y
+          FILE_LIST="${{ needs.find-changes.outputs.file-list }}"
+          echo "$FILE_LIST" | base64 --decode > .file-list
+          cat .file-list
 
-      - name: Setup Conan
-        uses: proj-flow-actions/setup-conan@v1
+      - name: Get sources
+        if: needs.find-changes.outputs.cpp-count != '0'
+        uses: ./.github/actions/configure-sources
         with:
-          user-directory: ${{ matrix.home }}
-          cache-prefix: ${{ env.CONAN_CACHE }}
-
-      - name: Configure
-        run: ${{ env.FLOW_COMMAND }} -s Conan,CMake
-
-      - name: Build
-        run: |
-          ${{ env.FLOW_COMMAND }} -s Build
-          cmake --preset debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cache-prefix: ubuntu-Debug-gcc
 
       - name: Check
+        if: needs.find-changes.outputs.cpp-count != '0'
         run: python ./tools/run-tidy.py clang-tidy-18 build/debug

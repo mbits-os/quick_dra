@@ -26,13 +26,28 @@ class TidyRun:
 
 
 def _get_files():
+    file_list: list[Path] | None = None
+
+    try:
+        file_list_text = (cwd / ".file-list").read_text().rstrip()
+        if file_list_text:
+            file_list = [
+                Path(line.strip()).resolve() for line in file_list_text.split("\n")
+            ]
+    except FileNotFoundError:
+        # It's OK for this file not to exist
+        pass
+
     path = Path(build_dir, "compile_commands.json")
     try:
         commands = json.loads(path.read_bytes())
-        return map(
-            lambda command: Path(command.get("file", "")),
+        mapping = map(
+            lambda command: Path(command.get("file", "")).resolve(),
             cast(list[dict[str, str]], commands),
         )
+        if file_list is None:
+            return mapping
+        return filter(lambda name: name in file_list, mapping)
     except FileNotFoundError:
         preset = build_dir.split("/")[-1]
         print(
@@ -73,7 +88,13 @@ def _get_runs(files: Iterable[Path]):
     return runs
 
 
-for run in _get_runs(_get_files()).values():
+runs = _get_runs(_get_files())
+if not runs:
+    print("Nothing to check now")
+
+counter = 0
+for run in runs.values():
+    counter += 1
     checks = (
         cast(
             dict[str, str], yaml.load(Path(run.config_file).read_bytes(), Loader=Loader)
@@ -81,18 +102,22 @@ for run in _get_runs(_get_files()).values():
         or "-*"
     )
     if checks == "-*":
+        print(
+            f"[{counter}/{len(runs)}] skip",
+            str(Path(run.config_file).relative_to(cwd)),
+        )
         continue
 
     print(
+        f"[{counter}/{len(runs)}]",
         clang_tidy_exec,
         "-p",
         build_dir,
-        "--quiet",
         "--use-color",
         "--config-file",
-        run.config_file,
+        str(Path(run.config_file).relative_to(cwd)),
         *sys.argv[3:],
-        "...",
+        *run.scope,
     )
 
     proc = subprocess.run(
@@ -100,7 +125,6 @@ for run in _get_runs(_get_files()).values():
             clang_tidy_exec,
             "-p",
             build_dir,
-            "--quiet",
             "--use-color",
             "--config-file",
             run.config_file,

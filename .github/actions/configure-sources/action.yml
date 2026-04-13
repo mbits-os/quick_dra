@@ -1,0 +1,36 @@
+name: configure-sources
+description: Generates missing code and compile_command.json
+
+inputs:
+  cache-prefix:
+    description: How to prefix the virtual environment cache
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Ubuntu
+      uses: proj-flow-actions/setup-ubuntu@v1
+      with:
+        compiler: gcc
+
+    - name: Install ICU
+      shell: bash
+      run: |
+        sudo apt-get install libicu-dev -y
+
+    - name: Setup Conan
+      uses: proj-flow-actions/setup-conan@v1
+      with:
+        user-directory: /home/runner
+        cache-prefix: ${{ inputs.cache-prefix }}
+
+    - name: Configure
+      shell: bash
+      run: python ./.flow/flow.py run -D os=ubuntu build_type=Debug compiler=gcc sanitizer=false -s Conan,CMake
+
+    - name: Generate missing code
+      shell: bash
+      run: |
+        python ./.flow/flow.py webidl gen --cfg libs/libmodels/idl/models.json --binary-dir build/debug
+        cmake --preset debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
