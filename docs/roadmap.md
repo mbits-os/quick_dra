@@ -25,7 +25,7 @@
   - [x] Action for `./flow boostrap` + venv caching (_v0.11.0_)
   - [x] Move _Flow_ extension for coverall to separate GitHub projects (_v0.11.0_)
   - [x] Enable clang-tidy (_v0.11.0_)
-  - [ ] _(opt)_ ~~Enable Open Source PVS-Studio~~
+  - [ ] _(opt)_ Enable Open Source PVS-Studio
   - [x] Move `insured list` to `list`, with payer info and searching by keyword (_v0.10.0_)
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
