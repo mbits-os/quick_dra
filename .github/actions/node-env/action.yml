@@ -1,0 +1,35 @@
+name: "Setup Node environment"
+description: "Setup node and yarn environment"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+
+    - name: Corepack
+      working-directory: ./data/web
+      shell: bash
+      run: corepack enable
+
+    - name: Cache paths for Yarn
+      id: cache-folder
+      shell: bash
+      run: |
+        echo "cache-folder=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+    - name: Cache install-state
+      uses: actions/cache@v5
+      with:
+        path: |
+          ${{ steps.cache-folder.outputs.cache-folder }}
+          data/web/.yarn/install-state.gz
+          data/web/node_modules
+        key: node-cache-${{ runner.os }}-${{ hashFiles('data/web/yarn.lock') }}
+        restore-keys: |
+          node-cache-${{ runner.os }}-
+
+    - name: Install modules
+      working-directory: ./data/web
+      shell: bash
+      run: yarn install

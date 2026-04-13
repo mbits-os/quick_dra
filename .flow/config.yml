@@ -51,6 +51,7 @@ cmake:
     QUICK_DRA_COVERALLS: "?config:coverage"
     QUICK_DRA_COVERALLS_UPLOAD: "?config:upload_to_coveralls"
     QUICK_DRA_W_ERROR: "?config:w-error"
+    QUICK_DRA_WIN_GUI_CONSOLE: "?config:win-console"
 
 package:
   main-group: apps

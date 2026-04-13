@@ -1,7 +1,10 @@
-[module "Command Line Interface"]
+[module "CLI"]
 	path = libs/cli
 	path = libs/libcli
 	path = libs/libconv
+[module "GUI"]
+	path = libs/gui
+	path = libs/libgui
 [module "Base"]
 	path = libs/libbase
 	path = libs/liblex

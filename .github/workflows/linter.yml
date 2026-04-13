@@ -38,12 +38,6 @@ jobs:
           VALIDATE_CSS: true
           VALIDATE_HTML: true
 
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_JSX: true
-
-          VALIDATE_TYPESCRIPT_ES: true
-          VALIDATE_TSX: true
-
           IGNORE_GENERATED_FILES: true
           IGNORE_GITIGNORED_FILES: true
           FILTER_REGEX_INCLUDE: ".*/src/.*|.*/include/.*|.*/extensions/.*\\.py|.*/tools/[^/]+\\.py"

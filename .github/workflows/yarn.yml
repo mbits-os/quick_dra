@@ -1,0 +1,29 @@
+name: Yarn
+
+on:
+  pull_request:
+
+jobs:
+  yarn:
+    runs-on: ubuntu-latest
+    name: Check Node.js app
+    strategy:
+      matrix:
+        command: [type-check, dep-check, vfs-check, lint, prettier]
+
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Setup Node
+        uses: ./.github/actions/node-env
+
+      - name: Run
+        working-directory: ./data/web
+        run: yarn ${{ matrix.command }}
