@@ -12,15 +12,15 @@ add_executable(qdra ${SRCS})
 add_win32_icon(qdra appicon.ico)
 target_compile_options(qdra PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_include_directories(qdra PRIVATE src)
-target_link_options(qdra PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(qdra libcli)
+target_link_options(qdra PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+target_link_libraries(qdra PRIVATE libcli)
 set_target_properties(qdra PROPERTIES
     VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
 if(WIN32)
     target_link_options(qdra PRIVATE /ENTRY:wmainCRTStartup)
-    target_compile_options(qdra PUBLIC /D_UNICODE /DUNICODE)
+    target_compile_options(qdra PRIVATE /D_UNICODE /DUNICODE)
 endif()
 
 # #################################################################
