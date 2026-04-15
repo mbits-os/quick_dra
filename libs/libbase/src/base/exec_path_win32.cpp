@@ -9,8 +9,7 @@
 namespace quick_dra::platform {
 	std::filesystem::path _exec_path() {
 		wchar_t modpath[2048];
-		GetModuleFileNameW(nullptr, modpath,
-		                   sizeof(modpath) / sizeof(modpath[0]));
+		GetModuleFileNameW(nullptr, modpath, sizeof(modpath) / sizeof(modpath[0]));
 		return modpath;
 	}
 }  // namespace quick_dra::platform

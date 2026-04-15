@@ -15,9 +15,7 @@
 #include <vector>
 
 namespace quick_dra::builtin::list {
-	int handle(std::string_view tool_name,
-	           args::arglist arguments,
-	           std::string_view description) {
+	int handle(std::string_view tool_name, args::arglist arguments, std::string_view description) {
 		std::optional<std::string> config_path;
 		std::optional<std::string> search_keyword;
 		bool pipe{false};
@@ -26,9 +24,7 @@ namespace quick_dra::builtin::list {
 		args::null_translator tr{};
 		args::parser parser{as_str(description), {tool_name, arguments}, &tr};
 
-		parser.arg(config_path, "config")
-		    .meta("<path>")
-		    .help("select config file; defaults to ~/.quick_dra.yaml");
+		parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
 
 		parser.arg(search_keyword, "find")
 		    .meta("<keyword>")
@@ -36,12 +32,8 @@ namespace quick_dra::builtin::list {
 		        "first or last name, or a document number to use as a "
 		        "search key");
 
-		parser.set<std::true_type>(pipe, "pipe")
-		    .help("generate tab-separated output")
-		    .opt();
-		parser.set<std::true_type>(zero_pipe, "z")
-		    .help("use zero as field separator, when --pipe is also used")
-		    .opt();
+		parser.set<std::true_type>(pipe, "pipe").help("generate tab-separated output").opt();
+		parser.set<std::true_type>(zero_pipe, "z").help("use zero as field separator, when --pipe is also used").opt();
 
 		parser.parse();
 
@@ -52,8 +44,7 @@ namespace quick_dra::builtin::list {
 
 		if (cfg.payer) {
 			if (search_keyword) {
-				payer_matches =
-				    match_payer_from_keyword(*search_keyword, *cfg.payer);
+				payer_matches = match_payer_from_keyword(*search_keyword, *cfg.payer);
 			} else {
 				payer_matches = match_level::direct;
 			}
@@ -65,9 +56,8 @@ namespace quick_dra::builtin::list {
 
 		std::vector<unsigned> found{};
 		if (search_keyword) {
-			found = search_insured_from_keyword(
-			    *search_keyword, *cfg.insured, payer_matches, &insured_matches,
-			    [&parser](std::string const& msg) { parser.error(msg); });
+			found = search_insured_from_keyword(*search_keyword, *cfg.insured, payer_matches, &insured_matches,
+			                                    [&parser](std::string const& msg) { parser.error(msg); });
 		} else {
 			auto const size = cfg.insured->size();
 			found.reserve(size);
@@ -77,8 +67,7 @@ namespace quick_dra::builtin::list {
 			insured_matches = match_level::direct;
 		}
 
-		if (insured_matches == match_level::direct &&
-		    payer_matches == match_level::partial) {
+		if (insured_matches == match_level::direct && payer_matches == match_level::partial) {
 			payer_matches = match_level::none;
 		}
 
@@ -94,8 +83,7 @@ namespace quick_dra::builtin::list {
 				    person.tax_id.value_or(""s),
 				    person.social_id.value_or(""s),
 				};
-				fmt::print("{}\n",
-				           fmt::join(items, zero_pipe ? "\0"sv : "\t"sv));
+				fmt::print("{}\n", fmt::join(items, zero_pipe ? "\0"sv : "\t"sv));
 			}
 
 			for (unsigned const index : found) {
@@ -119,8 +107,7 @@ namespace quick_dra::builtin::list {
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
 				};
-				fmt::print("{}\n",
-				           fmt::join(items, zero_pipe ? "\0"sv : "\t"sv));
+				fmt::print("{}\n", fmt::join(items, zero_pipe ? "\0"sv : "\t"sv));
 			}
 
 			return 0;
@@ -129,34 +116,23 @@ namespace quick_dra::builtin::list {
 		if (payer_matches != match_level::none) {
 			auto const& person = *cfg.payer;
 
-			fmt::print(
-			    "Payer: {} {} [{} {}] PESEL:{} NIP:{}\n",
-			    person.first_name.value_or("??"),
-			    person.last_name.value_or("??"), person.kind.value_or("??"),
-			    person.document.value_or("??"), person.social_id.value_or("??"),
-			    person.tax_id.value_or("??"));
+			fmt::print("Payer: {} {} [{} {}] PESEL:{} NIP:{}\n", person.first_name.value_or("??"),
+			           person.last_name.value_or("??"), person.kind.value_or("??"), person.document.value_or("??"),
+			           person.social_id.value_or("??"), person.tax_id.value_or("??"));
 		}
 
 		for (unsigned const index : found) {
 			auto const& person = (*cfg.insured)[index];
 			std::string part_time_salary =
-			    person.salary
-			        .transform(
-			            [](auto const& value) { return as_string(value); })
-			        .value_or("<minimal>"s);
+			    person.salary.transform([](auto const& value) { return as_string(value); }).value_or("<minimal>"s);
 
-			if (person.part_time_scale &&
-			    *person.part_time_scale != full_time) {
-				part_time_salary =
-				    fmt::format("{} of {}", as_string(*person.part_time_scale),
-				                part_time_salary);
+			if (person.part_time_scale && *person.part_time_scale != full_time) {
+				part_time_salary = fmt::format("{} of {}", as_string(*person.part_time_scale), part_time_salary);
 			}
 
-			fmt::print("#{}: {} {} [{} {}] {}\n", index + 1,
-			           person.first_name.value_or("??"),
-			           person.last_name.value_or("??"),
-			           person.kind.value_or("??"),
-			           person.document.value_or("??"), part_time_salary);
+			fmt::print("#{}: {} {} [{} {}] {}\n", index + 1, person.first_name.value_or("??"),
+			           person.last_name.value_or("??"), person.kind.value_or("??"), person.document.value_or("??"),
+			           part_time_salary);
 		}
 
 		return 0;

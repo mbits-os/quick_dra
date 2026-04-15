@@ -7,8 +7,7 @@ namespace quick_dra::builtin::testing::insured_add {
 	static constexpr runnable_testcase tests[] = {
 	    {
 	        .name = "yes no document"sv,
-	        .args =
-	            "insured add -y --first A --last B --config .quick_dra.yaml"sv,
+	        .args = "insured add -y --first A --last B --config .quick_dra.yaml"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: at least one of --social-id, --id-card and --passport is required with -y
@@ -17,8 +16,7 @@ qdra insured add: error: at least one of --social-id, --id-card and --passport i
 	    },
 	    {
 	        .name = "bad title"sv,
-	        .args =
-	            R"(insured add -y --first A --last B --title "010 0 0" --config .quick_dra.yaml)"sv,
+	        .args = R"(insured add -y --first A --last B --title "010 0 0" --config .quick_dra.yaml)"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --title: expecting 6 digits in form `#### # #'
@@ -27,8 +25,7 @@ qdra insured add: error: --title: expecting 6 digits in form `#### # #'
 	    },
 	    {
 	        .name = "bad scale"sv,
-	        .args =
-	            "insured add -y --first A --last B --scale 4/5a --config .quick_dra.yaml"sv,
+	        .args = "insured add -y --first A --last B --scale 4/5a --config .quick_dra.yaml"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, with denominator not equal to zero
@@ -37,8 +34,7 @@ qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, w
 	    },
 	    {
 	        .name = "bad scale NaN"sv,
-	        .args =
-	            "insured add -y --first A --last B --scale 4/0 --config .quick_dra.yaml"sv,
+	        .args = "insured add -y --first A --last B --scale 4/0 --config .quick_dra.yaml"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, with denominator not equal to zero
@@ -47,8 +43,7 @@ qdra insured add: error: --scale: expecting two numbers in form `<num>/<den>`, w
 	    },
 	    {
 	        .name = "bad salary"sv,
-	        .args =
-	            R"(insured add -y --first A --last B --salary "1000000 USD" --config .quick_dra.yaml)"sv,
+	        .args = R"(insured add -y --first A --last B --salary "1000000 USD" --config .quick_dra.yaml)"sv,
 	        .stderr =
 	            R"(usage: qdra insured add [-h] [--config <path>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured add: error: --salary: expecting a number with 0.01 increment, with optional PLN or zł suffix
@@ -59,15 +54,14 @@ qdra insured add: error: --salary: expecting a number with 0.01 increment, with 
 	        .name = "percent scale"sv,
 	        .args =
 	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 25%)"sv,
-	        .stdout =
-	            "\033[0;90mFirst name set to \033[mName\n"
-	            "\033[0;90mLast name set to \033[mSurname\n"
-	            "\033[0;90mDocument kind set to \033[m1\n"
-	            "\033[0;90mDocument set to \033[mAAA000000\n"
-	            "\033[0;90mInsurance title set to \033[m0110 0 0\n"
-	            "\033[0;90mPart-time scale set to \033[m1/4\n"
-	            "\033[0;90mSalary set to \033[mminimal for a given month\n"
-	            ""sv,
+	        .stdout = "\033[0;90mFirst name set to \033[mName\n"
+	                  "\033[0;90mLast name set to \033[mSurname\n"
+	                  "\033[0;90mDocument kind set to \033[m1\n"
+	                  "\033[0;90mDocument set to \033[mAAA000000\n"
+	                  "\033[0;90mInsurance title set to \033[m0110 0 0\n"
+	                  "\033[0;90mPart-time scale set to \033[m1/4\n"
+	                  "\033[0;90mSalary set to \033[mminimal for a given month\n"
+	                  ""sv,
 	        .stderr =
 	            R"(Quick-DRA: file .quick_dra.yaml will be created as needed.
 )"sv,
@@ -102,15 +96,14 @@ qdra insured add: error: --salary: expecting a number with 0.01 increment, with 
 	        .name = "salary minimal"sv,
 	        .args =
 	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 3/4 --salary minimal)"sv,
-	        .stdout =
-	            "\033[0;90mFirst name set to \033[mName\n"
-	            "\033[0;90mLast name set to \033[mSurname\n"
-	            "\033[0;90mDocument kind set to \033[m1\n"
-	            "\033[0;90mDocument set to \033[mAAA000000\n"
-	            "\033[0;90mInsurance title set to \033[m0110 0 0\n"
-	            "\033[0;90mPart-time scale set to \033[m3/4\n"
-	            "\033[0;90mSalary set to \033[mminimal for a given month\n"
-	            ""sv,
+	        .stdout = "\033[0;90mFirst name set to \033[mName\n"
+	                  "\033[0;90mLast name set to \033[mSurname\n"
+	                  "\033[0;90mDocument kind set to \033[m1\n"
+	                  "\033[0;90mDocument set to \033[mAAA000000\n"
+	                  "\033[0;90mInsurance title set to \033[m0110 0 0\n"
+	                  "\033[0;90mPart-time scale set to \033[m3/4\n"
+	                  "\033[0;90mSalary set to \033[mminimal for a given month\n"
+	                  ""sv,
 	        .stderr =
 	            R"(Quick-DRA: file .quick_dra.yaml will be created as needed.
 )"sv,
@@ -146,15 +139,14 @@ Either remove this person or call
 	        .name = "full time"sv,
 	        .args =
 	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0" --scale 4/4)"sv,
-	        .stdout =
-	            "\033[0;90mFirst name set to \033[mName\n"
-	            "\033[0;90mLast name set to \033[mSurname\n"
-	            "\033[0;90mDocument kind set to \033[m1\n"
-	            "\033[0;90mDocument set to \033[mAAA000000\n"
-	            "\033[0;90mInsurance title set to \033[m0110 0 0\n"
-	            "\033[0;90mPart-time scale set to \033[m1/1\n"
-	            "\033[0;90mSalary set to \033[mminimal for a given month\n"
-	            ""sv,
+	        .stdout = "\033[0;90mFirst name set to \033[mName\n"
+	                  "\033[0;90mLast name set to \033[mSurname\n"
+	                  "\033[0;90mDocument kind set to \033[m1\n"
+	                  "\033[0;90mDocument set to \033[mAAA000000\n"
+	                  "\033[0;90mInsurance title set to \033[m0110 0 0\n"
+	                  "\033[0;90mPart-time scale set to \033[m1/1\n"
+	                  "\033[0;90mSalary set to \033[mminimal for a given month\n"
+	                  ""sv,
 	        .stderr =
 	            R"(Quick-DRA: file .quick_dra.yaml will be created as needed.
 )"sv,
@@ -169,15 +161,14 @@ Either remove this person or call
 	        .args =
 	            R"(insured add --config .quick_dra.yaml -y --first Name --last Surname --id-card AAA000000 --title "0110 0 0")"sv,
 	        .config_name = ".quick_dra.yaml"sv,
-	        .stdout =
-	            "\033[0;90mFirst name set to \033[mName\n"
-	            "\033[0;90mLast name set to \033[mSurname\n"
-	            "\033[0;90mDocument kind set to \033[m1\n"
-	            "\033[0;90mDocument set to \033[mAAA000000\n"
-	            "\033[0;90mInsurance title set to \033[m0110 0 0\n"
-	            "\033[0;90mPart-time scale set to \033[m<empty>\n"
-	            "\033[0;90mSalary set to \033[mminimal for a given month\n"
-	            ""sv,
+	        .stdout = "\033[0;90mFirst name set to \033[mName\n"
+	                  "\033[0;90mLast name set to \033[mSurname\n"
+	                  "\033[0;90mDocument kind set to \033[m1\n"
+	                  "\033[0;90mDocument set to \033[mAAA000000\n"
+	                  "\033[0;90mInsurance title set to \033[m0110 0 0\n"
+	                  "\033[0;90mPart-time scale set to \033[m<empty>\n"
+	                  "\033[0;90mSalary set to \033[mminimal for a given month\n"
+	                  ""sv,
 	        .stderr = R"(Quick-DRA: error: could not write to .quick_dra.yaml
 )"sv,
 	        .returncode = 1,
@@ -185,8 +176,7 @@ Either remove this person or call
 	    },
 	    {
 	        .name = "reset all props A"sv,
-	        .args =
-	            R"(insured add --config .quick_dra.yaml -y --first "" --last "" --social-id "")"sv,
+	        .args = R"(insured add --config .quick_dra.yaml -y --first "" --last "" --social-id "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -203,8 +193,7 @@ qdra insured add: error: argument --first is required with -y
 	    },
 	    {
 	        .name = "reset all props B"sv,
-	        .args =
-	            R"(insured add --config .quick_dra.yaml -y --first "" --last "" --id-card "")"sv,
+	        .args = R"(insured add --config .quick_dra.yaml -y --first "" --last "" --id-card "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -221,8 +210,7 @@ qdra insured add: error: argument --first is required with -y
 	    },
 	    {
 	        .name = "reset all props C"sv,
-	        .args =
-	            R"(insured add --config .quick_dra.yaml -y --first "" --last "" --passport "")"sv,
+	        .args = R"(insured add --config .quick_dra.yaml -y --first "" --last "" --passport "")"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'

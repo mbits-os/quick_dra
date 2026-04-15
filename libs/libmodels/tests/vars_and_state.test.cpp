@@ -27,8 +27,7 @@ namespace quick_dra::testing {
 			state_.insert("values.string"_var, "a string"s);
 			state_.insert("values.number"_var, uint_value{27});
 			state_.insert("values.items"_var,
-			              std::vector<calculated_value>{
-			                  100_PLN, 200_PLN, "a string"s, uint_value{3}});
+			              std::vector<calculated_value>{100_PLN, 200_PLN, "a string"s, uint_value{3}});
 		}
 	};
 
@@ -84,36 +83,25 @@ namespace quick_dra::testing {
 
 	TEST_F(global_object, invalid_reads_string) {
 		ASSERT_STATE_DEFAULTED("no.such"_var, "a string"s, "default str"s);
-		ASSERT_STATE_DEFAULTED("values.currency"_var, "a string"s,
-		                       "default str"s);
-		ASSERT_STATE_DEFAULTED("values.percent"_var, "a string"s,
-		                       "default str"s);
-		ASSERT_STATE_DEFAULTED("values.number"_var, "a string"s,
-		                       "default str"s);
+		ASSERT_STATE_DEFAULTED("values.currency"_var, "a string"s, "default str"s);
+		ASSERT_STATE_DEFAULTED("values.percent"_var, "a string"s, "default str"s);
+		ASSERT_STATE_DEFAULTED("values.number"_var, "a string"s, "default str"s);
 		ASSERT_STATE_DEFAULTED("values.items"_var, "a string"s, "default str"s);
 	}
 
 	TEST_F(global_object, invalid_reads_string_view) {
-		ASSERT_STATE_DEFAULTED("no.such"_var, "a string"sv,
-		                       "default string_view"sv);
-		ASSERT_STATE_DEFAULTED("values.currency"_var, "a string"sv,
-		                       "default string_view"sv);
-		ASSERT_STATE_DEFAULTED("values.percent"_var, "a string"sv,
-		                       "default string_view"sv);
-		ASSERT_STATE_DEFAULTED("values.number"_var, "a string"sv,
-		                       "default string_view"sv);
-		ASSERT_STATE_DEFAULTED("values.items"_var, "a string"sv,
-		                       "default string_view"sv);
+		ASSERT_STATE_DEFAULTED("no.such"_var, "a string"sv, "default string_view"sv);
+		ASSERT_STATE_DEFAULTED("values.currency"_var, "a string"sv, "default string_view"sv);
+		ASSERT_STATE_DEFAULTED("values.percent"_var, "a string"sv, "default string_view"sv);
+		ASSERT_STATE_DEFAULTED("values.number"_var, "a string"sv, "default string_view"sv);
+		ASSERT_STATE_DEFAULTED("values.items"_var, "a string"sv, "default string_view"sv);
 	}
 
 	TEST_F(global_object, invalid_reads_C_str) {
 		ASSERT_STATE_DEFAULTED("no.such"_var, "a string", "default C str");
-		ASSERT_STATE_DEFAULTED("values.currency"_var, "a string",
-		                       "default C str");
-		ASSERT_STATE_DEFAULTED("values.percent"_var, "a string",
-		                       "default C str");
-		ASSERT_STATE_DEFAULTED("values.number"_var, "a string",
-		                       "default C str");
+		ASSERT_STATE_DEFAULTED("values.currency"_var, "a string", "default C str");
+		ASSERT_STATE_DEFAULTED("values.percent"_var, "a string", "default C str");
+		ASSERT_STATE_DEFAULTED("values.number"_var, "a string", "default C str");
 		ASSERT_STATE_DEFAULTED("values.items"_var, "a string", "default C str");
 	}
 }  // namespace quick_dra::testing

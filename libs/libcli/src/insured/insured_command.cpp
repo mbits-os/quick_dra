@@ -10,8 +10,7 @@
 namespace quick_dra::builtin::insured {
 	namespace {
 #define BUILTINS_X_KNOWN(NAME, TOOL, DSCR) help_command{TOOL##sv, DSCR##sv},
-		static constexpr auto insured_commands =
-		    std::array{INSURED_BUILTINS_X(BUILTINS_X_KNOWN)};
+		static constexpr auto insured_commands = std::array{INSURED_BUILTINS_X(BUILTINS_X_KNOWN)};
 #undef BUILTINS_X_KNOWN
 
 		static constexpr auto command_groups = std::array{
@@ -19,11 +18,8 @@ namespace quick_dra::builtin::insured {
 		};
 	}  // namespace
 
-	int handle(std::string_view tool_name,
-	           args::arglist arguments,
-	           std::string_view description) {
-		builtin::parser parser{
-		    description, {tool_name, arguments}, command_groups};
+	int handle(std::string_view tool_name, args::arglist arguments, std::string_view description) {
+		builtin::parser parser{description, {tool_name, arguments}, command_groups};
 
 		return quick_dra::tools::run(parser, insured::tools, tool_name);
 	}

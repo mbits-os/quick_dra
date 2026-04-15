@@ -11,6 +11,7 @@ IndentWidth:          4
 NamespaceIndentation: All
 TabWidth:             4
 UseTab:               ForIndentation
+ColumnLimit:          120
 ...
 Language:             JavaScript
 BasedOnStyle:         Chromium

@@ -17,15 +17,11 @@
 
 namespace yaml {
 	template <typename T>
-	static inline void write_key(ryml::NodeRef& ref,
-	                             ryml::csubstr key,
-	                             std::optional<T> const& ctx);
+	static inline void write_key(ryml::NodeRef& ref, ryml::csubstr key, std::optional<T> const& ctx);
 
 	template <typename T>
 	    requires(!is_optional<T>::value)
-	static inline void write_key(ryml::NodeRef& ref,
-	                             ryml::csubstr key,
-	                             T const& ctx);
+	static inline void write_key(ryml::NodeRef& ref, ryml::csubstr key, T const& ctx);
 
 	template <typename T>
 	void write_value(ryml::NodeRef& ref, std::vector<T> const& ctx);
@@ -53,9 +49,7 @@ namespace yaml {
 	};  // NOLINT(readability/braces)
 
 	void prepare_child(auto&) {}
-	void prepare_child(PreparableValue auto& child) {
-		child.prepare_for_write();
-	}
+	void prepare_child(PreparableValue auto& child) { child.prepare_for_write(); }
 	template <PreparableValue T>
 	void prepare_child(std::vector<T>& child) {
 		for (auto& item : child)

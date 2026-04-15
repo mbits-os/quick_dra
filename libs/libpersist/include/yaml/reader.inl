@@ -5,9 +5,7 @@
 
 namespace yaml {
 	template <typename T>
-	static inline bool read_key(ref_ctx const& ref,
-	                            ryml::csubstr key,
-	                            std::optional<T>& ctx) {
+	static inline bool read_key(ref_ctx const& ref, ryml::csubstr key, std::optional<T>& ctx) {
 		if (!ref.ref().is_map()) {
 			return ref.ref().type().is_notype();
 		}
@@ -21,10 +19,7 @@ namespace yaml {
 
 	template <typename T>
 	    requires(!is_optional<T>::value)
-	static inline bool read_key(ref_ctx const& ref,
-	                            ryml::csubstr key,
-	                            T& ctx,
-	                            bool optional) {
+	static inline bool read_key(ref_ctx const& ref, ryml::csubstr key, T& ctx, bool optional) {
 		if (!ref.ref().is_map()) {
 			if (optional) return ref.ref().type().is_notype();
 			if (ref.ref().type().is_notype())
@@ -129,9 +124,7 @@ namespace yaml {
 	}
 
 	template <typename... T, size_t... Index>
-	bool read_tuple(ref_ctx const& ref,
-	                std::tuple<T...>& ctx,
-	                std::index_sequence<Index...>) {
+	bool read_tuple(ref_ctx const& ref, std::tuple<T...>& ctx, std::index_sequence<Index...>) {
 		bool result = true;
 		ctx = std::tuple{read_reversed<T>(ref, Index, result)...};
 		return result;
@@ -144,9 +137,7 @@ namespace yaml {
 		}
 		auto const size = ref.ref().num_children();
 		if (size != sizeof...(T)) {
-			return ref.error(
-			    fmt::format("expecting an array of {} elements, got {}"sv,
-			                sizeof...(T), size));
+			return ref.error(fmt::format("expecting an array of {} elements, got {}"sv, sizeof...(T), size));
 		}
 		return read_tuple(ref, ctx, std::index_sequence_for<T...>{});
 	}
@@ -180,9 +171,7 @@ namespace yaml {
 		return convert_string(ref, value, ctx);
 	}
 
-	inline bool convert_string(ref_ctx const& ref,
-	                           auto const& value,
-	                           std::integral auto& ctx) {
+	inline bool convert_string(ref_ctx const& ref, auto const& value, std::integral auto& ctx) {
 		if (value.empty()) {
 			ctx = 0;
 			return true;
@@ -193,8 +182,7 @@ namespace yaml {
 		auto const [ptr, ec] = std::from_chars(begin, end, ctx);
 		if (ptr != end || ec != std::errc{}) {
 			ctx = 0;
-			if constexpr (std::is_signed_v<
-			                  std::remove_cvref_t<decltype(ctx)>>) {
+			if constexpr (std::is_signed_v<std::remove_cvref_t<decltype(ctx)>>) {
 				return ref.error("expecting a number");
 			} else {
 				return ref.error("expecting a positive number");

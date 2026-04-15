@@ -12,8 +12,6 @@ namespace quick_dra::builtin::insured::add {
 	struct conversation : quick_dra::conversation<partial::insured_t> {
 		std::filesystem::path path;
 
-		void parse_args(std::string_view tool_name,
-		                args::arglist arguments,
-		                std::string_view description);
+		void parse_args(std::string_view tool_name, args::arglist arguments, std::string_view description);
 	};
 }  // namespace quick_dra::builtin::insured::add

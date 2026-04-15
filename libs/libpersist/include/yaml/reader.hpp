@@ -33,16 +33,11 @@ namespace yaml {
 	static inline bool read_local_or_external(ref_ctx const& ref, T& ctx);
 
 	template <typename T>
-	static inline bool read_key(ref_ctx const& ref,
-	                            ryml::csubstr key,
-	                            std::optional<T>& ctx);
+	static inline bool read_key(ref_ctx const& ref, ryml::csubstr key, std::optional<T>& ctx);
 
 	template <typename T>
 	    requires(!is_optional<T>::value)
-	static inline bool read_key(ref_ctx const& ref,
-	                            ryml::csubstr key,
-	                            T& ctx,
-	                            bool optional = false);
+	static inline bool read_key(ref_ctx const& ref, ryml::csubstr key, T& ctx, bool optional = false);
 
 	template <typename T>
 	bool read_value(ref_ctx const& ref, std::vector<T>& ctx);
@@ -77,8 +72,7 @@ namespace yaml {
 
 		auto const items = enums(ctx);
 		auto const item =
-		    std::find_if(std::begin(items), std::end(items),
-		                 [=](auto const& pair) { return pair.id == value; });
+		    std::find_if(std::begin(items), std::end(items), [=](auto const& pair) { return pair.id == value; });
 		if (item != std::end(items)) {
 			ctx = item->value;
 			return true;
@@ -91,13 +85,9 @@ namespace yaml {
 	bool read_value(ref_ctx const& ref, std::integral auto& ctx);
 	bool read_value(ref_ctx const& ref, std::string& ctx);
 
-	bool convert_string(ref_ctx const&,
-	                    c4::csubstr const& value,
-	                    std::string& ctx);
+	bool convert_string(ref_ctx const&, c4::csubstr const& value, std::string& ctx);
 
-	inline bool convert_string(ref_ctx const& ref,
-	                           auto const& value,
-	                           std::integral auto& ctx);
+	inline bool convert_string(ref_ctx const& ref, auto const& value, std::integral auto& ctx);
 }  // namespace yaml
 
 #include "reader.inl"

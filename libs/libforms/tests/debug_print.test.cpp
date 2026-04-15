@@ -41,9 +41,7 @@ namespace quick_dra::testing {
 		verbose level{};
 		std::string_view expected{};
 
-		[[nodiscard]] constexpr testcase on(
-		    verbose lvl,
-		    std::string_view output) const noexcept {
+		[[nodiscard]] constexpr testcase on(verbose lvl, std::string_view output) const noexcept {
 			auto copy = *this;
 			copy.level = lvl;
 			copy.expected = output;
@@ -89,16 +87,12 @@ namespace quick_dra::testing {
 		return cfg;
 	}
 
-	compiled_templates postproc_load(templates& src) {
-		return compiled_templates::compile(src);
-	}
+	compiled_templates postproc_load(templates& src) { return compiled_templates::compile(src); }
 
 	template <typename FileObj>
 	auto load(std::string_view text) {
-		auto object = parser::parse_yaml_text<FileObj>(
-		    {text.data(), text.size()}, "input"s);
-		return object.transform(
-		    [](auto& value) { return postproc_load(value); });
+		auto object = parser::parse_yaml_text<FileObj>({text.data(), text.size()}, "input"s);
+		return object.transform([](auto& value) { return postproc_load(value); });
 	}
 
 	void testcase::run_captured() const {
@@ -107,8 +101,7 @@ namespace quick_dra::testing {
 
 		if (!cfg || !compiled) return;
 
-		auto const forms =
-		    prepare_form_set(level, 1, 2016y / 1, 2016y / 2 / 10, *cfg);
+		auto const forms = prepare_form_set(level, 1, 2016y / 1, 2016y / 2 / 10, *cfg);
 
 		build_file_set({.verbose_level = level}, forms, *compiled);
 	}

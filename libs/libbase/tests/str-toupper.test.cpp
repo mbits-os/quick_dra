@@ -14,10 +14,8 @@ namespace quick_dra::testing {
 		std::string_view input{};
 		std::string_view expected{};
 
-		friend std::ostream& operator<<(std::ostream& out,
-		                                uppercase_testcase const& test) {
-			return out << '"' << test.input << "\" -> \"" << test.expected
-			           << '"';
+		friend std::ostream& operator<<(std::ostream& out, uppercase_testcase const& test) {
+			return out << '"' << test.input << "\" -> \"" << test.expected << '"';
 		}
 	};
 
@@ -33,8 +31,7 @@ namespace quick_dra::testing {
 	    {"coöperate"sv, "COÖPERATE"sv},
 	    {"Iksiński"sv, "IKSIŃSKI"sv},
 	    {"Zażółć gęślą jaźń"sv, "ZAŻÓŁĆ GĘŚLĄ JAŹŃ"sv},
-	    {"Pchnąć w tę łódź jeża lub ośm skrzyń fig."sv,
-	     "PCHNĄĆ W TĘ ŁÓDŹ JEŻA LUB OŚM SKRZYŃ FIG."sv},
+	    {"Pchnąć w tę łódź jeża lub ośm skrzyń fig."sv, "PCHNĄĆ W TĘ ŁÓDŹ JEŻA LUB OŚM SKRZYŃ FIG."sv},
 	    {
 	        "Γαζίες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο."sv,
 #ifdef WIN32
@@ -51,8 +48,7 @@ namespace quick_dra::testing {
 	        "ZWÖLF GROSSE BOXKÄMPFER JAGEN VIKTOR QUER ÜBER DEN SYLTER DEICH."sv,
 #endif
 	    },
-	    {"Любя, съешь щипцы, — вздохнёт мэр, — кайф жгуч."sv,
-	     "ЛЮБЯ, СЪЕШЬ ЩИПЦЫ, — ВЗДОХНЁТ МЭР, — КАЙФ ЖГУЧ."sv},
+	    {"Любя, съешь щипцы, — вздохнёт мэр, — кайф жгуч."sv, "ЛЮБЯ, СЪЕШЬ ЩИПЦЫ, — ВЗДОХНЁТ МЭР, — КАЙФ ЖГУЧ."sv},
 	};
 
 	INSTANTIATE_TEST_SUITE_P(test, uppercase, ::testing::ValuesIn(tests));

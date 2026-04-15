@@ -10,9 +10,7 @@
 #include "payer_conversation.hpp"
 
 namespace quick_dra::builtin::payer {
-	int handle(std::string_view tool_name,
-	           args::arglist arguments,
-	           std::string_view description) {
+	int handle(std::string_view tool_name, args::arglist arguments, std::string_view description) {
 		conversation conv{tool_name, arguments, description};
 		conv.parse_args();
 
@@ -25,14 +23,10 @@ namespace quick_dra::builtin::payer {
 		conv.dst = *cfg.payer;
 		conv.check_required();
 
-		if (!conv.check_field(policies::first_name) ||
-		    !conv.check_field(policies::last_name) ||
-		    !conv.check_field(policies::tax_id) ||
-		    !conv.check_field(policies::social_id) ||
-		    !conv.check_enum_field("--id-card or --passport"sv, policies::kind,
-		                           policies::document,
-		                           get_enum_item(policies::id_card),
-		                           get_enum_item(policies::passport))) {
+		if (!conv.check_field(policies::first_name) || !conv.check_field(policies::last_name) ||
+		    !conv.check_field(policies::tax_id) || !conv.check_field(policies::social_id) ||
+		    !conv.check_enum_field("--id-card or --passport"sv, policies::kind, policies::document,
+		                           get_enum_item(policies::id_card), get_enum_item(policies::passport))) {
 			return 1;
 		}
 
@@ -45,8 +39,7 @@ namespace quick_dra::builtin::payer {
 
 		cfg.payer = std::move(conv.dst);
 		if (!cfg.store(conv.path)) {
-			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n",
-			           conv.path);
+			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n", conv.path);
 			return 1;
 		}
 		return 0;

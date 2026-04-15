@@ -11,14 +11,10 @@
 #include "insured_edit_conversation.hpp"
 
 namespace quick_dra::builtin::insured::edit {
-	bool wrap_document_edit(conversation& conv,
-	                        unsigned pos,
-	                        std::vector<partial::insured_t> const& insured) {
+	bool wrap_document_edit(conversation& conv, unsigned pos, std::vector<partial::insured_t> const& insured) {
 		while (true) {
-			if (!conv.check_enum_field("--social-id, --id-card or --passport"sv,
-			                           policies::kind, policies::document,
-			                           get_enum_item(policies::social_id),
-			                           get_enum_item(policies::id_card),
+			if (!conv.check_enum_field("--social-id, --id-card or --passport"sv, policies::kind, policies::document,
+			                           get_enum_item(policies::social_id), get_enum_item(policies::id_card),
 			                           get_enum_item(policies::passport))) {
 				return false;
 			}
@@ -30,8 +26,7 @@ namespace quick_dra::builtin::insured::edit {
 					continue;
 				}
 
-				if (person.kind == conv.dst.kind &&
-				    person.document == conv.dst.document) {
+				if (person.kind == conv.dst.kind && person.document == conv.dst.document) {
 					break;
 				}
 
@@ -48,15 +43,12 @@ namespace quick_dra::builtin::insured::edit {
 			    "\n"
 			    "    #{}: {} {} [{} {}]\n"
 			    "\n",
-			    index, person.first_name.value_or("??"),
-			    person.last_name.value_or("??"), person.kind.value_or("??"),
+			    index, person.first_name.value_or("??"), person.last_name.value_or("??"), person.kind.value_or("??"),
 			    person.document.value_or("??"));
 		}
 	}
 
-	int handle(std::string_view tool_name,
-	           args::arglist arguments,
-	           std::string_view description) {
+	int handle(std::string_view tool_name, args::arglist arguments, std::string_view description) {
 		conversation conv{tool_name, arguments, description};
 		conv.parse_args();
 
@@ -66,9 +58,8 @@ namespace quick_dra::builtin::insured::edit {
 			cfg.insured.emplace();
 		}
 
-		auto found = search_insured_from_term(
-		    conv.search_term, *cfg.insured, match_level::none, nullptr,
-		    [&conv](std::string const& msg) { conv.parser.error(msg); });
+		auto found = search_insured_from_term(conv.search_term, *cfg.insured, match_level::none, nullptr,
+		                                      [&conv](std::string const& msg) { conv.parser.error(msg); });
 
 		if (found.size() == 1) {
 			auto& orig = cfg.insured->at(found.front());
@@ -84,11 +75,8 @@ namespace quick_dra::builtin::insured::edit {
 
 		for (auto const index : found) {
 			auto const& person = cfg.insured->at(index);
-			fmt::print("    #{0}: {1} {2} [{3} {4}]\n", index + 1,
-			           person.first_name.value_or("??"),
-			           person.last_name.value_or("??"),
-			           person.kind.value_or("??"),
-			           person.document.value_or("??"));
+			fmt::print("    #{0}: {1} {2} [{3} {4}]\n", index + 1, person.first_name.value_or("??"),
+			           person.last_name.value_or("??"), person.kind.value_or("??"), person.document.value_or("??"));
 		}
 
 		if (found.size() > 1) {
@@ -99,12 +87,9 @@ namespace quick_dra::builtin::insured::edit {
 			return 1;
 		}
 
-		if (!conv.check_field(policies::first_name) ||
-		    !conv.check_field(policies::last_name) ||
-		    !wrap_document_edit(conv, found.front(), *cfg.insured) ||
-		    !conv.check_field(policies::title) ||
-		    !conv.check_field(policies::part_time_scale) ||
-		    !conv.check_field(policies::salary)) {
+		if (!conv.check_field(policies::first_name) || !conv.check_field(policies::last_name) ||
+		    !wrap_document_edit(conv, found.front(), *cfg.insured) || !conv.check_field(policies::title) ||
+		    !conv.check_field(policies::part_time_scale) || !conv.check_field(policies::salary)) {
 			return 1;
 		}
 
@@ -128,8 +113,7 @@ namespace quick_dra::builtin::insured::edit {
 
 		orig = conv.dst;
 		if (!cfg.store(conv.path)) {
-			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n",
-			           conv.path);
+			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n", conv.path);
 			return 1;
 		}
 		return 0;

@@ -28,8 +28,7 @@ namespace quick_dra {
 		}
 
 		std::string_view text() const noexcept {
-			return {reinterpret_cast<char const*>(content.data()),
-			        content.size()};
+			return {reinterpret_cast<char const*>(content.data()), content.size()};
 		}
 
 		explicit operator bool() const noexcept { return (status / 100) == 2; }

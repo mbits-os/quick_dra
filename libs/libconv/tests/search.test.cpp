@@ -54,22 +54,15 @@ namespace quick_dra::testing {
 
 	class search : public ::testing::TestWithParam<testcase> {
 	public:
-		void test_lookup(testcase const& param,
-		                 std::span<partial::insured_t> insured) {
-			auto const& [term_view, expected_indexes_span, expected_output,
-			             expected_level, payer_matched] = param;
+		void test_lookup(testcase const& param, std::span<partial::insured_t> insured) {
+			auto const& [term_view, expected_indexes_span, expected_output, expected_level, payer_matched] = param;
 			struct conv {
 				search_term operator()(unsigned index) const { return index; }
-				search_term operator()(std::string_view term) const {
-					return as_str(term);
-				}
-				search_term operator()(search_term_view const& term) const {
-					return std::visit(*this, term);
-				}
+				search_term operator()(std::string_view term) const { return as_str(term); }
+				search_term operator()(search_term_view const& term) const { return std::visit(*this, term); }
 			};
 			auto const term = conv{}(term_view);
-			std::vector<unsigned> expected_indexes{
-			    expected_indexes_span.begin(), expected_indexes_span.end()};
+			std::vector<unsigned> expected_indexes{expected_indexes_span.begin(), expected_indexes_span.end()};
 
 			std::string log{};
 			struct carry_on {};
@@ -77,45 +70,39 @@ namespace quick_dra::testing {
 			std::vector<unsigned> actual{};
 			match_level level{match_level::none};
 			try {
-				actual = search_insured_from_term(
-				    term, insured, payer_matched, &level,
-				    [&log](std::string const& err) {
-					    log = err;
-					    throw carry_on{};
-				    });
+				actual = search_insured_from_term(term, insured, payer_matched, &level, [&log](std::string const& err) {
+					log = err;
+					throw carry_on{};
+				});
 			} catch (carry_on const&) {  // -V565
 				                         // pass
 			}
 
-			EXPECT_EQ(actual, expected_indexes)
-			    << "Search term: " << fmt::to_string(term);
-			EXPECT_EQ(log, expected_output)
-			    << "Search term: " << fmt::to_string(term);
-			EXPECT_EQ(level, expected_level)
-			    << "Search term: " << fmt::to_string(term);
+			EXPECT_EQ(actual, expected_indexes) << "Search term: " << fmt::to_string(term);
+			EXPECT_EQ(log, expected_output) << "Search term: " << fmt::to_string(term);
+			EXPECT_EQ(level, expected_level) << "Search term: " << fmt::to_string(term);
 		}
 	};
 
 	TEST_P(search, lookup) {
 		std::vector<partial::insured_t> insured{};
 		insured.reserve(std::size(people));
-		std::transform(std::begin(people), std::end(people),
-		               std::back_inserter(insured), [](auto const& person) {
-			               return partial::insured_t{
-			                   partial::person{
-			                       .last_name = as_str(person.last_name),
-			                       .id_card = std::nullopt,
-			                       .passport = std::nullopt,
-			                       .first_name = as_str(person.first_name),
-			                       .kind = as_str(person.kind),
-			                       .document = as_str(person.document),
-			                   },
-			                   std::nullopt,
-			                   std::nullopt,
-			                   std::nullopt,
-			                   std::nullopt,
-			               };
-		               });
+		std::transform(std::begin(people), std::end(people), std::back_inserter(insured), [](auto const& person) {
+			return partial::insured_t{
+			    partial::person{
+			        .last_name = as_str(person.last_name),
+			        .id_card = std::nullopt,
+			        .passport = std::nullopt,
+			        .first_name = as_str(person.first_name),
+			        .kind = as_str(person.kind),
+			        .document = as_str(person.document),
+			    },
+			    std::nullopt,
+			    std::nullopt,
+			    std::nullopt,
+			    std::nullopt,
+			};
+		});
 
 		test_lookup(GetParam(), insured);
 	}
@@ -135,8 +122,7 @@ namespace quick_dra::testing {
 	    {with("iksiń"), everybody, ""sv, match_level::partial},
 	    {with("eh012"), two, ""sv, match_level::partial},
 	    {with("maria"), three, ""sv, match_level::direct},
-	    {with("jean-luc"), none,
-	     "--find: could not find any record using `jean-luc'"sv},
+	    {with("jean-luc"), none, "--find: could not find any record using `jean-luc'"sv},
 	    {with("jean-luc"), none, ""sv, match_level::none, match_level::partial},
 	    {with("jean-luc"), none, ""sv, match_level::none, match_level::direct},
 	};
@@ -145,14 +131,10 @@ namespace quick_dra::testing {
 
 	TEST_F(search, pos_lookup_in_short_list) {
 		std::vector<partial::insured_t> insured{};
-		test_lookup(
-		    {with(2), none, "insured list is empty"sv, match_level::none},
-		    insured);
+		test_lookup({with(2), none, "insured list is empty"sv, match_level::none}, insured);
 
 		insured.emplace_back();
-		test_lookup({with(2), none, "argument --pos must be equal to 1"sv,
-		             match_level::none},
-		            insured);
+		test_lookup({with(2), none, "argument --pos must be equal to 1"sv, match_level::none}, insured);
 	}
 
 	TEST_F(search, match_payer_from_keyword) {
@@ -169,11 +151,8 @@ namespace quick_dra::testing {
 		    std::nullopt,
 		};
 
-		EXPECT_EQ(match_payer_from_keyword("abcdef"sv, person),
-		          match_level::direct);
-		EXPECT_EQ(match_payer_from_keyword("uiop"sv, person),
-		          match_level::partial);
-		EXPECT_EQ(match_payer_from_keyword("foobar"sv, person),
-		          match_level::none);
+		EXPECT_EQ(match_payer_from_keyword("abcdef"sv, person), match_level::direct);
+		EXPECT_EQ(match_payer_from_keyword("uiop"sv, person), match_level::partial);
+		EXPECT_EQ(match_payer_from_keyword("foobar"sv, person), match_level::none);
 	}
 }  // namespace quick_dra::testing

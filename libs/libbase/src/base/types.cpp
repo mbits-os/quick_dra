@@ -9,10 +9,9 @@
 namespace quick_dra {
 	namespace {
 		template <size_t... Index>
-		std::string_view strip_suffix(
-		    std::string_view input,
-		    std::string_view suffix,
-		    std::same_as<std::string_view> auto... suffixes) {
+		std::string_view strip_suffix(std::string_view input,
+		                              std::string_view suffix,
+		                              std::same_as<std::string_view> auto... suffixes) {
 			if (input.ends_with(suffix)) {
 				return strip_sv(input.substr(0, input.size() - suffix.size()));
 			}
@@ -24,9 +23,7 @@ namespace quick_dra {
 		}
 
 		template <typename FixedPoint>
-		bool parse_fixed_point(std::string_view input,
-		                       FixedPoint& dst,
-		                       std::same_as<std::string_view> auto... suffix) {
+		bool parse_fixed_point(std::string_view input, FixedPoint& dst, std::same_as<std::string_view> auto... suffix) {
 			input = strip_suffix(strip_sv(input), suffix...);
 
 			std::string alt_storage{};  //-V821
@@ -60,16 +57,13 @@ namespace quick_dra {
 		return parse_fixed_point(input, dst, "zł"sv, "PLN"sv);
 	}
 
-	bool percent::parse(std::string_view input, percent& dst) {
-		return parse_fixed_point(input, dst, "%"sv);
-	}
+	bool percent::parse(std::string_view input, percent& dst) { return parse_fixed_point(input, dst, "%"sv); }
 
 	bool ratio::parse(std::string_view input, ratio& dst) {
 		if (input.ends_with('%')) {
 			percent p{};
 			if (percent::parse(input, p)) {
-				dst = ratio::gcd(static_cast<unsigned>(p.value),
-				                 static_cast<unsigned>(100 * percent::den));
+				dst = ratio::gcd(static_cast<unsigned>(p.value), static_cast<unsigned>(100 * percent::den));
 				return true;
 			}
 		}
@@ -93,8 +87,7 @@ namespace quick_dra {
 
 	bool insurance_title::parse(std::string_view input, insurance_title& dst) {
 		auto const split = split_sv(input, ' '_sep);
-		if (split.size() != 3 || split[0].length() != 4 ||
-		    split[1].length() != 1 || split[2].length() != 1) {
+		if (split.size() != 3 || split[0].length() != 4 || split[1].length() != 1 || split[2].length() != 1) {
 			dst = {};
 			return false;
 		}
@@ -108,10 +101,8 @@ namespace quick_dra {
 		}
 
 		auto const& title_code = split[0];
-		auto const pension_right =
-		    static_cast<unsigned short>(split[1].front() - '0');
-		auto const disability_level =
-		    static_cast<unsigned short>(split[2].front() - '0');
+		auto const pension_right = static_cast<unsigned short>(split[1].front() - '0');
+		auto const disability_level = static_cast<unsigned short>(split[2].front() - '0');
 
 		dst = {
 		    .title_code{title_code.data(), title_code.size()},

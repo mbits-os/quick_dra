@@ -14,8 +14,7 @@ namespace quick_dra::checker {
 	struct fixed_string {
 		char content[N] = {};
 
-		constexpr fixed_string(construct_from_pointer_t,
-		                       char const* input) noexcept {
+		constexpr fixed_string(construct_from_pointer_t, char const* input) noexcept {
 			for (size_t i{0}; i < N; ++i) {
 				content[i] = input[i];
 			}
@@ -23,8 +22,7 @@ namespace quick_dra::checker {
 
 		constexpr fixed_string(std::array<char, N> const& in) noexcept
 		    : fixed_string{construct_from_pointer, in.data()} {}
-		constexpr fixed_string(char const (&input)[N + 1]) noexcept
-		    : fixed_string{construct_from_pointer, input} {}
+		constexpr fixed_string(char const (&input)[N + 1]) noexcept : fixed_string{construct_from_pointer, input} {}
 
 		constexpr fixed_string(const fixed_string& other) noexcept {
 			for (size_t i{0}; i < N; ++i) {
@@ -32,8 +30,7 @@ namespace quick_dra::checker {
 			}
 		}
 
-		constexpr fixed_string& operator=(const fixed_string& other) noexcept =
-		    delete;
+		constexpr fixed_string& operator=(const fixed_string& other) noexcept = delete;
 
 		constexpr size_t size() const noexcept { return N; }
 		constexpr const char* begin() const noexcept { return content; }
@@ -45,9 +42,7 @@ namespace quick_dra::checker {
 			}
 		}  //-V591
 
-		constexpr char operator[](size_t i) const noexcept {
-			return content[i];
-		}
+		constexpr char operator[](size_t i) const noexcept { return content[i]; }
 
 		constexpr operator std::basic_string_view<char>() const noexcept {
 			return std::basic_string_view<char>{content, size()};

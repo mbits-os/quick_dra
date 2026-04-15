@@ -18,9 +18,7 @@ namespace quick_dra {
 		template <typename Arg>
 		struct validator_function {
 			bool (*validator)(std::string&&, std::optional<Arg>&, bool);
-			bool operator()(std::string&& value,
-			                std::optional<Arg>& dst,
-			                bool ask_questions) const noexcept {
+			bool operator()(std::string&& value, std::optional<Arg>& dst, bool ask_questions) const noexcept {
 				return (*validator)(std::move(value), dst, ask_questions);
 			}
 		};
@@ -35,8 +33,7 @@ namespace quick_dra {
 
 	template <typename Arg,
 	          Selector<Arg> SelectorLambda,
-	          Validator<Arg> ValidatorLambda =
-	              policy_builder::validator_function<Arg>>
+	          Validator<Arg> ValidatorLambda = policy_builder::validator_function<Arg>>
 	struct field_policy : SelectorLambda, ValidatorLambda {
 		using selector_type = SelectorLambda;
 		using validator_type = ValidatorLambda;
@@ -44,52 +41,38 @@ namespace quick_dra {
 
 		std::string_view label;
 
-		using field_policy_with_arg_flags =
-		    quick_dra::field_policy_with_arg_flags<field_policy>;
+		using field_policy_with_arg_flags = quick_dra::field_policy_with_arg_flags<field_policy>;
 
-		constexpr selector_type const& selector() const noexcept {
-			return *this;
-		}
+		constexpr selector_type const& selector() const noexcept { return *this; }
 
-		constexpr validator_type const& validator() const noexcept {
-			return *this;
-		}
+		constexpr validator_type const& validator() const noexcept { return *this; }
 
-		std::optional<value_type>& select(auto& payer) const noexcept {
-			return this->selector()(payer);
-		}
+		std::optional<value_type>& select(auto& payer) const noexcept { return this->selector()(payer); }
 
-		std::optional<value_type> const& select(
-		    auto const& payer) const noexcept {
-			return this->selector()(
-			    const_cast<std::remove_cvref_t<decltype(payer)>&>(payer));
+		std::optional<value_type> const& select(auto const& payer) const noexcept {
+			return this->selector()(const_cast<std::remove_cvref_t<decltype(payer)>&>(payer));
 		}
 
 		constexpr Validator<value_type> auto get_validator() const noexcept {
-			return [this](std::string&& value, std::optional<value_type>& dst,
-			              bool ask_questions) {
+			return [this](std::string&& value, std::optional<value_type>& dst, bool ask_questions) {
 				return this->validator()(std::move(value), dst, ask_questions);
 			};
 		}
 
-		constexpr interactive::field_answer<value_type, field_policy>
-		get_field_answer() const noexcept {
+		constexpr interactive::field_answer<value_type, field_policy> get_field_answer() const noexcept {
 			return {*this};
 		}
 
-		constexpr interactive::enumerator_item<field_policy> get_enum(
-		    char code) const noexcept {
+		constexpr interactive::enumerator_item<field_policy> get_enum(char code) const noexcept {
 			return {code, *this};
 		}
 
 		template <Enumerator... Items>
-		constexpr interactive::enum_field<field_policy, Items...>
-		get_enum_field(Items&&... items) const noexcept {
+		constexpr interactive::enum_field<field_policy, Items...> get_enum_field(Items&&... items) const noexcept {
 			return {*this, {std::forward<Items>(items)...}};
 		}
 
-		constexpr field_policy_with_arg_flags through(
-		    std::string_view arg_flag) const noexcept {
+		constexpr field_policy_with_arg_flags through(std::string_view arg_flag) const noexcept {
 			return {*this, arg_flag};
 		}
 	};
@@ -102,86 +85,65 @@ namespace quick_dra {
 	namespace getters {
 		struct first_name {
 			using person_type = partial::person;
-			inline std::optional<std::string>& operator()(
-			    person_type& person) const noexcept {
+			inline std::optional<std::string>& operator()(person_type& person) const noexcept {
 				return person.first_name;
 			}
 		};
 		struct last_name {
 			using person_type = partial::person;
-			inline std::optional<std::string>& operator()(
-			    person_type& person) const noexcept {
+			inline std::optional<std::string>& operator()(person_type& person) const noexcept {
 				return person.last_name;
 			}
 		};
 		struct social_id {
 			using person_type = partial::insured_t;
 			static constexpr char enum_key = 'P';
-			inline std::optional<std::string>& operator()(
-			    auto& person) const noexcept {
-				return person.social_id;
-			}
+			inline std::optional<std::string>& operator()(auto& person) const noexcept { return person.social_id; }
 		};
 		struct id_card {
 			using person_type = partial::person;
 			static constexpr char enum_key = '1';
-			inline std::optional<std::string>& operator()(
-			    person_type& payer) const noexcept {
-				return payer.id_card;
-			}
+			inline std::optional<std::string>& operator()(person_type& payer) const noexcept { return payer.id_card; }
 		};
 		struct passport {
 			using person_type = partial::person;
 			static constexpr char enum_key = '2';
-			inline std::optional<std::string>& operator()(
-			    person_type& person) const noexcept {
+			inline std::optional<std::string>& operator()(person_type& person) const noexcept {
 				return person.passport;
 			}
 		};
 		struct kind {
 			using person_type = partial::person;
-			inline std::optional<std::string>& operator()(
-			    person_type& person) const noexcept {
-				return person.kind;
-			}
+			inline std::optional<std::string>& operator()(person_type& person) const noexcept { return person.kind; }
 		};
 		struct document {
 			using person_type = partial::person;
-			inline std::optional<std::string>& operator()(
-			    person_type& person) const noexcept {
+			inline std::optional<std::string>& operator()(person_type& person) const noexcept {
 				return person.document;
 			}
 		};
 		struct tax_id {
 			using person_type = partial::payer_t;
-			inline std::optional<std::string>& operator()(
-			    person_type& payer) const noexcept {
-				return payer.tax_id;
-			}
+			inline std::optional<std::string>& operator()(person_type& payer) const noexcept { return payer.tax_id; }
 		};
 
 		struct title {
 			using person_type = partial::insured_t;
-			inline std::optional<insurance_title>& operator()(
-			    person_type& insured) const noexcept {
+			inline std::optional<insurance_title>& operator()(person_type& insured) const noexcept {
 				return insured.title;
 			}
 		};
 
 		struct part_time_scale {
 			using person_type = partial::insured_t;
-			inline std::optional<ratio>& operator()(
-			    person_type& insured) const noexcept {
+			inline std::optional<ratio>& operator()(person_type& insured) const noexcept {
 				return insured.part_time_scale;
 			}
 		};
 
 		struct salary {
 			using person_type = partial::insured_t;
-			inline std::optional<currency>& operator()(
-			    person_type& insured) const noexcept {
-				return insured.salary;
-			}
+			inline std::optional<currency>& operator()(person_type& insured) const noexcept { return insured.salary; }
 		};
 	}  // namespace getters
 
@@ -200,8 +162,8 @@ namespace quick_dra {
 			template <typename T>
 			    requires requires() { typename T::person_type; }
 			struct value_type_of<T>
-			    : value_type_of<std::remove_cvref_t<decltype(std::declval<T>()(
-			          std::declval<typename T::person_type&>()))>> {};
+			    : value_type_of<
+			          std::remove_cvref_t<decltype(std::declval<T>()(std::declval<typename T::person_type&>()))>> {};
 
 			template <typename T>
 			using value_type_t = typename value_type_of<T>::type;
@@ -213,27 +175,17 @@ namespace quick_dra {
 
 			std::string_view value;
 
-			constexpr SelectorLambda const& selector() const noexcept {
-				return *this;
-			}
+			constexpr SelectorLambda const& selector() const noexcept { return *this; }
 
 			template <Validator<value_type> ValidatorLambda>
-			[[nodiscard]] friend consteval field_policy<value_type,
-			                                            SelectorLambda,
-			                                            ValidatorLambda>
-			operator/(label_selector const& lhs, ValidatorLambda&& validator) {
-				return {lhs.selector(),
-				        std::forward<ValidatorLambda>(validator), lhs.value};
+			[[nodiscard]] friend consteval field_policy<value_type, SelectorLambda, ValidatorLambda> operator/(
+			    label_selector const& lhs,
+			    ValidatorLambda&& validator) {
+				return {lhs.selector(), std::forward<ValidatorLambda>(validator), lhs.value};
 			}
 
-			[[nodiscard]] friend consteval field_policy<
-			    value_type,
-			    SelectorLambda,
-			    validator_function<value_type>>
-			operator/(label_selector const& lhs,
-			          bool (*validator)(std::string&&,
-			                            std::optional<value_type>&,
-			                            bool)) {
+			[[nodiscard]] friend consteval field_policy<value_type, SelectorLambda, validator_function<value_type>>
+			operator/(label_selector const& lhs, bool (*validator)(std::string&&, std::optional<value_type>&, bool)) {
 				return {lhs.selector(), {validator}, lhs.value};
 			}
 		};
@@ -244,23 +196,16 @@ namespace quick_dra {
 			constexpr auto operator<=>(label const&) const noexcept = default;
 
 			template <typename SelectorLambda>
-			[[nodiscard]] consteval label_selector<
-			    details::value_type_t<SelectorLambda>,
-			    SelectorLambda>
-			operator/(SelectorLambda const& val) const noexcept {
+			[[nodiscard]] consteval label_selector<details::value_type_t<SelectorLambda>, SelectorLambda> operator/(
+			    SelectorLambda const& val) const noexcept {
 				return {val, value};
 			}
 		};
 	}  // namespace policy_builder
 
-	[[nodiscard]] inline consteval policy_builder::label operator""_label(
-	    char const* str,
-	    size_t length) {
+	[[nodiscard]] inline consteval policy_builder::label operator""_label(char const* str, size_t length) {
 		return {.value{str, length}};
 	}
 
-	[[nodiscard]] inline consteval policy_builder::label label(
-	    std::string_view value) {
-		return {.value{value}};
-	}
+	[[nodiscard]] inline consteval policy_builder::label label(std::string_view value) { return {.value{value}}; }
 }  // namespace quick_dra

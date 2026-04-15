@@ -25,8 +25,7 @@ namespace quick_dra {
 		for (auto const& form : forms) {
 			auto it = templates.reports.find(form.key);
 			if (it == templates.reports.end()) continue;
-			attach_document(root, opt.verbose_level, form, it->second,
-			                ++doc_id);
+			attach_document(root, opt.verbose_level, form, it->second, ++doc_id);
 		}
 
 		return root;

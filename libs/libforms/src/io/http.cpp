@@ -19,8 +19,7 @@ namespace quick_dra {
 		struct curl_global_initer {
 			curl_global_initer() {
 				if (::curl_global_init(CURL_GLOBAL_DEFAULT) != 0) {
-					throw std::runtime_error(
-					    "CURL global initialization failed");
+					throw std::runtime_error("CURL global initialization failed");
 				}
 			}
 			~curl_global_initer() { ::curl_global_cleanup(); }
@@ -37,15 +36,11 @@ namespace quick_dra {
 			return curl_ptr{::curl_easy_init()};
 		}
 
-		CURLcode curl_easy_setopt(curl_ptr const& curl,
-		                          CURLoption option,
-		                          auto arg) {
+		CURLcode curl_easy_setopt(curl_ptr const& curl, CURLoption option, auto arg) {
 			return ::curl_easy_setopt(curl.get(), option, arg);
 		}
 
-		CURLcode curl_easy_perform(curl_ptr const& curl) {
-			return ::curl_easy_perform(curl.get());
-		}
+		CURLcode curl_easy_perform(curl_ptr const& curl) { return ::curl_easy_perform(curl.get()); }
 
 		auto ua_version() noexcept {
 			if constexpr (version::major < 1) {
@@ -66,8 +61,7 @@ namespace quick_dra {
 
 		curl_easy_setopt(curl, CURLOPT_USERAGENT, ua.c_str());
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_write_callback write_cb = [](char* contents, std::size_t size,
-		                                  std::size_t nmemb,
+		curl_write_callback write_cb = [](char* contents, std::size_t size, std::size_t nmemb,
 		                                  void* userp) -> std::size_t {
 			auto& resp = *static_cast<http_response*>(userp);
 			auto realsize = size * nmemb;
@@ -84,15 +78,13 @@ namespace quick_dra {
 		}
 
 		long code;
-		if (curl_easy_getinfo(curl.get(), CURLINFO_RESPONSE_CODE, &code) !=
-		    CURLE_OK) {
+		if (curl_easy_getinfo(curl.get(), CURLINFO_RESPONSE_CODE, &code) != CURLE_OK) {
 			return response.cleaned();
 		}
 		response.status = static_cast<unsigned>(std::max(code, 0l));
 
 		curl_header* header{};
-		if (curl_easy_header(curl.get(), "Content-Type", 0, CURLH_HEADER, -1,
-		                     &header) != CURLHE_OK) {
+		if (curl_easy_header(curl.get(), "Content-Type", 0, CURLH_HEADER, -1, &header) != CURLHE_OK) {
 			return response.cleaned();
 		}
 		auto const view = std::string_view{header->value};

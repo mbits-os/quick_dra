@@ -17,8 +17,7 @@ namespace quick_dra {
 		std::optional<currency> value;
 	};
 
-	std::vector<summary_line> gather_summary_data(
-	    std::vector<quick_dra::form> const& forms);
+	std::vector<summary_line> gather_summary_data(std::vector<quick_dra::form> const& forms);
 
 	void print_summary(std::vector<summary_line> const& rows);
 }  // namespace quick_dra

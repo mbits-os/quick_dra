@@ -5,21 +5,17 @@
 #include <quick_dra/lex/tax.hpp>
 
 namespace quick_dra {
-	currency calc_tax_lowering_amount(
-	    std::map<currency, percent> const& scale) noexcept {
+	currency calc_tax_lowering_amount(std::map<currency, percent> const& scale) noexcept {
 		if (!scale.empty()) {
 			auto const [amount, tax_rate] = *scale.begin();
-			return calc_currency{(amount.calc() * tax_rate).value / 12}
-			    .rounded();
+			return calc_currency{(amount.calc() * tax_rate).value / 12}.rounded();
 		}
 
 		return {};
 	}
 
-	currency calc_tax_owed(std::map<currency, percent> const& scale,
-	                       currency taxable_amount) noexcept {
-		auto const calc_taxable_amount_yearly =
-		    calc_currency{taxable_amount.calc().value * 12};
+	currency calc_tax_owed(std::map<currency, percent> const& scale, currency taxable_amount) noexcept {
+		auto const calc_taxable_amount_yearly = calc_currency{taxable_amount.calc().value * 12};
 
 		calc_currency tax_owed{};
 		auto prev_rate = percent{};

@@ -20,13 +20,10 @@
 namespace args {
 	template <>
 	struct converter<quick_dra::insurance_title> {
-		static inline quick_dra::insurance_title
-		value(parser& p, std::string const& arg, std::string const& name) {
+		static inline quick_dra::insurance_title value(parser& p, std::string const& arg, std::string const& name) {
 			quick_dra::insurance_title out{};
 			if (!quick_dra::insurance_title::parse(arg, out)) {
-				p.error(fmt::format("{}: expecting 6 digits in form `#### # #'",
-				                    name),
-				        p.parse_width());
+				p.error(fmt::format("{}: expecting 6 digits in form `#### # #'", name), p.parse_width());
 			}
 			return out;
 		}  // GCOV_EXCL_LINE[GCC]
@@ -34,15 +31,12 @@ namespace args {
 
 	template <>
 	struct converter<quick_dra::ratio> {
-		static inline quick_dra::ratio value(parser& p,
-		                                     std::string const& arg,
-		                                     std::string const& name) {
+		static inline quick_dra::ratio value(parser& p, std::string const& arg, std::string const& name) {
 			quick_dra::ratio out{};
 			if (!quick_dra::ratio::parse(arg, out) || out.den == 0) {
-				p.error(fmt::format(
-				            "{}: expecting two numbers in form `<num>/<den>`, "
-				            "with denominator not equal to zero",
-				            name),
+				p.error(fmt::format("{}: expecting two numbers in form `<num>/<den>`, "
+				                    "with denominator not equal to zero",
+				                    name),
 				        p.parse_width());
 			}
 			return out;
@@ -51,9 +45,7 @@ namespace args {
 
 	template <>
 	struct converter<quick_dra::currency> {
-		static inline quick_dra::currency value(parser& p,
-		                                        std::string const& arg,
-		                                        std::string const& name) {
+		static inline quick_dra::currency value(parser& p, std::string const& arg, std::string const& name) {
 			using std::literals::operator""sv;
 
 			quick_dra::currency out{};
@@ -76,9 +68,7 @@ namespace quick_dra {
 	struct arg_parser {
 		args::null_translator tr{};
 		args::parser parser;
-		arg_parser(std::string_view tool_name,
-		           args::arglist arguments,
-		           std::string_view description)
+		arg_parser(std::string_view tool_name, args::arglist arguments, std::string_view description)
 		    : parser{as_str(description), {tool_name, arguments}, &tr} {}
 	};
 
@@ -105,9 +95,7 @@ namespace quick_dra {
 			}
 		};
 
-		constexpr no_questions_verifier verifier(args::parser const& p) {
-			return no_questions_verifier{*this, p};
-		}
+		constexpr no_questions_verifier verifier(args::parser const& p) { return no_questions_verifier{*this, p}; }
 
 		template <typename Policy>
 		bool get_answer(Policy const& policy) {
@@ -119,22 +107,19 @@ namespace quick_dra {
 			return get_answer(policy.get_field_answer());
 		}
 
-		template <AnyFieldPolicy Policy,
-		          AnyFieldPolicy DocPolicy,
-		          Enumerator... Items>
+		template <AnyFieldPolicy Policy, AnyFieldPolicy DocPolicy, Enumerator... Items>
 		bool check_enum_field(std::string_view switches_to_fix,
 		                      Policy const& policy,
 		                      DocPolicy const& doc_policy,
 		                      Items&&... items) {
 			auto const old_key = policy.select(this->dst);
-			auto const enum_field =
-			    policy.get_enum_field(std::forward<Items>(items)...);
+			auto const enum_field = policy.get_enum_field(std::forward<Items>(items)...);
 			if (!get_answer(enum_field)) {
 				if (!this->ask_questions && !switches_to_fix.empty()) {
-					comment(fmt::format(
-					    "Cannot guess document kind based on information "
-					    "given. Please use either {} with -y",
-					    switches_to_fix));
+					comment(
+					    fmt::format("Cannot guess document kind based on information "
+					                "given. Please use either {} with -y",
+					                switches_to_fix));
 				}
 				return false;
 			}
@@ -147,9 +132,8 @@ namespace quick_dra {
 			}
 
 			this->dst.preprocess_document_kind();
-			if (!this->continue_with_enums(
-			        key->front(), enum_field.items,
-			        std::make_index_sequence<sizeof...(Items)>{})) {
+			if (!this->continue_with_enums(key->front(), enum_field.items,
+			                               std::make_index_sequence<sizeof...(Items)>{})) {
 				return false;
 			}
 			this->dst.postprocess_document_kind();
@@ -162,16 +146,9 @@ namespace quick_dra {
 			auto const& orig_value = policy.select(orig);
 			if (new_value == orig_value) return false;
 			fmt::print(  //-V810 (about turning as_string into cached value)
-			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n",
-			    policy.label,
-			    orig_value
-			        .transform(
-			            [](auto const& value) { return as_string(value); })
-			        .value_or("<empty>"s),
-			    new_value
-			        .transform(
-			            [](auto const& value) { return as_string(value); })
-			        .value_or("<empty>"s));
+			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n", policy.label,
+			    orig_value.transform([](auto const& value) { return as_string(value); }).value_or("<empty>"s),
+			    new_value.transform([](auto const& value) { return as_string(value); }).value_or("<empty>"s));
 			return true;
 		}
 
@@ -179,32 +156,24 @@ namespace quick_dra {
 		bool show_added(Policy const& policy) {
 			auto const& new_value = policy.select(dst);
 			fmt::print("\033[0;90m{} set to \033[m{}\n", policy.label,
-			           new_value
-			               .transform([](auto const& value) {
-				               return as_string(value);
-			               })
-			               .value_or("<empty>"s));
+			           new_value.transform([](auto const& value) { return as_string(value); }).value_or("<empty>"s));
 			return true;
 		}
 
 	private:
 		template <FieldPolicyWithArgFlags... Policy>
-		void required_when_no_questions(args::parser const& p,
-		                                Policy const&... policies) {
+		void required_when_no_questions(args::parser const& p, Policy const&... policies) {
 			static constexpr auto const policies_count = sizeof...(Policy);
 
 			if constexpr (policies_count == 1) {
 				if (ask_questions) return;
 				if (!this->check_required_on_no_questions(policies...)) {
-					p.error(fmt::format("argument {} is required with -y",
-					                    policies.arg_flag...));
+					p.error(fmt::format("argument {} is required with -y", policies.arg_flag...));
 				}
 			} else if constexpr (policies_count > 1) {
 				bool const present_in_cli[] = {
-				    this->check_required_on_no_questions(
-				        policies, check_side::command_line_arguments)...};
-				std::string_view const arg_flags[policies_count] = {
-				    policies.arg_flag...};
+				    this->check_required_on_no_questions(policies, check_side::command_line_arguments)...};
+				std::string_view const arg_flags[policies_count] = {policies.arg_flag...};
 
 				size_t cli_count = 0;
 				for (auto const present : present_in_cli) {
@@ -213,19 +182,16 @@ namespace quick_dra {
 
 				if (!ask_questions && !cli_count) {
 					bool const present_in_config[] = {
-					    this->check_required_on_no_questions(
-					        policies, check_side::config_file)...};
+					    this->check_required_on_no_questions(policies, check_side::config_file)...};
 					auto cfg_count = 0;
 					for (auto const present : present_in_config) {
 						if (present) ++cfg_count;
 					}
 					if (!cfg_count) {
-						auto const all_but_last =
-						    std::span{arg_flags}.subspan(0, policies_count - 1);
+						auto const all_but_last = std::span{arg_flags}.subspan(0, policies_count - 1);
 						auto const last_one = arg_flags[policies_count - 1];
-						p.error(fmt::format(
-						    "at least one of {} and {} is required with -y",
-						    fmt::join(all_but_last, ", "), last_one));
+						p.error(fmt::format("at least one of {} and {} is required with -y",
+						                    fmt::join(all_but_last, ", "), last_one));
 					}
 				}
 
@@ -238,12 +204,10 @@ namespace quick_dra {
 						}
 					}
 
-					auto const all_but_last = std::span{flags_present}.subspan(
-					    0, flags_present.size() - 1);
+					auto const all_but_last = std::span{flags_present}.subspan(0, flags_present.size() - 1);
 					auto const last_one = flags_present.back();
 					p.error(fmt::format(  // GCOV_EXCL_LINE[WIN32]
-					    "only one of {} and {} can be used at the same time",
-					    fmt::join(all_but_last, ", "), last_one));
+					    "only one of {} and {} can be used at the same time", fmt::join(all_but_last, ", "), last_one));
 				}  // GCOV_EXCL_LINE[WIN32, GCC]
 			}
 		}  // GCOV_EXCL_LINE[GCC]
@@ -255,9 +219,7 @@ namespace quick_dra {
 		};
 
 		template <FieldPolicyWithArgFlags Policy>
-		bool check_required_on_no_questions(
-		    Policy const& policy,
-		    check_side side = check_side::both) {
+		bool check_required_on_no_questions(Policy const& policy, check_side side = check_side::both) {
 			auto result = false;
 			if (side & check_side::command_line_arguments) {
 				result |= !!policy.select(opts);
@@ -269,12 +231,8 @@ namespace quick_dra {
 		}
 
 		template <Enumerator... Items, size_t... Index>
-		bool continue_with_enums(char code,
-		                         std::tuple<Items...> const& items,
-		                         std::index_sequence<Index...>) {
-			auto const success =
-			    (this->continue_with_enum_item(code, std::get<Index>(items)) &&
-			     ...);
+		bool continue_with_enums(char code, std::tuple<Items...> const& items, std::index_sequence<Index...>) {
+			auto const success = (this->continue_with_enum_item(code, std::get<Index>(items)) && ...);
 			if (!success) return false;
 			(this->clean_unmatched_fields(code, std::get<Index>(items)), ...);
 			return true;

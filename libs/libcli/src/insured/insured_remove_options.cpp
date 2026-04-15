@@ -16,9 +16,7 @@ namespace quick_dra::builtin::insured::remove {
 		std::optional<unsigned> position;
 		std::optional<std::string> search_keyword;
 
-		parser.arg(config_path, "config")
-		    .meta("<path>")
-		    .help("select config file; defaults to ~/.quick_dra.yaml");
+		parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
 
 		parser.arg(position, "pos")
 		    .meta("<index>")
@@ -53,23 +51,18 @@ namespace quick_dra::builtin::insured::remove {
 		}
 
 		if (out.cfg.insured->empty()) {
-			fmt::print(stderr, "{}: error: there are no items to remove.\n",
-			           parser.program());
+			fmt::print(stderr, "{}: error: there are no items to remove.\n", parser.program());
 			return 1;
 		}
 
 		out.found.clear();
-		auto const on_error = [&parser](std::string const& msg) {
-			parser.error(msg);
-		};
+		auto const on_error = [&parser](std::string const& msg) { parser.error(msg); };
 
 		if (position) {
-			out.found = search_insured_from_position(
-			    *position, *out.cfg.insured, on_error);
+			out.found = search_insured_from_position(*position, *out.cfg.insured, on_error);
 		} else {
-			out.found = search_insured_from_keyword(
-			    *search_keyword, *out.cfg.insured, match_level::none, nullptr,
-			    on_error);
+			out.found =
+			    search_insured_from_keyword(*search_keyword, *out.cfg.insured, match_level::none, nullptr, on_error);
 		}
 
 		return 0;

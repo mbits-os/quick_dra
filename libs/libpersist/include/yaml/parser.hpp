@@ -29,36 +29,24 @@ namespace yaml {
 		parser(parser&&) = delete;
 
 		template <typename FileObj>
-		static std::optional<FileObj> parse_yaml_file(
-		    std::filesystem::path const& path,
-		    std::string_view app_name) {
-			return parse_yaml<FileObj>(
-			    [&](parser& parser) { return parser.load(path, app_name); });
+		static std::optional<FileObj> parse_yaml_file(std::filesystem::path const& path, std::string_view app_name) {
+			return parse_yaml<FileObj>([&](parser& parser) { return parser.load(path, app_name); });
 		}
 
 		template <typename FileObj, std::invocable ErrorCallback>
-		static std::optional<FileObj> parse_yaml_file(
-		    std::filesystem::path const& path,
-		    ErrorCallback&& on_error) {
-			return parse_yaml<FileObj>(
-			    [&](parser& parser) { return parser.load(path, on_error); });
+		static std::optional<FileObj> parse_yaml_file(std::filesystem::path const& path, ErrorCallback&& on_error) {
+			return parse_yaml<FileObj>([&](parser& parser) { return parser.load(path, on_error); });
 		}
 
 		template <typename FileObj>
-		static std::optional<FileObj> parse_yaml_text(std::string const& text,
-		                                              std::string const& path) {
-			return parse_yaml<FileObj>([&](parser& parser) {
-				return parser.load_contents(text, path);
-			});
+		static std::optional<FileObj> parse_yaml_text(std::string const& text, std::string const& path) {
+			return parse_yaml<FileObj>([&](parser& parser) { return parser.load_contents(text, path); });
 		}
 
 	private:
-		std::optional<ryml::Tree> load(std::filesystem::path const& path,
-		                               std::string_view app_name) &;
-		std::optional<ryml::Tree> load(std::filesystem::path const& path,
-		                               std::function<void()> const& on_error) &;
-		std::optional<ryml::Tree> load_contents(std::string text,
-		                                        std::string const& path) &;
+		std::optional<ryml::Tree> load(std::filesystem::path const& path, std::string_view app_name) &;
+		std::optional<ryml::Tree> load(std::filesystem::path const& path, std::function<void()> const& on_error) &;
+		std::optional<ryml::Tree> load_contents(std::string text, std::string const& path) &;
 
 		template <typename T>
 		    requires requires(T& obj) {

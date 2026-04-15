@@ -9,9 +9,7 @@
 using namespace std::literals;
 
 namespace quick_dra {
-	int tools::handle(std::string_view tool,
-	                  args::arglist args,
-	                  std::string_view tool_name) const {
+	int tools::handle(std::string_view tool, args::arglist args, std::string_view tool_name) const {
 		for (auto const& command : commands_) {
 			if (command.name != tool) continue;
 			std::string name{};

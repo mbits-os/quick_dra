@@ -31,8 +31,7 @@ namespace quick_dra::platform {
 
 	std::filesystem::path const& home_path();
 
-	inline std::filesystem::path get_config_path(
-	    std::optional<std::string> const& override) {
+	inline std::filesystem::path get_config_path(std::optional<std::string> const& override) {
 		if (override) return *override;
 
 		return home_path() / ".quick_dra.yaml"sv;

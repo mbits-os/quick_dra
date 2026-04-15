@@ -19,14 +19,12 @@ namespace quick_dra::builtin::xml {
 
 		year_month_day get_today() {
 			auto const now = system_clock::now();
-			auto const local =
-			    floor<days>(zoned_time{current_zone(), now}.get_local_time());
+			auto const local = floor<days>(zoned_time{current_zone(), now}.get_local_time());
 			return year_month_day{local};
 		}
 	}  // namespace
 
-	options options_from_cli(args::args_view const& arguments,
-	                         std::string_view description) {
+	options options_from_cli(args::args_view const& arguments, std::string_view description) {
 		std::optional<std::string> config_path;
 		std::optional<std::filesystem::path> tax_config_path;
 		unsigned verbose_counter{};
@@ -46,9 +44,7 @@ namespace quick_dra::builtin::xml {
 		        "from -vvv")
 		    .multi()
 		    .opt();
-		parser.arg(config_path, "config")
-		    .meta("<path>")
-		    .help("select config file; defaults to ~/.quick_dra.yaml");
+		parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
 		parser.arg(tax_config_path, "tax-config")
 		    .meta("<path>")
 		    .help(
@@ -72,9 +68,7 @@ namespace quick_dra::builtin::xml {
 		        "choose the date for the XML production; defaults to date "
 		        "setup on the host machine")
 		    .opt();
-		parser.set<std::true_type>(indent_xml, "pretty")
-		    .help("pretty-print resulting XML document")
-		    .opt();
+		parser.set<std::true_type>(indent_xml, "pretty").help("pretty-print resulting XML document").opt();
 		parser.set<std::true_type>(print_info, "info")
 		    .help("end terminal printout with a summary of amounts to pay")
 		    .opt();
@@ -86,13 +80,11 @@ namespace quick_dra::builtin::xml {
 
 		auto const today_from_args = parse_date(today_str);
 		if (!today_from_args && today_str) {
-			parser.error(fmt::format("--today: expected YYYY-MM-DD, got `{}'",
-			                         *today_str));
+			parser.error(fmt::format("--today: expected YYYY-MM-DD, got `{}'", *today_str));
 		}
 
 		auto const today = today_from_args.value_or(get_today());
-		auto const date =
-		    year_month{today.year(), today.month()} + months{rel_month};
+		auto const date = year_month{today.year(), today.month()} + months{rel_month};
 		return {.config_path = platform::get_config_path(config_path),
 		        .tax_config_path = tax_config_path,
 		        .verbose_level = verbose{verbose_counter},

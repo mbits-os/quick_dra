@@ -12,7 +12,5 @@
 using namespace std::literals;
 
 namespace yaml {
-	void write_value(ryml::NodeRef& ref, std::string const& ctx) {
-		ref << c4::csubstr{ctx.c_str(), ctx.length()};
-	}
+	void write_value(ryml::NodeRef& ref, std::string const& ctx) { ref << c4::csubstr{ctx.c_str(), ctx.length()}; }
 }  // namespace yaml

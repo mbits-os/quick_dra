@@ -326,7 +326,5 @@ ubezpieczeni:
 	    },
 	};
 
-	INSTANTIATE_TEST_SUITE_P(insured_list,
-	                         cli_test,
-	                         ::testing::ValuesIn(tests));
+	INSTANTIATE_TEST_SUITE_P(insured_list, cli_test, ::testing::ValuesIn(tests));
 }  // namespace quick_dra::builtin::testing::insured_list

@@ -17,8 +17,7 @@ namespace quick_dra::v1 {
 		static constexpr auto app_name = "Quick-DRA"sv;
 	}
 
-	std::optional<config> config::parse_yaml(
-	    std::filesystem::path const& path) {
+	std::optional<config> config::parse_yaml(std::filesystem::path const& path) {
 		return parser::parse_yaml_file<config>(path, app_name);
 	}
 
@@ -52,8 +51,7 @@ namespace quick_dra::v1 {
 			passport.reset();
 		}
 
-		return parse_and_validate_name(*this) &&
-		       !(kind.empty() || document.empty());
+		return parse_and_validate_name(*this) && !(kind.empty() || document.empty());
 	}
 
 	bool insured_t::postprocess() {
@@ -90,8 +88,7 @@ namespace quick_dra::v1 {
 		return true;
 	}
 
-	std::optional<templates> templates::parse_yaml(
-	    std::filesystem::path const& path) {
+	std::optional<templates> templates::parse_yaml(std::filesystem::path const& path) {
 		return parser::parse_yaml_file<templates>(path, app_name);
 	}
 
@@ -110,11 +107,8 @@ namespace quick_dra::v1 {
 		if (block && block->empty()) return false;
 
 		struct validator {
-			bool operator()(std::string const& str) const noexcept {
-				return !str.empty();
-			}
-			bool operator()(
-			    std::vector<std::string> const& vec) const noexcept {
+			bool operator()(std::string const& str) const noexcept { return !str.empty(); }
+			bool operator()(std::vector<std::string> const& vec) const noexcept {
 				if (vec.empty()) return false;
 				for (auto const& str : vec) {
 					if (str.empty()) return false;
@@ -129,14 +123,11 @@ namespace quick_dra::v1 {
 		return true;
 	}
 
-	std::optional<tax_config> tax_config::parse_yaml(
-	    std::filesystem::path const& path) {
+	std::optional<tax_config> tax_config::parse_yaml(std::filesystem::path const& path) {
 		return parser::parse_yaml_file<tax_config>(path, app_name);
 	}
 
-	std::optional<tax_config> tax_config::parse_from_text(
-	    std::string const& text,
-	    std::string const& path) {
+	std::optional<tax_config> tax_config::parse_from_text(std::string const& text, std::string const& path) {
 		return parser::parse_yaml_text<tax_config>(text, path);
 	}
 
@@ -174,22 +165,17 @@ namespace quick_dra::v1::partial {
 		return load_status::loaded;
 	}
 
-	config config::load_partial(std::filesystem::path const& path,
-	                            bool writeable) {
+	config config::load_partial(std::filesystem::path const& path, bool writeable) {
 		partial::config cfg{};
 		auto const load = cfg.load(path);
 		switch (load) {
 			case load_status::file_not_found:
 				if (writeable) {
-					fmt::print(
-					    stderr,
-					    "Quick-DRA: file {} will be created as needed.\n",
-					    path);
+					fmt::print(stderr, "Quick-DRA: file {} will be created as needed.\n", path);
 				}
 				break;
 			case load_status::file_not_readable:
-				fmt::print(stderr, "Quick-DRA: error: could not read {}\n",
-				           path);
+				fmt::print(stderr, "Quick-DRA: error: could not read {}\n", path);
 				args::exit(1);
 			case load_status::errors_encountered:
 				fmt::print(stderr,
@@ -209,8 +195,7 @@ namespace quick_dra::v1::partial {
 		auto ref = tree.rootref();
 		yaml::write_value(ref, *this);
 
-		ryml::csubstr output = ryml::emit_yaml(
-		    tree, tree.root_id(), ryml::substr{}, /*error_on_excess*/ false);
+		ryml::csubstr output = ryml::emit_yaml(tree, tree.root_id(), ryml::substr{}, /*error_on_excess*/ false);
 
 		std::vector<char> buf(output.len);
 		output = ryml::emit_yaml(tree, tree.root_id(), ryml::to_substr(buf),
@@ -260,8 +245,7 @@ namespace quick_dra::v1::partial {
 			return;
 		}
 
-		named.last_name =
-		    fmt::format("{}, {}", *named.last_name, *named.first_name);
+		named.last_name = fmt::format("{}, {}", *named.last_name, *named.first_name);
 		named.first_name = std::nullopt;
 	}
 

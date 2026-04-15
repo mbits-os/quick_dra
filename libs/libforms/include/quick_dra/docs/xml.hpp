@@ -19,13 +19,9 @@ namespace quick_dra {
 		std::map<std::string, std::string> attributes;
 		std::variant<vector, std::string> inside{};
 
-		bool has_text() const noexcept {
-			return std::holds_alternative<std::string>(inside);
-		}
+		bool has_text() const noexcept { return std::holds_alternative<std::string>(inside); }
 		vector& children() { return std::get<vector>(inside); }
-		std::string const& text() const {
-			return std::get<std::string>(inside);
-		}
+		std::string const& text() const { return std::get<std::string>(inside); }
 
 		xml& with(std::string_view child);
 		xml& with(xml&& child);
@@ -41,26 +37,20 @@ namespace quick_dra {
 			std::string_view indentation{};
 			size_t level{};
 
-			indented_t child(xml const& child) const {
-				return {child, indentation, level + 1};
-			}
+			indented_t child(xml const& child) const { return {child, indentation, level + 1}; }
 
 			void indent(std::ostream& os) const {
 				for (size_t index = 0; index < level; ++index)
 					os << indentation;
 			}
 
-			friend std::ostream& operator<<(std::ostream& os,
-			                                indented_t const& node);
+			friend std::ostream& operator<<(std::ostream& os, indented_t const& node);
 		};
 
-		indented_t indented(std::string_view indentation = "\t"sv) const {
-			return {*this, indentation};
-		}
+		indented_t indented(std::string_view indentation = "\t"sv) const { return {*this, indentation}; }
 	};
 
-	inline xml E(std::string_view tag,
-	             std::map<std::string, std::string> const& attributes = {}) {
+	inline xml E(std::string_view tag, std::map<std::string, std::string> const& attributes = {}) {
 		return xml{{tag.data(), tag.size()}, attributes};
 	}
 }  // namespace quick_dra

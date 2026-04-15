@@ -30,9 +30,7 @@ namespace quick_dra::testing {
 		}
 		xml test_tree() {
 			auto child =
-			    E("child"sv, {{"quoted"s, "before ' between \" after"}})
-			        .with("text"sv)
-			        .with("<code>&ref</code>"sv);
+			    E("child"sv, {{"quoted"s, "before ' between \" after"}}).with("text"sv).with("<code>&ref</code>"sv);
 			return E("root"sv, {{"version"s, "1"}}).with(child);
 		}
 	}  // namespace
@@ -73,8 +71,7 @@ namespace quick_dra::testing {
 
 		root.with(E("a"sv, {{"href"s, "https://example.com/"s}}));
 		actual = format(root);
-		expected =
-		    R"(<root><a href="https://example.com/"><!-- empty --></a></root>)"sv;
+		expected = R"(<root><a href="https://example.com/"><!-- empty --></a></root>)"sv;
 		ASSERT_EQ(actual, expected);
 		ASSERT_FALSE(root.has_text());
 		ASSERT_EQ(root.children().size(), 1);
@@ -145,10 +142,8 @@ namespace quick_dra::testing {
 		        .blocks =
 		            {
 		                compiled_block{.id{"A"s}, .fields{{1, R"("quoted")"s}}},
-		                compiled_block{.id{"B"s},
-		                               .fields{{1, 1_per}, {2, 1.99_PLN}}},
-		                compiled_block{.id{},
-		                               .fields{{1, 1_per}, {2, 1.99_PLN}}},
+		                compiled_block{.id{"B"s}, .fields{{1, 1_per}, {2, 1.99_PLN}}},
+		                compiled_block{.id{}, .fields{{1, 1_per}, {2, 1.99_PLN}}},
 		            },
 		    },
 		};
@@ -214,11 +209,9 @@ namespace quick_dra::testing {
 #endif
 
 	std::filesystem::path temp_filename(std::string_view childname) {
-		auto const path =
-		    std::filesystem::temp_directory_path() / fmt::format("dirXXXXXX");
+		auto const path = std::filesystem::temp_directory_path() / fmt::format("dirXXXXXX");
 		auto dirname = as_str(path.u8string());
-		return std::filesystem::path{as_u8v(mkdtemp(dirname.data()))} /
-		       childname;
+		return std::filesystem::path{as_u8v(mkdtemp(dirname.data()))} / childname;
 	}
 
 	TEST(xml, store_indented) {

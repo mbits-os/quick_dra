@@ -20,13 +20,9 @@ namespace quick_dra {
 	void write_value(ryml::NodeRef& ref, ratio const& ctx);
 	void write_value(ryml::NodeRef& ref, insurance_title const& ctx);
 
-	bool convert_string(ref_ctx const& ref,
-	                    c4::csubstr const& value,
-	                    currency& ctx);
+	bool convert_string(ref_ctx const& ref, c4::csubstr const& value, currency& ctx);
 }  // namespace quick_dra
 
 namespace yaml {
-	bool convert_string(ref_ctx const& ref,
-	                    c4::csubstr const& value,
-	                    std::chrono::year_month& ctx);
+	bool convert_string(ref_ctx const& ref, c4::csubstr const& value, std::chrono::year_month& ctx);
 }  // namespace yaml

@@ -5,18 +5,14 @@
 
 namespace yaml {
 	template <typename T>
-	static inline void write_key(ryml::NodeRef& ref,
-	                             ryml::csubstr key,
-	                             std::optional<T> const& ctx) {
+	static inline void write_key(ryml::NodeRef& ref, ryml::csubstr key, std::optional<T> const& ctx) {
 		if (!ctx) return;
 		write_key(ref, key, *ctx);
 	}
 
 	template <typename T>
 	    requires(!is_optional<T>::value)
-	static inline void write_key(ryml::NodeRef& ref,
-	                             ryml::csubstr key,
-	                             T const& ctx) {
+	static inline void write_key(ryml::NodeRef& ref, ryml::csubstr key, T const& ctx) {
 		auto child = ref.append_child();
 		child << c4::yml::key(key);
 		write_value(child, ctx);
@@ -42,7 +38,5 @@ namespace yaml {
 		}
 	}
 
-	inline void write_value(ryml::NodeRef& ref, std::integral auto ctx) {
-		ref << ctx;
-	}
+	inline void write_value(ryml::NodeRef& ref, std::integral auto ctx) { ref << ctx; }
 }  // namespace yaml

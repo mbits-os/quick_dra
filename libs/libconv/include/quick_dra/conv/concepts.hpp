@@ -10,10 +10,7 @@
 
 namespace quick_dra::concepts {
 	template <typename T, typename Arg>
-	concept Validator = requires(T const& call,
-	                             std::string&& src,
-	                             std::optional<Arg>& tgt,
-	                             bool ask_questions) {
+	concept Validator = requires(T const& call, std::string&& src, std::optional<Arg>& tgt, bool ask_questions) {
 		{ call(std::move(src), tgt, ask_questions) } -> std::same_as<bool>;
 	};  // NOLINT(readability/braces)
 
@@ -23,9 +20,8 @@ namespace quick_dra::concepts {
 	};  // NOLINT(readability/braces)
 
 	template <typename T, typename Arg>
-	concept Selector = requires() {
-		requires SelectablePerson<typename T::person_type, T, Arg>;
-	};  // NOLINT(readability/braces)
+	concept Selector =
+	    requires() { requires SelectablePerson<typename T::person_type, T, Arg>; };  // NOLINT(readability/braces)
 
 	template <typename T, typename Arg>
 	concept FieldPolicy = requires() {

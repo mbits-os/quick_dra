@@ -67,9 +67,8 @@ namespace quick_dra::testing {
 		[[nodiscard]] config to_config() const {
 			std::vector<insured_t> out_insured;
 			out_insured.reserve(insured.size());
-			std::transform(
-			    insured.begin(), insured.end(), std::back_inserter(out_insured),
-			    [](auto const& person) { return person.to_insured(); });
+			std::transform(insured.begin(), insured.end(), std::back_inserter(out_insured),
+			               [](auto const& person) { return person.to_insured(); });
 			return {
 			    .version = version,
 			    .payer = payer.to_payer(),
@@ -79,8 +78,7 @@ namespace quick_dra::testing {
 		}
 	};
 
-	class bad_parser_impl : public ::testing::TestWithParam<
-	                            std::pair<std::string_view, std::string_view>>,
+	class bad_parser_impl : public ::testing::TestWithParam<std::pair<std::string_view, std::string_view>>,
 	                        public object_reader<config> {};
 
 	TEST_P(bad_parser_impl, load) {
@@ -90,8 +88,7 @@ namespace quick_dra::testing {
 		ASSERT_EQ(log, expected_log);
 	}
 
-	class good_parser_impl : public ::testing::TestWithParam<
-	                             std::pair<std::string_view, config_view>>,
+	class good_parser_impl : public ::testing::TestWithParam<std::pair<std::string_view, config_view>>,
 	                         public object_reader<config> {};
 
 	TEST_P(good_parser_impl, load) {
@@ -111,44 +108,43 @@ namespace quick_dra::testing {
 		ASSERT_EQ(value.insured, expected.insured);
 	}
 
-	static constexpr std::pair<std::string_view, std::string_view>
-	    bad_configs[] = {
-	        {
-	            ""sv,
-	            R"(error: expecting `wersja`; please use explicit {} to heave empty object instead
+	static constexpr std::pair<std::string_view, std::string_view> bad_configs[] = {
+	    {
+	        ""sv,
+	        R"(error: expecting `wersja`; please use explicit {} to heave empty object instead
 error: while reading `wersja`
 )"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	    },
+	    {
+	        R"(wersja: 1
 )"sv,
-	            R"(input:1:1: error: expecting `płatnik`
+	        R"(input:1:1: error: expecting `płatnik`
 input:1:1: error: while reading `płatnik`
 )"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	    },
+	    {
+	        R"(wersja: 1
 płatnik: {}
 )"sv,
-	            R"(input:2:1: error: expecting `nazwisko`
+	        R"(input:2:1: error: expecting `nazwisko`
 input:2:1: error: while reading `nazwisko`
 input:1:1: error: while reading `płatnik`
 )"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   dowód: AAA000000
   nip: 1234563218
   pesel: 26211012346
 )"sv,
-	            R"(input:1:1: error: expecting `ubezpieczeni`
+	        R"(input:1:1: error: expecting `ubezpieczeni`
 input:1:1: error: while reading `ubezpieczeni`
 )"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   dowód: AAA000000
@@ -157,20 +153,20 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
-	            "input:1:1: error: while reading `płatnik`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `płatnik`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   nip: 1234563218
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
-	            "input:1:1: error: while reading `płatnik`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `płatnik`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: ', B'
   paszport: AA0000000
@@ -178,10 +174,10 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
-	            "input:1:1: error: while reading `płatnik`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `płatnik`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A B'
   paszport: AA0000000
@@ -189,10 +185,10 @@ płatnik:
   pesel: 26211012346
 ubezpieczeni: []
 )"sv,
-	            "input:1:1: error: while reading `płatnik`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `płatnik`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   paszport: AA0000000
@@ -203,10 +199,10 @@ ubezpieczeni:
   dowód: AAA000000
   tytuł ubezpieczenia: 9999 9 9
 )"sv,
-	            "input:1:1: error: while reading `ubezpieczeni`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   paszport: AA0000000
@@ -217,10 +213,10 @@ ubezpieczeni:
   pesel: 26211012346
   tytuł ubezpieczenia: 9999 9 9
 )"sv,
-	            "input:1:1: error: while reading `ubezpieczeni`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   paszport: AA0000000
@@ -231,10 +227,10 @@ ubezpieczeni:
   dowód: AAA000000
   tytuł ubezpieczenia: 9999 9 9
 )"sv,
-	            "input:1:1: error: while reading `ubezpieczeni`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   paszport: AA0000000
@@ -246,10 +242,10 @@ ubezpieczeni:
   paszport: AA0000000
   tytuł ubezpieczenia: 9999 9 9
 )"sv,
-	            "input:1:1: error: while reading `ubezpieczeni`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   paszport: AA0000000
@@ -261,10 +257,10 @@ ubezpieczeni:
   paszport: AA0000000
   tytuł ubezpieczenia: 9999 9 9
 )"sv,
-	            "input:1:1: error: while reading `ubezpieczeni`\n"sv,
-	        },
-	        {
-	            R"(wersja: 1
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
+	    {
+	        R"(wersja: 1
 płatnik:
   nazwisko: 'A, B'
   paszport: AA0000000
@@ -276,8 +272,8 @@ ubezpieczeni:
   paszport: AA0000000
   tytuł ubezpieczenia: 9999 9 9
 )"sv,
-	            "input:1:1: error: while reading `ubezpieczeni`\n"sv,
-	        },
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
 	};
 
 	static constexpr auto only_C_D_id_card = std::array{
@@ -412,11 +408,7 @@ ubezpieczeni:
 	    },
 	};
 
-	INSTANTIATE_TEST_SUITE_P(yaml,
-	                         bad_parser_impl,
-	                         ::testing::ValuesIn(bad_configs));
+	INSTANTIATE_TEST_SUITE_P(yaml, bad_parser_impl, ::testing::ValuesIn(bad_configs));
 
-	INSTANTIATE_TEST_SUITE_P(yaml,
-	                         good_parser_impl,
-	                         ::testing::ValuesIn(good_configs));
+	INSTANTIATE_TEST_SUITE_P(yaml, good_parser_impl, ::testing::ValuesIn(good_configs));
 }  // namespace quick_dra::testing

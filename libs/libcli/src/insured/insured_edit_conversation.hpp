@@ -12,14 +12,11 @@
 #include <vector>
 
 namespace quick_dra::builtin::insured::edit {
-	struct conversation : quick_dra::conversation<partial::insured_t>,
-	                      arg_parser {
+	struct conversation : quick_dra::conversation<partial::insured_t>, arg_parser {
 		std::filesystem::path path;
 		std::variant<unsigned, std::string> search_term{};
 
-		conversation(std::string_view tool_name,
-		             args::arglist arguments,
-		             std::string_view description);
+		conversation(std::string_view tool_name, args::arglist arguments, std::string_view description);
 
 		void parse_args();
 

@@ -4,8 +4,7 @@
 #include "parser_impl.common.hpp"
 
 namespace quick_dra::testing {
-	class partial_parser_impl : public ::testing::Test,
-	                            public object_reader<partial::config> {};
+	class partial_parser_impl : public ::testing::Test, public object_reader<partial::config> {};
 
 	TEST_F(partial_parser_impl, no_last_name) {
 		auto value = read(R"(płatnik: {})"sv);

@@ -71,8 +71,7 @@ namespace quick_dra::testing {
 	TEST(str, strip_sv) {
 		ASSERT_EQ(strip_sv("  text \n text \t\n\r"sv), "text \n text"sv);
 		ASSERT_EQ(rstrip_sv("  text \n text \t\n\r"sv), "  text \n text"sv);
-		ASSERT_EQ(lstrip_sv("  text \n text \t\n\r"sv),
-		          "text \n text \t\n\r"sv);
+		ASSERT_EQ(lstrip_sv("  text \n text \t\n\r"sv), "text \n text \t\n\r"sv);
 	}
 
 	TEST(str, strip_s) {

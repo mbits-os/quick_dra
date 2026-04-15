@@ -13,44 +13,38 @@
 
 // This macro is for implementing ASSERT_DEATH*, EXPECT_DEATH*,
 // ASSERT_EXIT*, and EXPECT_EXIT*.
-#define GTEST_NO_DEATH_TEST_(statement, predicate, regex_or_matcher, fail)    \
-	GTEST_AMBIGUOUS_ELSE_BLOCKER_                                             \
-	if (::testing::internal::AlwaysTrue()) {                                  \
-		::testing::internal::DeathTest* gtest_dt;                             \
-		if (!::testing::internal::DeathTest::Create(                          \
-		        #statement,                                                   \
-		        ::testing::internal::MakeDeathTestMatcher(regex_or_matcher),  \
-		        __FILE__, __LINE__, &gtest_dt)) {                             \
-			goto GTEST_CONCAT_TOKEN_(gtest_label_, __LINE__);                 \
-		}                                                                     \
-		if (gtest_dt != nullptr) {                                            \
-			std::unique_ptr< ::testing::internal::DeathTest> gtest_dt_ptr(    \
-			    gtest_dt);                                                    \
-			switch (gtest_dt->AssumeRole()) {                                 \
-				case ::testing::internal::DeathTest::OVERSEE_TEST:            \
-					if (gtest_dt->Passed(predicate(gtest_dt->Wait()))) {      \
-						goto GTEST_CONCAT_TOKEN_(gtest_label_, __LINE__);     \
-					}                                                         \
-					break;                                                    \
-				case ::testing::internal::DeathTest::EXECUTE_TEST: {          \
-					const ::testing::internal::DeathTest::ReturnSentinel      \
-					    gtest_sentinel(gtest_dt);                             \
-					GTEST_EXECUTE_DEATH_TEST_STATEMENT_(statement, gtest_dt); \
-					gtest_dt->Abort(::testing::internal::DeathTest::          \
-					                    TEST_ENCOUNTERED_RETURN_STATEMENT);   \
-					break;                                                    \
-				}                                                             \
-			}                                                                 \
-		}                                                                     \
-	} else                                                                    \
-		GTEST_CONCAT_TOKEN_(gtest_label_, __LINE__)                           \
-		    : fail(::testing::internal::DeathTest::LastMessage())
+#define GTEST_NO_DEATH_TEST_(statement, predicate, regex_or_matcher, fail)                                       \
+	GTEST_AMBIGUOUS_ELSE_BLOCKER_                                                                                \
+	if (::testing::internal::AlwaysTrue()) {                                                                     \
+		::testing::internal::DeathTest* gtest_dt;                                                                \
+		if (!::testing::internal::DeathTest::Create(#statement,                                                  \
+		                                            ::testing::internal::MakeDeathTestMatcher(regex_or_matcher), \
+		                                            __FILE__, __LINE__, &gtest_dt)) {                            \
+			goto GTEST_CONCAT_TOKEN_(gtest_label_, __LINE__);                                                    \
+		}                                                                                                        \
+		if (gtest_dt != nullptr) {                                                                               \
+			std::unique_ptr< ::testing::internal::DeathTest> gtest_dt_ptr(gtest_dt);                             \
+			switch (gtest_dt->AssumeRole()) {                                                                    \
+				case ::testing::internal::DeathTest::OVERSEE_TEST:                                               \
+					if (gtest_dt->Passed(predicate(gtest_dt->Wait()))) {                                         \
+						goto GTEST_CONCAT_TOKEN_(gtest_label_, __LINE__);                                        \
+					}                                                                                            \
+					break;                                                                                       \
+				case ::testing::internal::DeathTest::EXECUTE_TEST: {                                             \
+					const ::testing::internal::DeathTest::ReturnSentinel gtest_sentinel(gtest_dt);               \
+					GTEST_EXECUTE_DEATH_TEST_STATEMENT_(statement, gtest_dt);                                    \
+					gtest_dt->Abort(::testing::internal::DeathTest::TEST_ENCOUNTERED_RETURN_STATEMENT);          \
+					break;                                                                                       \
+				}                                                                                                \
+			}                                                                                                    \
+		}                                                                                                        \
+	} else                                                                                                       \
+		GTEST_CONCAT_TOKEN_(gtest_label_, __LINE__) : fail(::testing::internal::DeathTest::LastMessage())
 
 #define EXPECT_NO_EXIT(statement, predicate, regex) \
 	GTEST_NO_DEATH_TEST_(statement, predicate, regex, GTEST_NONFATAL_FAILURE_)
 
-#define EXPECT_NO_DEATH(statement, regex) \
-	EXPECT_NO_EXIT(statement, ::testing::internal::ExitedUnsuccessfully, regex)
+#define EXPECT_NO_DEATH(statement, regex) EXPECT_NO_EXIT(statement, ::testing::internal::ExitedUnsuccessfully, regex)
 
 namespace quick_dra::testing {
 	using std::literals::operator""s;
@@ -59,21 +53,15 @@ namespace quick_dra::testing {
 	struct conversation : quick_dra::conversation<partial::insured_t> {};
 
 	struct simple_capture_stdout {
-		simple_capture_stdout(std::string* tgt) : tgt{tgt} {
-			::testing::internal::CaptureStdout();
-		}
-		~simple_capture_stdout() {
-			*tgt = ::testing::internal::GetCapturedStdout();
-		}
+		simple_capture_stdout(std::string* tgt) : tgt{tgt} { ::testing::internal::CaptureStdout(); }
+		~simple_capture_stdout() { *tgt = ::testing::internal::GetCapturedStdout(); }
 
 	private:
 		std::string* tgt;
 	};
 
 	struct capture_stdout : simple_capture_stdout {
-		capture_stdout(std::string* tgt,
-		               conversation& conv,
-		               std::string const& in = {})
+		capture_stdout(std::string* tgt, conversation& conv, std::string const& in = {})
 		    : simple_capture_stdout{tgt}, Stdin{in} {
 			conv.attach(Stdin);
 		}
@@ -83,8 +71,7 @@ namespace quick_dra::testing {
 	};
 
 	struct capture_stderr {
-		capture_stderr(std::string* tgt, std::string const& in = {})
-		    : tgt{tgt}, Stdin{in} {
+		capture_stderr(std::string* tgt, std::string const& in = {}) : tgt{tgt}, Stdin{in} {
 			::testing::internal::CaptureStderr();
 		}
 		~capture_stderr() { *tgt = ::testing::internal::GetCapturedStderr(); }
@@ -159,15 +146,11 @@ namespace quick_dra::testing {
 		{
 			capture_stdout capture{&Stdout, conv};
 			result = conv.check_enum_field(
-			    ""sv, builtin::policies::kind, builtin::policies::document,
-			    get_enum_item(builtin::policies::social_id),
-			    get_enum_item(builtin::policies::id_card),
-			    get_enum_item(builtin::policies::passport));
+			    ""sv, builtin::policies::kind, builtin::policies::document, get_enum_item(builtin::policies::social_id),
+			    get_enum_item(builtin::policies::id_card), get_enum_item(builtin::policies::passport));
 		}
 		EXPECT_FALSE(result);
-		EXPECT_EQ(
-		    Stdout,
-		    "\033[0;36mDocument kind\033[0;90m [P - PESEL, 1 - ID card, 2 - Passport]\033[m> "sv);
+		EXPECT_EQ(Stdout, "\033[0;36mDocument kind\033[0;90m [P - PESEL, 1 - ID card, 2 - Passport]\033[m> "sv);
 
 		conv.dst.kind = "2"s;
 		conv.dst.document = "AA0000000"s;
@@ -175,10 +158,8 @@ namespace quick_dra::testing {
 		{
 			capture_stdout capture{&Stdout, conv, "\n\n"s};
 			result = conv.check_enum_field(
-			    ""sv, builtin::policies::kind, builtin::policies::document,
-			    get_enum_item(builtin::policies::social_id),
-			    get_enum_item(builtin::policies::id_card),
-			    get_enum_item(builtin::policies::passport));
+			    ""sv, builtin::policies::kind, builtin::policies::document, get_enum_item(builtin::policies::social_id),
+			    get_enum_item(builtin::policies::id_card), get_enum_item(builtin::policies::passport));
 		}
 		EXPECT_TRUE(result);
 		EXPECT_EQ(Stdout,
@@ -191,22 +172,19 @@ namespace quick_dra::testing {
 		conv = {};
 		{
 			capture_stdout capture{&Stdout, conv, "P\nINVALID\n"s};
-			result = conv.check_enum_field(
-			    ""sv, builtin::policies::kind,
-			    // std::cin, ""sv, builtin::policies::kind,
-			    builtin::policies::document,
-			    get_enum_item(builtin::policies::social_id),
-			    get_enum_item(builtin::policies::id_card),
-			    get_enum_item(builtin::policies::passport));
+			result = conv.check_enum_field(""sv, builtin::policies::kind,
+			                               // std::cin, ""sv, builtin::policies::kind,
+			                               builtin::policies::document, get_enum_item(builtin::policies::social_id),
+			                               get_enum_item(builtin::policies::id_card),
+			                               get_enum_item(builtin::policies::passport));
 		}
 		EXPECT_FALSE(result);
-		EXPECT_EQ(
-		    Stdout,
-		    "\033[0;36mDocument kind\033[0;90m [P - PESEL, 1 - ID card, 2 - "
-		    "Passport]\033[m> "
-		    "\033[0;36mPESEL\033[m> "
-		    "\033[0;90m - The social id provided seems to be invalid.\033[m\n"
-		    "\033[0;36mPESEL\033[m> "sv);
+		EXPECT_EQ(Stdout,
+		          "\033[0;36mDocument kind\033[0;90m [P - PESEL, 1 - ID card, 2 - "
+		          "Passport]\033[m> "
+		          "\033[0;36mPESEL\033[m> "
+		          "\033[0;90m - The social id provided seems to be invalid.\033[m\n"
+		          "\033[0;36mPESEL\033[m> "sv);
 		EXPECT_FALSE(conv.dst.kind);
 		EXPECT_FALSE(conv.dst.document);
 
@@ -215,22 +193,18 @@ namespace quick_dra::testing {
 		{
 			capture_stdout capture{&Stdout, conv};
 			result = conv.check_enum_field(
-			    ""sv, builtin::policies::kind, builtin::policies::document,
-			    get_enum_item(builtin::policies::social_id),
-			    get_enum_item(builtin::policies::id_card),
-			    get_enum_item(builtin::policies::passport));
+			    ""sv, builtin::policies::kind, builtin::policies::document, get_enum_item(builtin::policies::social_id),
+			    get_enum_item(builtin::policies::id_card), get_enum_item(builtin::policies::passport));
 		}
 		EXPECT_FALSE(result);
 		EXPECT_EQ(Stdout, ""sv);
 
 		{
 			capture_stdout capture{&Stdout, conv};
-			result = conv.check_enum_field(
-			    "one of <those args>"sv, builtin::policies::kind,
-			    builtin::policies::document,
-			    get_enum_item(builtin::policies::social_id),
-			    get_enum_item(builtin::policies::id_card),
-			    get_enum_item(builtin::policies::passport));
+			result = conv.check_enum_field("one of <those args>"sv, builtin::policies::kind,
+			                               builtin::policies::document, get_enum_item(builtin::policies::social_id),
+			                               get_enum_item(builtin::policies::id_card),
+			                               get_enum_item(builtin::policies::passport));
 		}
 		EXPECT_FALSE(result);
 		EXPECT_EQ(
@@ -248,22 +222,15 @@ namespace quick_dra::testing {
 
 	TEST(conversation, verify_standalone) {
 		conversation conv{};
-		EXPECT_DEATH(check_required(conv, builtin::policies::first_name.through(
-		                                      "--name"sv)),
+		EXPECT_DEATH(check_required(conv, builtin::policies::first_name.through("--name"sv)),
 		             "tool: error: argument --name is required with -y");
 
 		conv.dst.first_name = "Name present on dst"s;
-		EXPECT_NO_DEATH(
-		    check_required(conv,
-		                   builtin::policies::first_name.through("--name"sv)),
-		    "error");
+		EXPECT_NO_DEATH(check_required(conv, builtin::policies::first_name.through("--name"sv)), "error");
 
 		conv.dst.first_name.reset();
 		conv.opts.first_name = "Name present on opts"s;
-		EXPECT_NO_DEATH(
-		    check_required(conv,
-		                   builtin::policies::first_name.through("--name"sv)),
-		    "");
+		EXPECT_NO_DEATH(check_required(conv, builtin::policies::first_name.through("--name"sv)), "");
 	}
 
 	void check_first_second_and_third(conversation& conv) {
@@ -273,28 +240,23 @@ namespace quick_dra::testing {
 		               builtin::policies::social_id.through("--third"sv));
 	}
 
-	void clean_conv_(conversation& conv,
-	                 FieldPolicy<std::string> auto const&... cleaners) {
+	void clean_conv_(conversation& conv, FieldPolicy<std::string> auto const&... cleaners) {
 		(cleaners.select(conv.dst).reset(), ...);
 		(cleaners.select(conv.opts).reset(), ...);
 	};
 
 	void clean_conv(conversation& conv) {
-		clean_conv_(conv, builtin::policies::first_name,
-		            builtin::policies::last_name, builtin::policies::social_id);
+		clean_conv_(conv, builtin::policies::first_name, builtin::policies::last_name, builtin::policies::social_id);
 	}
 
-	void set_conv_and_check(conversation& conv,
-	                        FieldPolicy<std::string> auto const&... policy) {
+	void set_conv_and_check(conversation& conv, FieldPolicy<std::string> auto const&... policy) {
 		clean_conv(conv);
 
 		((policy.select(conv.opts) = "value"s), ...);
 		check_first_second_and_third(conv);
 	};
 
-	void expect_no_death_after_setting(
-	    conversation& conv,
-	    FieldPolicy<std::string> auto const& policy) {
+	void expect_no_death_after_setting(conversation& conv, FieldPolicy<std::string> auto const& policy) {
 		clean_conv(conv);
 
 		policy.select(conv.dst) = "value"s;
@@ -322,28 +284,22 @@ namespace quick_dra::testing {
 		             "tool: error: at least one of --first, --second and "
 		             "--third is required with -y");
 
-		EXPECT_DEATH(set_conv_and_check(conv, builtin::policies::first_name,
-		                                builtin::policies::last_name,
+		EXPECT_DEATH(set_conv_and_check(conv, builtin::policies::first_name, builtin::policies::last_name,
 		                                builtin::policies::social_id),
 		             "tool: error: only one of --first, --second and --third "
 		             "can be used at the same time");
 
-		EXPECT_DEATH(set_conv_and_check(conv, builtin::policies::first_name,
-		                                builtin::policies::last_name),
+		EXPECT_DEATH(set_conv_and_check(conv, builtin::policies::first_name, builtin::policies::last_name),
 		             "tool: error: only one of --first and --second can be "
 		             "used at the same time");
 
-		EXPECT_DEATH(set_conv_and_check(conv, builtin::policies::first_name,
-		                                builtin::policies::social_id),
+		EXPECT_DEATH(set_conv_and_check(conv, builtin::policies::first_name, builtin::policies::social_id),
 		             "tool: error: only one of --first and --third can be used "
 		             "at the same time");
 	}
 
 	struct arg_stg {
-		::args::args_view argv() noexcept {
-			return ::args::from_main(static_cast<int>(stg_.size()),
-			                         argv_.data());
-		}
+		::args::args_view argv() noexcept { return ::args::from_main(static_cast<int>(stg_.size()), argv_.data()); }
 
 		template <std::same_as<std::string_view>... Args>
 		arg_stg(Args... arg) : stg_{std::string{arg.data(), arg.size()}...} {}
@@ -356,8 +312,7 @@ namespace quick_dra::testing {
 			std::vector<char*> args{};
 			args.resize(stg_.size() + 1);
 
-			std::transform(stg_.begin(), stg_.end(), args.begin(),
-			               [](auto& s) { return s.data(); });
+			std::transform(stg_.begin(), stg_.end(), args.begin(), [](auto& s) { return s.data(); });
 			args[stg_.size()] = nullptr;
 
 			return args;
@@ -400,12 +355,9 @@ namespace quick_dra::testing {
 	TEST(conversation, args_convert) {
 		partial::insured_t opts{};
 		EXPECT_NO_DEATH(test_arguments(opts), "");
-		EXPECT_NO_DEATH(
-		    test_arguments(opts, "--title"sv, "9999 8 7"sv, "--scale"sv,
-		                   "3/4"sv, "--salary"sv, "3000zł"sv),
-		    "");
-		test_arguments(opts, "--title"sv, "9999 8 7"sv, "--scale"sv, "3/4"sv,
-		               "--salary"sv, "minimal"sv);
+		EXPECT_NO_DEATH(test_arguments(opts, "--title"sv, "9999 8 7"sv, "--scale"sv, "3/4"sv, "--salary"sv, "3000zł"sv),
+		                "");
+		test_arguments(opts, "--title"sv, "9999 8 7"sv, "--scale"sv, "3/4"sv, "--salary"sv, "minimal"sv);
 		EXPECT_EQ(opts.title, (insurance_title{
 		                          .title_code{"9999"s},
 		                          .pension_right{8},
@@ -420,9 +372,8 @@ namespace quick_dra::testing {
 		test_arguments(opts, "--salary"sv, "none"sv);
 		EXPECT_EQ(opts.salary, minimal_salary);
 
-		EXPECT_DEATH(
-		    test_arguments(opts, "--title"sv, "bad"sv),
-		    "tool: error: --title: expecting 6 digits in form `#### # #'");
+		EXPECT_DEATH(test_arguments(opts, "--title"sv, "bad"sv),
+		             "tool: error: --title: expecting 6 digits in form `#### # #'");
 
 		EXPECT_DEATH(test_arguments(opts, "--scale"sv, "bad"sv),
 		             "tool: error: --scale: expecting two numbers in form "
@@ -463,15 +414,14 @@ namespace quick_dra::testing {
 			conv.show_modified(builtin::policies::salary, orig);
 		}
 
-		EXPECT_EQ(
-		    Stdout,
-		    "\033[0;90mFirst name changed from \033[mJames\033[0;90m to "
-		    "\033[mTiberius\n\033[0;90mDocument kind changed from "
-		    "\033[mP\033[0;90m to \033[m2\n\033[0;90mDocument changed from "
-		    "\033[m26211012346\033[0;90m to \033[mEH0123456\n\033[0;90mSalary "
-		    "changed from \033[mminimal for a given month\033[0;90m to "
-		    "\033[m10000 zł\n"
-		    ""sv);
+		EXPECT_EQ(Stdout,
+		          "\033[0;90mFirst name changed from \033[mJames\033[0;90m to "
+		          "\033[mTiberius\n\033[0;90mDocument kind changed from "
+		          "\033[mP\033[0;90m to \033[m2\n\033[0;90mDocument changed from "
+		          "\033[m26211012346\033[0;90m to \033[mEH0123456\n\033[0;90mSalary "
+		          "changed from \033[mminimal for a given month\033[0;90m to "
+		          "\033[m10000 zł\n"
+		          ""sv);
 	}
 
 	TEST(conversation, show_added) {

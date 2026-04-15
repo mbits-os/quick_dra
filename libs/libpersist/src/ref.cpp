@@ -14,8 +14,7 @@ namespace yaml {
 		                                   size_t msg_len,
 		                                   c4::yml::Location loc,  //-V813
 		                                   void* user_data) {
-			reinterpret_cast<base_ctx::error_handler*>(user_data)->handle_error(
-			    loc, std::string_view{msg, msg_len});
+			reinterpret_cast<base_ctx::error_handler*>(user_data)->handle_error(loc, std::string_view{msg, msg_len});
 			throw c4_error_exception{};
 		}  // GCOV_EXCL_LINE
 	}  // namespace
@@ -42,8 +41,7 @@ namespace yaml {
 		if (!loc.name.empty()) {
 			fmt::print(stderr, "{}:", view(loc.name));
 		}
-		fmt::print(stderr, "{}:{}: {}: {}\n", loc.line + 1, loc.col + 1, level,
-		           msg);
+		fmt::print(stderr, "{}:{}: {}: {}\n", loc.line + 1, loc.col + 1, level, msg);
 
 		auto stack = this;
 		while (stack) {
@@ -54,8 +52,7 @@ namespace yaml {
 		return false;
 	}
 
-	bool base_ctx::error_handler::handle_error(c4::yml::Location const& loc,
-	                                           std::string_view msg) {
+	bool base_ctx::error_handler::handle_error(c4::yml::Location const& loc, std::string_view msg) {
 		return handle_msg(loc, msg, "error"sv);
 	}
 

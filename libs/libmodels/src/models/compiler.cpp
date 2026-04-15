@@ -16,16 +16,13 @@ namespace quick_dra {
 		compiled_value compile_field(std::string_view input);
 
 		struct field_compiler {
-			maybe_list<compiled_value> operator()(
-			    std::string const& field) const noexcept {
+			maybe_list<compiled_value> operator()(std::string const& field) const noexcept {
 				return compile_field(field);
 			}
-			maybe_list<compiled_value> operator()(
-			    std::vector<std::string> const& fields) const noexcept {
+			maybe_list<compiled_value> operator()(std::vector<std::string> const& fields) const noexcept {
 				std::vector<compiled_value> result{};
 				result.reserve(fields.size());
-				std::transform(fields.begin(), fields.end(),
-				               std::back_inserter(result), compile_field);
+				std::transform(fields.begin(), fields.end(), std::back_inserter(result), compile_field);
 				return result;
 			}
 		};
@@ -58,8 +55,7 @@ namespace quick_dra {
 		}
 
 		compiled_value compile_currency(std::string_view input) {
-			auto const view =
-			    strip_sv(input.substr(0, input.size() - "zł"sv.size()));
+			auto const view = strip_sv(input.substr(0, input.size() - "zł"sv.size()));
 			currency value{};
 			if (!currency::parse(view, value)) {
 				fmt::print(stderr, "error while parsing `{}'\n", input);
@@ -99,8 +95,7 @@ namespace quick_dra {
 			return result;
 		}  // GCOV_EXCL_LINE[GCC]
 
-		std::vector<compiled_section> compile_report(
-		    std::vector<report_section> const& input) {
+		std::vector<compiled_section> compile_report(std::vector<report_section> const& input) {
 			std::map<std::string, section_stats> stats{};
 			for (auto const& section : input) {
 				auto it = stats.lower_bound(section.id);
@@ -118,11 +113,8 @@ namespace quick_dra {
 			for (auto const& section : input) {
 				if (section.fields.empty() && !section.block) continue;
 
-				auto it = std::find_if(
-				    result.begin(), result.end(),
-				    [&id = section.id](compiled_section const& out) {
-					    return out.id == id;
-				    });
+				auto it = std::find_if(result.begin(), result.end(),
+				                       [&id = section.id](compiled_section const& out) { return out.id == id; });
 
 				if (it == result.end()) {
 					size_t block_count = 0;
@@ -155,33 +147,26 @@ namespace quick_dra {
 			mapped_value<compiled_value> fields;
 			std::map<unsigned, std::set<unsigned>> crossrefs{};
 
-			static mapped_value<calculated_value> calculate(
-			    std::string_view id,
-			    mapped_value<compiled_value> const& fields,
-			    global_object const& ctx) {
+			static mapped_value<calculated_value> calculate(std::string_view id,
+			                                                mapped_value<compiled_value> const& fields,
+			                                                global_object const& ctx) {
 				data_calculator src{id, ctx, fields};
 				return src.calculate();
 			}
 
 		private:
-			static constexpr auto invalid_index =
-			    std::numeric_limits<size_t>::max();
+			static constexpr auto invalid_index = std::numeric_limits<size_t>::max();
 
 			template <typename From, typename To>
 			struct value_extractor {
-				To operator()(auto const& value) const noexcept {
-					return value;
-				}
+				To operator()(auto const& value) const noexcept { return value; }
 
 				To operator()(addition const&) const noexcept { return {}; }
 				To operator()(varname const&) const noexcept { return {}; }
 
-				maybe_list<To> operator()(From const& field) const noexcept {
-					return std::visit(*this, field);
-				}
+				maybe_list<To> operator()(From const& field) const noexcept { return std::visit(*this, field); }
 
-				maybe_list<To> operator()(
-				    std::vector<From> const& fields) const noexcept {
+				maybe_list<To> operator()(std::vector<From> const& fields) const noexcept {
 					std::vector<To> result{};
 					result.reserve(fields.size());
 					for (auto const& field : fields) {
@@ -201,22 +186,14 @@ namespace quick_dra {
 				return std::visit(value_extractor<From, To>{}, val);
 			}
 
-			inline std::string label(unsigned key,
-			                         size_t index = invalid_index) {
-				return fmt::format(
-				    fmt::runtime(index == invalid_index ? "{} p{}"
-				                                        : "{} p{}.{}"),
-				    id, key, index);
+			inline std::string label(unsigned key, size_t index = invalid_index) {
+				return fmt::format(fmt::runtime(index == invalid_index ? "{} p{}" : "{} p{}.{}"), id, key, index);
 			}  // GCOV_EXCL_LINE[WIN32]
 
-			void fill_var(unsigned key,
-			              size_t index,
-			              compiled_value& tgt,
-			              varname const& var) {
+			void fill_var(unsigned key, size_t index, compiled_value& tgt, varname const& var) {
 				auto const ptr = ctx.peek(var);
 				if (!ptr) {
-					fmt::print(stderr, "{}: error: cannot find `${}'\n",
-					           label(key, index), join(var.path, '.'_sep));
+					fmt::print(stderr, "{}: error: cannot find `${}'\n", label(key, index), join(var.path, '.'_sep));
 					return;
 				}
 
@@ -239,8 +216,7 @@ namespace quick_dra {
 				}
 
 				if (std::holds_alternative<calculated_value>(src)) {
-					tgt = extract<compiled_value>(
-					    std::get<calculated_value>(src));
+					tgt = extract<compiled_value>(std::get<calculated_value>(src));
 					return;
 				}
 
@@ -267,8 +243,7 @@ namespace quick_dra {
 						return;
 					}
 
-					crossrefs[key] =
-					    std::set<unsigned>{refs.begin(), refs.end()};
+					crossrefs[key] = std::set<unsigned>{refs.begin(), refs.end()};
 				}
 			}
 
@@ -298,8 +273,7 @@ namespace quick_dra {
 
 			void calculate_sum(unsigned key) {
 				// this is where the key comes from
-				auto& tgt =
-				    std::get<compiled_value>(fields.find(key)->second);  //-V783
+				auto& tgt = std::get<compiled_value>(fields.find(key)->second);  //-V783
 				auto& refs = std::get<addition>(tgt).refs;
 
 				currency result{};
@@ -307,22 +281,19 @@ namespace quick_dra {
 				for (auto ref : refs) {
 					auto it = fields.find(ref);
 					if (it == fields.end()) {
-						fmt::print(stderr, "{}: error: cannot find p{}\n",
-						           label(key), ref);
+						fmt::print(stderr, "{}: error: cannot find p{}\n", label(key), ref);
 						return;
 					}
 
 					auto src = std::get_if<compiled_value>(&it->second);
 					if (!src) {
-						fmt::print(stderr, "{}: error: p{} is not a scalar\n",
-						           label(key), ref);
+						fmt::print(stderr, "{}: error: p{} is not a scalar\n", label(key), ref);
 						return;
 					}
 
 					auto val = std::get_if<currency>(src);
 					if (!val) {
-						fmt::print(stderr, "{}: error: p{} is not a number\n",
-						           label(key), ref);
+						fmt::print(stderr, "{}: error: p{} is not a number\n", label(key), ref);
 						return;
 					}
 
@@ -345,12 +316,10 @@ namespace quick_dra {
 			mapped_value<calculated_value> calculate() {
 				for (auto& [key, field] : fields) {
 					if (std::holds_alternative<compiled_value>(field)) {
-						precalc(key, invalid_index,
-						        std::get<compiled_value>(field));
+						precalc(key, invalid_index, std::get<compiled_value>(field));
 					} else {
 						size_t index = 0;
-						for (auto& child :
-						     std::get<std::vector<compiled_value>>(field)) {
+						for (auto& child : std::get<std::vector<compiled_value>>(field)) {
 							precalc(key, index, child);
 							++index;
 						}
@@ -368,23 +337,19 @@ namespace quick_dra {
 		};
 	}  // namespace
 
-	calculated_block calculate(compiled_block const& self,
-	                           global_object const& ctx,
-	                           std::string_view log_name) {
+	calculated_block calculate(compiled_block const& self, global_object const& ctx, std::string_view log_name) {
 		std::string extended_name;
 		if (!self.id.empty()) {
 			extended_name = fmt::format("{}.{}", log_name, self.id);
 			log_name = extended_name;
 		}
 		// GCOV_EXCL_START[GCC]
-		return calculated_block{
-		    // GCOV_EXCL_STOP
-		    .id = self.id,
-		    .fields = data_calculator::calculate(log_name, self.fields, ctx)};
+		return calculated_block{// GCOV_EXCL_STOP
+		                        .id = self.id,
+		                        .fields = data_calculator::calculate(log_name, self.fields, ctx)};
 	}
 
-	calculated_section calculate(compiled_section const& self,
-	                             global_object const& ctx) {
+	calculated_section calculate(compiled_section const& self, global_object const& ctx) {
 		calculated_section result{.id = self.id, .repeatable = self.repeatable};
 		result.blocks.reserve(self.blocks.size());
 		for (auto const& block : self.blocks) {
@@ -393,9 +358,7 @@ namespace quick_dra {
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]
 
-	std::vector<calculated_section> calculate(
-	    std::vector<compiled_section> const& report,
-	    global_object const& ctx) {
+	std::vector<calculated_section> calculate(std::vector<compiled_section> const& report, global_object const& ctx) {
 		std::vector<calculated_section> result{};
 		result.reserve(report.size());
 		for (auto const& section : report) {

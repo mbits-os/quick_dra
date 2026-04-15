@@ -11,8 +11,7 @@
 #include <string_view>
 
 namespace quick_dra::builtin::xml {
-	std::optional<std::chrono::year_month_day> parse_date(
-	    std::optional<std::string> const& arg) {
+	std::optional<std::chrono::year_month_day> parse_date(std::optional<std::string> const& arg) {
 		if (!arg) {
 			return std::nullopt;
 		}

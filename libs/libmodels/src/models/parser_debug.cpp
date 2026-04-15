@@ -41,18 +41,13 @@ namespace quick_dra::v1 {
 				fmt::print("--   - {} {}\n", obj.first_name, obj.last_name);
 			}
 		} else if (level == verbose::names_and_summary) {
-			fmt::print("-- payer: {} {} ({})\n", payer.first_name,
-			           payer.last_name, payer.tax_id);
+			fmt::print("-- payer: {} {} ({})\n", payer.first_name, payer.last_name, payer.tax_id);
 			fmt::print("-- insured:\n");
 			for (auto const& obj : insured) {
 				auto const scale = obj.part_time_scale.value_or(ratio{});
-				fmt::print("--   - {} {} ({}), {}/{} of {}\n", obj.first_name,
-				           obj.last_name, obj.document, std::max(1u, scale.num),
-				           std::max(1u, scale.den),
-				           obj.salary
-				               .transform([](auto const& value) {
-					               return fmt::format("{} zł", value);
-				               })
+				fmt::print("--   - {} {} ({}), {}/{} of {}\n", obj.first_name, obj.last_name, obj.document,
+				           std::max(1u, scale.num), std::max(1u, scale.den),
+				           obj.salary.transform([](auto const& value) { return fmt::format("{} zł", value); })
 				               .value_or("<minimal pay>"));
 			}
 			return;
@@ -67,17 +62,11 @@ namespace quick_dra::v1 {
 			for (auto const& obj : insured) {
 				auto const scale = obj.part_time_scale.value_or(ratio{});
 
-				fmt::print("--   - name: {} {}\n", obj.first_name,
-				           obj.last_name);
-				fmt::print("--     insurance title: {}\n",
-				           fmt::join(obj.title.split(), " "));
+				fmt::print("--   - name: {} {}\n", obj.first_name, obj.last_name);
+				fmt::print("--     insurance title: {}\n", fmt::join(obj.title.split(), " "));
 				fmt::print("--     ident: {} {}\n", obj.kind, obj.document);
-				fmt::print("--     salary: {}/{} of {}\n",
-				           std::max(1u, scale.num), std::max(1u, scale.den),
-				           obj.salary
-				               .transform([](auto const& value) {
-					               return fmt::format("{} zł", value);
-				               })
+				fmt::print("--     salary: {}/{} of {}\n", std::max(1u, scale.num), std::max(1u, scale.den),
+				           obj.salary.transform([](auto const& value) { return fmt::format("{} zł", value); })
 				               .value_or("<minimal pay>"));
 			}
 		}
@@ -87,18 +76,13 @@ namespace quick_dra::v1 {
 		}
 
 		fmt::print("-- parameters\n");
-		fmt::print("--   cost of obtaining: {} zł / {} zł\n",
-		           params.costs_of_obtaining.local,
+		fmt::print("--   cost of obtaining: {} zł / {} zł\n", params.costs_of_obtaining.local,
 		           params.costs_of_obtaining.remote);
 		fmt::print("--   health: {}\n", from_rate(params.contributions.health));
-		fmt::print("--   pension insurance: {}\n",
-		           from_rate(params.contributions.pension_insurance));
-		fmt::print("--   disability insurance: {}\n",
-		           from_rate(params.contributions.disability_insurance));
-		fmt::print("--   health insurance: {}\n",
-		           from_rate(params.contributions.health_insurance));
-		fmt::print("--   accident insurance: {}\n",
-		           from_rate(params.contributions.accident_insurance));
+		fmt::print("--   pension insurance: {}\n", from_rate(params.contributions.pension_insurance));
+		fmt::print("--   disability insurance: {}\n", from_rate(params.contributions.disability_insurance));
+		fmt::print("--   health insurance: {}\n", from_rate(params.contributions.health_insurance));
+		fmt::print("--   accident insurance: {}\n", from_rate(params.contributions.accident_insurance));
 		fmt::print("--   tax scale for month reported:\n");
 		for (auto const& [amount, tax] : params.scale)
 			fmt::print("--     over {} zł at {}%\n", amount, tax);
@@ -111,21 +95,19 @@ namespace quick_dra::v1 {
 
 		fmt::print("-- costs of obtaining per month:\n");
 		for (auto const& [date, coo] : costs_of_obtaining) {
-			fmt::print(
-			    "--   {}-{:02}: {} zł / {} zł\n", static_cast<int>(date.year()),
-			    static_cast<unsigned>(date.month()), coo.local, coo.remote);
+			fmt::print("--   {}-{:02}: {} zł / {} zł\n", static_cast<int>(date.year()),
+			           static_cast<unsigned>(date.month()), coo.local, coo.remote);
 		}
 
 		fmt::print("-- minimal pay per month:\n");
 		for (auto const& [date, amount] : minimal_pay) {
-			fmt::print("--   {}-{:02}: {} zł\n", static_cast<int>(date.year()),
-			           static_cast<unsigned>(date.month()), amount);
+			fmt::print("--   {}-{:02}: {} zł\n", static_cast<int>(date.year()), static_cast<unsigned>(date.month()),
+			           amount);
 		}
 
 		fmt::print("-- tax scale per month:\n");
 		for (auto const& [date, levels] : scale) {
-			fmt::print("--   {}-{:02}:\n", static_cast<int>(date.year()),
-			           static_cast<unsigned>(date.month()));
+			fmt::print("--   {}-{:02}:\n", static_cast<int>(date.year()), static_cast<unsigned>(date.month()));
 			for (auto const& [amount, tax] : levels) {
 				fmt::print("--     over {} zł at {}%\n", amount, tax);
 			}
@@ -133,17 +115,12 @@ namespace quick_dra::v1 {
 
 		fmt::print("-- insurance rates per month:\n");
 		for (auto const& [date, rates] : contributions) {
-			fmt::print("--   {}-{:02}:\n", static_cast<int>(date.year()),
-			           static_cast<unsigned>(date.month()));
+			fmt::print("--   {}-{:02}:\n", static_cast<int>(date.year()), static_cast<unsigned>(date.month()));
 			fmt::print("--     health: {}\n", from_rate(rates.health));
-			fmt::print("--     pension insurance: {}\n",
-			           from_rate(rates.pension_insurance));
-			fmt::print("--     disability insurance: {}\n",
-			           from_rate(rates.disability_insurance));
-			fmt::print("--     health insurance: {}\n",
-			           from_rate(rates.health_insurance));
-			fmt::print("--     accident insurance: {}\n",
-			           from_rate(rates.accident_insurance));
+			fmt::print("--     pension insurance: {}\n", from_rate(rates.pension_insurance));
+			fmt::print("--     disability insurance: {}\n", from_rate(rates.disability_insurance));
+			fmt::print("--     health insurance: {}\n", from_rate(rates.health_insurance));
+			fmt::print("--     accident insurance: {}\n", from_rate(rates.accident_insurance));
 		}
 	}
 }  // namespace quick_dra::v1

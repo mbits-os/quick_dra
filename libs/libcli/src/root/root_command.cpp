@@ -10,8 +10,7 @@
 namespace quick_dra::builtin {
 	namespace {
 #define BUILTINS_X_KNOWN(NAME, TOOL, DSCR) help_command{TOOL##sv, DSCR##sv},
-		static constexpr auto root_commands =
-		    std::array{ROOT_BUILTINS_X(BUILTINS_X_KNOWN)};
+		static constexpr auto root_commands = std::array{ROOT_BUILTINS_X(BUILTINS_X_KNOWN)};
 #undef BUILTINS_X_KNOWN
 
 		static constexpr auto command_groups = std::array{
