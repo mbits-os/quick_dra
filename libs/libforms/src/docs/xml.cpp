@@ -16,9 +16,8 @@ using namespace std::literals;
 namespace quick_dra {
 	namespace {
 		static constexpr auto entities = std::array{
-		    std::pair{'&', "&amp;"sv},  std::pair{'<', "&lt;"sv},
-		    std::pair{'>', "&gt;"sv},   std::pair{'"', "&quot;"sv},
-		    std::pair{'\'', "&#39;"sv},
+		    std::pair{'&', "&amp;"sv},  std::pair{'<', "&lt;"sv},   std::pair{'>', "&gt;"sv},
+		    std::pair{'"', "&quot;"sv}, std::pair{'\'', "&#39;"sv},
 		};
 
 		std::string xml_escape(std::string_view value) {
@@ -77,16 +76,13 @@ namespace quick_dra {
 		fmt::print(os, ">");
 	}
 
-	void xml::print_close_tag(std::ostream& os) const {
-		fmt::print(os, "</{}>", tag);
-	}
+	void xml::print_close_tag(std::ostream& os) const { fmt::print(os, "</{}>", tag); }
 
 	std::ostream& operator<<(std::ostream& os, xml const& node) {
 		node.print_open_tag(os);
 
 		if (std::holds_alternative<std::string>(node.inside)) {
-			fmt::print(os, "{}",
-			           xml_escape(std::get<std::string>(node.inside)));
+			fmt::print(os, "{}", xml_escape(std::get<std::string>(node.inside)));
 		} else {
 			auto const& list = std::get<xml::vector>(node.inside);
 			if (list.empty()) {
@@ -107,8 +103,7 @@ namespace quick_dra {
 		node.ref.print_open_tag(os);
 
 		if (std::holds_alternative<std::string>(node.ref.inside)) {
-			fmt::print(os, "{}",
-			           xml_escape(std::get<std::string>(node.ref.inside)));
+			fmt::print(os, "{}", xml_escape(std::get<std::string>(node.ref.inside)));
 		} else {
 			auto const& list = std::get<xml::vector>(node.ref.inside);
 			if (list.empty()) {

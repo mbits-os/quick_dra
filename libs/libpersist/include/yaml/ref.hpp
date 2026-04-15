@@ -24,11 +24,8 @@ namespace yaml {
 
 			void install_in_c4();
 
-			bool handle_msg(c4::yml::Location const& loc,
-			                std::string_view msg,
-			                std::string_view level);
-			bool handle_error(c4::yml::Location const& loc,
-			                  std::string_view msg);
+			bool handle_msg(c4::yml::Location const& loc, std::string_view msg, std::string_view level);
+			bool handle_error(c4::yml::Location const& loc, std::string_view msg);
 
 			bool ok() const noexcept { return parse_succeeded; }
 			bool failed() const noexcept { return !parse_succeeded; }

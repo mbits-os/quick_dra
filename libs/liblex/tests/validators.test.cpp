@@ -33,8 +33,7 @@ namespace quick_dra::testing {
 		auto const expected_weights = std::array{9, 3, 7, 0};
 		ASSERT_EQ(partial.weights, expected_weights);
 
-		auto const validator =
-		    partial.postproc([](auto sum) { return sum % 10; });
+		auto const validator = partial.postproc([](auto sum) { return sum % 10; });
 
 		ASSERT_EQ(validator.checksum("6451"sv), 1);
 	}
@@ -42,8 +41,7 @@ namespace quick_dra::testing {
 		std::string_view id;
 		unsigned short checksum{};
 
-		friend std::ostream& operator<<(std::ostream& out,
-		                                id_testcase const& test) {
+		friend std::ostream& operator<<(std::ostream& out, id_testcase const& test) {
 			out << "id:" << test.id << " checksum:";
 			if (test.checksum == kInvalidChecksum) {
 				out << "<invalid>";
@@ -56,20 +54,16 @@ namespace quick_dra::testing {
 
 	struct partial_test {
 		std::string_view id;
-		consteval id_testcase operator()(
-		    unsigned short checksum) const noexcept {
+		consteval id_testcase operator()(unsigned short checksum) const noexcept {
 			return {.id = id, .checksum = checksum};
 		}
 	};
 
-	static inline consteval partial_test operator""_test(
-	    char const* id,
-	    size_t length) noexcept {
+	static inline consteval partial_test operator""_test(char const* id, size_t length) noexcept {
 		return {.id{id, length}};
 	}
 
-	static inline consteval id_testcase operator""_inv(char const* id,
-	                                                   size_t length) noexcept {
+	static inline consteval id_testcase operator""_inv(char const* id, size_t length) noexcept {
 		return {.id{id, length}, .checksum{kInvalidChecksum}};
 	}
 
@@ -77,19 +71,15 @@ namespace quick_dra::testing {
 		std::string_view social_id;
 		std::chrono::year_month_day expected{};
 
-		friend std::ostream& operator<<(std::ostream& out,
-		                                birthday_testcase const& test) {
+		friend std::ostream& operator<<(std::ostream& out, birthday_testcase const& test) {
 			return out << fmt::format(
-			           "id:{} birthday:{:4}-{:02}-{:02}", test.social_id,
-			           static_cast<int>(test.expected.year()),
-			           static_cast<unsigned>(test.expected.month()),
-			           static_cast<unsigned>(test.expected.day()));
+			           "id:{} birthday:{:4}-{:02}-{:02}", test.social_id, static_cast<int>(test.expected.year()),
+			           static_cast<unsigned>(test.expected.month()), static_cast<unsigned>(test.expected.day()));
 		}
 	};
 
 	template <typename ValidatorSuite>
-	class id_test : public ::testing::TestWithParam<id_testcase>,
-	                public ValidatorSuite {
+	class id_test : public ::testing::TestWithParam<id_testcase>, public ValidatorSuite {
 	protected:
 		void test_checksum() {
 			auto const& [id, checksum] = this->GetParam();
@@ -111,8 +101,7 @@ namespace quick_dra::testing {
 	TEST_P(NAME, valid) { this->test_valid(); }       \
 	INSTANTIATE_TEST_SUITE_P(test, NAME, ::testing::ValuesIn(NAME##_tests));
 
-	class social_id_birthday
-	    : public ::testing::TestWithParam<birthday_testcase> {};
+	class social_id_birthday : public ::testing::TestWithParam<birthday_testcase> {};
 	TEST_P(social_id_birthday, decode) {
 		auto const& [id, expected] = GetParam();
 		auto const actual = social_id_validator::get_birthday(id);
@@ -123,8 +112,7 @@ namespace quick_dra::testing {
 	using std::literals::operator""y;
 
 	static constexpr id_testcase tax_id_tests[] = {
-	    ""_inv,           "02070803628"_inv,    "0000000000"_test(0),
-	    "1234567890"_inv, "1234563218"_test(8), "7680002466"_test(6),
+	    ""_inv, "02070803628"_inv, "0000000000"_test(0), "1234567890"_inv, "1234563218"_test(8), "7680002466"_test(6),
 	};
 
 	static constexpr id_testcase social_id_tests[] = {
@@ -138,11 +126,10 @@ namespace quick_dra::testing {
 	};
 
 	static constexpr birthday_testcase birthday_tests[] = {
-	    {"50871500000"sv, 1850y / 7 / 15}, {"50901500000"sv, 1850y / 10 / 15},
-	    {"02070800000"sv, 1902y / 7 / 8},  {"98122400000"sv, 1998y / 12 / 24},
-	    {"98222400000"sv, 2098y / 2 / 24}, {"50310100000"sv, 2050y / 11 / 01},
-	    {"50471500000"sv, 2150y / 7 / 15}, {"50501500000"sv, 2150y / 10 / 15},
-	    {"50671500000"sv, 2250y / 7 / 15}, {"50701500000"sv, 2250y / 10 / 15},
+	    {"50871500000"sv, 1850y / 7 / 15},  {"50901500000"sv, 1850y / 10 / 15}, {"02070800000"sv, 1902y / 7 / 8},
+	    {"98122400000"sv, 1998y / 12 / 24}, {"98222400000"sv, 2098y / 2 / 24},  {"50310100000"sv, 2050y / 11 / 01},
+	    {"50471500000"sv, 2150y / 7 / 15},  {"50501500000"sv, 2150y / 10 / 15}, {"50671500000"sv, 2250y / 7 / 15},
+	    {"50701500000"sv, 2250y / 10 / 15},
 	};
 
 	static constexpr auto null_day = 0y / 0 / 0;
@@ -176,12 +163,8 @@ namespace quick_dra::testing {
 	    "ZZ8999999"_test(8),
 	};
 
-	INSTANTIATE_TEST_SUITE_P(test,
-	                         social_id_birthday,
-	                         ::testing::ValuesIn(birthday_tests));
-	INSTANTIATE_TEST_SUITE_P(bad_test,
-	                         social_id_birthday,
-	                         ::testing::ValuesIn(bad_birthday_tests));
+	INSTANTIATE_TEST_SUITE_P(test, social_id_birthday, ::testing::ValuesIn(birthday_tests));
+	INSTANTIATE_TEST_SUITE_P(bad_test, social_id_birthday, ::testing::ValuesIn(bad_birthday_tests));
 
 	VALIDATOR_TEST_SUITE(tax_id);
 	VALIDATOR_TEST_SUITE(social_id);

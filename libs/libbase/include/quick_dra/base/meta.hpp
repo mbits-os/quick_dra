@@ -75,7 +75,5 @@ namespace quick_dra {
 	concept RequiredType = !OptionalType<T>;
 
 	template <typename T, typename V>
-	concept optional_of =
-	    OptionalType<T> &&
-	    std::same_as<V, typename std::remove_cvref_t<T>::value_type>;
+	concept optional_of = OptionalType<T> && std::same_as<V, typename std::remove_cvref_t<T>::value_type>;
 }  // namespace quick_dra

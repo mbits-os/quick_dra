@@ -14,33 +14,21 @@ namespace quick_dra {
 			// GCOV_EXCL_START
 			std::string operator()(std::monostate) const noexcept { return {}; }
 			// GCOV_EXCL_STOP
-			std::string operator()(std::string const& str) const noexcept {
-				return str;
-			}
-			std::string operator()(currency const& value) const noexcept {
-				return fmt::format("{:.2f}", value);
-			}
-			std::string operator()(percent const& value) const noexcept {
-				return fmt::format("{:.2f}", value);
-			}
-			std::string operator()(uint_value const& value) const noexcept {
-				return fmt::format("{}", value);
-			}
+			std::string operator()(std::string const& str) const noexcept { return str; }
+			std::string operator()(currency const& value) const noexcept { return fmt::format("{:.2f}", value); }
+			std::string operator()(percent const& value) const noexcept { return fmt::format("{:.2f}", value); }
+			std::string operator()(uint_value const& value) const noexcept { return fmt::format("{}", value); }
 		};
 
-		void append_field(xml& parent,
-		                  unsigned key,
-		                  calculated_value const& value) {
+		void append_field(xml& parent, unsigned key, calculated_value const& value) {
 			if (std::holds_alternative<std::monostate>(value)) {
 				return;
 			}
 
-			parent.with(E(fmt::format("p{}", key))
-			                .with(std::visit(xml_printer{}, value)));
+			parent.with(E(fmt::format("p{}", key)).with(std::visit(xml_printer{}, value)));
 		}
 
-		void append_block(xml& parent,
-		                  mapped_value<calculated_value> const& fields) {
+		void append_block(xml& parent, mapped_value<calculated_value> const& fields) {
 			for (auto const& [key, field] : fields) {
 				auto value = std::get_if<calculated_value>(&field);
 				if (value) {
@@ -50,8 +38,7 @@ namespace quick_dra {
 
 				auto compound = E(fmt::format("p{}", key));
 				unsigned index = 0;
-				for (auto const& item :
-				     std::get<std::vector<calculated_value>>(field)) {
+				for (auto const& item : std::get<std::vector<calculated_value>>(field)) {
 					append_field(compound, ++index, item);
 				}
 
@@ -65,16 +52,14 @@ namespace quick_dra {
 				result.attributes["id_bloku"] = "1";
 			}
 
-			if (section.blocks.size() == 1 &&
-			    section.blocks.front().id.empty()) {
+			if (section.blocks.size() == 1 && section.blocks.front().id.empty()) {
 				append_block(result, section.blocks.front().fields);
 			} else {
 				for (auto const& block : section.blocks) {
 					if (block.id.empty()) {
 						append_block(result, block.fields);
 					} else {
-						append_block(result.with(E(block.id)).children().back(),
-						             block.fields);
+						append_block(result.with(E(block.id)).children().back(), block.fields);
 					}
 				}
 			}
@@ -82,16 +67,14 @@ namespace quick_dra {
 			return result;
 		}  // GCOV_EXCL_LINE[GCC]
 
-		xml map_sections(xml&& root,
-		                 std::vector<calculated_section> const& sections) {
+		xml map_sections(xml&& root, std::vector<calculated_section> const& sections) {
 			for (auto const& section : sections) {
 				root.with(from_section(section));
 			}
 			return root;
 		}
 
-		xml naglowek_kedu(std::string_view program_name,
-		                  std::string_view version) {
+		xml naglowek_kedu(std::string_view program_name, std::string_view version) {
 			return E("naglowek.KEDU"sv)
 			    .with(E("program"sv)
 			              .with(E("producent"sv).with("midnightBITS"sv))
@@ -100,8 +83,7 @@ namespace quick_dra {
 		}
 	};  // namespace
 
-	xml build_kedu_doc(std::string_view program_name,
-	                   std::string_view version) {
+	xml build_kedu_doc(std::string_view program_name, std::string_view version) {
 		return E("KEDU"sv,
 		         {
 		             {"xmlns"s, "http://www.zus.pl/2024/KEDU_5_6"s},
@@ -116,14 +98,11 @@ namespace quick_dra {
 	                     std::vector<compiled_section> const& tmplt,
 	                     unsigned doc_id) {
 		auto const sections = form.fill(level, tmplt);
-		root.with(map_sections(E(fmt::format("ZUS{}", form.key),
-		                         {{"id_dokumentu", fmt::to_string(doc_id)}}),
-		                       sections));
+		root.with(
+		    map_sections(E(fmt::format("ZUS{}", form.key), {{"id_dokumentu", fmt::to_string(doc_id)}}), sections));
 	}
 
-	void store_xml(xml const& tree,
-	               std::string const& filename,
-	               bool indented) {
+	void store_xml(xml const& tree, std::string const& filename, bool indented) {
 		fmt::print("-- output: {}\n", filename);
 		auto file = std::ofstream{filename};
 		if (indented)

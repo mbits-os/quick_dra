@@ -12,9 +12,7 @@
 #include <utility>
 
 namespace quick_dra::builtin::insured::edit {
-	conversation::conversation(std::string_view tool_name,
-	                           args::arglist arguments,
-	                           std::string_view description)
+	conversation::conversation(std::string_view tool_name, args::arglist arguments, std::string_view description)
 	    : arg_parser{tool_name, arguments, description} {}
 
 	void conversation::parse_args() {
@@ -22,9 +20,7 @@ namespace quick_dra::builtin::insured::edit {
 		std::optional<unsigned> position;
 		std::optional<std::string> search_keyword;
 
-		parser.arg(config_path, "config")
-		    .meta("<path>")
-		    .help("select config file; defaults to ~/.quick_dra.yaml");
+		parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
 		parser.arg(position, "pos")
 		    .meta("<index>")
 		    .help(
@@ -40,21 +36,11 @@ namespace quick_dra::builtin::insured::edit {
 		        "use answers from command line; do not ask additional "
 		        "questions")
 		    .opt();
-		parser.arg(opts.first_name, "first")
-		    .meta("<name>")
-		    .help("provide first name of the payer");
-		parser.arg(opts.last_name, "last")
-		    .meta("<name>")
-		    .help("provide last name of the payer");
-		parser.arg(opts.social_id, "social-id")
-		    .meta("<number>")
-		    .help("provide PESEL number");
-		parser.arg(opts.id_card, "id-card")
-		    .meta("<number>")
-		    .help("provide state-issued id number");
-		parser.arg(opts.passport, "passport")
-		    .meta("<number>")
-		    .help("provide passport number");
+		parser.arg(opts.first_name, "first").meta("<name>").help("provide first name of the payer");
+		parser.arg(opts.last_name, "last").meta("<name>").help("provide last name of the payer");
+		parser.arg(opts.social_id, "social-id").meta("<number>").help("provide PESEL number");
+		parser.arg(opts.id_card, "id-card").meta("<number>").help("provide state-issued id number");
+		parser.arg(opts.passport, "passport").meta("<number>").help("provide passport number");
 		parser.arg(opts.title, "title")
 		    .meta("<code>")
 		    .help(
@@ -114,8 +100,7 @@ namespace quick_dra::builtin::insured::edit {
 		verifier(parser)
 		    .required(policies::first_name.through("--first"sv))
 		    .required(policies::last_name.through("--last"sv))
-		    .required(policies::social_id.through("--social-id"sv),
-		              policies::id_card.through("--id-card"sv),
+		    .required(policies::social_id.through("--social-id"sv), policies::id_card.through("--id-card"sv),
 		              policies::passport.through("--passport"sv))
 		    .required(policies::title.through("--title"sv));
 	}

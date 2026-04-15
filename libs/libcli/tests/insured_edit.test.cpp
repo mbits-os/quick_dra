@@ -257,8 +257,7 @@ ubezpieczeni:
 	    },
 	    {
 	        .name = "reset all props A"sv,
-	        .args =
-	            R"(insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --social-id "")"sv,
+	        .args = R"(insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --social-id "")"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -283,8 +282,7 @@ qdra insured edit: error: at least one of --social-id, --id-card and --passport 
 	    },
 	    {
 	        .name = "reset all props B"sv,
-	        .args =
-	            R"(insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --id-card "")"sv,
+	        .args = R"(insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --id-card "")"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -309,8 +307,7 @@ qdra insured edit: error: at least one of --social-id, --id-card and --passport 
 	    },
 	    {
 	        .name = "reset all props C"sv,
-	        .args =
-	            R"(insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --passport "")"sv,
+	        .args = R"(insured edit --find Maria --config .quick_dra.yaml -y --first "" --last "" --passport "")"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -335,7 +332,5 @@ qdra insured edit: error: at least one of --social-id, --id-card and --passport 
 	    },
 	};
 
-	INSTANTIATE_TEST_SUITE_P(insured_edit,
-	                         cli_test,
-	                         ::testing::ValuesIn(tests));
+	INSTANTIATE_TEST_SUITE_P(insured_edit, cli_test, ::testing::ValuesIn(tests));
 }  // namespace quick_dra::builtin::testing::insured_edit

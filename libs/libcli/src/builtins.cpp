@@ -21,21 +21,17 @@ namespace quick_dra::builtin {
 			chunk.items.emplace_back(as_str(cmd_name), as_str(description));
 	}
 
-	void help_group::add_to_parser(args::parser& parser,
-	                               std::span<help_group const> groups) {
+	void help_group::add_to_parser(args::parser& parser, std::span<help_group const> groups) {
 		parser.provide_help(false);
 		parser
 		    .custom(
-		        [command_groups = groups] [[noreturn]] (args::parser & p) {
-			        help_group::show_help(p, command_groups);
-		        },
+		        [command_groups = groups] [[noreturn]] (args::parser & p) { help_group::show_help(p, command_groups); },
 		        "h", "help")
 		    .help("shows this help message and exits"sv)
 		    .opt();
 	}
 
-	void help_group::fill_help(args::fmt_list& commands,
-	                           std::span<help_group const> groups) {
+	void help_group::fill_help(args::fmt_list& commands, std::span<help_group const> groups) {
 		commands.reserve(commands.size() + groups.size());
 		for (auto const& group : groups) {
 			commands.emplace_back();
@@ -43,9 +39,7 @@ namespace quick_dra::builtin {
 		}
 	}
 
-	[[noreturn]] void help_group::show_help(
-	    args::parser& parser,
-	    std::span<help_group const> groups) {
+	[[noreturn]] void help_group::show_help(args::parser& parser, std::span<help_group const> groups) {
 		auto commands = parser.printer_arguments();
 		fill_help(commands, groups);
 
@@ -67,13 +61,9 @@ namespace quick_dra::builtin {
 		builtin::help_group::add_to_parser(parser_, groups);
 	}
 
-	root_parser::root_parser(args::args_view const& args,
-	                         std::span<help_group const> groups)
+	root_parser::root_parser(args::args_view const& args, std::span<help_group const> groups)
 	    : parser{""sv, args, groups, true} {
-		get_parser()
-		    .custom(show_version, "v", "version")
-		    .help("show version and exit")
-		    .opt();
+		get_parser().custom(show_version, "v", "version").help("show version and exit").opt();
 	}
 
 	options parser::parse_args() {
@@ -83,8 +73,7 @@ namespace quick_dra::builtin {
 		}
 
 		auto const tool = unparsed[0];
-		if (!tool.empty() && tool.front() == '-')
-			parser_.error(parser_.tr()(args::lng::unrecognized, tool));
+		if (!tool.empty() && tool.front() == '-') parser_.error(parser_.tr()(args::lng::unrecognized, tool));
 
 		return {tool, unparsed.shift()};
 	}

@@ -10,8 +10,7 @@
 #include <span>
 #include <sstream>
 
-#define GITHUB_MAIN_REF \
-	"https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main"
+#define GITHUB_MAIN_REF "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main"
 
 namespace quick_dra::testing {
 	using std::literals::operator""s;
@@ -70,18 +69,15 @@ contributions:
 	TEST(config, no_tax_config) {
 		auto const here = platform::exec_dir();
 		// reverse of build/<config>/bin/tests
-		auto const root =
-		    here.parent_path().parent_path().parent_path().parent_path();
+		auto const root = here.parent_path().parent_path().parent_path().parent_path();
 		auto const config_path =
-		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv /
-		    ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
+		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv / ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
 		auto const custom_tax_config = here / "nonexisting-file"sv;
 
 		set_curl_factory<ImplNoTaxConfig>();
 
 		::testing::internal::CaptureStdout();
-		auto const cfg = parse_config(verbose::parameters, 2026y / 1,
-		                              config_path, custom_tax_config);
+		auto const cfg = parse_config(verbose::parameters, 2026y / 1, config_path, custom_tax_config);
 		auto const log = ::testing::internal::GetCapturedStdout();
 		auto const expected_log = fmt::format(
 		    "Quick-DRA: error: cannot find {}\n"
@@ -96,26 +92,21 @@ contributions:
 	TEST(config, custom_tax_config) {
 		auto const here = platform::exec_dir();
 		// reverse of build/<config>/bin/tests
-		auto const root =
-		    here.parent_path().parent_path().parent_path().parent_path();
+		auto const root = here.parent_path().parent_path().parent_path().parent_path();
 		auto const config_path =
-		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv /
-		    ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
-		auto const custom_tax_config =
-		    root / "data"sv / "config"sv / "tax_config.yaml";
+		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv / ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
+		auto const custom_tax_config = root / "data"sv / "config"sv / "tax_config.yaml";
 
 		set_curl_factory<ImplNoTaxConfig>();
 
 		::testing::internal::CaptureStdout();
-		auto const cfg = parse_config(verbose::parameters, 2026y / 1,
-		                              config_path, custom_tax_config);
+		auto const cfg = parse_config(verbose::parameters, 2026y / 1, config_path, custom_tax_config);
 		auto const log = ::testing::internal::GetCapturedStdout();
 		auto const expected_log = fmt::format(
 		    "-- nothing downloaded (status: 404, {})\n"
 		    "Quick-DRA: error: cannot find {}\n"
 		    "{}"sv,
-		    GITHUB_MAIN_REF "/data/config/tax_config.yaml"sv,
-		    platform::config_data_dir() / "tax_config.yaml"sv,
+		    GITHUB_MAIN_REF "/data/config/tax_config.yaml"sv, platform::config_data_dir() / "tax_config.yaml"sv,
 		    R"(-- costs of obtaining per month:
 --   2022-01: 250 zł / 300 zł
 -- minimal pay per month:
@@ -169,24 +160,20 @@ contributions:
 	TEST(config, network_tax_config) {
 		auto const here = platform::exec_dir();
 		// reverse of build/<config>/bin/tests
-		auto const root =
-		    here.parent_path().parent_path().parent_path().parent_path();
+		auto const root = here.parent_path().parent_path().parent_path().parent_path();
 		auto const config_path =
-		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv /
-		    ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
+		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv / ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
 
 		set_curl_factory<ImplSimpleTaxConfig>();
 
 		::testing::internal::CaptureStdout();
-		auto const cfg = parse_config(verbose::parameters, 2026y / 1,
-		                              config_path, std::nullopt);
+		auto const cfg = parse_config(verbose::parameters, 2026y / 1, config_path, std::nullopt);
 		auto const log = ::testing::internal::GetCapturedStdout();
 		auto const expected_log = fmt::format(
 		    "-- downloaded {}\n"
 		    "Quick-DRA: error: cannot find {}\n"
 		    "{}"sv,
-		    GITHUB_MAIN_REF "/data/config/tax_config.yaml"sv,
-		    platform::config_data_dir() / "tax_config.yaml"sv,
+		    GITHUB_MAIN_REF "/data/config/tax_config.yaml"sv, platform::config_data_dir() / "tax_config.yaml"sv,
 		    R"(-- costs of obtaining per month:
 --   2022-01: 250 zł / 300 zł
 -- minimal pay per month:

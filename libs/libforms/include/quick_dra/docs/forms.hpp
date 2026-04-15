@@ -13,9 +13,7 @@ namespace quick_dra {
 	struct form {
 		std::string key{};
 		global_object state{};
-		std::vector<calculated_section> fill(
-		    verbose level,
-		    std::vector<compiled_section> const& tmplt) const;
+		std::vector<calculated_section> fill(verbose level, std::vector<compiled_section> const& tmplt) const;
 	};
 
 	std::vector<form> prepare_form_set(verbose level,

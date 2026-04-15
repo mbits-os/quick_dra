@@ -8,14 +8,11 @@ namespace quick_dra::testing {
 
 	class compiler : public ::testing::Test, public object_reader<templates> {
 	protected:
-		std::vector<compiled_section> get_report_from_yaml(
-		    std::string_view yaml) {
+		std::vector<compiled_section> get_report_from_yaml(std::string_view yaml) {
 			auto const value = read(yaml);
 
 			if (!value || !value->validate()) return {};
-			return compiled_templates::compile(*value)
-			    .reports.find("CODE"s)
-			    ->second;
+			return compiled_templates::compile(*value).reports.find("CODE"s)->second;
 		}
 
 		std::vector<compiled_section> get_report() {
@@ -73,8 +70,7 @@ reports:
 		                            {3u, "insured.document_kind"_var},
 		                            {4u, "insured.document"_var},
 		                            {5u, 1234_PLN},
-		                            {6u,
-		                             addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
+		                            {6u, addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
 		                        },
 		                }},
 		            },
@@ -110,41 +106,38 @@ reports:
 		ASSERT_EQ(log, R"()"sv);
 
 		auto const actual_template = compiled_templates::compile(*value);
-		auto const expected_template =
-		    compiled_templates{
-		        .reports = {{
-		            "CODE"s,
-		            std::vector<compiled_section>{
-		                {
-		                    .id = "III"s,
-		                    .repeatable = false,
-		                    .blocks =
-		                        {compiled_block{
-		                             .id = "A"s,
-		                             .fields =
-		                                 {
-		                                     {1u, "insured.last"_var},
-		                                     {2u, "insured.first"_var},
-		                                     {3u, "insured.document_kind"_var},
-		                                     {4u, "insured.document"_var},
-		                                     {5u, 1234_PLN},
-		                                     {6u, addition{.refs = {1u, 2u, 3u,
-		                                                            4u, 5u}}},
-		                                 },
-		                         },
-		                         compiled_block{
-		                             .id = "B"s,
-		                             .fields =
-		                                 {
-		                                     {5u, 1234_PLN},
-		                                     {6u,
-		                                      addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
-		                                 },
-		                         }},
-		                },
+		auto const expected_template = compiled_templates{
+		    .reports = {{
+		        "CODE"s,
+		        std::vector<compiled_section>{
+		            {
+		                .id = "III"s,
+		                .repeatable = false,
+		                .blocks =
+		                    {compiled_block{
+		                         .id = "A"s,
+		                         .fields =
+		                             {
+		                                 {1u, "insured.last"_var},
+		                                 {2u, "insured.first"_var},
+		                                 {3u, "insured.document_kind"_var},
+		                                 {4u, "insured.document"_var},
+		                                 {5u, 1234_PLN},
+		                                 {6u, addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
+		                             },
+		                     },
+		                     compiled_block{
+		                         .id = "B"s,
+		                         .fields =
+		                             {
+		                                 {5u, 1234_PLN},
+		                                 {6u, addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
+		                             },
+		                     }},
 		            },
-		        }},
-		    };
+		        },
+		    }},
+		};
 
 		ASSERT_EQ(actual_template, expected_template);
 	}
@@ -185,8 +178,7 @@ reports:
 		                            {3u, "insured.document_kind"_var},
 		                            {4u, "insured.document"_var},
 		                            {5u, "unparsable: many zł"s},
-		                            {6u,
-		                             addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
+		                            {6u, addition{.refs = {1u, 2u, 3u, 4u, 5u}}},
 		                        },
 		                }},
 		            },
@@ -320,8 +312,7 @@ reports:
 		globals.insert("insured.last"_var, 123_PLN);
 		globals.insert("insured.first"_var, 223_PLN);
 		globals.insert("insured.document_kind"_var, 323_PLN);
-		globals.insert("insured.document"_var,
-		               values{15_PLN, uint_value{14}, "WORD"s});
+		globals.insert("insured.document"_var, values{15_PLN, uint_value{14}, "WORD"s});
 		globals.insert("serial.A"_var, uint_value{99});
 		globals.insert("serial.B"_var, "2016-01"s);
 		globals.insert("serial.C"_var, 1.5_per);

@@ -63,9 +63,7 @@ namespace yaml {
 		return true;
 	}
 
-	bool convert_string(ref_ctx const&,
-	                    c4::csubstr const& value,
-	                    std::string& ctx) {
+	bool convert_string(ref_ctx const&, c4::csubstr const& value, std::string& ctx) {
 		ctx = view(value);
 		return true;
 	}

@@ -137,8 +137,7 @@ qdra insured remove: error: one of --pos and --find argument is required
 	    },
 	    {
 	        .name = "find and pos"sv,
-	        .args =
-	            "insured remove --pos 1 --find something -y --config .quick_dra.yaml"sv,
+	        .args = "insured remove --pos 1 --find something -y --config .quick_dra.yaml"sv,
 	        .stderr =
 	            R"(usage: qdra insured remove [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y]
 qdra insured remove: error: only one of --pos and --find is allowed
@@ -167,7 +166,5 @@ ubezpieczeni:
 	    },
 	};
 
-	INSTANTIATE_TEST_SUITE_P(insured_remove,
-	                         cli_test,
-	                         ::testing::ValuesIn(tests));
+	INSTANTIATE_TEST_SUITE_P(insured_remove, cli_test, ::testing::ValuesIn(tests));
 }  // namespace quick_dra::builtin::testing::insured_remove

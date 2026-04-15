@@ -26,9 +26,7 @@ namespace quick_dra {
 	template <typename T>
 	struct stored_type {
 		using type = T;
-		static type conv_ret(T const& default_value) noexcept {
-			return default_value;
-		}
+		static type conv_ret(T const& default_value) noexcept { return default_value; }
 	};
 
 	template <>
@@ -42,9 +40,7 @@ namespace quick_dra {
 	template <>
 	struct stored_type<char const*> {
 		using type = std::string;
-		static type conv_ret(char const* default_value) noexcept {
-			return default_value;
-		}
+		static type conv_ret(char const* default_value) noexcept { return default_value; }
 	};
 
 	struct global_object {
@@ -52,13 +48,9 @@ namespace quick_dra {
 
 		std::map<std::string, global_object> children{};
 
-		void insert(varname const& var, maybe_list<calculated_value>&& data) {
-			get(var).value = std::move(data);
-		}
+		void insert(varname const& var, maybe_list<calculated_value>&& data) { get(var).value = std::move(data); }
 
-		void insert(varname const& var, contribution const& data) {
-			get(var) = data;
-		}
+		void insert(varname const& var, contribution const& data) { get(var) = data; }
 
 		global_object& get(varname const& var) {
 			auto ptr = this;
@@ -88,9 +80,8 @@ namespace quick_dra {
 			return ptr;
 		}
 
-		maybe_list<calculated_value> value_or(
-		    varname const& var,
-		    maybe_list<calculated_value> const& default_value) const noexcept {
+		maybe_list<calculated_value> value_or(varname const& var,
+		                                      maybe_list<calculated_value> const& default_value) const noexcept {
 			auto ptr = this;
 
 			for (auto const& path : var.path) {
@@ -105,17 +96,14 @@ namespace quick_dra {
 		}
 
 		template <typename T>
-		typename stored_type<T>::type typed_value(
-		    varname const& var,
-		    T const& default_value = {}) const noexcept {
+		typename stored_type<T>::type typed_value(varname const& var, T const& default_value = {}) const noexcept {
 			auto const val = value_or(var, {});
 
 			if (!std::holds_alternative<calculated_value>(val)) {
 				return stored_type<T>::conv_ret(default_value);
 			}
 
-			auto result = std::get_if<typename stored_type<T>::type>(
-			    &std::get<calculated_value>(val));
+			auto result = std::get_if<typename stored_type<T>::type>(&std::get<calculated_value>(val));
 			if (!result) {
 				return stored_type<T>::conv_ret(default_value);
 			}
@@ -125,8 +113,7 @@ namespace quick_dra {
 
 		std::vector<calculated_value> typed_value(
 		    varname const& var,
-		    std::vector<calculated_value> const& default_value = {})
-		    const noexcept = delete;
+		    std::vector<calculated_value> const& default_value = {}) const noexcept = delete;
 
 		global_object& operator=(maybe_list<calculated_value>&& data) noexcept {
 			value = std::move(data);

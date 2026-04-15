@@ -57,14 +57,11 @@ public:
 #undef X
 
 	virtual CURLcode perform() = 0;
-	virtual CURLHcode header(const char* name,
-	                         size_t index,
-	                         curl_header** hout);
+	virtual CURLHcode header(const char* name, size_t index, curl_header** hout);
 
-	void set_response(
-	    long status,
-	    std::string_view contents,
-	    std::map<std::string_view, std::string_view> const& headers = {});
+	void set_response(long status,
+	                  std::string_view contents,
+	                  std::map<std::string_view, std::string_view> const& headers = {});
 
 	template <typename Impl>
 	static std::unique_ptr<CURL> create(void*) {
@@ -73,12 +70,10 @@ public:
 	}
 
 private:
-#define X(NAME, TYPE) \
-	std::map<CURL_##NAME##_option, prop_type<TYPE>::type> NAME##_props_;
+#define X(NAME, TYPE) std::map<CURL_##NAME##_option, prop_type<TYPE>::type> NAME##_props_;
 	OPTION(X)
 #undef X
-#define X(NAME, TYPE) \
-	std::map<CURL_##NAME##_info, prop_type<TYPE>::type> NAME##_info_;
+#define X(NAME, TYPE) std::map<CURL_##NAME##_info, prop_type<TYPE>::type> NAME##_info_;
 	INFO(X)
 #undef X
 
@@ -92,13 +87,11 @@ private:
 
 using mock_curl_factory = std::unique_ptr<CURL> (*)(void* ptr);
 
-std::pair<mock_curl_factory, void*> set_curl_factory(
-    mock_curl_factory,
-    CURLcode init_result = CURLE_OK,
-    void* ptr = nullptr);
+std::pair<mock_curl_factory, void*> set_curl_factory(mock_curl_factory,
+                                                     CURLcode init_result = CURLE_OK,
+                                                     void* ptr = nullptr);
 
 template <std::derived_from<CURL> Impl>
-static inline std::pair<mock_curl_factory, void*> set_curl_factory(
-    CURLcode init_result = CURLE_OK) {
+static inline std::pair<mock_curl_factory, void*> set_curl_factory(CURLcode init_result = CURLE_OK) {
 	return set_curl_factory(CURL::create<Impl>, init_result);
 }

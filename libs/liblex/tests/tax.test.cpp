@@ -9,19 +9,14 @@
 #include <utility>
 
 namespace quick_dra {
-	void PrintTo(currency curr, std::ostream* os) {
-		*os << fmt::format("{} zł", curr);
-	}
+	void PrintTo(currency curr, std::ostream* os) { *os << fmt::format("{} zł", curr); }
 
-	void PrintTo(percent per, std::ostream* os) {
-		*os << fmt::format("{}%", per);
-	}
+	void PrintTo(percent per, std::ostream* os) { *os << fmt::format("{}%", per); }
 }  // namespace quick_dra
 
 namespace quick_dra::testing {
 	namespace {
-		std::map<currency, percent> from(
-		    std::span<std::pair<currency, percent> const> scale) {
+		std::map<currency, percent> from(std::span<std::pair<currency, percent> const> scale) {
 			return {scale.begin(), scale.end()};
 		}
 	};  // namespace
@@ -34,8 +29,7 @@ namespace quick_dra::testing {
 			currency tax_owed{};
 		} expected;
 
-		friend std::ostream& operator<<(std::ostream& out,
-		                                tax_testcase const& params) {
+		friend std::ostream& operator<<(std::ostream& out, tax_testcase const& params) {
 			out << "scale: (";
 			auto first = true;
 			for (auto [amount, rate] : params.scale) {
@@ -45,8 +39,7 @@ namespace quick_dra::testing {
 					out << ", ";
 				out << fmt::format("over {} zł at {}%", amount, rate);
 			}
-			out << fmt::format("), salary: {} zł, exp: {} zł",
-			                   params.taxable_amount,
+			out << fmt::format("), salary: {} zł, exp: {} zł", params.taxable_amount,
 			                   params.expected.tax_lowering_amount);
 			if (params.expected.tax_owed > currency{}) {
 				out << fmt::format(" / {} zł", params.expected.tax_owed);
@@ -69,8 +62,7 @@ namespace quick_dra::testing {
 		ASSERT_EQ(actual, expected.tax_owed);
 	}
 
-	static constexpr auto scale_empty =
-	    std::array<std::pair<currency, percent>, 0>{};
+	static constexpr auto scale_empty = std::array<std::pair<currency, percent>, 0>{};
 
 	static constexpr auto scale_17_32 = std::array{
 	    std::pair{currency{30'000'00}, percent{17'00}},
@@ -82,11 +74,9 @@ namespace quick_dra::testing {
 	    std::pair{currency{120'000'00}, percent{32'00}},
 	};
 
-	static constexpr auto scale_17_lowering_amount =
-	    currency{425'00};  // 5100 / 12
+	static constexpr auto scale_17_lowering_amount = currency{425'00};  // 5100 / 12
 
-	static constexpr auto scale_12_lowering_amount =
-	    currency{300'00};  // 3600 / 12
+	static constexpr auto scale_12_lowering_amount = currency{300'00};  // 3600 / 12
 
 	static constexpr tax_testcase tests[] = {
 	    {
@@ -107,20 +97,17 @@ namespace quick_dra::testing {
 	    {
 	        .scale = scale_12_32,
 	        .taxable_amount = currency{10'000'00},
-	        .expected{.tax_lowering_amount = scale_12_lowering_amount,
-	                  .tax_owed = currency{900'00}},
+	        .expected{.tax_lowering_amount = scale_12_lowering_amount, .tax_owed = currency{900'00}},
 	    },
 	    {
 	        .scale = scale_12_32,
 	        .taxable_amount = currency{11'000'00},
-	        .expected{.tax_lowering_amount = scale_12_lowering_amount,
-	                  .tax_owed = currency{1220'00}},
+	        .expected{.tax_lowering_amount = scale_12_lowering_amount, .tax_owed = currency{1220'00}},
 	    },
 	    {
 	        .scale = scale_12_32,
 	        .taxable_amount = currency{11'025'46},
-	        .expected{.tax_lowering_amount = scale_12_lowering_amount,
-	                  .tax_owed = currency{1228'15}},
+	        .expected{.tax_lowering_amount = scale_12_lowering_amount, .tax_owed = currency{1228'15}},
 	    },
 	};
 

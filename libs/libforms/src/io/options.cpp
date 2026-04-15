@@ -16,12 +16,10 @@ namespace quick_dra {
 	namespace {
 		static constexpr auto GITHUB_MAIN_BRANCH =
 		    "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/"sv;
-		static constexpr auto GITHUB_TAX_CONFIG =
-		    "data/config/tax_config.yaml"sv;
+		static constexpr auto GITHUB_TAX_CONFIG = "data/config/tax_config.yaml"sv;
 
 		template <typename T>
-		T find_in_timeline(year_month const& key,
-		                   std::map<year_month, T> const& minimal) {
+		T find_in_timeline(year_month const& key, std::map<year_month, T> const& minimal) {
 			year_month result_date{};
 			T result{};
 
@@ -43,8 +41,7 @@ namespace quick_dra {
 			auto resp = http_get(url);
 			if (!resp) {
 				if (level >= verbose::parameters) {
-					fmt::print("-- nothing downloaded (status: {}, {})\n",
-					           resp.status, url);
+					fmt::print("-- nothing downloaded (status: {}, {})\n", resp.status, url);
 				}
 				return {};
 			}
@@ -52,8 +49,7 @@ namespace quick_dra {
 			auto view = resp.text();
 
 			// TODO: object vs array
-			auto result =
-			    tax_config::parse_from_text({view.data(), view.size()}, url);
+			auto result = tax_config::parse_from_text({view.data(), view.size()}, url);
 			if (level >= verbose::parameters) {
 				fmt::print("-- downloaded {}\n", url);
 			}
@@ -64,31 +60,26 @@ namespace quick_dra {
 	}  // namespace
 
 	std::string set_filename(unsigned report_index, year_month const& date) {
-		return fmt::format("quick-dra_{}{:02}-{:02}.xml",
-		                   static_cast<int>(date.year()),
+		return fmt::format("quick-dra_{}{:02}-{:02}.xml", static_cast<int>(date.year()),
 		                   static_cast<unsigned>(date.month()), report_index);
 	}
 
-	std::optional<config> parse_config(
-	    verbose level,
-	    year_month const& date,
-	    std::filesystem::path const& path,
-	    std::optional<std::filesystem::path> tax_config_path) {
+	std::optional<config> parse_config(verbose level,
+	                                   year_month const& date,
+	                                   std::filesystem::path const& path,
+	                                   std::optional<std::filesystem::path> tax_config_path) {
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
 		auto const loaders = std::array{
 		    // tax_config_loader
-		    std::function{
-		        [&tax_config_path](verbose) -> std::optional<tax_config> {
-			        if (!tax_config_path) return std::nullopt;
-			        return tax_config::parse_yaml(*tax_config_path);
-		        }},
-		    std::function{download_tax_config},
-		    std::function{+[](verbose) {
-			    return tax_config::parse_yaml(platform::config_data_dir() /
-			                                  "tax_config.yaml"sv);
+		    std::function{[&tax_config_path](verbose) -> std::optional<tax_config> {
+			    if (!tax_config_path) return std::nullopt;
+			    return tax_config::parse_yaml(*tax_config_path);
 		    }},
+		    std::function{download_tax_config},
+		    std::function{
+		        +[](verbose) { return tax_config::parse_yaml(platform::config_data_dir() / "tax_config.yaml"sv); }},
 		};
 
 		tax_config tax_cfg{};
@@ -109,8 +100,7 @@ namespace quick_dra {
 
 		auto& params = result->params;
 
-#define FIND_IN_TIMELINE(NAME) \
-	params.NAME = find_in_timeline(date, tax_cfg.NAME)
+#define FIND_IN_TIMELINE(NAME) params.NAME = find_in_timeline(date, tax_cfg.NAME)
 		FIND_IN_TIMELINE(scale);
 		FIND_IN_TIMELINE(minimal_pay);
 		FIND_IN_TIMELINE(costs_of_obtaining);
@@ -128,8 +118,7 @@ namespace quick_dra {
 				}
 			}  // GCOV_EXCL_LINE[WIN32]
 			if (!everyone_has_salary) {
-				fmt::print("--   minimal pay for month reported: {:.02f} zł\n",
-				           result->params.minimal_pay);
+				fmt::print("--   minimal pay for month reported: {:.02f} zł\n", result->params.minimal_pay);
 			}
 		}
 

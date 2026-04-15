@@ -24,8 +24,7 @@ namespace quick_dra {
 
 		template <fixed_child Value>
 		inline Value round_to_whole(Value const& v) {
-			auto const value =
-			    ((v.value + (Value::den / 2)) / Value::den) * Value::den;
+			auto const value = ((v.value + (Value::den / 2)) / Value::den) * Value::den;
 			return Value{value};
 		}
 
@@ -39,13 +38,9 @@ namespace quick_dra {
 			return result;
 		}
 
-		currency get_currency(global_object const& data, varname const& var) {
-			return data.typed_value<currency>(var);
-		}
+		currency get_currency(global_object const& data, varname const& var) { return data.typed_value<currency>(var); }
 
-		void reduce_contribution(global_object& dst,
-		                         global_object const& src,
-		                         compiletime_varname path) {
+		void reduce_contribution(global_object& dst, global_object const& src, compiletime_varname path) {
 			static auto const dummy = global_object{};
 			auto const var = varname::parse(path.name);
 			auto& tgt = dst.get(var);
@@ -60,13 +55,10 @@ namespace quick_dra {
 			auto from_payer = get_currency(from, var::payer);
 			auto from_insured = get_currency(from, var::insured);
 
-			tgt = contribution{.payer = from_payer + tgt_payer,
-			                   .insured = from_insured + tgt_insured};
+			tgt = contribution{.payer = from_payer + tgt_payer, .insured = from_insured + tgt_insured};
 		}
 
-		void reduce_currency(global_object& dst,
-		                     global_object const& src,
-		                     compiletime_varname path) {
+		void reduce_currency(global_object& dst, global_object const& src, compiletime_varname path) {
 			auto const var = varname::parse(path.name);
 			auto& tgt = dst.get(var);
 
@@ -91,18 +83,14 @@ namespace quick_dra {
 			auto& serial = result.state.get(var::serial);
 			serial.insert(var::NN, fmt::format("{:02}", report_index));
 			serial.insert(var::DATE,
-			              fmt::format("{}-{:02}", static_cast<int>(date.year()),
-			                          static_cast<unsigned>(date.month())));
-			result.state.insert(
-			    var::today,
-			    fmt::format("{}-{:02}-{:02}", static_cast<int>(today.year()),
-			                static_cast<unsigned>(today.month()),
-			                static_cast<unsigned>(today.day())));
+			              fmt::format("{}-{:02}", static_cast<int>(date.year()), static_cast<unsigned>(date.month())));
+			result.state.insert(var::today,
+			                    fmt::format("{}-{:02}-{:02}", static_cast<int>(today.year()),
+			                                static_cast<unsigned>(today.month()), static_cast<unsigned>(today.day())));
 
 			auto& payer = result.state.get(var::payer);
 			auto const& input = cfg.payer;
-			auto const bday =
-			    social_id_validator::get_birthday(input.social_id);
+			auto const bday = social_id_validator::get_birthday(input.social_id);
 			auto const _first = to_upper(input.first_name);
 			auto const _last = to_upper(input.last_name);
 			payer.insert(var::tax_id, input.tax_id);
@@ -112,19 +100,15 @@ namespace quick_dra {
 			payer.insert(var::name, fmt::format("{} {}", _first, _last));
 			payer.insert(var::last, _last);
 			payer.insert(var::first, _first);
-			payer.insert(
-			    var::birthday,
-			    fmt::format("{}-{:02}-{:02}", static_cast<int>(bday.year()),
-			                static_cast<unsigned>(bday.month()),
-			                static_cast<unsigned>(bday.day())));
+			payer.insert(var::birthday,
+			             fmt::format("{}-{:02}-{:02}", static_cast<int>(bday.year()),
+			                         static_cast<unsigned>(bday.month()), static_cast<unsigned>(bday.day())));
 
 			return result;
 		}
 	}  // namespace
 
-	std::vector<calculated_section> form::fill(
-	    verbose level,
-	    std::vector<compiled_section> const& tmplt) const {
+	std::vector<calculated_section> form::fill(verbose level, std::vector<compiled_section> const& tmplt) const {
 		auto result = calculate(tmplt, state);
 
 		if (level == verbose::calculated_sections) {
@@ -152,32 +136,24 @@ namespace quick_dra {
 			return calc_currency{calc.value * scale_num / scale_den}.rounded();
 		}();
 
-		auto const tax_lowering_amount =
-		    calc_tax_lowering_amount(cfg.params.scale);
+		auto const tax_lowering_amount = calc_tax_lowering_amount(cfg.params.scale);
 
-		auto const all_contributions =
-		    cfg.params.contributions.contribution_on(baseline);
+		auto const all_contributions = cfg.params.contributions.contribution_on(baseline);
 
 		auto const insured_contributions = all_contributions.insured();
-		auto const taxed_baseline = round_to_whole(
-		    clamp(baseline - (insured_contributions +
-		                      cfg.params.costs_of_obtaining.local)));
+		auto const taxed_baseline =
+		    round_to_whole(clamp(baseline - (insured_contributions + cfg.params.costs_of_obtaining.local)));
 
 		auto const tax_owed = calc_tax_owed(cfg.params.scale, taxed_baseline);
 
 		auto const health_lowered = clamp(tax_owed - tax_lowering_amount);
 		auto const health_contribution_intermediate =
-		    (clamp(baseline - insured_contributions).calc() *
-		     cfg.params.contributions.health.insured)
-		        .rounded();
+		    (clamp(baseline - insured_contributions).calc() * cfg.params.contributions.health.insured).rounded();
 
 		auto const health_contribution =
-		    health_contribution_intermediate < health_lowered
-		        ? health_contribution_intermediate
-		        : health_lowered;
+		    health_contribution_intermediate < health_lowered ? health_contribution_intermediate : health_lowered;
 
-		auto const cost_on_insured =
-		    insured_contributions + tax_owed + health_contribution;
+		auto const cost_on_insured = insured_contributions + tax_owed + health_contribution;
 		auto const cost_on_payer = all_contributions.payer();
 
 		auto result = calc_common("RCA"s, report_index, date, today, cfg);
@@ -195,16 +171,11 @@ namespace quick_dra {
 		result.state.insert(var::salary.net, clamp(baseline - cost_on_insured));
 		result.state.insert(var::salary.payer_gross, baseline + cost_on_payer);
 
-		result.state.insert(var::health_insurance,
-		                    all_contributions.health_insurance);
-		result.state.insert(var::pension_insurance,
-		                    all_contributions.pension_insurance);
-		result.state.insert(var::disability_insurance,
-		                    all_contributions.disability_insurance);
-		result.state.insert(var::accident_insurance,
-		                    all_contributions.accident_insurance);
-		result.state.insert(var::guaranteed_employee_benefits_fund,
-		                    contribution{});
+		result.state.insert(var::health_insurance, all_contributions.health_insurance);
+		result.state.insert(var::pension_insurance, all_contributions.pension_insurance);
+		result.state.insert(var::disability_insurance, all_contributions.disability_insurance);
+		result.state.insert(var::accident_insurance, all_contributions.accident_insurance);
+		result.state.insert(var::guaranteed_employee_benefits_fund, contribution{});
 
 		result.state.insert(var::health_baseline, taxed_baseline);
 		result.state.insert(var::health_contribution, health_contribution);
@@ -220,12 +191,8 @@ namespace quick_dra {
 	              config const& cfg,
 	              std::vector<form> const& forms) {
 		auto result = calc_common("DRA"s, report_index, date, today, cfg);
-		result.state.insert(
-		    var::insured_count,
-		    uint_value{static_cast<unsigned>(cfg.insured.size())});
-		result.state.insert(
-		    var::accident_insurance_contribution,
-		    cfg.params.contributions.accident_insurance.total());
+		result.state.insert(var::insured_count, uint_value{static_cast<unsigned>(cfg.insured.size())});
+		result.state.insert(var::accident_insurance_contribution, cfg.params.contributions.accident_insurance.total());
 
 		reduce_form(result.state, {});
 		for (auto const& src : forms) {
@@ -245,16 +212,14 @@ namespace quick_dra {
 		forms.reserve(cfg.insured.size() + 1);
 
 		for (auto const& insured : cfg.insured) {
-			forms.emplace_back(
-			    calc_rca(insured, report_index, date, today, cfg));
+			forms.emplace_back(calc_rca(insured, report_index, date, today, cfg));
 		}
 
 		forms.emplace_back(calc_dra(report_index, date, today, cfg, forms));
 		if (level >= verbose::raw_form_data) {
 			fmt::print("-- form data:\n");
 			for (auto const& form : forms) {
-				auto const doc_id =
-				    form.state.typed_value(var::insured.document, ""s);
+				auto const doc_id = form.state.typed_value(var::insured.document, ""s);
 				if (doc_id.empty()) {
 					fmt::print("--   {}:", form.key);
 				} else {

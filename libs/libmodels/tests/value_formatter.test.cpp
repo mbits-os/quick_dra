@@ -34,8 +34,8 @@ namespace quick_dra::testing {
 	    {value_list{}, "[]"sv},
 	    {value_list{"string"s}, "['string']"sv},
 	    {
-	        value_list{"string"s, 3.14_PLN, 98.1_per, uint_value(1337),
-	                   addition{.refs = {1, 2, 3}}, "first.second.third"_var},
+	        value_list{"string"s, 3.14_PLN, 98.1_per, uint_value(1337), addition{.refs = {1, 2, 3}},
+	                   "first.second.third"_var},
 	        "['string', 3.14 zł, 98.10%, 1337, (1 + 2 + 3), $first.second.third]"sv,
 	    },
 	};

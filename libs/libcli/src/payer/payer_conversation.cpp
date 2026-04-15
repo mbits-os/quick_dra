@@ -10,34 +10,22 @@
 #include <type_traits>
 
 namespace quick_dra::builtin::payer {
-	conversation::conversation(std::string_view tool_name,
-	                           args::arglist arguments,
-	                           std::string_view description)
+	conversation::conversation(std::string_view tool_name, args::arglist arguments, std::string_view description)
 	    : arg_parser{tool_name, arguments, description} {}
 
 	void conversation::parse_args() {
 		std::optional<std::string> config_path;
 
-		parser.arg(config_path, "config")
-		    .meta("<path>")
-		    .help("select config file; defaults to ~/.quick_dra.yaml");
+		parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
 		parser.set<std::false_type>(ask_questions, "y")
 		    .help(
 		        "use answers from command line and previous entries in config "
 		        "file; do not ask additional questions")
 		    .opt();
-		parser.arg(opts.first_name, "first")
-		    .meta("<name>")
-		    .help("provide first name of the payer");
-		parser.arg(opts.last_name, "last")
-		    .meta("<name>")
-		    .help("provide last name of the payer");
-		parser.arg(opts.social_id, "social-id")
-		    .meta("<number>")
-		    .help("provide PESEL number");
-		parser.arg(opts.tax_id, "tax-id")
-		    .meta("<number>")
-		    .help("provide NIP number");
+		parser.arg(opts.first_name, "first").meta("<name>").help("provide first name of the payer");
+		parser.arg(opts.last_name, "last").meta("<name>").help("provide last name of the payer");
+		parser.arg(opts.social_id, "social-id").meta("<number>").help("provide PESEL number");
+		parser.arg(opts.tax_id, "tax-id").meta("<number>").help("provide NIP number");
 		parser.arg(opts.id_card, "id-card")
 		    .meta("<number>")
 		    .help(
@@ -74,7 +62,6 @@ namespace quick_dra::builtin::payer {
 		    .required(policies::last_name.through("--last"sv))
 		    .required(policies::social_id.through("--social-id"sv))
 		    .required(policies::tax_id.through("--tax-id"sv))
-		    .required(policies::id_card.through("--id-card"sv),
-		              policies::passport.through("--passport"sv));
+		    .required(policies::id_card.through("--id-card"sv), policies::passport.through("--passport"sv));
 	}
 }  // namespace quick_dra::builtin::payer

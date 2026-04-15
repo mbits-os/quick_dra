@@ -16,20 +16,17 @@ namespace quick_dra::builtin::testing::xml {
 
 		year_month_day get_today() {
 			auto const now = system_clock::now();
-			auto const local =
-			    floor<days>(zoned_time{current_zone(), now}.get_local_time());
+			auto const local = floor<days>(zoned_time{current_zone(), now}.get_local_time());
 			return year_month_day{local};
 		}
 
 		std::string no_config_stdout() {
 			auto const today = get_today();
-			auto const date =
-			    year_month{today.year(), today.month()} - months{1};
+			auto const date = year_month{today.year(), today.month()} - months{1};
 			return fmt::format(R"(-- report: #1 {:04}-{:02}
 Quick-DRA: error: cannot find .quick_dra.yaml
 )",
-			                   static_cast<int>(date.year()),
-			                   static_cast<unsigned>(date.month()));
+			                   static_cast<int>(date.year()), static_cast<unsigned>(date.month()));
 			;
 		}
 	}  // namespace
@@ -59,14 +56,12 @@ ubezpieczeni:
 	        .writes =
 	            new_file{
 	                .name = "quick-dra_202512-01.xml"sv,
-	                .cmp =
-	                    "quick-dra_202512-01.AB4123456_50671500000_not-pretty.xml"sv,
+	                .cmp = "quick-dra_202512-01.AB4123456_50671500000_not-pretty.xml"sv,
 	            },
 	    },
 	    {
 	        .name = "minimal_pay"sv,
-	        .args =
-	            "xml --pretty --info --today 2026-1-1 --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --info --today 2026-1-1 --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -94,8 +89,7 @@ ubezpieczeni:
 	    },
 	    {
 	        .name = "one quarter"sv,
-	        .args =
-	            "xml --pretty --info --today 2026-2-1 --config .quick_dra.yaml -vvv"sv,
+	        .args = "xml --pretty --info --today 2026-2-1 --config .quick_dra.yaml -vvv"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -132,15 +126,13 @@ ubezpieczeni:
 	        .writes =
 	            new_file{
 	                .name = "quick-dra_202601-01.xml"sv,
-	                .cmp =
-	                    "quick-dra_202601-01.AB4123456_50671500000.quarter.xml"sv,
+	                .cmp = "quick-dra_202601-01.AB4123456_50671500000.quarter.xml"sv,
 	            },
 	    },
 	    {
 	        // has "check"
 	        .name = "verbosity 6"sv,
-	        .args =
-	            "xml --pretty --today 2026-2-1 -vvvvvv --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --today 2026-2-1 -vvvvvv --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: "Nowak (HOME), Jan"
@@ -420,8 +412,7 @@ ubezpieczeni:
 	    {
 	        // has "check"
 	        .name = "verbosity 7"sv,
-	        .args =
-	            "xml --pretty --today 2026-2-1 -vvvvvvv --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --today 2026-2-1 -vvvvvvv --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: "Nowak (HOME), Jan"
@@ -701,8 +692,7 @@ ubezpieczeni:
 	    {
 	        // has "check"
 	        .name = "verbosity 8"sv,
-	        .args =
-	            "xml --pretty --today 2026-2-1 -vvvvvvvv --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --today 2026-2-1 -vvvvvvvv --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: "Nowak (HOME), Jan"
@@ -834,8 +824,7 @@ ubezpieczeni:
 	    },
 	    {
 	        .name = "today not matching A"sv,
-	        .args =
-	            "xml --pretty --info --today 2026-14-34 --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --info --today 2026-14-34 --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -855,8 +844,7 @@ qdra xml: error: --today: expected YYYY-MM-DD, got `2026-14-34'
 	    },
 	    {
 	        .name = "today not matching B"sv,
-	        .args =
-	            "xml --pretty --info --today something --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --info --today something --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -876,8 +864,7 @@ qdra xml: error: --today: expected YYYY-MM-DD, got `something'
 	    },
 	    {
 	        .name = "today invalid"sv,
-	        .args =
-	            "xml --pretty --info --today 2026-02-31 --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --info --today 2026-02-31 --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
@@ -897,8 +884,7 @@ qdra xml: error: --today: expected YYYY-MM-DD, got `2026-02-31'
 	    },
 	    {
 	        .name = "report index out of bounds"sv,
-	        .args =
-	            "xml --pretty --info --today 2026-1-1 -n 199 --config .quick_dra.yaml"sv,
+	        .args = "xml --pretty --info --today 2026-1-1 -n 199 --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'

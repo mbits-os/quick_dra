@@ -12,7 +12,5 @@
 #include <vector>
 
 namespace quick_dra {
-	xml build_file_set(options const& opts,
-	                   std::vector<form> const& forms,
-	                   compiled_templates const& templates);
+	xml build_file_set(options const& opts, std::vector<form> const& forms, compiled_templates const& templates);
 }  // namespace quick_dra

@@ -12,27 +12,20 @@ namespace quick_dra {
 	struct builtin_tool {
 		std::string_view name;
 		std::string_view description;
-		int (*tool)(std::string_view tool,
-		            args::arglist args,
-		            std::string_view description);
+		int (*tool)(std::string_view tool, args::arglist args, std::string_view description);
 	};
 
 	class tools {
 	public:
 		tools(std::span<builtin_tool const> commands) : commands_{commands} {}
 
-		int handle(std::string_view tool,
-		           args::arglist tool_args,
-		           std::string_view parent_name) const;
+		int handle(std::string_view tool, args::arglist tool_args, std::string_view parent_name) const;
 
 		template <typename ArgParser>
-		static int run(ArgParser& parser,
-		               std::span<builtin_tool const> commands,
-		               std::string_view parent_name) {
+		static int run(ArgParser& parser, std::span<builtin_tool const> commands, std::string_view parent_name) {
 			auto const [tool, tool_args] = parser.parse_args();
 
-			auto const ret =
-			    tools{commands}.handle(tool, tool_args, parent_name);
+			auto const ret = tools{commands}.handle(tool, tool_args, parent_name);
 			if (ret == -ENOENT) {
 				parser.noent(tool, parent_name);
 				return 1;

@@ -17,15 +17,12 @@
 #include <vector>
 
 namespace quick_dra::builtin::insured::remove {
-	int handle(std::string_view tool_name,
-	           args::arglist arguments,
-	           std::string_view description) {
+	int handle(std::string_view tool_name, args::arglist arguments, std::string_view description) {
 		options opts{};
 
 		{
 			args::null_translator tr{};
-			args::parser parser{
-			    as_str(description), {tool_name, arguments}, &tr};
+			args::parser parser{as_str(description), {tool_name, arguments}, &tr};
 
 			auto const ret = get_options(parser, opts);
 			if (ret) {
@@ -39,11 +36,8 @@ namespace quick_dra::builtin::insured::remove {
 
 		for (auto const index : opts.found) {
 			auto const& person = opts.cfg.insured->at(index);
-			fmt::print("    #{0}: {1} {2} [{3} {4}]\n", index + 1,
-			           person.first_name.value_or("??"),
-			           person.last_name.value_or("??"),
-			           person.kind.value_or("??"),
-			           person.document.value_or("??"));
+			fmt::print("    #{0}: {1} {2} [{3} {4}]\n", index + 1, person.first_name.value_or("??"),
+			           person.last_name.value_or("??"), person.kind.value_or("??"), person.document.value_or("??"));
 		}
 
 		if (opts.found.size() > 1) {
@@ -57,8 +51,7 @@ namespace quick_dra::builtin::insured::remove {
 		if (opts.ask_questions) {
 			bool remove_allowed = false;
 			fmt::print("\n");
-			if (!get_yes_no("Do you want to delete this record?", true,
-			                remove_allowed, std::cin)) {
+			if (!get_yes_no("Do you want to delete this record?", true, remove_allowed, std::cin)) {
 				return 1;
 			}
 
@@ -68,11 +61,9 @@ namespace quick_dra::builtin::insured::remove {
 			}
 		}
 
-		opts.cfg.insured->erase(
-		    std::next(opts.cfg.insured->begin(), opts.found.front()));
+		opts.cfg.insured->erase(std::next(opts.cfg.insured->begin(), opts.found.front()));
 		if (!opts.cfg.store(opts.path)) {
-			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n",
-			           opts.path);
+			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n", opts.path);
 			return 1;
 		}
 

@@ -5,51 +5,40 @@
 #include "parser_impl.common.hpp"
 
 namespace quick_dra::testing {
-	class parser_impl : public ::testing::Test,
-	                    public object_reader<templates> {};
+	class parser_impl : public ::testing::Test, public object_reader<templates> {};
 
 	namespace debug {
 		std::string format_field(templates_fields::value_type const& p) {
 			auto const id = p.first;
 			auto const& value = p.second;
 			if (std::holds_alternative<std::string>(value)) {
-				return fmt::format("{}: '{}'", id,
-				                   std::get<std::string>(value));
+				return fmt::format("{}: '{}'", id, std::get<std::string>(value));
 			}
 
-			return fmt::format(
-			    "{}: [{}]", id,
-			    fmt::join(std::get<std::vector<std::string>>(value), ", "));
+			return fmt::format("{}: [{}]", id, fmt::join(std::get<std::vector<std::string>>(value), ", "));
 		}
 
 		std::string format_section_id(report_section const& section) {
-			auto const block = section.block
-			                       .transform([](auto const& block) {
-				                       return fmt::format(".{}", block);
-			                       })
-			                       .value_or("");
+			auto const block =
+			    section.block.transform([](auto const& block) { return fmt::format(".{}", block); }).value_or("");
 			return fmt::format("{}{}", section.id, block);
 		}
 
 		std::string format_section(report_section const& section) {
-			return fmt::format(
-			    "{}=[{}]", format_section_id(section),
-			    fmt::join(section.fields | std::views::transform(format_field),
-			              ", "));
+			return fmt::format("{}=[{}]", format_section_id(section),
+			                   fmt::join(section.fields | std::views::transform(format_field), ", "));
 		}
 
 		std::string format_report(templates_report const& report) {
-			return fmt::to_string(fmt::join(
-			    report | std::views::transform(format_section), ", "));
+			return fmt::to_string(fmt::join(report | std::views::transform(format_section), ", "));
 		}
 	}  // namespace debug
 
 	TEST_F(parser_impl, empty_template) {
 		auto const value = read(R"()"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(
-		    log,
-		    R"(error: expecting `reports`; please use explicit {} to heave empty object instead
+		ASSERT_EQ(log,
+		          R"(error: expecting `reports`; please use explicit {} to heave empty object instead
 error: while reading `reports`
 )"sv);
 	}
@@ -261,10 +250,8 @@ reports:
 	TEST_F(parser_impl, template_from_file) {
 		auto const here = platform::exec_dir();
 		// reverse of build/<config>/bin/tests
-		auto const root =
-		    here.parent_path().parent_path().parent_path().parent_path();
-		auto const templates_path =
-		    root / "data"sv / "config"sv / "templates.yaml";
+		auto const root = here.parent_path().parent_path().parent_path().parent_path();
+		auto const templates_path = root / "data"sv / "config"sv / "templates.yaml";
 
 		::testing::internal::CaptureStderr();
 		auto const value = templates::parse_yaml(templates_path);

@@ -39,26 +39,18 @@ namespace quick_dra::testing {
 	};
 
 	static constexpr auto verbose_levels = std::array{
-	    verbose::none,
-	    verbose::names_only,
-	    verbose::names_and_summary,
-	    verbose::names_and_details,
-	    verbose::parameters,
-	    verbose::raw_form_data,
-	    verbose::templates,
-	    verbose::calculated_sections,
+	    verbose::none,       verbose::names_only,    verbose::names_and_summary, verbose::names_and_details,
+	    verbose::parameters, verbose::raw_form_data, verbose::templates,         verbose::calculated_sections,
 	    verbose::last,
 	};
 
 	struct read_print_testcase {
 		std::string_view yaml{};
 		void (*debug_print)(std::string_view, verbose) = nullptr;
-		std::array<std::string_view, std::to_underlying(verbose::last) + 1>
-		    expected{};
+		std::array<std::string_view, std::to_underlying(verbose::last) + 1> expected{};
 
 		template <verbose... Level>
-		[[nodiscard]] consteval read_print_testcase on(
-		    std::string_view output) const noexcept {
+		[[nodiscard]] consteval read_print_testcase on(std::string_view output) const noexcept {
 			auto copy = *this;
 			((copy.expected[std::to_underlying(Level)] = output), ...);
 			return copy;
@@ -112,14 +104,11 @@ namespace quick_dra::testing {
 		}
 	};
 
-	compiled_templates_helper postproc_load(templates& src) {
-		return {.templates = compiled_templates::compile(src)};
-	}
+	compiled_templates_helper postproc_load(templates& src) { return {.templates = compiled_templates::compile(src)}; }
 
 	template <typename FileObj>
 	void load_and_print(std::string_view text, verbose level) {
-		auto object = parser::parse_yaml_text<FileObj>(
-		    {text.data(), text.size()}, "input"s);
+		auto object = parser::parse_yaml_text<FileObj>({text.data(), text.size()}, "input"s);
 		if (!object) return;
 		auto const& obj = postproc_load(static_cast<FileObj&>(*object));
 		obj.debug_print(level);

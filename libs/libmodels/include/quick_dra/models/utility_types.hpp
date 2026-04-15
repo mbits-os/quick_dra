@@ -29,6 +29,5 @@ namespace quick_dra::utility {
 	};  // NOLINT(readability/braces)
 
 	template <typename T>
-	using add_optional =
-	    std::conditional_t<OptionalType<T>, T, std::optional<T>>;
+	using add_optional = std::conditional_t<OptionalType<T>, T, std::optional<T>>;
 }  // namespace quick_dra::utility

@@ -25,9 +25,8 @@ namespace quick_dra {
 	};
 
 	std::string set_filename(unsigned report_index, year_month const& date);
-	std::optional<config> parse_config(
-	    verbose level,
-	    year_month const& date,
-	    std::filesystem::path const& path,
-	    std::optional<std::filesystem::path> tax_config_path);
+	std::optional<config> parse_config(verbose level,
+	                                   year_month const& date,
+	                                   std::filesystem::path const& path,
+	                                   std::optional<std::filesystem::path> tax_config_path);
 }  // namespace quick_dra

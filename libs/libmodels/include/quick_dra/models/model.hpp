@@ -39,29 +39,23 @@ namespace quick_dra {
 	struct compiletime_varname {
 		std::string_view name;
 		operator varname() const { return varname::parse(name); }
-		constexpr auto operator<=>(compiletime_varname const&) const noexcept =
-		    default;
+		constexpr auto operator<=>(compiletime_varname const&) const noexcept = default;
 	};
 
-	inline consteval compiletime_varname operator""_var(char const* data,
-	                                                    size_t size) {
-		return {.name{data, size}};
-	}
+	inline consteval compiletime_varname operator""_var(char const* data, size_t size) { return {.name{data, size}}; }
 
 	namespace var {
 #define VAR_CONST static constexpr auto
 #define VAR(N) VAR_CONST N = #N##_var
 #define MEMBER_VAR(N, M) VAR_CONST M = #N "." #M##_var
-#define VAR_BEGIN(N)                                              \
-	struct N##_t {                                                \
-	private:                                                      \
-		VAR_CONST name_{#N##_var};                                \
-                                                                  \
-	public:                                                       \
-		operator varname() const { return name_; }                \
-		constexpr operator compiletime_varname() const noexcept { \
-			return name_;                                         \
-		}
+#define VAR_BEGIN(N)                               \
+	struct N##_t {                                 \
+	private:                                       \
+		VAR_CONST name_{#N##_var};                 \
+                                                   \
+	public:                                        \
+		operator varname() const { return name_; } \
+		constexpr operator compiletime_varname() const noexcept { return name_; }
 #define VAR_END(N) \
 	}              \
 	;              \
@@ -129,8 +123,7 @@ namespace quick_dra {
 #undef VAR_CONST
 	};  // namespace var
 
-	using calculated_value = std::
-	    variant<std::monostate, std::string, currency, percent, uint_value>;
+	using calculated_value = std::variant<std::monostate, std::string, currency, percent, uint_value>;
 	using compiled_value = expand_args_t<calculated_value, addition, varname>;
 
 	template <typename ValueType>
@@ -138,27 +131,13 @@ namespace quick_dra {
 		// GCOV_EXCL_START
 		auto operator()(std::monostate) const { return "<null>"s; }
 		// GCOV_EXCL_STOP
-		auto operator()(std::string const& str) const {
-			return fmt::format("'{}'", str);
-		}
-		auto operator()(currency const& value) const {
-			return fmt::format("{:.2f} zł", value);
-		}
-		auto operator()(percent const& value) const {
-			return fmt::format("{:.2f}%", value);
-		}
-		auto operator()(uint_value const& value) const {
-			return fmt::format("{}", value);
-		}
-		auto operator()(addition const& sum) const {
-			return fmt::format("({})", fmt::join(sum.refs, " + "));
-		}
-		auto operator()(varname const& var) const {
-			return fmt::format("${}", fmt::join(var.path, "."));
-		}
-		auto operator()(ValueType const& value) const {
-			return std::visit(*this, value);
-		}
+		auto operator()(std::string const& str) const { return fmt::format("'{}'", str); }
+		auto operator()(currency const& value) const { return fmt::format("{:.2f} zł", value); }
+		auto operator()(percent const& value) const { return fmt::format("{:.2f}%", value); }
+		auto operator()(uint_value const& value) const { return fmt::format("{}", value); }
+		auto operator()(addition const& sum) const { return fmt::format("({})", fmt::join(sum.refs, " + ")); }
+		auto operator()(varname const& var) const { return fmt::format("${}", fmt::join(var.path, ".")); }
+		auto operator()(ValueType const& value) const { return std::visit(*this, value); }
 		auto operator()(std::vector<ValueType> const& values) const {
 			std::string result{"["};
 			bool first = true;
@@ -173,9 +152,7 @@ namespace quick_dra {
 			return result;
 		}  // GCOV_EXCL_LINE[GCC]
 
-		auto operator()(maybe_list<ValueType> const& value) const {
-			return std::visit(*this, value);
-		}
+		auto operator()(maybe_list<ValueType> const& value) const { return std::visit(*this, value); }
 	};
 
 	template <typename ValueType>
@@ -189,12 +166,9 @@ namespace quick_dra {
 		}
 
 		explicit value_printer(FILE* file)
-		    : value_printer{
-		          [file](auto const& text) { fmt::print(file, "{}", text); }} {}
+		    : value_printer{[file](auto const& text) { fmt::print(file, "{}", text); }} {}
 
-		void operator()(auto const& arg) const {
-			sink_(value_formatter<ValueType>{}(arg));
-		}
+		void operator()(auto const& arg) const { sink_(value_formatter<ValueType>{}(arg)); }
 
 	private:
 		sink_type sink_{};
@@ -209,8 +183,7 @@ namespace quick_dra {
 		void debug_print(int indent, bool standalone = true) const noexcept {
 			bool first = standalone;
 			if (!id.empty()) {
-				fmt::print("-- {:{}}{} id: {}\n", "", indent, first ? '-' : ' ',
-				           id);
+				fmt::print("-- {:{}}{} id: {}\n", "", indent, first ? '-' : ' ', id);
 				first = false;
 			}
 
@@ -221,8 +194,7 @@ namespace quick_dra {
 				max_id = std::max(index, max_id);
 			}
 
-			auto const width =
-			    max_id ? static_cast<unsigned>(std::log10(max_id) + 1.0) : 1u;
+			auto const width = max_id ? static_cast<unsigned>(std::log10(max_id) + 1.0) : 1u;
 
 			static const auto printer = value_printer<ValueType>{};
 
@@ -261,8 +233,7 @@ namespace quick_dra {
 	};
 
 	template <typename ValueType>
-	inline void debug_print(
-	    std::vector<section<ValueType>> const& report) noexcept {
+	inline void debug_print(std::vector<section<ValueType>> const& report) noexcept {
 		for (auto const& section : report) {
 			section.debug_print();
 		}
@@ -278,16 +249,11 @@ namespace quick_dra {
 	using calculated_section = section<calculated_value>;
 	using compiled_section = section<compiled_value>;
 
-	calculated_block calculate(compiled_block const& self,
-	                           struct global_object const& ctx,
-	                           std::string_view log_name);
+	calculated_block calculate(compiled_block const& self, struct global_object const& ctx, std::string_view log_name);
 
-	calculated_section calculate(compiled_section const& self,
-	                             global_object const& ctx);
+	calculated_section calculate(compiled_section const& self, global_object const& ctx);
 
-	std::vector<calculated_section> calculate(
-	    std::vector<compiled_section> const& report,
-	    global_object const& ctx);
+	std::vector<calculated_section> calculate(std::vector<compiled_section> const& report, global_object const& ctx);
 
 	namespace v1 {
 		struct templates;
@@ -296,8 +262,7 @@ namespace quick_dra {
 	struct compiled_templates {
 		std::map<std::string, std::vector<compiled_section>> reports;
 
-		constexpr auto operator<=>(compiled_templates const&) const noexcept =
-		    default;
+		constexpr auto operator<=>(compiled_templates const&) const noexcept = default;
 		static compiled_templates compile(v1::templates const&);
 		void debug_print() const noexcept;
 	};

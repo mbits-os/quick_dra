@@ -96,8 +96,7 @@ namespace quick_dra::testing {
 
 	class Impl : public CURL {
 		CURLcode perform() final {
-			set_response(200, dummy_content,
-			             {{"Content-Type"sv, getContentType()}});
+			set_response(200, dummy_content, {{"Content-Type"sv, getContentType()}});
 			return CURLE_OK;
 		}
 
@@ -125,9 +124,7 @@ namespace quick_dra::testing {
 	}
 
 	class ImplCharset : public Impl {
-		[[nodiscard]] std::string_view getContentType() const override {
-			return "video/clip; charset=utf-future"sv;
-		};
+		[[nodiscard]] std::string_view getContentType() const override { return "video/clip; charset=utf-future"sv; };
 	};
 
 	TEST(http, curl_good_content) {

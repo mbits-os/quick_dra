@@ -25,8 +25,7 @@ namespace quick_dra::builtin::testing {
 
 	enum class compare { begin, end, all };
 	using std::filesystem::perms;
-	static constexpr auto readonly_perms =
-	    perms::owner_read | perms::group_read | perms::others_read;
+	static constexpr auto readonly_perms = perms::owner_read | perms::group_read | perms::others_read;
 
 	struct runnable_testcase {
 		std::source_location loc{std::source_location::current()};
@@ -49,8 +48,7 @@ namespace quick_dra::builtin::testing {
 
 		bool run_test() const;
 
-		friend std::ostream& operator<<(std::ostream& out,
-		                                runnable_testcase const& test) {
+		friend std::ostream& operator<<(std::ostream& out, runnable_testcase const& test) {
 			if (!test.name.empty()) return out << "name: " << test.name;
 			return out << "args: " << test.args;
 		}

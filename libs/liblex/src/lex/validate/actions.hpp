@@ -27,33 +27,25 @@ namespace quick_dra::checker {
 		constexpr auto size() const noexcept { return size_; }
 
 		static bool check(std::string_view str) noexcept {
-			return list::check_each(
-			    str, std::make_index_sequence<sizeof...(Action)>{});
+			return list::check_each(str, std::make_index_sequence<sizeof...(Action)>{});
 		}
 
-		static int weighted_sum(std::string_view str,
-		                        weights_t const& weights) noexcept {
-			return list::sum_values(
-			    str, weights, std::make_index_sequence<sizeof...(Action)>{});
+		static int weighted_sum(std::string_view str, weights_t const& weights) noexcept {
+			return list::sum_values(str, weights, std::make_index_sequence<sizeof...(Action)>{});
 		}
 
 	private:
 		template <size_t... I>
-		static bool check_each(std::string_view str,
-		                       std::index_sequence<I...>) noexcept {
+		static bool check_each(std::string_view str, std::index_sequence<I...>) noexcept {
 			if (str.size() != sizeof...(I)) return false;
 			return (Action{}.check(static_cast<unsigned char>(str[I])) && ...);
 		}
 
 		template <size_t... I>
-		static int sum_values(std::string_view str,
-		                      weights_t const& weights,
-		                      std::index_sequence<I...>) noexcept {
+		static int sum_values(std::string_view str, weights_t const& weights, std::index_sequence<I...>) noexcept {
 			if (str.size() != sizeof...(I)) return 0;
 
-			return ((Action{}.value(static_cast<unsigned char>(str[I])) *
-			         weights[I]) +
-			        ... + 0);
+			return ((Action{}.value(static_cast<unsigned char>(str[I])) * weights[I]) + ... + 0);
 		}
 	};
 
@@ -62,18 +54,12 @@ namespace quick_dra::checker {
 		using list = List;
 		static constexpr auto weights = Input;
 
-		bool check(std::string_view str) const noexcept {
-			return list::check(str);
-		}
+		bool check(std::string_view str) const noexcept { return list::check(str); }
 
-		int weighted_sum(std::string_view str) const noexcept {
-			return list::weighted_sum(str, weights);
-		}
+		int weighted_sum(std::string_view str) const noexcept { return list::weighted_sum(str, weights); }
 	};
 
-	template <CHECKER_TEMPLATE_COPY_TYPE Input,
-	          typename List,
-	          typename PostprocLambda>
+	template <CHECKER_TEMPLATE_COPY_TYPE Input, typename List, typename PostprocLambda>
 	struct full_mask_type : PostprocLambda, weights_wrapper<Input, List> {
 		unsigned short checksum(std::string_view id) const noexcept {
 			if (!this->check(id)) {
@@ -81,8 +67,7 @@ namespace quick_dra::checker {
 			}
 
 			auto const sum = this->weighted_sum(id);
-			return static_cast<unsigned short>(
-			    static_cast<PostprocLambda const&>(*this)(sum));
+			return static_cast<unsigned short>(static_cast<PostprocLambda const&>(*this)(sum));
 		}
 	};
 
@@ -92,10 +77,8 @@ namespace quick_dra::checker {
 		// GCOV_EXCL_START[CLANG]
 		// This function is used, including tests, and still marked by llvm as
 		// not visited
-		constexpr full_mask_type<Input, List, PostprocLambda> postproc(
-		    PostprocLambda&& cb) const noexcept {
-			return {std::forward<PostprocLambda>(cb),
-			        weights_wrapper<Input, List>{}};
+		constexpr full_mask_type<Input, List, PostprocLambda> postproc(PostprocLambda&& cb) const noexcept {
+			return {std::forward<PostprocLambda>(cb), weights_wrapper<Input, List>{}};
 		}
 		// GCOV_EXCL_STOP
 	};
@@ -121,15 +104,12 @@ namespace quick_dra::checker {
 	struct action_from_t {};
 
 	template <CHECKER_TEMPLATE_COPY_TYPE Input, size_t Index>
-	using action_from =
-	    typename action_from_t<Input.template get<Index>()>::type;
+	using action_from = typename action_from_t<Input.template get<Index>()>::type;
 
 	template <>
 	struct action_from_t<'A'> {
 		struct upper_case {
-			bool check(unsigned char ch) const noexcept {
-				return std::isalpha(ch) && std::toupper(ch) == ch;
-			}
+			bool check(unsigned char ch) const noexcept { return std::isalpha(ch) && std::toupper(ch) == ch; }
 
 			int value(unsigned char ch) const noexcept { return ch - 'A' + 10; }
 		};
@@ -140,9 +120,7 @@ namespace quick_dra::checker {
 	template <>
 	struct action_from_t<'0'> {
 		struct digit {
-			bool check(unsigned char ch) const noexcept {
-				return std::isdigit(ch);
-			}
+			bool check(unsigned char ch) const noexcept { return std::isdigit(ch); }
 
 			int value(unsigned char ch) const noexcept { return ch - '0'; }
 		};

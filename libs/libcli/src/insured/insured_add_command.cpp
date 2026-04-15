@@ -11,12 +11,10 @@
 #include "insured_add_conversation.hpp"
 
 namespace quick_dra::builtin::insured::add {
-	bool has_another_insured(partial::insured_t const& dst,
-	                         std::vector<partial::insured_t> const& insured) {
-		auto it =
-		    std::find_if(insured.begin(), insured.end(), [&](auto const& item) {
-			    return item.kind == dst.kind && item.document == dst.document;
-		    });
+	bool has_another_insured(partial::insured_t const& dst, std::vector<partial::insured_t> const& insured) {
+		auto it = std::find_if(insured.begin(), insured.end(), [&](auto const& item) {
+			return item.kind == dst.kind && item.document == dst.document;
+		});
 		if (it == insured.end()) {
 			return false;
 		}
@@ -32,16 +30,13 @@ namespace quick_dra::builtin::insured::add {
 		    "\n"
 		    "    qdra insured edit --pos {0}\n"
 		    "\n",
-		    index, person.first_name.value_or("??"),
-		    person.last_name.value_or("??"), person.kind.value_or("??"),
+		    index, person.first_name.value_or("??"), person.last_name.value_or("??"), person.kind.value_or("??"),
 		    person.document.value_or("??"));
 
 		return true;
 	}
 
-	int handle(std::string_view tool_name,
-	           args::arglist arguments,
-	           std::string_view description) {
+	int handle(std::string_view tool_name, args::arglist arguments, std::string_view description) {
 		conversation conv{};
 		conv.parse_args(tool_name, arguments, description);
 
@@ -50,16 +45,11 @@ namespace quick_dra::builtin::insured::add {
 			cfg.insured.emplace();
 		}
 
-		if (!conv.check_field(policies::first_name) ||
-		    !conv.check_field(policies::last_name) ||
-		    !conv.check_enum_field(""sv, policies::kind, policies::document,
-		                           get_enum_item(policies::social_id),
-		                           get_enum_item(policies::id_card),
-		                           get_enum_item(policies::passport)) ||
-		    has_another_insured(conv.dst, *cfg.insured) ||
-		    !conv.check_field(policies::title) ||
-		    !conv.check_field(policies::part_time_scale) ||
-		    !conv.check_field(policies::salary)) {
+		if (!conv.check_field(policies::first_name) || !conv.check_field(policies::last_name) ||
+		    !conv.check_enum_field(""sv, policies::kind, policies::document, get_enum_item(policies::social_id),
+		                           get_enum_item(policies::id_card), get_enum_item(policies::passport)) ||
+		    has_another_insured(conv.dst, *cfg.insured) || !conv.check_field(policies::title) ||
+		    !conv.check_field(policies::part_time_scale) || !conv.check_field(policies::salary)) {
 			return 1;
 		}
 
@@ -82,8 +72,7 @@ namespace quick_dra::builtin::insured::add {
 
 		cfg.insured->push_back(std::move(conv.dst));
 		if (!cfg.store(conv.path)) {
-			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n",
-			           conv.path);
+			fmt::print(stderr, "Quick-DRA: error: could not write to {}\n", conv.path);
 			return 1;
 		}
 		return 0;

@@ -11,8 +11,7 @@
 #include <vector>
 
 namespace quick_dra {
-	static inline bool from_chars(std::string_view view,
-	                              std::integral auto& dst) {
+	static inline bool from_chars(std::string_view view, std::integral auto& dst) {
 		auto const begin = view.data();
 		auto const end = begin + view.size();
 		auto const [ptr, ec] = std::from_chars(begin, end, dst);
@@ -28,12 +27,8 @@ namespace quick_dra {
 
 		strong_typedef() = default;
 		explicit strong_typedef(Type v) : value{v} {}
-		auto operator<=>(strong_typedef rhs) const noexcept {
-			return value <=> rhs.value;
-		}
-		bool operator==(strong_typedef rhs) const noexcept {
-			return value == rhs.value;
-		}
+		auto operator<=>(strong_typedef rhs) const noexcept { return value <=> rhs.value; }
+		bool operator==(strong_typedef rhs) const noexcept { return value == rhs.value; }
 	};
 
 	using uint_value = strong_typedef<class number_tag, unsigned>;
@@ -45,8 +40,7 @@ namespace quick_dra {
 		long long value{};
 
 		constexpr fixed_point() noexcept = default;
-		constexpr explicit fixed_point(long long value) noexcept
-		    : value{value} {}
+		constexpr explicit fixed_point(long long value) noexcept : value{value} {}
 
 		template <intmax_t D2 = 100>
 		constexpr fixed_point<Tag, D2> rounded_impl() const noexcept {
@@ -71,20 +65,17 @@ namespace quick_dra {
 		typename T::tag_type;
 		{ T::den } -> std::common_with<intmax_t>;
 		{ obj.value } -> std::common_with<long long>;
-		requires std::derived_from<T,
-		                           fixed_point<typename T::tag_type, T::den>> ||
+		requires std::derived_from<T, fixed_point<typename T::tag_type, T::den>> ||
 		             std::same_as<T, fixed_point<typename T::tag_type, T::den>>;
 	};  // NOLINT(readability/braces)
 
 	template <fixed_child Value>
-	inline constexpr Value operator+(Value const& lhs,
-	                                 Value const& rhs) noexcept {
+	inline constexpr Value operator+(Value const& lhs, Value const& rhs) noexcept {
 		return Value{lhs.value + rhs.value};
 	}
 
 	template <fixed_child Value>
-	inline constexpr Value operator-(Value const& lhs,
-	                                 Value const& rhs) noexcept {
+	inline constexpr Value operator-(Value const& lhs, Value const& rhs) noexcept {
 		return Value{lhs.value - rhs.value};
 	}
 
@@ -93,8 +84,7 @@ namespace quick_dra {
 		using base = fixed_point<class currency_tag, Den>;
 
 		using base::base;
-		constexpr auto operator<=>(currency_base const&) const noexcept =
-		    default;
+		constexpr auto operator<=>(currency_base const&) const noexcept = default;
 	};
 
 	struct currency;
@@ -103,8 +93,7 @@ namespace quick_dra {
 		using currency_base<100'00>::currency_base;
 
 		constexpr inline currency rounded() const noexcept;
-		constexpr auto operator<=>(calc_currency const&) const noexcept =
-		    default;
+		constexpr auto operator<=>(calc_currency const&) const noexcept = default;
 	};
 
 	struct currency : currency_base<100> {
@@ -112,14 +101,10 @@ namespace quick_dra {
 
 		static bool parse(std::string_view, currency&);
 
-		constexpr calc_currency calc() const noexcept {
-			return calc_currency{value * 100};
-		}
+		constexpr calc_currency calc() const noexcept { return calc_currency{value * 100}; }
 		constexpr auto operator<=>(currency const&) const noexcept = default;
 
-		constexpr currency operator-() const noexcept {
-			return currency{-value};
-		}
+		constexpr currency operator-() const noexcept { return currency{-value}; }
 	};
 
 	inline static consteval currency operator""_PLN(unsigned long long value) {
@@ -127,8 +112,7 @@ namespace quick_dra {
 	}
 
 	inline static consteval currency operator""_PLN(long double value) {
-		return currency{
-		    static_cast<long long>(value * 100 + (value < 0 ? -0.5l : 0.5l))};
+		return currency{static_cast<long long>(value * 100 + (value < 0 ? -0.5l : 0.5l))};
 	}
 
 	static inline constexpr auto minimal_salary = -1_PLN;
@@ -151,12 +135,10 @@ namespace quick_dra {
 	}
 
 	inline static consteval percent operator""_per(long double value) {
-		return percent{
-		    static_cast<long long>(value * 100 + (value < 0 ? -0.5l : 0.5l))};
+		return percent{static_cast<long long>(value * 100 + (value < 0 ? -0.5l : 0.5l))};
 	}
 
-	inline constexpr calc_currency operator*(calc_currency const& amount,
-	                                         percent const& percent) noexcept {
+	inline constexpr calc_currency operator*(calc_currency const& amount, percent const& percent) noexcept {
 		return calc_currency{amount.value * percent.value / 100'00};
 	}
 
@@ -164,12 +146,8 @@ namespace quick_dra {
 		unsigned num{};
 		unsigned den{};
 
-		constexpr bool operator==(ratio const& rhs) const noexcept {
-			return (num * rhs.den) == (rhs.num * den);
-		}
-		constexpr auto operator<=>(ratio const& rhs) const noexcept {
-			return (num * rhs.den) <=> (rhs.num * den);
-		}
+		constexpr bool operator==(ratio const& rhs) const noexcept { return (num * rhs.den) == (rhs.num * den); }
+		constexpr auto operator<=>(ratio const& rhs) const noexcept { return (num * rhs.den) <=> (rhs.num * den); }
 
 		static bool parse(std::string_view, ratio&);
 		static constexpr ratio gcd(unsigned num, unsigned den) noexcept {
@@ -211,16 +189,14 @@ namespace quick_dra {
 		currency local{};
 		currency remote{};
 
-		constexpr auto operator<=>(costs_of_obtaining const&) const noexcept =
-		    default;
+		constexpr auto operator<=>(costs_of_obtaining const&) const noexcept = default;
 	};
 
 	struct contribution {
 		currency payer{};
 		currency insured{};
 
-		constexpr auto operator<=>(contribution const&) const noexcept =
-		    default;
+		constexpr auto operator<=>(contribution const&) const noexcept = default;
 		constexpr currency total() const noexcept { return payer + insured; }
 	};
 
@@ -233,12 +209,10 @@ namespace quick_dra {
 		constexpr contribution contribution_on(currency amount) const noexcept {
 			return contribution_on(amount.calc());
 		}
-		constexpr contribution contribution_on(
-		    calc_currency amount) const noexcept {
+		constexpr contribution contribution_on(calc_currency amount) const noexcept {
 			auto const payer_contribution = (amount * payer).rounded();
 			auto const insured_contribution = (amount * insured).rounded();
-			return {.payer = payer_contribution,
-			        .insured = insured_contribution};
+			return {.payer = payer_contribution, .insured = insured_contribution};
 		}
 	};
 
@@ -281,12 +255,10 @@ namespace quick_dra {
 #undef X
 
 		constexpr auto operator<=>(rates const&) const noexcept = default;
-		constexpr contributions contribution_on(
-		    currency amount) const noexcept {
+		constexpr contributions contribution_on(currency amount) const noexcept {
 			return contribution_on(amount.calc());
 		}
-		constexpr contributions contribution_on(
-		    calc_currency amount) const noexcept {
+		constexpr contributions contribution_on(calc_currency amount) const noexcept {
 			return {
 #define X(NAME, _) .NAME = NAME.contribution_on(amount),
 			    CONTRIBUTIONS(X)
@@ -300,8 +272,7 @@ namespace fmt {
 	template <typename Tag, typename Type>
 	struct formatter<quick_dra::strong_typedef<Tag, Type>> : formatter<Type> {
 		template <typename FormatContext>
-		auto format(quick_dra::strong_typedef<Tag, Type> const& value,
-		            FormatContext& ctx) const {
+		auto format(quick_dra::strong_typedef<Tag, Type> const& value, FormatContext& ctx) const {
 			return formatter<Type>::format(value.value, ctx);
 		}
 	};
@@ -309,40 +280,32 @@ namespace fmt {
 	template <typename Tag, intmax_t Den>
 	struct formatter<quick_dra::fixed_point<Tag, Den>> : formatter<double> {
 		template <typename FormatContext>
-		auto format(quick_dra::fixed_point<Tag, Den> const& fp,
-		            FormatContext& ctx) const {
+		auto format(quick_dra::fixed_point<Tag, Den> const& fp, FormatContext& ctx) const {
 			auto hundredth = Den == 100 ? fp.value : fp.rounded_impl().value;
-			return formatter<double>::format(
-			    static_cast<double>(hundredth) / 100.0, ctx);
+			return formatter<double>::format(static_cast<double>(hundredth) / 100.0, ctx);
 		}
 	};
 
 	template <>
-	struct formatter<quick_dra::currency>
-	    : formatter<quick_dra::currency::base> {};
+	struct formatter<quick_dra::currency> : formatter<quick_dra::currency::base> {};
 
 	template <>
-	struct formatter<quick_dra::percent> : formatter<quick_dra::percent::base> {
-	};
+	struct formatter<quick_dra::percent> : formatter<quick_dra::percent::base> {};
 
 	template <>
 	struct formatter<quick_dra::ratio> : formatter<std::string> {
 		template <typename FormatContext>
 		auto format(quick_dra::ratio const& value, FormatContext& ctx) const {
-			return formatter<std::string>::format(
-			    fmt::format("{}/{}", value.num, value.den), ctx);
+			return formatter<std::string>::format(fmt::format("{}/{}", value.num, value.den), ctx);
 		}
 	};
 
 	template <>
 	struct formatter<quick_dra::insurance_title> : formatter<std::string> {
 		template <typename FormatContext>
-		auto format(quick_dra::insurance_title const& value,
-		            FormatContext& ctx) const {
+		auto format(quick_dra::insurance_title const& value, FormatContext& ctx) const {
 			return formatter<std::string>::format(
-			    fmt::format("{} {} {}", value.title_code, value.pension_right,
-			                value.disability_level),
-			    ctx);
+			    fmt::format("{} {} {}", value.title_code, value.pension_right, value.disability_level), ctx);
 		}
 	};
 }  // namespace fmt

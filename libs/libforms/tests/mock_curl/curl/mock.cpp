@@ -10,9 +10,7 @@ namespace {
 }  // namespace
 
 void set_curl_init_result(CURLcode value) { global_init_value = value; }
-std::pair<mock_curl_factory, void*> set_curl_factory(mock_curl_factory factory,
-                                                     CURLcode init_value,
-                                                     void* ptr) {
+std::pair<mock_curl_factory, void*> set_curl_factory(mock_curl_factory factory, CURLcode init_value, void* ptr) {
 	auto tmp = global_factory;
 	global_factory = {factory, ptr};
 	global_init_value = init_value;
@@ -32,29 +30,19 @@ CURL* curl_easy_init() {
 
 void curl_easy_cleanup(CURL* impl) { delete impl; }
 
-#define X(NAME, TYPE)                                              \
-	CURLcode curl_easy_setopt(CURL* ptr, CURL_##NAME##_option key, \
-	                          TYPE value) {                        \
-		return ptr->setopt(key, value);                            \
-	}
+#define X(NAME, TYPE) \
+	CURLcode curl_easy_setopt(CURL* ptr, CURL_##NAME##_option key, TYPE value) { return ptr->setopt(key, value); }
 OPTION(X)
 #undef X
 
-#define X(NAME, TYPE)                                                          \
-	CURLcode curl_easy_getinfo(CURL* ptr, CURL_##NAME##_info key, TYPE* dst) { \
-		return ptr->getinfo(key, dst);                                         \
-	}
+#define X(NAME, TYPE) \
+	CURLcode curl_easy_getinfo(CURL* ptr, CURL_##NAME##_info key, TYPE* dst) { return ptr->getinfo(key, dst); }
 INFO(X)
 #undef X
 
 CURLcode curl_easy_perform(CURL* ptr) { return ptr->perform(); }
 
-CURLHcode curl_easy_header(CURL* easy,
-                           const char* name,
-                           size_t index,
-                           CURLH_HEADER_t,
-                           int,
-                           curl_header** hout) {
+CURLHcode curl_easy_header(CURL* easy, const char* name, size_t index, CURLH_HEADER_t, int, curl_header** hout) {
 	return easy->header(name, index, hout);
 }
 
@@ -82,16 +70,14 @@ CURLHcode CURL::header(const char* name, size_t, curl_header** hout) {
 	return CURLHE_OK;
 }
 
-void CURL::set_response(
-    long status,
-    std::string_view contents,
-    std::map<std::string_view, std::string_view> const& headers) {
+void CURL::set_response(long status,
+                        std::string_view contents,
+                        std::map<std::string_view, std::string_view> const& headers) {
 	auto const pp_cb = getopt(CURLOPT_WRITEFUNCTION);
 	if (pp_cb) {
 		auto const p_user = getopt(CURLOPT_WRITEDATA);
 		auto const user = p_user ? *p_user : nullptr;
-		auto content_bytes =
-		    std::vector<char>{contents.begin(), contents.end()};
+		auto content_bytes = std::vector<char>{contents.begin(), contents.end()};
 		(**pp_cb)(content_bytes.data(), content_bytes.size(), 1, user);
 	}
 
@@ -107,16 +93,10 @@ void CURL::set_response(
 
 		auto it = headers_.lower_bound(key);
 		if (it == headers_.end() || it->first != key) {
-			it = headers_.emplace_hint(it, std::move(key),
-			                           std::make_unique<header_storage>());
+			it = headers_.emplace_hint(it, std::move(key), std::make_unique<header_storage>());
 			auto& stg = it->second;
 			stg->name = key_view;
-			stg->result = {.name = nullptr,
-			               .value = nullptr,
-			               .amount = 1,
-			               .index = 0,
-			               .origin{},
-			               .anchor{}};
+			stg->result = {.name = nullptr, .value = nullptr, .amount = 1, .index = 0, .origin{}, .anchor{}};
 		}
 		auto& storage = it->second;
 		storage->value = value_view;

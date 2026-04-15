@@ -10,17 +10,11 @@
 #include <vector>
 
 namespace quick_dra {
-	void PrintTo(currency curr, std::ostream* os) {
-		*os << fmt::format("{} zł", curr);
-	}
+	void PrintTo(currency curr, std::ostream* os) { *os << fmt::format("{} zł", curr); }
 
-	void PrintTo(percent per, std::ostream* os) {
-		*os << fmt::format("{}%", per);
-	}
+	void PrintTo(percent per, std::ostream* os) { *os << fmt::format("{}%", per); }
 
-	void PrintTo(ratio r, std::ostream* os) {
-		*os << fmt::format("{}/{}", r.num, r.den);
-	}
+	void PrintTo(ratio r, std::ostream* os) { *os << fmt::format("{}/{}", r.num, r.den); }
 }  // namespace quick_dra
 
 namespace quick_dra::testing {
@@ -34,8 +28,7 @@ namespace quick_dra::testing {
 		template <typename FileObj>
 		std::optional<FileObj> read(std::string_view text) {
 			::testing::internal::CaptureStderr();
-			auto result = parser::parse_yaml_text<FileObj>(
-			    {text.data(), text.size()}, "input"s);
+			auto result = parser::parse_yaml_text<FileObj>({text.data(), text.size()}, "input"s);
 			log = ::testing::internal::GetCapturedStderr();
 			return result;
 		}
@@ -57,13 +50,11 @@ namespace quick_dra::testing {
 		// non-parsable
 		value = read<percent>("word%"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(log,
-		          "input:1:1: error: could not parse the percent value\n"sv);
+		ASSERT_EQ(log, "input:1:1: error: could not parse the percent value\n"sv);
 
 		value = read<percent>("15,678$"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(log,
-		          "input:1:1: error: could not parse the percent value\n"sv);
+		ASSERT_EQ(log, "input:1:1: error: could not parse the percent value\n"sv);
 
 		// valid
 		value = read<percent>("15,678%"sv);
@@ -93,13 +84,11 @@ namespace quick_dra::testing {
 		// non-parsable
 		value = read<currency>("word zł"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(log,
-		          "input:1:1: error: could not parse the currency value\n"sv);
+		ASSERT_EQ(log, "input:1:1: error: could not parse the currency value\n"sv);
 
 		value = read<currency>("15,678$"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(log,
-		          "input:1:1: error: could not parse the currency value\n"sv);
+		ASSERT_EQ(log, "input:1:1: error: could not parse the currency value\n"sv);
 
 		// valid
 		value = read<currency>("15,678 PLN"sv);
@@ -129,8 +118,7 @@ namespace quick_dra::testing {
 		    "1000zł: grand\n"
 		    "many zł: else"sv);
 		ASSERT_FALSE(map);
-		ASSERT_EQ(log,
-		          "input:3:1: error: could not parse the currency value\n"sv);
+		ASSERT_EQ(log, "input:3:1: error: could not parse the currency value\n"sv);
 	}
 
 	TEST_F(project_reader, ratio) {
@@ -197,13 +185,10 @@ namespace quick_dra::testing {
 		// non-parsable
 		value = read<insurance_title>("words separated by spaces"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(
-		    log,
-		    "input:1:1: error: could not parse the insurance title value\n"sv);
+		ASSERT_EQ(log, "input:1:1: error: could not parse the insurance title value\n"sv);
 
 		// valid
-		insurance_title const expected = {
-		    .title_code = "1234"s, .pension_right = 5, .disability_level = 6};
+		insurance_title const expected = {.title_code = "1234"s, .pension_right = 5, .disability_level = 6};
 		value = read<insurance_title>("1234 5 6"sv);
 		ASSERT_TRUE(value);
 		ASSERT_EQ(*value, expected);

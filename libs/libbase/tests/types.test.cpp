@@ -10,21 +10,14 @@
 #include <utility>
 
 namespace quick_dra {
-	void PrintTo(currency curr, std::ostream* os) {
-		*os << fmt::format("{} zł", curr);
-	}
+	void PrintTo(currency curr, std::ostream* os) { *os << fmt::format("{} zł", curr); }
 
-	void PrintTo(percent per, std::ostream* os) {
-		*os << fmt::format("{}%", per);
-	}
+	void PrintTo(percent per, std::ostream* os) { *os << fmt::format("{}%", per); }
 
-	void PrintTo(ratio r, std::ostream* os) {
-		*os << fmt::format("{}/{}", r.num, r.den);
-	}
+	void PrintTo(ratio r, std::ostream* os) { *os << fmt::format("{}/{}", r.num, r.den); }
 
 	void PrintTo(insurance_title it, std::ostream* os) {
-		*os << fmt::format("{} {} {}", it.title_code, it.pension_right,
-		                   it.disability_level);
+		*os << fmt::format("{} {} {}", it.title_code, it.pension_right, it.disability_level);
 	}
 }  // namespace quick_dra
 
@@ -42,12 +35,9 @@ namespace quick_dra::testing {
 		std::string_view stored{};
 		std::optional<Type> expected{};
 
-		friend std::ostream& operator<<(std::ostream& out,
-		                                type_testcase const& test) {
+		friend std::ostream& operator<<(std::ostream& out, type_testcase const& test) {
 			return out << '"' << test.stored << "\" -> "
-			           << (test.expected ? fmt::format("{}{}", *test.expected,
-			                                           suffix(*test.expected))
-			                             : "<invalid>"sv);
+			           << (test.expected ? fmt::format("{}{}", *test.expected, suffix(*test.expected)) : "<invalid>"sv);
 		}
 	};
 
@@ -97,10 +87,8 @@ namespace quick_dra::testing {
 	struct currency_ex : public currency {
 		using currency::currency;
 
-		[[nodiscard]] constexpr inline calc_currency un_rounded()
-		    const noexcept {
-			return calc_currency{
-			    currency::template rounded_impl<calc_currency::den>().value};
+		[[nodiscard]] constexpr inline calc_currency un_rounded() const noexcept {
+			return calc_currency{currency::template rounded_impl<calc_currency::den>().value};
 		}
 	};
 
@@ -160,26 +148,21 @@ namespace quick_dra::testing {
 	};
 
 	static constinit type_testcase<currency> const bad_currency_tests[] = {
-	    {"zł"sv},    {"1,2.3"sv},    {"1,2,3"sv},
-	    {"1.2.3"sv}, {"-123 USD"sv}, {"0pln"sv},
+	    {"zł"sv}, {"1,2.3"sv}, {"1,2,3"sv}, {"1.2.3"sv}, {"-123 USD"sv}, {"0pln"sv},
 	};
 
 	static constinit type_testcase<percent> const good_percent_tests[] = {
-	    {"0"sv, 0.0_per},       {"123"sv, 123_per},
-	    {"-123"sv, -123_per},   {"0%"sv, 0.0_per},
-	    {"123%"sv, 123_per},    {"-123.66%"sv, -123.66_per},
-	    {"1,75 %"sv, 1.75_per}, {"4800.56 %"sv, 4800.56_per},
+	    {"0"sv, 0.0_per},    {"123"sv, 123_per},          {"-123"sv, -123_per},   {"0%"sv, 0.0_per},
+	    {"123%"sv, 123_per}, {"-123.66%"sv, -123.66_per}, {"1,75 %"sv, 1.75_per}, {"4800.56 %"sv, 4800.56_per},
 	};
 
 	static constinit type_testcase<ratio> const good_ratio_tests[] = {
-	    {"33%"sv, ratio{33, 100}}, {"75%"sv, ratio{3, 4}},
-	    {"0/0"sv, ratio{0, 0}},    {"0/1"sv, ratio{0, 1}},
-	    {"3/4"sv, ratio{12, 16}},
+	    {"33%"sv, ratio{33, 100}}, {"75%"sv, ratio{3, 4}},   {"0/0"sv, ratio{0, 0}},
+	    {"0/1"sv, ratio{0, 1}},    {"3/4"sv, ratio{12, 16}},
 	};
 
 	static constinit type_testcase<ratio> const bad_ratio_tests[] = {
-	    {"123"sv},     {"1/2/3"sv},  {"alpha/beta"sv},
-	    {"alpha/1"sv}, {"1/beta"sv}, {"5e3/2"sv},
+	    {"123"sv}, {"1/2/3"sv}, {"alpha/beta"sv}, {"alpha/1"sv}, {"1/beta"sv}, {"5e3/2"sv},
 	};
 
 	static type_testcase<insurance_title> const good_insurance_title_tests[] = {
@@ -187,36 +170,22 @@ namespace quick_dra::testing {
 	    {"0110 1 5"sv, insurance_title{"0110"s, 1, 5}},
 	};
 
-	static constinit type_testcase<insurance_title> const
-	    bad_insurance_title_tests[] = {
-	        {"0 0 0"sv},    {"00000 0 0"sv}, {"0000 00 0"sv}, {"aaaa 0 0"sv},
-	        {"0000 a 0"sv}, {"0000 0 !"sv},  {"0000 0 00"sv},
+	static constinit type_testcase<insurance_title> const bad_insurance_title_tests[] = {
+	    {"0 0 0"sv}, {"00000 0 0"sv}, {"0000 00 0"sv}, {"aaaa 0 0"sv}, {"0000 a 0"sv}, {"0000 0 !"sv}, {"0000 0 00"sv},
 	};
 
-	INSTANTIATE_TEST_SUITE_P(good,
-	                         money,
-	                         ::testing::ValuesIn(good_currency_tests));
+	INSTANTIATE_TEST_SUITE_P(good, money, ::testing::ValuesIn(good_currency_tests));
 
-	INSTANTIATE_TEST_SUITE_P(bad,
-	                         money,
-	                         ::testing::ValuesIn(bad_currency_tests));
+	INSTANTIATE_TEST_SUITE_P(bad, money, ::testing::ValuesIn(bad_currency_tests));
 
-	INSTANTIATE_TEST_SUITE_P(good,
-	                         cent,
-	                         ::testing::ValuesIn(good_percent_tests));
+	INSTANTIATE_TEST_SUITE_P(good, cent, ::testing::ValuesIn(good_percent_tests));
 
-	INSTANTIATE_TEST_SUITE_P(good,
-	                         ratios,
-	                         ::testing::ValuesIn(good_ratio_tests));
+	INSTANTIATE_TEST_SUITE_P(good, ratios, ::testing::ValuesIn(good_ratio_tests));
 
 	INSTANTIATE_TEST_SUITE_P(bad, ratios, ::testing::ValuesIn(bad_ratio_tests));
 
-	INSTANTIATE_TEST_SUITE_P(good,
-	                         insurance_titles,
-	                         ::testing::ValuesIn(good_insurance_title_tests));
+	INSTANTIATE_TEST_SUITE_P(good, insurance_titles, ::testing::ValuesIn(good_insurance_title_tests));
 
-	INSTANTIATE_TEST_SUITE_P(bad,
-	                         insurance_titles,
-	                         ::testing::ValuesIn(bad_insurance_title_tests));
+	INSTANTIATE_TEST_SUITE_P(bad, insurance_titles, ::testing::ValuesIn(bad_insurance_title_tests));
 
 }  // namespace quick_dra::testing

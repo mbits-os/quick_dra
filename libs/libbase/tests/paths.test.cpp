@@ -9,9 +9,7 @@
 #include <quick_dra/base/str.hpp>
 
 #ifdef _WIN32
-static int setenv(const char* name, const char* value, int) {
-	return _putenv_s(name, value);
-}
+static int setenv(const char* name, const char* value, int) { return _putenv_s(name, value); }
 #endif
 
 namespace quick_dra::testing {
@@ -34,13 +32,10 @@ namespace quick_dra::testing {
 
 	TEST(paths, home) {
 		env_swap HOME{"HOME", "some/value"};
-		auto const argument = std::filesystem::path{"overriden"} / "directory" /
-		                      ".quick_dra.yaml"sv;
+		auto const argument = std::filesystem::path{"overriden"} / "directory" / ".quick_dra.yaml"sv;
 
-		ASSERT_EQ(platform::get_config_path(std::nullopt),
-		          std::filesystem::path{"some/value"} / ".quick_dra.yaml"sv);
+		ASSERT_EQ(platform::get_config_path(std::nullopt), std::filesystem::path{"some/value"} / ".quick_dra.yaml"sv);
 
-		ASSERT_EQ(platform::get_config_path(as_str(argument.u8string())),
-		          argument);
+		ASSERT_EQ(platform::get_config_path(as_str(argument.u8string())), argument);
 	}
 }  // namespace quick_dra::testing

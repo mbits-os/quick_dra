@@ -14,21 +14,18 @@
 namespace quick_dra {
 	namespace {
 		template <typename T>
-		std::optional<T> get_typed_value(global_object const& root,
-		                                 varname const& ref) {
+		std::optional<T> get_typed_value(global_object const& root, varname const& ref) {
 			auto const ptr = root.peek(ref);
 			if (!ptr || !ptr->value) {
 				return std::nullopt;
 			}
-			auto const scalar =
-			    std::get_if<calculated_value>(std::addressof(*ptr->value));
+			auto const scalar = std::get_if<calculated_value>(std::addressof(*ptr->value));
 			auto const data = std::get_if<T>(scalar);
 			return data ? std::optional{*data} : std::nullopt;
 		}
 
 		template <typename Range>
-		std::vector<std::ranges::range_value_t<Range>> to_vector(
-		    Range const& range) {
+		std::vector<std::ranges::range_value_t<Range>> to_vector(Range const& range) {
 			std::vector<std::ranges::range_value_t<Range>> result{};
 			for (auto&& item : range) {
 				result.emplace_back(std::move(item));
@@ -39,23 +36,19 @@ namespace quick_dra {
 		size_t codepoints(std::string_view utf8) {
 			size_t len = 0;
 			for (auto const c : utf8) {
-				len += static_cast<size_t>(
-				    (static_cast<unsigned char>(c) & 0xC0) != 0x80);
+				len += static_cast<size_t>((static_cast<unsigned char>(c) & 0xC0) != 0x80);
 			}
 			return len;
 		}
 
-		std::string to_string(currency const& v) {
-			return fmt::format("{:.02f} zł", v);
-		}
+		std::string to_string(currency const& v) { return fmt::format("{:.02f} zł", v); }
 
 		std::string format(std::optional<currency> const& value) {
 			return value.transform(to_string).value_or("(nieznane)"s);
 		}
 	};  // namespace
 
-	std::vector<summary_line> gather_summary_data(
-	    std::vector<quick_dra::form> const& forms) {
+	std::vector<summary_line> gather_summary_data(std::vector<quick_dra::form> const& forms) {
 		size_t rows = 2;
 		for (auto const& form : forms) {
 			if (form.key != "RCA"s) continue;
@@ -70,63 +63,44 @@ namespace quick_dra {
 
 		for (auto const& form : forms) {
 			if (form.key == "DRA"s) {
-				insurance_total =
-				    get_typed_value<currency>(form.state, var::insurance_total);
-				tax_total =
-				    get_typed_value<currency>(form.state, var::tax_total);
+				insurance_total = get_typed_value<currency>(form.state, var::insurance_total);
+				tax_total = get_typed_value<currency>(form.state, var::tax_total);
 			}
 			if (form.key != "RCA"s) continue;
 
-			auto first_name =
-			    get_typed_value<std::string>(form.state, var::insured.first)
-			        .value_or("<brak imienia>"s);
-			auto last_name =
-			    get_typed_value<std::string>(form.state, var::insured.last)
-			        .value_or("<brak nazwiska>"s);
-			auto const net_amount =
-			    get_typed_value<currency>(form.state, var::salary.net);
+			auto first_name = get_typed_value<std::string>(form.state, var::insured.first).value_or("<brak imienia>"s);
+			auto last_name = get_typed_value<std::string>(form.state, var::insured.last).value_or("<brak nazwiska>"s);
+			auto const net_amount = get_typed_value<currency>(form.state, var::salary.net);
 
-			result.emplace_back(summary_line{
-			    .label = fmt::format("{} {}", first_name, last_name),
-			    .value = net_amount});
+			result.emplace_back(
+			    summary_line{.label = fmt::format("{} {}", first_name, last_name), .value = net_amount});
 		}
 
-		result.emplace_back(
-		    summary_line{.label = "ZUS"s, .value = insurance_total});
-		result.emplace_back(
-		    summary_line{.label = "Urząd Skarbowy"s, .value = tax_total});
+		result.emplace_back(summary_line{.label = "ZUS"s, .value = insurance_total});
+		result.emplace_back(summary_line{.label = "Urząd Skarbowy"s, .value = tax_total});
 
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]
 
 	void print_summary(std::vector<summary_line> const& rows) {
 		auto const total_range =
-		    rows | std::views::transform([](auto const& line) {
-			    return line.value.value_or(currency{});
-		    });
-		auto const total = std::reduce(
-		    total_range.begin(), total_range.end(), currency{},
-		    [](auto const& lhs, auto const& rhs) { return lhs + rhs; });
+		    rows | std::views::transform([](auto const& line) { return line.value.value_or(currency{}); });
+		auto const total = std::reduce(total_range.begin(), total_range.end(), currency{},
+		                               [](auto const& lhs, auto const& rhs) { return lhs + rhs; });
 
-		auto lines =
-		    to_vector(rows | std::views::transform([](auto const& line) {
-			              return std::pair{fmt::format("- {}:", line.label),
-			                               format(line.value)};
-		              }));
+		auto lines = to_vector(rows | std::views::transform([](auto const& line) {
+			                       return std::pair{fmt::format("- {}:", line.label), format(line.value)};
+		                       }));
 		lines.emplace_back("sum total ="s, to_string(total));
 
 		auto const [labels, values] = std::transform_reduce(
 		    lines.begin(), lines.end(), std::pair<size_t, size_t>{},
 		    // reduce: max codepoint count per column
 		    [](auto const& lhs, auto const& rhs) {
-			    return std::pair{std::max(lhs.first, rhs.first),
-			                     std::max(lhs.second, rhs.second)};
+			    return std::pair{std::max(lhs.first, rhs.first), std::max(lhs.second, rhs.second)};
 		    },
 		    // transform: codepoint count in string
-		    [](auto const& line) {
-			    return std::pair{codepoints(line.first),
-			                     codepoints(line.second)};
-		    });
+		    [](auto const& line) { return std::pair{codepoints(line.first), codepoints(line.second)}; });
 
 		fmt::print("-- payments:\n");
 		for (auto const& [label, value] : lines) {
