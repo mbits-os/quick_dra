@@ -15,6 +15,12 @@ export const styles = css`
     padding: 0;
     padding-left: 6px;
     flex-shrink: 0;
+
+    --md-icon-button-icon-color: var(--sys-button-text-color);
+    --md-icon-button-hover-icon-color: var(--sys-button-text-color-hover);
+    --md-icon-button-pressed-icon-color: var(--sys-button-text-color-hover);
+    --md-icon-button-focus-icon-color: var(--sys-button-text-color-hover);
+    // --md-icon-button-hover-state-layer-color: var(--sys-button-text-color);
   }
   .banner {
     height: 100%;

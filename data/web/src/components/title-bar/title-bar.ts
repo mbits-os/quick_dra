@@ -15,21 +15,11 @@ export class TitleBar extends LitElement {
 
   controller = new TitleBarController(this);
 
-  #render_banner() {
-    return html`
-      <fav-icon></fav-icon>
-      <span>${this.controller.title}</span>
-    `;
-  }
-
   render() {
     const platform_name = navigator.platform == 'Win32' ? 'win' : 'web';
-    const banner =
-      platform_name === 'win'
-        ? html`<span class="banner">${this.#render_banner()}</span>`
-        : this.#render_banner();
     return html`
-      ${banner}
+      <span id="icons"><slot></slot></span>
+      <span>${this.controller.title}</span>
       <title-buttons platform=${platform_name}></title-buttons>
     `;
   }

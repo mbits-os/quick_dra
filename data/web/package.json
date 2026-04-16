@@ -19,6 +19,7 @@
     "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"web-dev-server\""
   },
   "dependencies": {
+    "@material/web": "^2.4.1",
     "lit": "^3.3.2"
   },
   "devDependencies": {
