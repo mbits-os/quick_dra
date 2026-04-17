@@ -14,7 +14,7 @@ add_library(libgui STATIC ${SRCS})
 
 target_compile_options(libgui PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(libgui PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(libgui libconv webui)
+target_link_libraries(libgui PUBLIC libconv webui)
 target_include_directories(libgui
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -37,24 +37,34 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
-    file(GLOB CLI_TEST_SRCS_CC tests/*.cc)
-    file(GLOB CLI_TEST_SRCS_CPP tests/*.cpp)
-    file(GLOB CLI_TEST_SRCS_CXX tests/*.cxx)
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${CLI_TEST_SRCS_CC}
-        ${CLI_TEST_SRCS_CPP}
-        ${CLI_TEST_SRCS_CXX})
+    add_subdirectory(tests/mock_webui)
 
-    add_project_test(libgui ${CLI_TEST_SRCS_CC} ${CLI_TEST_SRCS_CPP} ${CLI_TEST_SRCS_CXX})
+    add_library(libgui_tested STATIC ${SRCS})
+
+    target_compile_options(libgui_tested PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+    target_link_options(libgui_tested PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+    target_include_directories(libgui_tested
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(libgui_tested PUBLIC libconv mock_webui)
+
+    set(FULL_TEST_SRCS
+        tests/vfs.test.cpp
+    )
+    set(MOCK_WEBUI_TEST_SRCS
+        tests/gui_tool.test.cpp
+    )
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
+        ${FULL_TEST_SRCS}
+        ${MOCK_WEBUI_TEST_SRCS}
+    )
+
+    add_project_test(libgui ${FULL_TEST_SRCS})
     target_link_libraries(libgui-test PUBLIC GTest::gmock_main libgui)
 
-    set(_OUTPUT ${PROJECT_BINARY_DIR}/bin)
-
-    set_target_properties(libgui-test PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${_OUTPUT}
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_OUTPUT}
-        RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${_OUTPUT}
-        RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${_OUTPUT}
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_OUTPUT}
-    )
+    add_project_test(libgui-mock ${MOCK_WEBUI_TEST_SRCS})
+    target_link_libraries(libgui-mock-test PUBLIC GTest::gmock_main libgui_tested)
 endif()
