@@ -40,7 +40,7 @@ int gui_tool([[maybe_unused]] args::args_view const& arguments) {
 	win.set_size(800, 1200);
 	win.set_center();
 	win.set_file_handler(gui::virtual_filesystem::global_handler);
-	win.show_wv("index.html");
+	win.show_wv("index.html"sv);
 	webui::wait();
 	return 0;
 }
