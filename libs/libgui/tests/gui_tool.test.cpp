@@ -18,7 +18,10 @@ namespace quick_dra::gui::testing {
 #define GMOCK_0(NAME, R) MOCK_METHOD(R, NAME, (), (override));
 #define GMOCK_1(NAME, R, T1, A1) MOCK_METHOD(R, NAME, (T1), (override));
 #define GMOCK_2(NAME, R, T1, A1, T2, A2) MOCK_METHOD(R, NAME, (T1, T2), (override));
+
 	using ::testing::_;
+	using ::testing::IsFalse;
+	using ::testing::IsTrue;
 
 	class mock_event : public ::webui::window_interface::event {
 	public:
@@ -85,9 +88,9 @@ namespace quick_dra::gui::testing {
 		EXPECT_CALL(mock, close()).Times(1);
 
 		EXPECT_CALL(mock, set_icon(_, "image/svg+xml"sv)).Times(1);
-		EXPECT_CALL(mock, set_frameless(true)).Times(1);
-		EXPECT_CALL(mock, set_transparent(true)).Times(1);
-		EXPECT_CALL(mock, set_resizable(false)).Times(1);
+		EXPECT_CALL(mock, set_frameless(IsTrue())).Times(1);
+		EXPECT_CALL(mock, set_transparent(IsTrue())).Times(1);
+		EXPECT_CALL(mock, set_resizable(IsFalse())).Times(1);
 		EXPECT_CALL(mock, set_size(800, 1200)).Times(1);
 		EXPECT_CALL(mock, set_center()).Times(1);
 		EXPECT_CALL(mock, set_file_handler(_)).Times(1);
