@@ -1,4 +1,4 @@
-macro(__webidl_exec CONFIG EXT COMMAND)
+macro(__webidl_exec CONFIG COMMAND)
     cmake_path(ABSOLUTE_PATH CONFIG OUTPUT_VARIABLE __ABS_CONFIG)
     cmake_path(RELATIVE_PATH __ABS_CONFIG OUTPUT_VARIABLE __CONFIG)
 
@@ -14,8 +14,8 @@ macro(__webidl_exec CONFIG EXT COMMAND)
 endmacro()
 
 function(add_webidl_generation TARGET CONFIG)
-    __webidl_exec("${CONFIG}" cmake cmake --target "${TARGET}")
-    __webidl_exec("${CONFIG}" deps depfile)
+    __webidl_exec("${CONFIG}" cmake --target "${TARGET}")
+    __webidl_exec("${CONFIG}" depfile)
 
     cmake_path(ABSOLUTE_PATH CONFIG)
     cmake_path(RELATIVE_PATH CONFIG)

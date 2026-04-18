@@ -48,6 +48,7 @@ target_include_directories(libbase
     ${CMAKE_CURRENT_BINARY_DIR}/src
 )
 target_link_libraries(libbase PUBLIC fmt::fmt)
+set_target_properties(libbase PROPERTIES FOLDER lib)
 
 if(TARGET ICU::i18n)
     message(STATUS "Component target declared 'ICU::i18n'")
