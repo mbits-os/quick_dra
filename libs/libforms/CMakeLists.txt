@@ -30,6 +30,7 @@ target_include_directories(libforms
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 target_link_libraries(libforms PUBLIC CURL::libcurl libmodels liblex)
+set_target_properties(libforms PROPERTIES FOLDER lib)
 
 add_custom_command(
     TARGET libforms POST_BUILD
@@ -75,6 +76,7 @@ if(QUICK_DRA_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/src
     )
     target_link_libraries(libforms_tested PUBLIC mock_curl libmodels liblex)
+    set_target_properties(libforms_tested PROPERTIES FOLDER tests/utils)
 
     file(GLOB FORMS_TEST_SRCS_CC tests/*.cc)
     file(GLOB FORMS_TEST_SRCS_CPP tests/*.cpp)

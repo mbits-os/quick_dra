@@ -29,6 +29,7 @@ target_include_directories(libmodels
 )
 target_link_libraries(libmodels PUBLIC libbase libpersist)
 target_link_libraries(libmodels PRIVATE args)
+set_target_properties(libmodels PROPERTIES FOLDER lib)
 
 # #################################################################
 # #  INSTALL

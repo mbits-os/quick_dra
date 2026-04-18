@@ -24,6 +24,7 @@ target_include_directories(libpersist
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 target_link_libraries(libpersist PUBLIC ryml::ryml fmt::fmt)
+set_target_properties(libpersist PROPERTIES FOLDER lib)
 
 # #################################################################
 # #  INSTALL

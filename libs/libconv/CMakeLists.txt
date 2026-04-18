@@ -23,6 +23,7 @@ target_include_directories(libconv
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 target_link_libraries(libconv PUBLIC libforms args)
+set_target_properties(libconv PROPERTIES FOLDER lib)
 
 # #################################################################
 # #  INSTALL

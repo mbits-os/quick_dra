@@ -23,6 +23,7 @@ target_include_directories(liblex
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 target_link_libraries(liblex PUBLIC libbase)
+set_target_properties(liblex PROPERTIES FOLDER lib)
 
 # #################################################################
 # #  INSTALL

@@ -19,6 +19,7 @@ target_include_directories(libgui
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+set_target_properties(libgui PROPERTIES FOLDER lib)
 
 # #################################################################
 # #  INSTALL
@@ -50,6 +51,7 @@ if(QUICK_DRA_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/src
     )
     target_link_libraries(libgui_tested PUBLIC libconv mock_webui)
+    set_target_properties(libgui_tested PROPERTIES FOLDER tests/utils)
 
     set(FULL_TEST_SRCS
         tests/vfs.test.cpp
