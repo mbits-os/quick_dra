@@ -130,6 +130,8 @@ namespace quick_dra {
 		yaml::write_value(ref, fmt::format("{} {} {}", ctx.title_code, ctx.pension_right, ctx.disability_level));
 	}
 
+	void take_from(unsigned short& tgt, unsigned src) { tgt = static_cast<unsigned short>(src); }
+
 	bool convert_string(ref_ctx const& ref, c4::csubstr const& value, currency& ctx) {
 		if (!currency::parse(view(value), ctx)) {
 			return ref.error("could not parse the currency value");
