@@ -100,16 +100,16 @@ namespace quick_dra::gui::testing {
 
 	TEST(vfs, respond) {
 		auto const fs = web_app();
-		EXPECT_EQ(fs.respond("/index.html"sv)->contents, "root index"sv);
-		EXPECT_EQ(fs.respond("index.html"sv)->contents, "root index"sv);
-		EXPECT_EQ(fs.respond("sub"sv)->redirect, "sub/"sv);
-		EXPECT_EQ(fs.respond("sub/"sv)->contents, "sub index"sv);
-		EXPECT_EQ(fs.respond("sub/"sv)->content_type, "text/html"sv);
-		EXPECT_EQ(fs.respond("sub/index.html"sv)->contents, "sub index"sv);
-		EXPECT_EQ(fs.respond("assets/logo.png"sv)->contents, "logo"sv);
-		EXPECT_EQ(fs.respond("assets/logo.png"sv)->content_type, "image/png"sv);
-		EXPECT_FALSE(fs.respond("assets/"sv));
-		EXPECT_FALSE(fs.respond("strange-sub/"sv));
+		EXPECT_EQ(fs.respond("/index.html"sv, {})->contents, "root index"sv);
+		EXPECT_EQ(fs.respond("index.html"sv, {})->contents, "root index"sv);
+		EXPECT_EQ(fs.respond("sub"sv, {})->redirect, "sub/"sv);
+		EXPECT_EQ(fs.respond("sub/"sv, {})->contents, "sub index"sv);
+		EXPECT_EQ(fs.respond("sub/"sv, {})->content_type, "text/html"sv);
+		EXPECT_EQ(fs.respond("sub/index.html"sv, {})->contents, "sub index"sv);
+		EXPECT_EQ(fs.respond("assets/logo.png"sv, {})->contents, "logo"sv);
+		EXPECT_EQ(fs.respond("assets/logo.png"sv, {})->content_type, "image/png"sv);
+		EXPECT_FALSE(fs.respond("assets/"sv, {}));
+		EXPECT_FALSE(fs.respond("strange-sub/"sv, {}));
 	}
 
 	std::string unwrap(webui::ptr<char> const& payload, int size) {
@@ -191,6 +191,6 @@ namespace quick_dra::gui::testing {
 	TEST(vfs, tarball) {
 		virtual_filesystem::install_global_data();
 		auto const fs = virtual_filesystem::get_global();
-		ASSERT_TRUE(fs.respond("/index.html"sv));
+		ASSERT_TRUE(fs.respond("/index.html"sv, {}));
 	}
 }  // namespace quick_dra::gui::testing

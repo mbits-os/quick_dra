@@ -8,9 +8,11 @@
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/args_parser.hpp>
+#include <quick_dra/gui/dirfs.hpp>
 #include <quick_dra/gui/vfs.hpp>
 #include <quick_dra/version.hpp>
 #include <span>
+#include <string>
 #include <webui.hpp>
 
 #ifdef _WIN32
@@ -34,11 +36,13 @@ namespace quick_dra {
 
 	struct options {
 		std::filesystem::path cfg_path{};
+		std::optional<std::filesystem::path> server_dir{};
 		bool transparent{};
 		std::optional<bool> devtools{};
 
 		static options parse(args::args_view const& arguments) {
 			std::optional<std::string> config_path;
+			std::optional<std::filesystem::path> server_dir{};
 			bool transparent{true};
 			std::optional<bool> devtools{};
 
@@ -46,6 +50,9 @@ namespace quick_dra {
 			args::parser parser{"show a GUI for configuration and KEDU generation"s, arguments, &tr};
 
 			parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
+			parser.arg(server_dir, "dbg-app")
+			    .meta("<dir>")
+			    .help("select the directory to serve; defaults to builtin tarball, implies --devtools");
 			parser.set<std::false_type>(transparent, "no-transparent")
 			    .help("start the application window without transparency")
 			    .opt();
@@ -57,8 +64,16 @@ namespace quick_dra {
 
 			parser.parse();
 
+			if (server_dir) {
+				if (!devtools.value_or(false)) {
+					fmt::print("[dirfs] Turning DevTools ON\n");
+				}
+				devtools = true;
+			}
+
 			return {
 			    .cfg_path = platform::get_config_path(config_path),
+			    .server_dir = server_dir,
 			    .transparent = transparent,
 			    .devtools = devtools,
 			};
@@ -84,7 +99,7 @@ namespace quick_dra::handlers {
 
 namespace quick_dra {
 	namespace {
-		void setup_window(webui::window& win, ui_config& cfg, bool transparent) {
+		void setup_window(webui::window& win, ui_config& cfg, bool transparent, bool use_dir_fs) {
 			handlers::bind(win, cfg);
 
 			if (transparent) {
@@ -95,7 +110,8 @@ namespace quick_dra {
 
 			win.set_size(800, 1200);
 			win.set_center();
-			win.set_file_handler(gui::virtual_filesystem::global_handler);
+			win.set_file_handler(use_dir_fs ? gui::directory_filesystem::global_handler
+			                                : gui::virtual_filesystem::global_handler);
 		}
 	}  // namespace
 }  // namespace quick_dra
@@ -106,9 +122,13 @@ int gui_tool([[maybe_unused]] args::args_view const& arguments) {
 	auto const opts = options::parse(arguments);
 	ui_config cfg{opts.cfg_path};
 
-	gui::virtual_filesystem::install_global_data();
+	if (opts.server_dir) {
+		gui::directory_filesystem::set_global(*opts.server_dir);
+	} else {
+		gui::virtual_filesystem::install_global_data();
+	}
 	webui::window win{};
-	setup_window(win, cfg, opts.transparent);
+	setup_window(win, cfg, opts.transparent, !!opts.server_dir);
 
 	win.show_wv("index.html"sv);
 
@@ -122,8 +142,6 @@ int gui_tool([[maybe_unused]] args::args_view const& arguments) {
 	if (opts.devtools) {
 		win.set_wv_devtools_available(*opts.devtools);
 	}
-
-	win.run("refresh()"sv);
 
 	webui::wait();
 	return 0;
