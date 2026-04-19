@@ -10,6 +10,7 @@
 #include <ryml_std.hpp>
 #include <string>
 #include <string_view>
+#include <yaml/copier.hpp>
 #include <yaml/reader.hpp>
 #include <yaml/ref.hpp>
 #include <yaml/writer.hpp>

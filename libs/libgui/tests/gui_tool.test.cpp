@@ -87,7 +87,9 @@ namespace quick_dra::gui::testing {
 		EXPECT_CALL(mock, maximize()).Times(1);
 		EXPECT_CALL(mock, close()).Times(1);
 
-		EXPECT_CALL(mock, set_icon(_, "image/svg+xml"sv)).Times(1);
+#ifdef _WIN32
+		EXPECT_CALL(mock, get_hwnd()).Times(1);
+#endif
 		EXPECT_CALL(mock, set_frameless(IsTrue())).Times(1);
 		EXPECT_CALL(mock, set_transparent(IsTrue())).Times(1);
 		EXPECT_CALL(mock, set_resizable(IsFalse())).Times(1);
@@ -95,6 +97,7 @@ namespace quick_dra::gui::testing {
 		EXPECT_CALL(mock, set_center()).Times(1);
 		EXPECT_CALL(mock, set_file_handler(_)).Times(1);
 		EXPECT_CALL(mock, show_wv("index.html"sv)).Times(1);
+		EXPECT_CALL(mock, run(_)).Times(1);
 
 		std::string version_returned{};
 		::webui::set_wait_callback([&mock, &version_returned] {

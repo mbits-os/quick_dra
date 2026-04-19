@@ -14,14 +14,16 @@ namespace webui {
 	X(minimize, void)   \
 	X(maximize, void)   \
 	X(close, void)      \
-	X(set_center, void)
+	X(set_center, void) \
+	X(get_hwnd, void*)
 
 #define WINDOW_1_ARG(X)                             \
 	X(set_frameless, void, bool, value)             \
 	X(set_transparent, void, bool, value)           \
 	X(set_resizable, void, bool, value)             \
 	X(set_file_handler, void, vfs_handler, handler) \
-	X(show_wv, void, std::string_view, uri)
+	X(show_wv, void, std::string_view, uri)         \
+	X(run, void, std::string_view, script)
 
 #define WINDOW_2_ARG(X)                                                     \
 	X(bind, void, const std::string_view, element, event::callback_t, func) \

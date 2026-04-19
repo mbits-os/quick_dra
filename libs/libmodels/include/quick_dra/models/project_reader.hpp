@@ -4,6 +4,7 @@
 #pragma once
 
 #include <quick_dra/models/types.hpp>
+#include <yaml/copier.hpp>
 #include <yaml/parser.hpp>
 #include <yaml/reader.hpp>
 #include <yaml/ref.hpp>
@@ -19,6 +20,8 @@ namespace quick_dra {
 	void write_value(ryml::NodeRef& ref, currency const& ctx);
 	void write_value(ryml::NodeRef& ref, ratio const& ctx);
 	void write_value(ryml::NodeRef& ref, insurance_title const& ctx);
+	void take_from(unsigned short& tgt, unsigned src);
+	using yaml::take_from;
 
 	bool convert_string(ref_ctx const& ref, c4::csubstr const& value, currency& ctx);
 }  // namespace quick_dra

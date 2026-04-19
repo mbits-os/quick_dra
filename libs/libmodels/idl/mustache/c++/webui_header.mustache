@@ -10,8 +10,9 @@
 #include <optional>
 #include <utility>
 #include <type_traits>
+#include <quick_dra/models/yaml/user_config_partial.hpp>
 {{> pkg-cxx:includes}}
-namespace quick_dra::v{{version}}::partial {
+namespace quick_dra::v{{version}}::webapp {
 {{# has_interfaces}}
 	using namespace utility;
 
@@ -29,7 +30,8 @@ namespace quick_dra::v{{version}}::partial {
 {{/ext_attrs}}
 	struct {{name}} {{#inheritance}}: {{inheritance}} {{/inheritance}}{
 {{#attributes}}
-		{{^ static}}{{#type}}add_optional<{{> pkg-cxx:type}}{{/type}}> {{name}}{{/static}};
+		{{> pkg-cxx:attribute-decl}}
+
 {{/attributes}}
 
 {{#ext_attrs}}
@@ -49,16 +51,12 @@ namespace quick_dra::v{{version}}::partial {
 		{{> pkg-cxx:operation-decl}}
 
 {{/operations}}
-{{#ext_attrs.postprocess}}
-		void preprocess();
-		bool postprocess();
-{{/ext_attrs.postprocess}}
 		bool read(yaml::ref_ctx const& ref);
-		void prepare_for_write();
 		void write(ryml::NodeRef& ref) const;
+        static {{name}} from({{#ext_attrs}}{{#peer_type}}{{.}}{{/peer_type}}{{^peer_type}}partial::{{name}}{{/peer_type}}{{/ext_attrs}} const&);
 	};
 {{/ interfaces}}
-} // namespace quick_dra::v{{version}}::partial
+} // namespace quick_dra::v{{version}}::webui
 
 namespace quick_dra {
   using namespace v{{version}};

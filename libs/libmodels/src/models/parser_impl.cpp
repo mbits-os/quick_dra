@@ -189,17 +189,22 @@ namespace quick_dra::v1::partial {
 		return cfg;
 	}  // GCOV_EXCL_LINE[GCC]
 
-	bool config::store(std::filesystem::path const& path) {
+	inline ryml::substr ryml_emit_root(emit syntax, ryml::Tree const& tree, ryml::substr buf, bool error_on_excess) {
+		return syntax == emit::yaml ? ryml::emit_yaml(tree, tree.root_id(), buf, error_on_excess)
+		                            : ryml::emit_json(tree, tree.root_id(), buf, error_on_excess);
+	}
+
+	bool config::store(std::filesystem::path const& path, emit syntax) {
 		prepare_for_write();
 		ryml::Tree tree{};
 		auto ref = tree.rootref();
 		yaml::write_value(ref, *this);
 
-		ryml::csubstr output = ryml::emit_yaml(tree, tree.root_id(), ryml::substr{}, /*error_on_excess*/ false);
+		ryml::csubstr output = ryml_emit_root(syntax, tree, ryml::substr{}, /*error_on_excess*/ false);
 
 		std::vector<char> buf(output.len);
-		output = ryml::emit_yaml(tree, tree.root_id(), ryml::to_substr(buf),
-		                         /*error_on_excess*/ true);
+		output = ryml_emit_root(syntax, tree, ryml::to_substr(buf),
+		                        /*error_on_excess*/ true);
 
 		std::ofstream out{path, std::ios::out | std::ios::binary};
 		if (!out) {
@@ -353,3 +358,23 @@ namespace quick_dra::v1::partial {
 		}
 	}
 }  // namespace quick_dra::v1::partial
+
+namespace quick_dra::v1::webapp {
+	inline ryml::substr ryml_emit_root(emit syntax, ryml::Tree const& tree, ryml::substr buf, bool error_on_excess) {
+		return syntax == emit::yaml ? ryml::emit_yaml(tree, tree.root_id(), buf, error_on_excess)
+		                            : ryml::emit_json(tree, tree.root_id(), buf, error_on_excess);
+	}
+
+	std::string config::store(emit syntax) {
+		ryml::Tree tree{};
+		auto ref = tree.rootref();
+		yaml::write_value(ref, *this);
+
+		ryml::csubstr output = ryml_emit_root(syntax, tree, ryml::substr{}, /*error_on_excess*/ false);
+
+		std::vector<char> buf(output.len);
+		output = ryml_emit_root(syntax, tree, ryml::to_substr(buf),
+		                        /*error_on_excess*/ true);
+		return {output.data(), output.size()};
+	}
+}  // namespace quick_dra::v1::webapp
