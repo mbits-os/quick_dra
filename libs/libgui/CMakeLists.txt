@@ -2,7 +2,12 @@
 # This file is licensed under MIT license (see LICENSE for details)
 
 set(SRCS
+    include/quick_dra/gui/dirfs.hpp
+    include/quick_dra/gui/fs_common.hpp
     include/quick_dra/gui/vfs.hpp
+    include/quick_dra/gui/webui.hpp
+    src/dirfs.cpp
+    src/fs_common.cpp
     src/tarball.cpp
     src/tool.cpp
     src/vfs.cpp
@@ -55,6 +60,7 @@ if(QUICK_DRA_TESTING)
 
     set(FULL_TEST_SRCS
         tests/vfs.test.cpp
+        tests/dirfs.test.cpp
     )
     set(MOCK_WEBUI_TEST_SRCS
         tests/gui_tool.test.cpp

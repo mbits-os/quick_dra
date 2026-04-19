@@ -3,10 +3,9 @@
 
 #pragma once
 
-#include <webui.h>
 #include <map>
-#include <memory>
 #include <optional>
+#include <quick_dra/gui/fs_common.hpp>
 #include <span>
 #include <string>
 #include <string_view>
@@ -16,21 +15,6 @@
 using namespace std::literals;
 
 namespace quick_dra::gui {
-
-	namespace webui {
-		struct free {
-			void operator()(void* ptr) { ::webui_free(ptr); }
-		};
-
-		template <typename T>
-		using ptr = std::unique_ptr<T, free>;
-
-		template <typename T>
-		inline ptr<T> make_ptr(size_t size) {
-			return ptr<T>{static_cast<T*>(webui_malloc(size * sizeof(T)))};
-		}
-	}  // namespace webui
-
 	struct directory_entry;
 
 	using directory = std::map<std::u8string, directory_entry>;
@@ -54,26 +38,20 @@ namespace quick_dra::gui {
 		inline base_type const& base() const noexcept { return *this; }
 	};
 
-	struct html_response {
-		std::string_view contents{};
-		std::string_view content_type{};
-		std::optional<std::string> redirect{};
-	};
-
-	class virtual_filesystem {
+	class virtual_filesystem : public basic_filesystem<virtual_filesystem> {
 	public:
+		static std::string_view tag() noexcept { return "vfs"sv; }
+
 		static virtual_filesystem build(std::span<entry const> const& files);
 
 		directory const& root() const noexcept { return root_; }
 
 		directory_entry const* locate(std::string_view path) const;
-		std::optional<html_response> respond(std::string_view path) const;
-		webui::ptr<char> http_response(std::string_view path, int& size) const;
+		std::optional<html_response> respond(std::string_view path, std::vector<char> const&) const;
 
 		static void set_global(virtual_filesystem&& dir) noexcept;
 		static virtual_filesystem const& get_global() noexcept;
 		static void install_global_data();
-		static const void* global_handler(const char* path, int* length);
 
 	private:
 		directory root_;

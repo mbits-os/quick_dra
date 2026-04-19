@@ -6,6 +6,7 @@
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/gui/vfs.hpp>
 #include <utility>
+#include <vector>
 
 namespace quick_dra::gui {
 	namespace {
@@ -65,27 +66,11 @@ namespace quick_dra::gui {
 			contents = file.contents;
 			return true;
 		}
-
-		webui::ptr<char> wrap(std::string_view view, int& size) {
-			auto result = webui::make_ptr<char>(view.size());
-			memcpy(result.get(), view.data(), view.size());
-			size = static_cast<int>(view.size());
-			return result;
-		}
 	}  // namespace
 
 	void virtual_filesystem::set_global(virtual_filesystem&& dir) noexcept { gui::global_vfs() = std::move(dir); }
 
 	virtual_filesystem const& virtual_filesystem::get_global() noexcept { return gui::global_vfs(); }
-
-	const void* virtual_filesystem::global_handler(const char* path, int* length) {
-		int size{};
-		auto payload = gui::global_vfs().http_response(path, size);
-		if (payload && length) {
-			*length = size;
-		}
-		return payload.release();
-	}
 
 	virtual_filesystem virtual_filesystem::build(std::span<entry const> const& files) {
 		virtual_filesystem result{};
@@ -134,7 +119,7 @@ namespace quick_dra::gui {
 		return &it->second;
 	}
 
-	std::optional<html_response> virtual_filesystem::respond(std::string_view path) const {
+	std::optional<html_response> virtual_filesystem::respond(std::string_view path, std::vector<char> const&) const {
 		std::optional<html_response> result = std::nullopt;
 		auto entry = locate(path);
 
@@ -171,37 +156,5 @@ namespace quick_dra::gui {
 		    .content_type = webui_get_mime_type(s_path.c_str()),
 		};
 		return result;
-	}
-
-	webui::ptr<char> virtual_filesystem::http_response(std::string_view path, int& size) const {
-		auto const response = respond(path);
-
-		if (!response) {
-			fmt::print("[vfs] 404 {}\n", path);
-			return nullptr;
-		}
-
-		if (response->redirect) {
-			fmt::print("[vfs] 302 {} -> {}\n", path, *response->redirect);
-			return wrap(
-			    fmt::format("HTTP/1.1 302 Found\r\n"
-			                "Location: {}\r\n"
-			                "Content-Type: {}\r\n"
-			                "Content-Length: {}\r\n"
-			                "Cache-Control: no-cache\r\n"
-			                "\r\n"
-			                "{}",
-			                *response->redirect, response->content_type, response->contents.size(), response->contents),
-			    size);
-		}
-		fmt::print("[vfs] 200 {}\n", path);
-		return wrap(fmt::format("HTTP/1.1 200 OK\r\n"
-		                        "Content-Type: {}\r\n"
-		                        "Content-Length: {}\r\n"
-		                        "Cache-Control: no-cache\r\n"
-		                        "\r\n"
-		                        "{}",
-		                        response->content_type, response->contents.size(), response->contents),
-		            size);
 	}
 }  // namespace quick_dra::gui
