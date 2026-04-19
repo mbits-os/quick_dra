@@ -111,19 +111,7 @@ namespace quick_dra::gui {
         if index > 1:
             output += "\n"
 
-        byte_contents = (
-            filename.read_bytes()
-            .replace(
-                b'<meta name="x-tag" content="WEBUI:JS">',
-                b'<script src="webui.js"></script>',
-            )
-            .replace(
-                b'<span id="/favicon.svg"></span>',
-                (source_root / "data" / "icons" / "appicon-32.svg")
-                .read_bytes()
-                .replace(b' width="32px" height="32px"', b""),
-            )
-        )
+        byte_contents = filename.read_bytes()
 
         output += f"""		static constexpr auto file_{__file_slug(filename)} =
 {'\n'.join(__tarball_file(byte_contents))}

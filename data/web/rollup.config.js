@@ -25,6 +25,7 @@ export default {
       minify: true,
       injectServiceWorker: true,
       serviceWorkerPath: 'dist/sw.js',
+      externalAssets: 'webui.js',
     }),
     /** Resolve bare module imports */
     nodeResolve(),
