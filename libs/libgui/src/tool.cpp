@@ -35,29 +35,32 @@ namespace quick_dra {
 	struct options {
 		std::filesystem::path cfg_path{};
 		bool transparent{};
+		std::optional<bool> devtools{};
 
 		static options parse(args::args_view const& arguments) {
 			std::optional<std::string> config_path;
 			bool transparent{true};
+			std::optional<bool> devtools{};
 
 			args::null_translator tr{};
 			args::parser parser{"show a GUI for configuration and KEDU generation"s, arguments, &tr};
 
-			options result{};
-
 			parser.arg(config_path, "config").meta("<path>").help("select config file; defaults to ~/.quick_dra.yaml");
-			parser.set<std::false_type>(result.transparent, "no-transparent")
+			parser.set<std::false_type>(transparent, "no-transparent")
 			    .help("start the application window without transparency")
 			    .opt();
-			parser.set<std::true_type>(result.transparent, "transparent")
+			parser.set<std::true_type>(transparent, "transparent")
 			    .help("start the application window with transparency")
 			    .opt();
+			parser.set<std::false_type>(devtools, "no-devtools").help("disable DevTools, even on Debug").opt();
+			parser.set<std::true_type>(devtools, "devtools").help("enable DevTools, even on Release").opt();
 
 			parser.parse();
 
 			return {
 			    .cfg_path = platform::get_config_path(config_path),
 			    .transparent = transparent,
+			    .devtools = devtools,
 			};
 		}  // GCOV_EXCL_LINE[WIN32]
 	};
@@ -83,12 +86,6 @@ namespace quick_dra {
 	namespace {
 		void setup_window(webui::window& win, ui_config& cfg, bool transparent) {
 			handlers::bind(win, cfg);
-
-			if (auto const favicon = gui::virtual_filesystem::get_global().locate("/favicon.svg");
-			    favicon && favicon->is_file()) {
-				auto const& contents = std::get<gui::file_contents>(*favicon);
-				win.set_icon({contents.data(), contents.size()}, "image/svg+xml"sv);
-			}
 
 			if (transparent) {
 				win.set_frameless(true);
@@ -121,6 +118,10 @@ int gui_tool([[maybe_unused]] args::args_view const& arguments) {
 	SendMessageW(hwnd, WM_SETICON, ICON_BIG, (LPARAM)icon);
 	SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)icon);
 #endif
+
+	if (opts.devtools) {
+		win.set_wv_devtools_available(*opts.devtools);
+	}
 
 	win.run("refresh()"sv);
 

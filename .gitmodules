@@ -6,4 +6,4 @@
 	url = https://github.com/mbits-libs/args.git
 [submodule "external/webui"]
 	path = external/webui
-	url = https://github.com/webui-dev/webui.git
+	url = https://github.com/mzdun/webui.git

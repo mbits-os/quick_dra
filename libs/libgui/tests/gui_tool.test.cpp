@@ -42,6 +42,7 @@ namespace quick_dra::gui::testing {
 			EXPECT_CALL(event, return_string(_)).Times(1).WillOnce([&stg](auto const& value) { stg = value; });
 		};
 	}
+	static void expect_return_any_string(mock_event& event) { EXPECT_CALL(event, return_string(_)).Times(1); }
 
 	class mock_window : public ::webui::window_interface {
 	public:
@@ -82,6 +83,7 @@ namespace quick_dra::gui::testing {
 		EXPECT_CALL(mock, bind("maximize"sv, _)).Times(1);
 		EXPECT_CALL(mock, bind("close_win"sv, _)).Times(1);
 		EXPECT_CALL(mock, bind("get_version"sv, _)).Times(1);
+		EXPECT_CALL(mock, bind("get_config"sv, _)).Times(1);
 
 		EXPECT_CALL(mock, minimize()).Times(1);
 		EXPECT_CALL(mock, maximize()).Times(1);
@@ -105,6 +107,7 @@ namespace quick_dra::gui::testing {
 			mock.emit("maximize"sv, expect_get_window);
 			mock.emit("close_win"sv, expect_get_window);
 			mock.emit("get_version"sv, expect_return_string(version_returned));
+			mock.emit("get_config"sv, expect_return_any_string);
 		});
 
 		EXPECT_EQ(gui_tool({}), 0);

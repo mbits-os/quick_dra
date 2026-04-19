@@ -23,11 +23,11 @@ namespace webui {
 	X(set_resizable, void, bool, value)             \
 	X(set_file_handler, void, vfs_handler, handler) \
 	X(show_wv, void, std::string_view, uri)         \
-	X(run, void, std::string_view, script)
+	X(run, void, std::string_view, script)          \
+	X(set_wv_devtools_available, void, bool, available)
 
 #define WINDOW_2_ARG(X)                                                     \
 	X(bind, void, const std::string_view, element, event::callback_t, func) \
-	X(set_icon, void, std::string_view, data, std::string_view, type)       \
 	X(set_size, void, int, width, int, height)
 
 #define EVENT_0_ARG(X) X(get_window, window_interface&)
