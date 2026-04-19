@@ -20,28 +20,12 @@ export class QuickDraApp extends LitElement {
   @query('#app-menu')
   app_menu?: MdMenu;
 
-  #toggleMenu = () => {
-    if (!this.app_menu) return;
-    this.app_menu.open = !this.app_menu.open;
-  };
-
   render() {
     return html`
       <title-bar>
-        <md-icon-button
-          aria-label="Opcje"
-          id="menu-toggle"
-          @click=${this.#toggleMenu}
-        >
-          <md-icon>menu</md-icon>
+        <md-icon-button @click=${() => location.reload()}>
+          <md-icon>refresh</md-icon>
         </md-icon-button>
-        <!--span style="position: relative">
-          <md-menu id="app-menu" anchor="menu-toggle">
-            <md-menu-item>This</md-menu-item>
-            <md-menu-item>That</md-menu-item>
-            <md-menu-item>Something else</md-menu-item>
-          </md-menu>
-        </span-->
       </title-bar>
       <main>
         <button @click=${() => set_subtitle('Settings')}>set title</button>
