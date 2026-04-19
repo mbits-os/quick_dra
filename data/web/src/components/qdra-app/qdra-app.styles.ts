@@ -17,7 +17,7 @@ export const styles = css`
     -webkit-backdrop-filter: blur(24px);
 
     --primary-color: rgb(73 103 45);
-    --system-background-color: rgb(245 246 228);
+    --system-background-color: rgb(248 248 240);
     --system-on-background-color: rgb(26 29 22);
     --logo-fill: #00923f;
 
@@ -66,5 +66,9 @@ export const styles = css`
         from var(--web-button-background-color-close) calc(L * 1.15) a b
       );
     }
+  }
+
+  main {
+    padding: 0.25rem;
   }
 `;

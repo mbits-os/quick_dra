@@ -3,9 +3,10 @@
 
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { app } from '../../integration.js';
 import { styles } from './title-buttons.styles.js';
 import { repeat } from 'lit/directives/repeat.js';
+
+import '../../api/integration.js';
 
 interface Button {
   class_name: string;
@@ -17,9 +18,13 @@ const buttons: Button[] = [
   {
     class_name: 'minimize',
     win_icon: '\ue921',
-    onclick: () => app.minimize?.(),
+    onclick: () => window.minimize?.(),
   },
-  { class_name: 'close', win_icon: '\ue8bb', onclick: () => app.close_win?.() },
+  {
+    class_name: 'close',
+    win_icon: '\ue8bb',
+    onclick: () => window.close_win?.(),
+  },
 ];
 
 @customElement('title-buttons')
