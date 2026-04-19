@@ -3,10 +3,11 @@
 
 import { ReactiveController, ReactiveControllerHost } from 'lit';
 import {
+  get_config,
   get_subtitle,
   get_version,
   SubtitleChangedEvent,
-} from '../integration.js';
+} from '../api/index.js';
 
 export class TitleBarController implements ReactiveController {
   host: ReactiveControllerHost;
@@ -16,7 +17,6 @@ export class TitleBarController implements ReactiveController {
   constructor(host: ReactiveControllerHost) {
     this.host = host;
     host.addController(this);
-    this.#loadVersion();
   }
 
   get title() {
@@ -27,10 +27,12 @@ export class TitleBarController implements ReactiveController {
   }
 
   hostConnected() {
+    window.addEventListener('webuiconnection', this.#clientConnected);
     window.addEventListener('subtitlechanged', this.#subtitleChanged);
   }
 
   hostDisconnected() {
+    window.removeEventListener('webuiconnection', this.#clientConnected);
     window.removeEventListener('subtitlechanged', this.#subtitleChanged);
   }
 
@@ -51,7 +53,12 @@ export class TitleBarController implements ReactiveController {
 
   async #loadVersion() {
     this.setVersion(await get_version());
+    console.log('[config]', await get_config());
   }
+
+  #clientConnected = () => {
+    this.#loadVersion();
+  };
 
   #subtitleChanged = (event: SubtitleChangedEvent) => {
     this.setSubtitle(event.subtitle);

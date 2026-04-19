@@ -4,6 +4,7 @@
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { TitleBarController } from '../../controllers/title-bar-controller.js';
+
 import { styles } from './title-bar.styles.js';
 
 import '../fav-icon/fav-icon.js';

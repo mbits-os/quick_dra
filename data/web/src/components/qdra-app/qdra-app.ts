@@ -4,7 +4,7 @@
 import { LitElement, html } from 'lit';
 import { customElement, query } from 'lit/decorators.js';
 import { MdMenu } from '@material/web/menu/menu.js';
-import { set_subtitle } from '../../integration.js';
+import { set_subtitle } from '../../api/index.js';
 
 import { styles } from './qdra-app.styles.js';
 
