@@ -18,6 +18,7 @@ whole_line_len = 120
 tarball_prefix = "		    "
 line_len = whole_line_len - 15
 printable = string.ascii_letters + string.digits + string.punctuation + " "
+max_size = 40 * 1024  # 40KiB
 
 __yarn_exe = shutil.which("yarn") or "yarn"
 
@@ -45,7 +46,6 @@ def __file_slug(path: Path):
 
 __simple_escape_seq_char = {
     ord("\\"): "\\\\",
-    ord('"'): '\\"',
     ord("\n"): "\\n",
     ord("\r"): "\\r",
     ord("\t"): "\\t",
@@ -53,7 +53,10 @@ __simple_escape_seq_char = {
 }
 
 
-def __tarball_chr(ch: int, printed_hex: bool):
+def __tarball_chr(ch: int, printed_hex: bool, quote: str):
+    if ch == ord(quote):
+        return (f"\\{quote}", False, False)
+
     if ch in __simple_escape_seq_char:
         return (__simple_escape_seq_char[ch], False, False)
 
@@ -67,7 +70,7 @@ def __lines(byte_contents: bytes, max_length: int):
     output = ""
     printed_hex = False
     for ch in byte_contents:
-        repl, break_str, printed_hex = __tarball_chr(ch, printed_hex)
+        repl, break_str, printed_hex = __tarball_chr(ch, printed_hex, '"')
         if break_str and output:
             yield output
             output = ""
@@ -87,6 +90,27 @@ def __tarball_file(byte_contents: bytes):
         yield f'{tarball_prefix}"{line}"'
 
 
+def __bin_lines(byte_contents: bytes, max_length: int):
+    output = ""
+    printed_hex = False
+    for ch in byte_contents:
+        repl = f"'{__tarball_chr(ch, printed_hex, "'")[0]}',"
+        next_output = f"{output} {repl}"
+        if len(next_output) > max_length:
+            yield output
+            output = repl
+        else:
+            output = next_output
+
+    if output:
+        yield output
+
+
+def __tarball_bin_file(byte_contents: bytes):
+    for line in __bin_lines(byte_contents, line_len):
+        yield f"{tarball_prefix}{line}"
+
+
 def __tarball_text():
     dist_files: list[Path] = []
 
@@ -100,6 +124,7 @@ def __tarball_text():
 
 using namespace std::literals;
 
+// clang-format off
 namespace quick_dra::gui {
 	namespace contents {
 """
@@ -113,9 +138,26 @@ namespace quick_dra::gui {
 
         byte_contents = filename.read_bytes()
 
-        output += f"""		static constexpr auto file_{__file_slug(filename)} =
+        string_encode = len(byte_contents) <= max_size
+        if string_encode:
+            try:
+                byte_contents.decode()
+            except UnicodeDecodeError:
+                string_encode = False
+
+        if string_encode:
+            output += f"""		static constexpr auto file_{__file_slug(filename)} =
 {'\n'.join(__tarball_file(byte_contents))}
 		    ""sv;
+"""
+        else:
+            output += f"""		static constexpr auto data_{__file_slug(filename)} = std::array<char, {len(byte_contents)}>{{
+{'\n'.join(__tarball_bin_file(byte_contents))}
+        }};
+
+		static constexpr auto file_{__file_slug(filename)} = std::string_view{{
+		    data_{__file_slug(filename)}.data(), data_{__file_slug(filename)}.size()
+		}};
 """
 
     output += """	}  // namespace contents
@@ -131,6 +173,7 @@ namespace quick_dra::gui {
 
 	void virtual_filesystem::install_global_data() { set_global(build(files)); }
 }  // namespace quick_dra::gui
+// clang-format on
 """
     return output
 
