@@ -26,7 +26,7 @@ def mod(ver: str):
 
 
 REQUIREMENTS = {
-    "proj-flow": exe("0.26.7"),
+    "proj-flow": exe("0.26.8"),
     "proj-flow-test-coverage": mod("0.1.1"),
 }
 PROJECT_ROOT = Path(__file__).parent.parent

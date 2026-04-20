@@ -7,14 +7,13 @@ extensions:
   - proj_flow.ext.tools
   - proj_flow.ext.tests
   - proj_flow.ext.webidl
+  - proj_flow.minimal.ext.versions
   - quick_dra.icons
   - quick_dra.yaml_reader
   - proj_flow_test_coverage.ext
 
-lts:
-  ubuntu:
-    - ubuntu-22.04
-    - ubuntu-24.04
+version-updates:
+  data/web/package.json: '"version": "$VERSION",'
 
 entry:
   config: [Conan, CMake]
