@@ -3,7 +3,7 @@
   "description": "Webcomponent quick-dra following open-wc recommendations",
   "license": "MIT",
   "author": "quick-dra",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "type-check": "tsc --noEmit",
