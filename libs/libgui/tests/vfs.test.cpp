@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <optional>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/gui/vfs.hpp>
+#include <quick_dra/gui/fs/virtual.hpp>
 #include <source_location>
 #include <span>
 #include <variant>

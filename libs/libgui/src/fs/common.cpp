@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 #include <filesystem>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/gui/fs_common.hpp>
+#include <quick_dra/gui/fs/common.hpp>
 #include <utility>
 
 namespace quick_dra::gui {

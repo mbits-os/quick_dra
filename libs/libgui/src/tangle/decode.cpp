@@ -4,6 +4,9 @@
 #include <cctype>
 #include <tangle/decode.hpp>
 
+// GCOV_EXCL_START
+// This is tested in tangle repo
+
 namespace tangle {
 	namespace {
 		inline bool issafe(unsigned char c) { return std::isalnum(c) || c == '-' || c == '.' || c == '_' || c == '~'; }
@@ -136,3 +139,5 @@ namespace tangle {
 		}
 	}
 }  // namespace tangle
+
+// GCOV_EXCL_STOP

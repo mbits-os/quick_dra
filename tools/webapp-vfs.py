@@ -120,7 +120,7 @@ def __tarball_text():
     dist_files = list(sorted(dist_files))
 
     output = """#include <array>
-#include <quick_dra/gui/vfs.hpp>
+#include <quick_dra/gui/fs/virtual.hpp>
 
 using namespace std::literals;
 

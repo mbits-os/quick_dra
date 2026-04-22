@@ -2,19 +2,19 @@
 # This file is licensed under MIT license (see LICENSE for details)
 
 set(SRCS
-    include/quick_dra/gui/dirfs.hpp
-    include/quick_dra/gui/fs_common.hpp
-    include/quick_dra/gui/vfs.hpp
+    include/quick_dra/gui/fs/common.hpp
+    include/quick_dra/gui/fs/dir.hpp
+    include/quick_dra/gui/fs/virtual.hpp
     include/quick_dra/gui/webui.hpp
     include/tangle/decode.hpp
     include/tangle/uri.hpp
-    src/dirfs.cpp
-    src/fs_common.cpp
+    src/fs/common.cpp
+    src/fs/dir.cpp
+    src/fs/virtual.cpp
+    src/gui_tool.cpp
     src/tangle/decode.cpp
     src/tangle/uri.cpp
     src/tarball.cpp
-    src/tool.cpp
-    src/vfs.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})

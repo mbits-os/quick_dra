@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 #include <filesystem>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/gui/vfs.hpp>
+#include <quick_dra/gui/fs/virtual.hpp>
 #include <utility>
 #include <vector>
 

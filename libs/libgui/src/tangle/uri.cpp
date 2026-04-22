@@ -4,6 +4,9 @@
 #include <tangle/decode.hpp>
 #include <tangle/uri.hpp>
 
+// GCOV_EXCL_START
+// This is tested in tangle repo
+
 namespace tangle {
 	namespace {
 		inline std::string to_string(std::string_view sv) { return {sv.data(), sv.length()}; }
@@ -642,3 +645,5 @@ namespace tangle {
 		return tmp;
 	}
 }  // namespace tangle
+
+// GCOV_EXCL_STOP
