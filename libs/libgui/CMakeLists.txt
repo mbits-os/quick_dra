@@ -6,8 +6,12 @@ set(SRCS
     include/quick_dra/gui/fs_common.hpp
     include/quick_dra/gui/vfs.hpp
     include/quick_dra/gui/webui.hpp
+    include/tangle/decode.hpp
+    include/tangle/uri.hpp
     src/dirfs.cpp
     src/fs_common.cpp
+    src/tangle/decode.cpp
+    src/tangle/uri.cpp
     src/tarball.cpp
     src/tool.cpp
     src/vfs.cpp
