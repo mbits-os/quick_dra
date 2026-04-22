@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <map>
 #include <optional>
-#include <quick_dra/gui/fs_common.hpp>
+#include <quick_dra/gui/fs/common.hpp>
 #include <span>
 #include <string>
 #include <string_view>

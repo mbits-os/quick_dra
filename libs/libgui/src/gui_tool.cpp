@@ -8,8 +8,8 @@
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/args_parser.hpp>
-#include <quick_dra/gui/dirfs.hpp>
-#include <quick_dra/gui/vfs.hpp>
+#include <quick_dra/gui/fs/dir.hpp>
+#include <quick_dra/gui/fs/virtual.hpp>
 #include <quick_dra/version.hpp>
 #include <span>
 #include <string>

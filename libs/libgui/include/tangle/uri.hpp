@@ -21,6 +21,9 @@ utilities.
 #include <utility>
 #include <vector>
 
+// GCOV_EXCL_START
+// This is tested in tangle repo
+
 namespace tangle {
 
 	/**
@@ -434,3 +437,5 @@ namespace tangle {
 #endif
 	};
 }  // namespace tangle
+
+// GCOV_EXCL_STOP

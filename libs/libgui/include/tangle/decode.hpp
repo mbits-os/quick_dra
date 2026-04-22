@@ -6,6 +6,9 @@
 #include <string>
 #include <string_view>
 
+// GCOV_EXCL_START
+// This is tested in tangle repo
+
 namespace tangle {
 	enum class codec { common, host, path, query };
 
@@ -44,3 +47,5 @@ namespace tangle {
 	*/
 	std::string urldecode(std::string_view in, codec alg = codec::common);
 }  // namespace tangle
+
+// GCOV_EXCL_STOP

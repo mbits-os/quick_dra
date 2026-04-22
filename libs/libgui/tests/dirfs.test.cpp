@@ -10,7 +10,7 @@
 #include <optional>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/gui/dirfs.hpp>
+#include <quick_dra/gui/fs/dir.hpp>
 #include <source_location>
 #include <span>
 #include <variant>

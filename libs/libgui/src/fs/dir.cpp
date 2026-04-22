@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <memory>
 #include <quick_dra/base/str.hpp>
-#include <quick_dra/gui/dirfs.hpp>
+#include <quick_dra/gui/fs/dir.hpp>
 #include <utility>
 #include <vector>
 
