@@ -8,6 +8,7 @@
 #include <quick_dra/gui/webui.hpp>
 #include <string>
 #include <string_view>
+#include <tangle/uri.hpp>
 #include <vector>
 
 namespace quick_dra::gui {
@@ -33,7 +34,8 @@ namespace quick_dra::gui {
 
 		static const void* global_handler(const char* path, int* length) {
 			int size{};
-			auto payload = Final::get_global().http_response(path, size);
+			auto const uri = tangle::uri{path};
+			auto payload = Final::get_global().http_response(uri.path(), size);
 			if (payload && length) {
 				*length = size;
 			}
