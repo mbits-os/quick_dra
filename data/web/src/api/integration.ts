@@ -13,10 +13,6 @@ export function get_value<T>(call: () => Promise<T>) {
   });
 }
 
-export async function get_version() {
-  return (await get_value(window.get_version)) ?? '';
-}
-
 export async function get_config() {
   try {
     return JSON.parse((await get_value(window.get_config)) ?? '') as config;

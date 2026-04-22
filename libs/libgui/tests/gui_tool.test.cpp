@@ -75,7 +75,6 @@ namespace quick_dra::gui::testing {
 			EXPECT_CALL(*this, bind("minimize"sv, _)).Times(1);
 			EXPECT_CALL(*this, bind("maximize"sv, _)).Times(1);
 			EXPECT_CALL(*this, bind("close_win"sv, _)).Times(1);
-			EXPECT_CALL(*this, bind("get_version"sv, _)).Times(1);
 			EXPECT_CALL(*this, bind("get_config"sv, _)).Times(1);
 
 #ifdef _WIN32
@@ -105,16 +104,15 @@ namespace quick_dra::gui::testing {
 			it->second(&event);
 		}
 
-		void emit_all(std::string& version_returned) {
+		void emit_all() {
 			EXPECT_CALL(*this, minimize()).Times(1);
 			EXPECT_CALL(*this, maximize()).Times(1);
 			EXPECT_CALL(*this, close()).Times(1);
 
-			::webui::set_wait_callback([&mock = *this, &version_returned] {
+			::webui::set_wait_callback([&mock = *this] {
 				mock.emit("minimize"sv, expect_get_window);
 				mock.emit("maximize"sv, expect_get_window);
 				mock.emit("close_win"sv, expect_get_window);
-				mock.emit("get_version"sv, expect_return_string(version_returned));
 				mock.emit("get_config"sv, expect_return_any_string);
 			});
 		}
@@ -137,11 +135,9 @@ namespace quick_dra::gui::testing {
 		mock.expect_frameless();
 		EXPECT_CALL(mock, set_wv_devtools_available(_)).Times(0);
 
-		std::string version_returned{};
-		mock.emit_all(version_returned);
+		mock.emit_all();
 
 		EXPECT_EQ(gui_tool({}), 0);
-		EXPECT_EQ(version_returned, version::ui);
 
 		auto const& fs = virtual_filesystem::get_global();
 		EXPECT_TRUE(fs.respond("index.html", {}));
@@ -158,11 +154,9 @@ namespace quick_dra::gui::testing {
 		mock.expect_frameless(0);
 		EXPECT_CALL(mock, set_wv_devtools_available(_)).Times(0);
 
-		std::string version_returned{};
-		mock.emit_all(version_returned);
+		mock.emit_all();
 
 		EXPECT_EQ(gui_tool(arglist{"--no-transparent"sv}.as_args()), 0);
-		EXPECT_EQ(version_returned, version::ui);
 
 		auto const& fs = virtual_filesystem::get_global();
 		EXPECT_TRUE(fs.respond("index.html", {}));
@@ -179,11 +173,9 @@ namespace quick_dra::gui::testing {
 		mock.expect_frameless();
 		EXPECT_CALL(mock, set_wv_devtools_available(IsTrue())).Times(1);
 
-		std::string version_returned{};
-		mock.emit_all(version_returned);
+		mock.emit_all();
 
 		EXPECT_EQ(gui_tool(arglist{"--devtools"sv}.as_args()), 0);
-		EXPECT_EQ(version_returned, version::ui);
 
 		auto const& fs = virtual_filesystem::get_global();
 		EXPECT_TRUE(fs.respond("index.html", {}));
@@ -200,10 +192,8 @@ namespace quick_dra::gui::testing {
 		mock.expect_frameless();
 		EXPECT_CALL(mock, set_wv_devtools_available(IsTrue())).Times(1);
 
-		std::string version_returned{};
-		mock.emit_all(version_returned);
+		mock.emit_all();
 
 		EXPECT_EQ(gui_tool(arglist{"--dbg-app"sv, "."sv}.as_args()), 0);
-		EXPECT_EQ(version_returned, version::ui);
 	}
 }  // namespace quick_dra::gui::testing

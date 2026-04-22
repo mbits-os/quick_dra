@@ -9,6 +9,5 @@ export type JsonOf<T> = string;
 export default interface BoundApi {
   readonly close_win: () => void;
   readonly minimize: () => void;
-  readonly get_version: () => Promise<string>;
   readonly get_config: () => Promise<JsonOf<config>>;
 }
