@@ -23,6 +23,8 @@ namespace webui {
 	X(set_resizable, void, bool, value)             \
 	X(set_file_handler, void, vfs_handler, handler) \
 	X(show_wv, void, std::string_view, uri)         \
+	X(show_browser, void, std::string_view, uri)    \
+	X(navigate, void, std::string_view, uri)        \
 	X(run, void, std::string_view, script)          \
 	X(set_wv_devtools_available, void, bool, available)
 

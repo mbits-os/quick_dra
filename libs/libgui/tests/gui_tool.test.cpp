@@ -10,11 +10,16 @@
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/args_parser.hpp>
 #include <quick_dra/gui/fs/virtual.hpp>
+#include <quick_dra/gui/options/options.hpp>
 #include <quick_dra/version.hpp>
 #include <span>
 #include <webui.hpp>
 
-int gui_tool([[maybe_unused]] args::args_view const& arguments);
+int gui_tool(args::args_view const& arguments);
+
+namespace quick_dra {
+	int gui_tool(options const& opts);
+};
 
 namespace quick_dra::gui::testing {
 #define GMOCK_0(NAME, R) MOCK_METHOD(R, NAME, (), (override));
@@ -42,6 +47,42 @@ namespace quick_dra::gui::testing {
 		args::args_view as_args() { return args::from_main({static_cast<unsigned>(stg.size()), argv.data()}); };
 	};
 
+	struct opt_builder {
+		options opts_{};
+
+		opt_builder& set(std::string_view key, bool value) {
+			opts_.debug.flags.set(key, value);
+			return *this;
+		}
+
+		opt_builder& set(std::string_view key, std::string const& value) {
+			opts_.debug.options.set(key, value);
+			return *this;
+		}
+
+		options opts() noexcept {
+			opts_.debug.postproc(get_debug_suite());
+			auto const& [known_options, known_flags, _] = get_debug_suite();
+			for (auto name : {dbg_option::app_directory}) {
+				auto const value = opts_.debug.options.get(name);
+				fmt::print(">> {} = {}\n", name, value);
+			}
+
+			for (auto name : {dbg_flag::frameless, dbg_flag::browser, dbg_flag::devtools}) {
+				auto const it = std::find_if(std::begin(known_flags), std::end(known_flags),
+				                             [name](debug_flag const& flag) { return flag.flag_name() == name; });
+				auto const value = opts_.debug.flags.get(name);
+				auto const direct = !!opts_.debug.flags.get_maybe(name);
+				auto const status =
+				    !direct ? it != std::end(known_flags) ? (it->enabled ? "enabled"sv : "disabled"sv) : "missing"sv
+				            : "direct"sv;
+				fmt::print(">> {} ({}) = {}\n", name, status, value);
+			}
+
+			return std::move(opts_);
+		}
+	};
+
 	class mock_event : public ::webui::window_interface::event {
 	public:
 		using window_interface = ::webui::window_interface;
@@ -56,11 +97,6 @@ namespace quick_dra::gui::testing {
 	};
 
 	static void expect_get_window(mock_event& event) { EXPECT_CALL(event, get_window()).Times(1); }
-	static std::function<void(mock_event&)> expect_return_string(std::string& stg) {
-		return [&stg](mock_event& event) {
-			EXPECT_CALL(event, return_string(_)).Times(1).WillOnce([&stg](auto const& value) { stg = value; });
-		};
-	}
 	static void expect_return_any_string(mock_event& event) { EXPECT_CALL(event, return_string(_)).Times(1); }
 
 	class mock_window : public ::webui::window_interface {
@@ -81,17 +117,22 @@ namespace quick_dra::gui::testing {
 			EXPECT_CALL(*this, get_hwnd()).Times(1);
 #endif
 
-			EXPECT_CALL(*this, set_size(800, 1200)).Times(1);
+			EXPECT_CALL(*this, set_resizable(IsFalse())).Times(1);
+			EXPECT_CALL(*this, set_size(_, _)).Times(1);
 			EXPECT_CALL(*this, set_center()).Times(1);
 			EXPECT_CALL(*this, set_file_handler(_)).Times(1);
-
-			EXPECT_CALL(*this, show_wv("index.html"sv)).Times(1);
+			EXPECT_CALL(*this, navigate(_)).Times(1);
 		}
 
-		void expect_frameless(int n = 1) {
+		void expect_frameless(int n
+#ifdef GUI_DEBUG_FRAMELESS
+		                      = 1
+#else
+		                      = 0
+#endif
+		) {
 			EXPECT_CALL(*this, set_frameless(IsTrue())).Times(n);
 			EXPECT_CALL(*this, set_transparent(IsTrue())).Times(n);
-			EXPECT_CALL(*this, set_resizable(IsFalse())).Times(n);
 		}
 
 		void emit(std::string_view name, std::function<void(mock_event&)> const& setup_expectations) {
@@ -132,12 +173,14 @@ namespace quick_dra::gui::testing {
 
 		using namespace std::literals;
 
+		EXPECT_CALL(mock, show_wv(_)).Times(1);
+
 		mock.expect_frameless();
 		EXPECT_CALL(mock, set_wv_devtools_available(_)).Times(0);
 
 		mock.emit_all();
 
-		EXPECT_EQ(gui_tool({}), 0);
+		EXPECT_EQ(::gui_tool({}), 0);
 
 		auto const& fs = virtual_filesystem::get_global();
 		EXPECT_TRUE(fs.respond("index.html", {}));
@@ -145,18 +188,41 @@ namespace quick_dra::gui::testing {
 		EXPECT_TRUE(fs.respond("favicon.svg", {}));
 	}
 
-	TEST(gui_tool, no_transparency) {
+	TEST(gui_tool, frameless) {
 		mock_window mock{};
 		::webui::window_interface::push_mock(&mock);
 
 		using namespace std::literals;
+
+		EXPECT_CALL(mock, show_wv(_)).Times(1);
+
+		mock.expect_frameless(1);
+		EXPECT_CALL(mock, set_wv_devtools_available(_)).Times(0);
+
+		mock.emit_all();
+
+		EXPECT_EQ(gui_tool(opt_builder{}.set(dbg_flag::frameless, true).opts()), 0);
+
+		auto const& fs = virtual_filesystem::get_global();
+		EXPECT_TRUE(fs.respond("index.html", {}));
+		EXPECT_TRUE(fs.respond("index.js", {}));
+		EXPECT_TRUE(fs.respond("favicon.svg", {}));
+	}
+
+	TEST(gui_tool, framed) {
+		mock_window mock{};
+		::webui::window_interface::push_mock(&mock);
+
+		using namespace std::literals;
+
+		EXPECT_CALL(mock, show_wv(_)).Times(1);
 
 		mock.expect_frameless(0);
 		EXPECT_CALL(mock, set_wv_devtools_available(_)).Times(0);
 
 		mock.emit_all();
 
-		EXPECT_EQ(gui_tool(arglist{"--no-transparent"sv}.as_args()), 0);
+		EXPECT_EQ(gui_tool(opt_builder{}.set(dbg_flag::frameless, false).opts()), 0);
 
 		auto const& fs = virtual_filesystem::get_global();
 		EXPECT_TRUE(fs.respond("index.html", {}));
@@ -170,12 +236,14 @@ namespace quick_dra::gui::testing {
 
 		using namespace std::literals;
 
+		EXPECT_CALL(mock, show_wv(_)).Times(1);
+
 		mock.expect_frameless();
 		EXPECT_CALL(mock, set_wv_devtools_available(IsTrue())).Times(1);
 
 		mock.emit_all();
 
-		EXPECT_EQ(gui_tool(arglist{"--devtools"sv}.as_args()), 0);
+		EXPECT_EQ(gui_tool(opt_builder{}.set(dbg_flag::devtools, true).opts()), 0);
 
 		auto const& fs = virtual_filesystem::get_global();
 		EXPECT_TRUE(fs.respond("index.html", {}));
@@ -189,11 +257,29 @@ namespace quick_dra::gui::testing {
 
 		using namespace std::literals;
 
+		EXPECT_CALL(mock, show_wv(_)).Times(1);
+
 		mock.expect_frameless();
-		EXPECT_CALL(mock, set_wv_devtools_available(IsTrue())).Times(1);
+		EXPECT_CALL(mock, set_wv_devtools_available(IsTrue())).Times(0);
 
 		mock.emit_all();
 
-		EXPECT_EQ(gui_tool(arglist{"--dbg-app"sv, "."sv}.as_args()), 0);
+		EXPECT_EQ(gui_tool(opt_builder{}.set(dbg_option::app_directory, "."s).opts()), 0);
+	}
+
+	TEST(gui_tool, browser) {
+		mock_window mock{};
+		::webui::window_interface::push_mock(&mock);
+
+		using namespace std::literals;
+
+		EXPECT_CALL(mock, show_browser(_)).Times(1);
+
+		mock.expect_frameless();
+		EXPECT_CALL(mock, set_wv_devtools_available(IsTrue())).Times(0);
+
+		mock.emit_all();
+
+		EXPECT_EQ(gui_tool(opt_builder{}.set(dbg_flag::browser, true).opts()), 0);
 	}
 }  // namespace quick_dra::gui::testing
