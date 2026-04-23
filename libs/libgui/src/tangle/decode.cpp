@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <cctype>
+#include <string>
 #include <tangle/decode.hpp>
 
 // GCOV_EXCL_START

@@ -1,8 +1,11 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <string>
 #include <tangle/decode.hpp>
 #include <tangle/uri.hpp>
+#include <utility>
+#include <vector>
 
 // GCOV_EXCL_START
 // This is tested in tangle repo
@@ -91,8 +94,9 @@ namespace tangle {
 
 			colon = end + 1;
 			if (colon >= auth.length()) colon = std::string_view::npos;
-		} else if (colon < host)
+		} else if (colon < host) {
 			colon = std::string_view::npos;
+		}
 
 		auto host_count = colon == std::string_view::npos ? std::string_view::npos : colon - host;
 
@@ -160,8 +164,9 @@ namespace tangle {
 			if (first) {
 				first = false;
 				if (flag == query_flag::start_with_qmark) out.push_back('?');
-			} else
+			} else {
 				out.push_back('&');
+			}
 		};
 		for (auto& pair : m_values) {
 			if (pair.second.empty()) {
@@ -228,8 +233,9 @@ namespace tangle {
 				const char* value_start = c;
 				LOOK_FOR('&');
 				out.add(name, urldecode({value_start, static_cast<size_t>(c - value_start)}, codec::query));
-			} else
+			} else {
 				out.set(name);
+			}
 
 			if (!IS('&')) break;
 
@@ -460,13 +466,14 @@ namespace tangle {
 	void uri::scheme(std::string_view value) {
 		if (m_scheme == npos) return;
 
-		if (m_scheme)
+		if (m_scheme) {
 			m_uri.replace(0, m_scheme - 1, value.data(), value.length());
-		else if (!value.empty()) {
+		} else if (!value.empty()) {
 			m_uri.replace(0, 0, value.data(), value.length());
 			m_uri.insert(value.length(), 1, ':');
-		} else
+		} else {
 			return;
+		}
 		invalidate_scheme();
 	}
 
@@ -628,9 +635,9 @@ namespace tangle {
 				canon.push_back(std::move(p));
 			}
 			if (empty_at_end) canon.emplace_back();
-			if (absolute_path)
+			if (absolute_path) {
 				tmp.path("/" + path_join(canon));
-			else {
+			} else {
 				canon.insert(canon.begin(), overshots.begin(), overshots.end());
 				tmp.path(path_join(canon));
 			}
