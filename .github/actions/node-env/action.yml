@@ -6,6 +6,8 @@ runs:
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v6
+      with:
+        node-version: 24
 
     - name: Corepack
       working-directory: ./data/web
@@ -28,6 +30,13 @@ runs:
         key: node-cache-${{ runner.os }}-${{ hashFiles('data/web/yarn.lock') }}
         restore-keys: |
           node-cache-${{ runner.os }}-
+
+    - name: Tools versions
+      working-directory: ./data/web
+      shell: bash
+      run: |
+        node --version
+        yarn --version
 
     - name: Install modules
       working-directory: ./data/web
