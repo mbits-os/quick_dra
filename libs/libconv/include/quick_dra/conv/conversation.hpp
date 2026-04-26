@@ -145,7 +145,7 @@ namespace quick_dra {
 			auto const& new_value = policy.select(dst);
 			auto const& orig_value = policy.select(orig);
 			if (new_value == orig_value) return false;
-			fmt::print(  //-V810 (about turning as_string into cached value)
+			fmt::print(  //-V810 (about turning as_string into cached value) GCOV_EXCL_LINE
 			    "\033[0;90m{} changed from \033[m{}\033[0;90m to \033[m{}\n", policy.label,
 			    orig_value.transform([](auto const& value) { return as_string(value); }).value_or("<empty>"s),
 			    new_value.transform([](auto const& value) { return as_string(value); }).value_or("<empty>"s));

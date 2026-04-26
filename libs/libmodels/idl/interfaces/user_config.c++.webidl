@@ -1,7 +1,7 @@
 partial interface config {
     attribute tax_parameters params;
 
-    [throws, nullable] static config parse_yaml([in] path path);
+    [throws, nullable] static config? parse_yaml([in] path path);
     void debug_print(verbose level);
 };
 

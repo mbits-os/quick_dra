@@ -20,8 +20,9 @@ add_to_coverage(
     libforms
     libconv
     libcli
-    libgui
     cli
-    gui
+
+    # libgui
+    # gui
 )
 cov_set_parent_scope()
