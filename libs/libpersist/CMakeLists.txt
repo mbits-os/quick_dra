@@ -1,5 +1,4 @@
 set(SRCS
-    include/yaml/copier.hpp
     include/yaml/parser.hpp
     include/yaml/reader.hpp
     include/yaml/ref.hpp

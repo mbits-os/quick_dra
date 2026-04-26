@@ -115,7 +115,7 @@ namespace quick_dra {
 		// assume this is an error reporting on behalf of tool, which
 		// otherwise returns 0 and the step in the build process ends with
 		// an imagined -1 result
-		fmt::print(stderr,
+		fmt::print(stderr,  // GCOV_EXCL_LINE
 		           "Quick-DRA: "
 		           "error"
 		           ": {}\n"
