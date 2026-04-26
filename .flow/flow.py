@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2025 Marcin Zdun
+# Copyright (c) 2026 Marcin Zdun
 # This code is licensed under MIT license (see LICENSE for details)
 
 from __future__ import annotations
@@ -12,9 +12,10 @@ import subprocess
 import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
-from functools import total_ordering
 from pathlib import Path
 from typing import cast
+
+PROJ_FLOW_VERSION = "0.28.0"
 
 
 def exe(ver: str):
@@ -25,8 +26,8 @@ def mod(ver: str):
     return (ver, False)
 
 
-REQUIREMENTS = {
-    "proj-flow": exe("0.26.8"),
+REQUIREMENTS: dict[str, tuple[str, bool]] = {
+    "proj-flow": exe(PROJ_FLOW_VERSION),
     "proj-flow-test-coverage": mod("0.1.1"),
 }
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -209,14 +210,14 @@ def activate_virtual_env():
             clean_version_cache()
 
 
-def bootstrap_proj_flow(requirements: list[Package]):
+def bootstrap_proj_flow(requirements: list[Package], with_venv: bool):
     global PACKAGE_VERSION
 
     missing = Package.missing_requirements(requirements)
     if not missing:
         return True
 
-    if sys.prefix == sys.base_prefix:
+    if sys.prefix == sys.base_prefix and with_venv:
         activate_virtual_env()
 
         missing = Package.missing_requirements(requirements)
@@ -255,9 +256,22 @@ def bootstrap_proj_flow(requirements: list[Package]):
     return not Package.missing_requirements(requirements, print_output=True)
 
 
+def check_no_venv():
+    args = sys.argv[1:]
+
+    while args and args[0].startswith("-"):
+        args = args[1:]
+
+    if not args or args[0] != "bootstrap":
+        return False
+
+    return "--no-venv" in args[1:]
+
+
 def main():
+    with_venv = not check_no_venv()
     requirements = Package.build_from(REQUIREMENTS)
-    if not bootstrap_proj_flow(requirements):
+    if not bootstrap_proj_flow(requirements, with_venv):
         print("Cannot find a working copy of proj-flow package:", file=sys.stderr)
         for pkg, ver in Package.missing_requirements(requirements):
             if ver:
