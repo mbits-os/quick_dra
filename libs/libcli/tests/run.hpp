@@ -32,6 +32,7 @@ namespace quick_dra::builtin::testing {
 		std::source_location loc{std::source_location::current()};
 		std::string_view name{};
 		std::string_view args{};
+		std::span<std::string_view const> prepare{};
 		std::span<std::string_view const> post{};
 
 		std::string_view config_name{};

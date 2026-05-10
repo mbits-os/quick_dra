@@ -206,9 +206,7 @@ namespace quick_dra::testing {
 
 		value = read<ym_map>("year-month: value"sv);
 		ASSERT_FALSE(value);
-		ASSERT_EQ(log,
-		          "input:1:1: error: expecting a number\n"
-		          "input:1:1: error: expecting YYYY/MM or YYYY-MM\n"sv);
+		ASSERT_EQ(log, "input:1:1: error: expecting YYYY/MM or YYYY-MM\n"sv);
 
 		value = read<ym_map>("2024-13: value"sv);
 		ASSERT_FALSE(value);

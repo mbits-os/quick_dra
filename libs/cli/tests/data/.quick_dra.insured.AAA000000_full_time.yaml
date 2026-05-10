@@ -1,5 +1,7 @@
-wersja: 1
+wersja: 2
 ubezpieczeni:
   - nazwisko: 'Surname, Name'
     dowód: AAA000000
     tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2026/1: {}

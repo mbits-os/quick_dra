@@ -1,0 +1,17 @@
+wersja: 2
+płatnik:
+  nazwisko: 'Nowak, Jan'
+  dowód: ABC523456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: 'Hancock, John'
+    dowód: AAA000000
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2026/1: {}
+  - nazwisko: 'Surname, Name'
+    paszport: AA0000000
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2026/1: {}
