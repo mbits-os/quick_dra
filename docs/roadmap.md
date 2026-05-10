@@ -41,9 +41,28 @@
     - [ ] Phase 1: do not build app if `Qt6_DIR` is absent
     - [ ] Phase 2: install Qt6 on github runner
   - [ ] Support for editing of `~/.quick_dra.yaml`
-  - [ ] A button to save the XML
-  - _Notes:_
-    - It must be cross-platform
-    - Using ElectronJS or Chromium's CEF is overkill
-    - If not looking native, stick to current-ish Material Design
+    - [x] Modify payer
+    - [ ] Modify insured
+      - [x] Edit all, but employment history
+      - [x] Present employment history
+      - [x] In-place edit of employment history
+      - [ ] Add employment
+      - [ ] Remove employment
+      - [ ] Block duplicates in history
+    - [ ] Edit insured list
+      - [x] Add insured
+      - [x] Remove insured
+    - [ ] Block duplicates in insured list
+  - [x] A button to save the XML
+  - [ ] _(opt)_ Show history graphs
+  - [x] Show filled forms
+  - [x] Show `--help` in message box
+  - [x] Observe changes in current config file
+  - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
+  - [ ] Add tests
+  - [ ] Honor page minimum width
+  - [ ] Bug tracking:
+    - [ ] `Panel::setInfo` in full layout, `"label"` does not properly repositions itself
+    - [ ] As used in `PersonelPage`, `Panel` lines are to fara away from each other
+    - [ ] Do not allow duplicates in the insured
 - [ ] Automatic upload to ZUS ePłatnik

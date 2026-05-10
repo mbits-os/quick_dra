@@ -1,0 +1,147 @@
+titles:
+  DRA: [II.6]
+  RCA: [III.A.2, "= ", III.A.1]
+
+format hints:
+  DRA:
+    I.1: left
+    I.2: left
+    IV: { ignore: true }
+    IV.1: { ignore: false }
+    IV.2: { ignore: false }
+    IV.3: { ignore: false }
+    IV.4: { ignore: false }
+    IV.5: { ignore: false }
+    IV.6: { ignore: false }
+    IV.7: { ignore: false }
+    IV.8: { ignore: false }
+    IV.9: { ignore: false }
+    IV.19: { ignore: false }
+    IV.20: { ignore: false }
+    IV.21: { ignore: false }
+    IV.22: { ignore: false }
+    IV.23: { ignore: false }
+    IV.24: { ignore: false }
+    IV.25: { ignore: false }
+    IV.26: { ignore: false }
+    IV.27: { ignore: false }
+    IV.37: { ignore: false }
+    V: { ignore: true }
+    VI: { ignore: true }
+    VII: { ignore: true }
+    VIII: { ignore: true }
+  RCA:
+    III.B.1: right
+    III.B.3: { sep: "/", align: right }
+    III.D: { ignore: true }
+
+labels:
+  DRA:
+    I:
+      label: DANE ORGANIZACYJNE
+      fields:
+        1: Termin przysyłania
+        2: "Identyfikator raportu\nnumer / mm / rrrr"
+    II:
+      label: DANE IDENTYFIKACYJNE PŁATNIKA SKŁADEK
+      fields:
+        1: Numer NIP
+        2: Numer REGON
+        3: Numer PESEL
+        4: Rodzaj dokumentu
+        5: Seria i numer dokumentu
+        6: Nazwa skrócona
+        7: Nazwisko
+        8: Imię pierwsze
+        9: "Data urodzenia\ndd / mm / rrrr"
+    III:
+      label: INNE INFORMACJE
+      fields:
+        1: Liczba ubezpieczonych
+        3: Stopa procentowa składek na ubezpieczenia wypadkowe
+    IV:
+      label: ZESTAWIENIE NALEŻNYCH SKŁADEK NA UBEZPIECZENIA SPOŁECZNE ORAZ ŹRÓDEŁ FINANSOWANIA
+      fields:
+        1: "Ubezpieczenie emerytalne\nSumy składek"
+        2: "Ubezpieczenia rentowe\nSumy składek"
+        3: "Ubezpieczenia emerytalne i rentowe\nSumy składek"
+
+        4: "Ubezpieczenie emerytalne\nSkładki finansowane przez ubezpieczonych"
+        5: "Ubezpieczenia rentowe\nSkładki finansowane przez ubezpieczonych"
+        6: "Ubezpieczenia emerytalne i rentowe\nSkładki finansowane przez ubezpieczonych\nSuma kwot składek"
+        7: "Ubezpieczenie emerytalne\nSkładki finansowane przez płatnika składek"
+        8: "Ubezpieczenia rentowe\nSkładki finansowane przez płatnika składek"
+        9: "Ubezpieczenia emerytalne i rentowe\nSkładki finansowane przez płatnika składek\nSuma kwot składek"
+
+        19: "Ubezpieczenie chorobowe\nSumy składek"
+        20: "Ubezpieczenia wypadkowe\nSumy składek"
+        21: "Ubezpieczenia chorobowe i wypadkowe\nSumy składek"
+
+        22: "Ubezpieczenie chorobowe\nSkładki finansowane przez ubezpieczonych"
+        23: "Ubezpieczenia wypadkowe\nSkładki finansowane przez ubezpieczonych"
+        24: "Ubezpieczenia chorobowe i wypadkowe\nSkładki finansowane przez ubezpieczonych\nSuma kwot składek"
+        25: "Ubezpieczenie chorobowe\nSkładki finansowane przez płatnika składek"
+        26: "Ubezpieczenia wypadkowe\nSkładki finansowane przez płatnika składek"
+        27: "Ubezpieczenia chorobowe i wypadkowe\nSkładki finansowane przez płatnika składek\nSuma kwot składek"
+        37: Kwota składek na ubezpieczenia społeczne, które powinien przekazać płatnik składek
+    IX:
+      label: ZESTAWIENIE NALEŻNYCH SKŁADEK DO ZWROTU/ZAPŁATY
+      fields:
+        1: Kwota do zwrotu przez ZUS
+        2: Kwota do zapłaty
+    XIII:
+      label: OŚWIADCZENIE PŁATNIKA SKŁADEK
+      fields: { 1: "Data wypełnienia\ndd / mm / rrrr" }
+  RCA:
+    I:
+      label: DANE ORGANIZACYJNE
+      fields: { 1: "Identyfikator raportu\nnumer / mm / rrrr" }
+    II:
+      label: DANE IDENTYFIKACYJNE PŁATNIKA SKŁADEK
+      fields:
+        1: Numer NIP
+        2: Numer REGON
+        3: Numer PESEL
+        4: Rodzaj dokumentu
+        5: Seria i numer dokumentu
+        6: Nazwa skrócona
+        7: Nazwisko
+        8: Imię pierwsze
+        9: "Data urodzenia\ndd / mm / rrrr"
+
+    III.A:
+      label: DANE IDENTYFIKACYJNE OSOBY UBEZPIECZONEJ
+      fields:
+        1: Nazwisko
+        2: Imię pierwsze
+        3: Typ
+        4: Identyfikator
+    III.B:
+      label: ZESTAWIENIE NALEŻNYCH SKŁADEK NA UBEZPIECZENIA SPOŁECZNE
+      fields:
+        1: Kod tytułu ubezpieczenia
+        3: Wymiar czasu pracy
+        4: "Ubezpieczenie emerytalne\nPodstawa wymiaru składki"
+        5: "Ubezpieczenie chorobowe\nPodstawa wymiaru składki"
+        6: "Ubezpieczenie wypadkowe\nPodstawa wymiaru składki"
+        7: "Ubezpieczenie emerytalne\nskładka finansowana przez ubezpieczonego"
+        8: "Ubezpieczenie rentowe\nskładka finansowana przez ubezpieczonego"
+        9: "Ubezpieczenie chorobowe\nskładka finansowana przez ubezpieczonego"
+        10: "Ubezpieczenie wypadkowe\nskładka finansowana przez ubezpieczonego"
+        11: "Ubezpieczenie emerytalne\nskładka finansowana przez płatnika składek"
+        12: "Ubezpieczenie rentowe\nskładka finansowana przez płatnika składek"
+        13: "Ubezpieczenie chorobowe\nskładka finansowana przez płatnika składek"
+        14: "Ubezpieczenie wypadkowe\nskładka finansowana przez płatnika składek"
+        29: Łączna kwota składek
+
+    III.C:
+      label: ZESTAWIENIE NALEŻNYCH SKŁADEK NA UBEZPIECZENIE ZDROWOTNE
+      fields:
+        1: Podstawa wymiaru składki
+        2: Kwota należnej składki finansowana przez płatnika składek
+        3: Kwota należnej składki finansowana z budżetu państwa bezpośrednio do ZUS
+        4: Kwota należnej składki finansowana przez ubezpieczonego
+        5: Kwota należnej składki finansowana przez Fundusz Kościelny
+    IV:
+      label: OŚWIADCZENIE PŁATNIKA SKŁADEK
+      fields: { 1: "Data wypełnienia\ndd / mm / rrrr" }

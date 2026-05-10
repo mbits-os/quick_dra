@@ -1,0 +1,119 @@
+# Copyright (c) 2026 midnightBITS
+# This file is licensed under MIT license (see LICENSE for details)
+
+option(QUICK_DRA_WIN_GUI_CONSOLE "Subsystem for the qdra-gui on Windows should default to CONSOLE" OFF)
+
+qt_standard_project_setup()
+
+set(SRCS src/main.cpp)
+
+set(QRC_SRCS res/quick_dra.qrc)
+
+if(WIN32)
+    list(APPEND QRC_SRCS res/icon_win32.qrc)
+    list(APPEND SRCS res/qdra-gui.exe.manifest)
+else()
+    list(APPEND QRC_SRCS res/icon_svg.qrc)
+endif()
+
+set(CMAKE_AUTORCC ON)
+qt_add_resources(RESOURCES ${QRC_SRCS})
+message(STATUS "Generated resource files: ${RESOURCES}")
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} ${QRC_SRCS})
+source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${RESOURCES})
+
+qt_add_executable(qdra-gui MACOSX_BUNDLE ${SRCS} ${QRC_SRCS} ${RESOURCES})
+
+add_win32_icon(qdra-gui appicon.ico)
+target_compile_options(qdra-gui PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+target_include_directories(qdra-gui PRIVATE src)
+target_link_options(qdra-gui PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+target_link_libraries(qdra-gui PRIVATE main)
+set_target_properties(qdra-gui PROPERTIES
+    VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    VS_DPI_AWARE ON
+)
+
+execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
+
+# Convert command output into a CMake list
+string(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+string(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
+list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
+
+if(WIN32)
+    get_target_property(Qt6_Core_Location Qt6::Core LOCATION)
+    cmake_path(GET Qt6_Core_Location PARENT_PATH Qt6_Bin_Dir)
+    cmake_path(GET Qt6_Bin_Dir PARENT_PATH Qt6_Dir)
+    find_program(windeployqt_exe NAMES windeployqt PATHS "${Qt6_Dir}/bin" NO_DEFAULT_PATH)
+    find_program(qtpaths6_exe NAMES qtpaths6 PATHS "${Qt6_Dir}/bin" NO_DEFAULT_PATH)
+    message(STATUS "windeployqt: ${windeployqt_exe}")
+    message(STATUS "qtpaths6: ${qtpaths6_exe}")
+
+    if(windeployqt_exe)
+        set(DPEPLOY_ARGS --dir .)
+        list(APPEND DEPLOY_ARGS --libdir .)
+        list(APPEND DEPLOY_ARGS --plugindir plugins)
+        list(APPEND DEPLOY_ARGS --qml-deploy-dir qml)
+        list(APPEND DEPLOY_ARGS --translationdir translations)
+
+        # list(APPEND DEPLOY_ARGS --force)
+        if(qtpaths6_exe)
+            list(APPEND DEPLOY_ARGS --qtpaths "${qtpaths6_exe}")
+        endif()
+
+        add_custom_command(TARGET qdra-gui POST_BUILD
+            COMMAND ${qtpaths6_exe} --query > qt_plugins_dir.txt
+            COMMAND "${windeployqt_exe}" ${DEPLOY_ARGS} "$<TARGET_FILE:qdra-gui>"
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+            COMMENT "Running windeployqt to deploy Qt dependencies"
+        )
+    endif()
+endif()
+
+if(WIN32)
+    if(QUICK_DRA_WIN_GUI_CONSOLE)
+        message(STATUS "winapi: Build Quick-DRA GUI as Console app")
+        target_link_options(qdra-gui PRIVATE /ENTRY:wmainCRTStartup)
+    else()
+        message(STATUS "winapi: Build Quick-DRA GUI as Windows app")
+        target_link_options(qdra-gui PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup)
+    endif()
+
+    target_compile_options(qdra-gui PRIVATE /D_UNICODE /DUNICODE)
+endif()
+
+# #################################################################
+# #  INSTALL
+# #################################################################
+if(QUICK_DRA_INSTALL)
+    install(TARGETS qdra-gui COMPONENT gui)
+
+    install(
+        DIRECTORY ${PROJECT_BINARY_DIR}/share/
+        DESTINATION share/
+        USE_SOURCE_PERMISSIONS
+        COMPONENT gui
+    )
+
+    cpack_add_component(gui
+        DISPLAY_NAME "Quick-DRA GUI Application"
+        DESCRIPTION "Command line interface `qdra` application and data"
+        GROUP apps
+    )
+
+    set(OUTPUT_VAR OUTPUT_SCRIPT)
+
+    if(Qt6_VERSION_MINOR LESS 10)
+        set(OUTPUT_VAR FILENAME_VARIABLE)
+    endif()
+
+    qt_generate_deploy_app_script(
+        TARGET qdra-gui
+        ${OUTPUT_VAR} deploy_script
+        NO_UNSUPPORTED_PLATFORM_ERROR
+    )
+
+    install(SCRIPT "${deploy_script}" COMPONENT gui)
+endif()

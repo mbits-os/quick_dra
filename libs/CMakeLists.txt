@@ -8,7 +8,6 @@ add_subdirectory(liblex)
 add_subdirectory(libforms)
 add_subdirectory(libconv)
 add_subdirectory(libcli)
-add_subdirectory(libgui)
 add_subdirectory(cli)
 add_subdirectory(gui)
 
@@ -22,7 +21,11 @@ add_to_coverage(
     libcli
     cli
 
-    # libgui
+    # app
+    # controls
     # gui
+    # main
+    # pages
+    # utils
 )
 cov_set_parent_scope()

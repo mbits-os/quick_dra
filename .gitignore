@@ -47,3 +47,4 @@ super-linter.log
 .file-list
 pvs-report.sarif
 PVS-Studio.log
+.qtcreator/
