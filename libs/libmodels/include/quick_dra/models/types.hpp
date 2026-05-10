@@ -5,12 +5,15 @@
 
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <chrono>
 #include <map>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/meta.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/base/types.hpp>
 #include <quick_dra/models/model.hpp>
 #include <quick_dra/models/yaml/form_template.hpp>
+#include <quick_dra/models/yaml/model_versions.hpp>
 #include <quick_dra/models/yaml/tax_config.hpp>
 #include <quick_dra/models/yaml/user_config.hpp>
 #include <quick_dra/models/yaml/user_config_partial.hpp>
@@ -142,3 +145,7 @@ namespace quick_dra {
 		}
 	};
 }  // namespace quick_dra
+
+namespace yaml {
+	std::string as_string(std::chrono::year_month const& date);
+}

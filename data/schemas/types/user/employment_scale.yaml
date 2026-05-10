@@ -1,0 +1,5 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/user/employment_scale.yaml
+description: Wymiar pracy jako ułamek; brak oznacza wartość 1/1
+type: string
+pattern: ^[1-9][0-9]*/[1-9][0-9]*$

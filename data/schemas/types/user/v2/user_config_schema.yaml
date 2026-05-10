@@ -1,0 +1,27 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/user/v2/user_config_schema.yaml
+type: object
+required: [wersja, płatnik, ubezpieczeni, wypadkowe]
+additionalProperties: false
+
+properties:
+  $schema: { type: string }
+  wersja: { $ref: ../../version-2.yaml }
+  płatnik: { $ref: ../v1/payer.yaml }
+
+  ubezpieczeni:
+    description: |
+      Lista osób dla których istnieje obowiązek ubezpieczeniowy nie
+      na podstawie zatrudnienia, ale umowy cywilnej
+    type: array
+    items: { $ref: insured.yaml }
+
+  wypadkowe:
+    description: Składka wypadkowa
+    type: object
+    additionalProperties: false
+
+    patternProperties:
+      ^2[0-9]{3}/([1-9]|0[1-9]|1[012])$:
+        description: Początkowy miesiąc obowiązywania tej składki
+        $ref: ../../percent.yaml

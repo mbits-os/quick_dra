@@ -3,12 +3,18 @@
 
 #pragma once
 
+#include <chrono>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
 
 namespace quick_dra::concepts {
+	namespace details {
+		template <typename T>
+		using person_type = typename T::person_type;
+	};
+
 	template <typename T, typename Arg>
 	concept Validator = requires(T const& call, std::string&& src, std::optional<Arg>& tgt, bool ask_questions) {
 		{ call(std::move(src), tgt, ask_questions) } -> std::same_as<bool>;
@@ -19,9 +25,20 @@ namespace quick_dra::concepts {
 		{ call(person) } -> std::same_as<std::optional<Arg>&>;
 	};  // NOLINT(readability/braces)
 
+	template <typename T, typename Selector, typename Arg>
+	concept SelectablePersonWithLookup =
+	    requires(T& person, std::chrono::year_month const& month, Selector const& call) {
+		    { call[month](person) } -> std::same_as<std::optional<Arg>&>;
+	    };  // NOLINT(readability/braces)
+
 	template <typename T, typename Arg>
 	concept Selector =
-	    requires() { requires SelectablePerson<typename T::person_type, T, Arg>; };  // NOLINT(readability/braces)
+	    requires() { requires SelectablePerson<details::person_type<T>, T, Arg>; };  // NOLINT(readability/braces)
+
+	template <typename T, typename Arg>
+	concept SelectorWithLookup = requires() {
+		requires SelectablePersonWithLookup<details::person_type<typename T::with_lookup>, T, Arg>;
+	};  // NOLINT(readability/braces)
 
 	template <typename T, typename Arg>
 	concept FieldPolicy = requires() {

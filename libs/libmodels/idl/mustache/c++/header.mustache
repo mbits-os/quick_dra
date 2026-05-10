@@ -9,12 +9,13 @@
 
 {{> pkg-cxx:includes}}
 namespace quick_dra::v{{version}} {
-#ifndef QUICK_DRA_VERSION
-#define QUICK_DRA_VERSION
-	static constexpr auto kVersion = {{version}}u;
-#endif // QUICK_DRA_VERSION
+{{# use_interfaces}}
+	using v{{version}}::{{name}};
+{{/ use_interfaces}}
 {{# has_interfaces}}
+{{# has_use_interfaces}}
 
+{{/ has_use_interfaces}}
 {{/ has_interfaces}}
 {{# interfaces}}
 	struct {{name}};
@@ -51,15 +52,12 @@ namespace quick_dra::v{{version}} {
 		bool postprocess();
 {{/ext_attrs.postprocess}}
 		bool read(yaml::ref_ctx const& ref);
+{{#ext_attrs.versioned}}
+		bool read_v{{version}}(yaml::ref_ctx const& ref);
+{{/ext_attrs.versioned}}
 {{#ext_attrs.merge}}
 		void merge({{name}}&& ref);
 {{/ext_attrs.merge}}
 	};
 {{/ interfaces}}
 } // namespace quick_dra::v{{version}}
-
-namespace quick_dra {
-  using namespace v{{version}};
-}  // namespace quick_dra
-
-#define QUICK_DRA_CURR_VERSION v{{version}}

@@ -1,0 +1,22 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/user/v1/insured.yaml
+type: object
+allowAdditionalProperties: false
+required: [nazwisko, tytuł ubezpieczenia]
+oneOf:
+  - { required: [pesel], not: { required: [dowód, paszport] } }
+  - { required: [dowód], not: { required: [pesel, paszport] } }
+  - { required: [paszport], not: { required: [dowód, pesel] } }
+
+properties:
+  nazwisko: { $ref: ../name.yaml }
+  pesel: { $ref: ../doc/pesel.yaml }
+  dowód: { $ref: ../doc/dowod.yaml }
+  paszport: { $ref: ../doc/paszport.yaml }
+  tytuł ubezpieczenia: { $ref: ../insurance_title.yaml }
+  wymiar: { $ref: ../employment_scale.yaml }
+  pensja:
+    description: |
+      Wysokość pensji brutto; brak oznacza pensję
+      minimalną dla danego miesiąca
+    $ref: ../../currency.yaml

@@ -7,6 +7,8 @@
 #include <charconv>
 #include <concepts>
 #include <numeric>
+#include <optional>
+#include <quick_dra/base/chrono.hpp>
 #include <string>
 #include <vector>
 
@@ -265,6 +267,12 @@ namespace quick_dra {
 #undef X
 			};
 		}
+	};
+
+	struct dated_employment_history {
+		year_month date;
+		std::optional<ratio> part_time_scale;
+		std::optional<currency> salary;
 	};
 }  // namespace quick_dra
 

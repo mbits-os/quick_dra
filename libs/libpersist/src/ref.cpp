@@ -58,12 +58,15 @@ namespace yaml {
 
 	ref_ctx base_ctx::from(ryml::ConstNodeRef const& ref) const {
 		return {
-		    {.parser = parser},
+		    {.ignore_errors_ = ignore_errors_, .parser = parser},
 		    &ref,
 		};
 	}
 
 	bool ref_ctx::error(std::string_view msg) const {
+		if (ignore_errors_) {
+			return false;
+		}
 		if (parser && parser->source().len && ref_ && head) {
 			return head->handle_error(ref_->location(*parser), msg);
 		}  // GCOV_EXCL_LINE

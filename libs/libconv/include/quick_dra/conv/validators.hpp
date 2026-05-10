@@ -37,6 +37,7 @@ namespace quick_dra::builtin {
 		static constexpr auto tax_id = "NIP"_label / getters::tax_id{} / valid_tax_id;
 
 		static constexpr auto title = "Insurance title"_label / getters::title{} / valid_title;
+
 		static constexpr auto part_time_scale =
 		    "Part-time scale"_label / getters::part_time_scale{} / valid_part_time_scale;
 		static constexpr auto salary = "Salary"_label / getters::salary{} / valid_salary;

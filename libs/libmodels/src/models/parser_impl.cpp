@@ -6,6 +6,7 @@
 #include <args/sys.hpp>
 #include <cmath>
 #include <fstream>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/project_reader.hpp>
 #include <string>
@@ -17,11 +18,7 @@ namespace quick_dra::v1 {
 		static constexpr auto app_name = "Quick-DRA"sv;
 	}
 
-	std::optional<config> config::parse_yaml(std::filesystem::path const& path) {
-		return parser::parse_yaml_file<config>(path, app_name);
-	}
-
-	bool config::postprocess() { return version == kVersion; }
+	bool config::postprocess() { return version == kApiVersion; }
 
 	template <typename Named>
 	bool parse_and_validate_name(Named& named) noexcept {
@@ -131,7 +128,7 @@ namespace quick_dra::v1 {
 		return parser::parse_yaml_text<tax_config>(text, path);
 	}
 
-	bool tax_config::postprocess() { return version == kVersion; }
+	bool tax_config::postprocess() { return version == kApiVersion; }
 
 	void tax_config::merge(tax_config&& newer) {
 		scale.merge(std::move(newer.scale));
@@ -142,87 +139,14 @@ namespace quick_dra::v1 {
 }  // namespace quick_dra::v1
 
 namespace quick_dra::v1::partial {
-	load_status config::load(std::filesystem::path const& path) {
-		std::error_code ec{};
-		if (!std::filesystem::exists(path, ec) || ec) {
-			return load_status::file_not_found;
-		}
-
-		auto result = load_status::errors_encountered;
-
-		// GCOV_EXCL_START[GCC]
-		// the insides of the lambda are green, but following line is not...
-		auto object = parser::parse_yaml_file<config>(path, [&]() {
-			// GCOV_EXCL_STOP
-			// separate line for coverage visibility
-			result = load_status::file_not_readable;
-		});
-		if (!object) {
-			return result;
-		}
-
-		*this = std::move(*object);
-		return load_status::loaded;
-	}
-
-	config config::load_partial(std::filesystem::path const& path, bool writeable) {
-		partial::config cfg{};
-		auto const load = cfg.load(path);
-		switch (load) {
-			case load_status::file_not_found:
-				if (writeable) {
-					fmt::print(stderr, "Quick-DRA: file {} will be created as needed.\n", path);
-				}
-				break;
-			case load_status::file_not_readable:
-				fmt::print(stderr, "Quick-DRA: error: could not read {}\n", path);
-				args::exit(1);
-			case load_status::errors_encountered:
-				fmt::print(stderr,
-				           "Quick-DRA: error: {} needs to be updated before "
-				           "continuing\n",
-				           path);
-				args::exit(1);
-			default:
-				break;
-		}
-		return cfg;
-	}  // GCOV_EXCL_LINE[GCC]
-
-	inline ryml::substr ryml_emit_root(emit syntax, ryml::Tree const& tree, ryml::substr buf, bool error_on_excess) {
-		return syntax == emit::yaml ? ryml::emit_yaml(tree, tree.root_id(), buf, error_on_excess)
-		                            : ryml::emit_json(tree, tree.root_id(), buf, error_on_excess);
-	}
-
-	bool config::store(std::filesystem::path const& path, emit syntax) {
-		prepare_for_write();
-		ryml::Tree tree{};
-		auto ref = tree.rootref();
-		yaml::write_value(ref, *this);
-
-		ryml::csubstr output = ryml_emit_root(syntax, tree, ryml::substr{}, /*error_on_excess*/ false);
-
-		std::vector<char> buf(output.len);
-		output = ryml_emit_root(syntax, tree, ryml::to_substr(buf),
-		                        /*error_on_excess*/ true);
-
-		std::ofstream out{path, std::ios::out | std::ios::binary};
-		if (!out) {
-			return false;
-		}
-
-		out.write(output.data(), static_cast<std::streamsize>(output.size()));
-		return true;
-	}
-
 	bool config::postprocess() {
-		if (version && *version != kVersion) version = std::nullopt;
+		if (version && *version != kApiVersion) version = std::nullopt;
 		if (!insured) insured.emplace();
 		return true;
 	}
 
 	void config::preprocess() {
-		if (!version) version = static_cast<unsigned short>(kVersion);
+		if (!version) version = static_cast<unsigned short>(kApiVersion);
 		if (!insured) insured.emplace();
 	}
 
@@ -358,3 +282,207 @@ namespace quick_dra::v1::partial {
 		}
 	}
 }  // namespace quick_dra::v1::partial
+
+namespace quick_dra::v2 {
+	namespace {
+		using v1::app_name;
+	}  // namespace
+
+	using v1::parse_and_validate_name;
+
+	std::optional<config> config::parse_yaml(std::filesystem::path const& path) {
+		return parser::parse_yaml_file<config>(path, app_name);
+	}
+
+	bool config::postprocess() { return version == kApiVersion; }
+
+	dated_employment_history insured_t::lookup(std::chrono::year_month const& date) const noexcept {
+		auto const& [on, employment] = find_in_timeline(date, history);
+		return {on, employment.part_time_scale, employment.salary};
+	}
+
+	bool insured_t::postprocess() {
+		if (!parse_and_validate_name(*this)) return false;
+
+		kind.clear();
+		document.clear();
+
+		if (social_id) {
+			if (id_card || passport) {
+				return false;
+			}
+			kind = "P"sv;
+			document = std::move(*social_id);
+			social_id.reset();
+		}
+
+		if (id_card) {
+			if (passport) {
+				return false;
+			}
+			kind = "1"sv;
+			document = std::move(*id_card);
+			id_card.reset();
+		}
+
+		if (passport) {
+			kind = "2"sv;
+			document = std::move(*passport);
+			passport.reset();
+		}
+
+		if (kind.empty() || document.empty()) return false;
+		return true;
+	}
+}  // namespace quick_dra::v2
+
+namespace quick_dra::v2::partial {
+	using v1::partial::parse_name;
+	using v1::partial::preprocess_name;
+
+	load_status config::load(std::filesystem::path const& path) {
+		std::error_code ec{};
+		if (!std::filesystem::exists(path, ec) || ec) {
+			return load_status::file_not_found;
+		}
+
+		auto result = load_status::errors_encountered;
+
+		// GCOV_EXCL_START[GCC]
+		// the insides of the lambda are green, but following line is not...
+		auto object = parser::parse_yaml_file<config>(path, [&]() {
+			// GCOV_EXCL_STOP
+			// separate line for coverage visibility
+			result = load_status::file_not_readable;
+		});
+		if (!object) {
+			return result;
+		}
+
+		*this = std::move(*object);
+		return load_status::loaded;
+	}
+
+	config config::load_partial(std::filesystem::path const& path, bool writeable) {
+		config cfg{};
+		auto const load = cfg.load(path);
+		switch (load) {
+			case load_status::file_not_found:
+				if (writeable) {
+					fmt::print(stderr, "Quick-DRA: file {} will be created as needed.\n", path);
+				}
+				break;
+			case load_status::file_not_readable:
+				fmt::print(stderr, "Quick-DRA: error: could not read {}\n", path);
+				args::exit(1);
+			case load_status::errors_encountered:
+				fmt::print(stderr,
+				           "Quick-DRA: error: {} needs to be updated before "
+				           "continuing\n",
+				           path);
+				args::exit(1);
+			default:
+				break;
+		}
+		return cfg;
+	}  // GCOV_EXCL_LINE[GCC]
+
+	bool config::store(std::filesystem::path const& path, syntax_type syntax) {
+		prepare_for_write();
+		ryml::Tree tree{};
+		auto ref = tree.rootref();
+		yaml::write_value(ref, *this);
+
+		ryml::csubstr output = yaml::emit_root(syntax, tree, ryml::substr{}, /*error_on_excess*/ false);
+
+		std::vector<char> buf(output.len);
+		output = yaml::emit_root(syntax, tree, ryml::to_substr(buf),
+		                         /*error_on_excess*/ true);
+
+		std::ofstream out{path, std::ios::out | std::ios::binary};
+		if (!out) {
+			return false;
+		}
+
+		out.write(output.data(), static_cast<std::streamsize>(output.size()));
+		return true;
+	}
+
+	bool config::postprocess() {
+		if (version && *version != kApiVersion) version = std::nullopt;
+		if (!insured) insured.emplace();
+		return true;
+	}
+
+	void config::preprocess() {
+		if (!version) version = static_cast<unsigned short>(kApiVersion);
+		if (!insured) insured.emplace();
+	}
+
+	void insured_t::postprocess_document_kind() noexcept {
+		kind = std::nullopt;
+		document = std::nullopt;
+
+		if (id_card) {
+			kind = "1"sv;
+			document = std::move(*id_card);
+		} else if (passport) {
+			kind = "2"sv;
+			document = std::move(*passport);
+		} else if (social_id) {
+			kind = "P"sv;
+			document = std::move(*social_id);
+		}
+	}
+
+	dated_employment_history insured_t::lookup(std::chrono::year_month const& date) const noexcept {
+		if (!history) {
+			return {null_month, std::nullopt, std::nullopt};
+		}
+		auto const& [on, employment] = find_in_timeline(date, *history);
+		return {on, employment.part_time_scale, employment.salary};
+	}
+
+	bool insured_t::postprocess() {
+		postprocess_document_kind();
+		parse_name(*this);
+
+		NULLIFY(id_card);
+		NULLIFY(passport);
+		NULLIFY(social_id);
+		NULLIFY(kind);
+		NULLIFY(document);
+
+		return true;
+	}
+
+	void insured_t::preprocess() {
+		preprocess_name(*this);
+		preprocess_document_kind();
+	}
+
+	void insured_t::preprocess_document_kind() noexcept {
+		auto kind_ = kind.value_or(""s);
+		auto document_ = document.value_or(""s);
+
+		id_card = std::nullopt;
+		passport = std::nullopt;
+		social_id = std::nullopt;
+		kind = std::nullopt;
+		document = std::nullopt;
+
+		if (kind_ == "1"sv) {
+			id_card = std::move(document_);
+		} else if (kind_ == "2"sv) {
+			passport = std::move(document_);
+		} else if (kind_ == "P"sv) {
+			social_id = std::move(document_);
+		}
+	}
+}  // namespace quick_dra::v2::partial
+
+namespace yaml {
+	std::string as_string(std::chrono::year_month const& value) {
+		return fmt::format("{}/{}", static_cast<int>(value.year()), static_cast<unsigned>(value.month()));
+	}
+}  // namespace yaml

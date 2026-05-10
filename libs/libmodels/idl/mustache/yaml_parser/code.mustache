@@ -9,6 +9,38 @@
 namespace quick_dra::v{{version}} {
 {{# interfaces}}
 	bool {{name}}::read(ref_ctx const& ref) {
+{{#ext_attrs.versioned}}
+		unsigned selector{};
+		ref.ignore_errors(true);
+		if (!read_key(ref, "{{.}}", selector)) selector = std::numeric_limits<unsigned>::max();
+		ref.ignore_errors(false);
+
+		switch(selector) {
+{{#versions}}
+{{^current}}
+			case {{value}}: {
+				v{{value}}::{{name}} v{{value}}_{{name}}{};
+				if (!v{{value}}_{{name}}.read_v{{value}}(ref)) {
+					return false;
+				}
+				upgrade(std::move(v{{value}}_{{name}}), *this);
+				return true;
+			}
+{{/current}}
+{{#current}}
+			case std::numeric_limits<unsigned>::max():
+			case {{value}}:
+				return read_v{{value}}(ref);
+{{/current}}
+{{/versions}}
+			default:
+				break;
+		}
+		return ref.error("unrecognized version when reading `{{.}}`");
+	}
+
+	bool {{name}}::read_v{{version}}(ref_ctx const& ref) {
+{{/ext_attrs.versioned}}
 {{#inheritance}}
 		if (!{{{.}}}::read(ref)) return false;
 {{/inheritance}}

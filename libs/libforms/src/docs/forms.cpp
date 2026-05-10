@@ -126,10 +126,11 @@ namespace quick_dra {
 	              year_month const& date,
 	              year_month_day const& today,
 	              config const& cfg) {
-		auto const scale = insured.part_time_scale.value_or(ratio{});
+		auto const [_, cfg_part_time_scale, cfg_salary] = insured.lookup(date);
+		auto const scale = cfg_part_time_scale.value_or(ratio{});
 		auto const scale_num = std::max(1u, scale.num);
 		auto const scale_den = std::max(1u, scale.den);
-		auto const salary = insured.salary.value_or(cfg.params.minimal_pay);
+		auto const salary = cfg_salary.value_or(cfg.params.minimal_pay);
 
 		auto const baseline = [salary, scale_num, scale_den]() {
 			auto const calc = salary.calc();

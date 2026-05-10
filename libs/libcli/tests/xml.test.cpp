@@ -5,24 +5,9 @@
 
 namespace quick_dra::builtin::testing::xml {
 	namespace {
-		using namespace std::chrono;
-
-		template <typename D1, typename D2, typename Clock>
-		time_point<Clock, D1> floor(time_point<Clock, D1> const& from) {
-			auto const orig_dur = from.time_since_epoch();
-			auto const casted_dur = duration_cast<D1>(orig_dur);
-			return time_point<Clock, D1>{casted_dur};
-		}
-
-		year_month_day get_today() {
-			auto const now = system_clock::now();
-			auto const local = floor<days>(zoned_time{current_zone(), now}.get_local_time());
-			return year_month_day{local};
-		}
-
 		std::string no_config_stdout() {
 			auto const today = get_today();
-			auto const date = year_month{today.year(), today.month()} - months{1};
+			auto const date = today.year() / today.month() - months{1};
 			return fmt::format(R"(-- report: #1 {:04}-{:02}
 Quick-DRA: error: cannot find .quick_dra.yaml
 )",

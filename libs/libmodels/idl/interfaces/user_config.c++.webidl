@@ -1,14 +1,18 @@
 partial interface config {
     attribute tax_parameters params;
 
-    [throws, nullable] static config? parse_yaml([in] path path);
-    void debug_print(verbose level);
+    [since_ver=2, throws, nullable] static config? parse_yaml([in] path path);
+    [since_ver=2] void debug_print(verbose level);
 };
 
 partial interface person {
     attribute string first_name;
     attribute string kind;
     attribute string document;
+};
+
+partial interface insured_t {
+    [since_ver=2] dated_employment_history lookup([in] year_month date);
 };
 
 interface tax_parameters {

@@ -1,8 +1,8 @@
-[quote="enum class emit { yaml, json };"] 
+[quote="using yaml::syntax_type;"] 
 partial interface config {
-    [throws, mutable] load_status load([in] path path);
-    [throws] static config load_partial([in] path path, [default=true] bool writeable);
-    [throws, mutable] bool store([in] path path, [default="emit::yaml"] emit syntax);
+    [since_ver=2, throws, mutable] load_status load([in] path path);
+    [since_ver=2, throws] static config load_partial([in] path path, [default=true] bool writeable);
+    [since_ver=2, throws, mutable] bool store([in] path path, [default="yaml::syntax_type::yaml"] syntax_type syntax);
 };
 
 partial interface person {
@@ -17,6 +17,7 @@ partial interface payer_t {
 };
 
 partial interface insured_t {
+    [since_ver=2] dated_employment_history lookup([in] year_month date);
     [mutable] void postprocess_document_kind();
     [mutable] void preprocess_document_kind();
 };

@@ -1,0 +1,5 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user/doc/nip.yaml
+description: Numer Identyfikacji Podatkowej, bez myślników
+type: integer
+pattern: ^[0-9]{10}$

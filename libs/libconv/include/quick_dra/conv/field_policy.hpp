@@ -4,9 +4,11 @@
 #pragma once
 
 #include <optional>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/types.hpp>
 #include <quick_dra/conv/concepts.hpp>
 #include <quick_dra/conv/interactive.hpp>
+#include <quick_dra/models/yaml/model_versions.hpp>
 #include <quick_dra/models/yaml/user_config_partial.hpp>
 #include <string>
 #include <string_view>
@@ -77,6 +79,26 @@ namespace quick_dra {
 		}
 	};
 
+	template <typename Arg,
+	          SelectorWithLookup<Arg> SelectorLambda,
+	          Validator<Arg> ValidatorLambda = policy_builder::validator_function<Arg>>
+	struct lookup_field_policy : SelectorLambda, ValidatorLambda {
+		using lookup_selector_type = SelectorLambda;
+		using validator_type = ValidatorLambda;
+		using value_type = Arg;
+
+		std::string_view label;
+
+		constexpr lookup_selector_type const& lookup_selector() const noexcept { return *this; }
+
+		constexpr validator_type const& validator() const noexcept { return *this; }
+
+		field_policy<value_type, typename lookup_selector_type::with_lookup, validator_type> operator[](
+		    year_month const& month) const noexcept {
+			return {this->lookup_selector()[month], this->validator(), this->label};
+		}
+	};
+
 	template <EnumKeyEnabled FieldPolicy>
 	inline auto get_enum_item(FieldPolicy const& policy) noexcept {
 		return policy.get_enum(policy.enum_key);
@@ -134,21 +156,66 @@ namespace quick_dra {
 			}
 		};
 
-		struct part_time_scale {
-			using person_type = partial::insured_t;
-			inline std::optional<ratio>& operator()(person_type& insured) const noexcept {
-				return insured.part_time_scale;
+		struct history_t {
+			year_month month{};
+			history_t(year_month const& month) : month{month} {}
+			partial::employment_history& get(partial::insured_t& insured) const {
+				if (!insured.history) {
+					insured.history.emplace();
+				}
+				return *find_or_add_to_timeline(month, *insured.history).second;
 			}
 		};
 
+		struct part_time_scale {
+			struct with_lookup : history_t {
+				using person_type = partial::insured_t;
+				inline std::optional<ratio>& operator()(person_type& insured) const {
+					return get(insured).part_time_scale;
+				}
+			};
+			with_lookup operator[](year_month const& month) const noexcept { return {month}; }
+		};
+
 		struct salary {
-			using person_type = partial::insured_t;
-			inline std::optional<currency>& operator()(person_type& insured) const noexcept { return insured.salary; }
+			struct with_lookup : history_t {
+				using person_type = partial::insured_t;
+				year_month month{};
+				inline std::optional<currency>& operator()(person_type& insured) const { return get(insured).salary; }
+			};
+			with_lookup operator[](year_month const& month) const noexcept { return {month}; }
 		};
 	}  // namespace getters
 
 	namespace policy_builder {
 		namespace details {
+			template <typename T>
+			concept modifiable = std::same_as<T, std::remove_cvref_t<T>&>;
+
+			template <typename T, typename Arg>
+			concept selector_lambda_helper = requires(T const& lambda, Arg& arg) {
+				{ lambda(arg) } -> modifiable;
+			};
+
+			template <typename T>
+			concept selector_lambda = requires() {
+				typename T::person_type;
+				requires selector_lambda_helper<T, typename T::person_type>;
+			};
+
+			template <typename T>
+			concept selector_lambda_with_lookup = requires(T const& lambda) {
+				typename T::with_lookup;
+				requires selector_lambda<typename T::with_lookup>;
+				{ lambda[0y / 1] } -> std::convertible_to<typename T::with_lookup>;
+			};
+
+			template <selector_lambda T>
+			using selector_lambda_return_type = decltype(std::declval<T>()(std::declval<typename T::person_type&>()));
+
+			template <selector_lambda_with_lookup T>
+			using selector_lambda_with_lookup_return_type = selector_lambda_return_type<typename T::with_lookup>;
+
 			template <typename T>
 			struct value_type_of {
 				using type = T;
@@ -159,11 +226,11 @@ namespace quick_dra {
 				using type = T;
 			};
 
-			template <typename T>
-			    requires requires() { typename T::person_type; }
-			struct value_type_of<T>
-			    : value_type_of<
-			          std::remove_cvref_t<decltype(std::declval<T>()(std::declval<typename T::person_type&>()))>> {};
+			template <selector_lambda T>
+			struct value_type_of<T> : value_type_of<std::remove_cvref_t<selector_lambda_return_type<T>>> {};
+
+			template <selector_lambda_with_lookup T>
+			struct value_type_of<T> : value_type_of<std::remove_cvref_t<selector_lambda_with_lookup_return_type<T>>> {};
 
 			template <typename T>
 			using value_type_t = typename value_type_of<T>::type;
@@ -190,14 +257,44 @@ namespace quick_dra {
 			}
 		};
 
+		template <typename Arg, SelectorWithLookup<Arg> SelectorLambda>
+		struct lookup_label_selector : SelectorLambda {
+			using value_type = Arg;
+
+			std::string_view value;
+
+			constexpr SelectorLambda const& lookup_selector() const noexcept { return *this; }
+
+			template <Validator<value_type> ValidatorLambda>
+			[[nodiscard]] friend consteval lookup_field_policy<value_type, SelectorLambda, ValidatorLambda> operator/(
+			    lookup_label_selector const& lhs,
+			    ValidatorLambda&& validator) {
+				return {lhs.lookup_selector(), std::forward<ValidatorLambda>(validator), lhs.value};
+			}
+
+			[[nodiscard]] friend consteval lookup_field_policy<value_type,
+			                                                   SelectorLambda,
+			                                                   validator_function<value_type>>
+			operator/(lookup_label_selector const& lhs,
+			          bool (*validator)(std::string&&, std::optional<value_type>&, bool)) {
+				return {lhs.lookup_selector(), {validator}, lhs.value};
+			}
+		};
+
 		struct label {
 			std::string_view value;
 
 			constexpr auto operator<=>(label const&) const noexcept = default;
 
-			template <typename SelectorLambda>
+			template <details::selector_lambda SelectorLambda>
 			[[nodiscard]] consteval label_selector<details::value_type_t<SelectorLambda>, SelectorLambda> operator/(
 			    SelectorLambda const& val) const noexcept {
+				return {val, value};
+			}
+
+			template <details::selector_lambda_with_lookup SelectorLambda>
+			[[nodiscard]] consteval lookup_label_selector<details::value_type_t<SelectorLambda>, SelectorLambda>
+			operator/(SelectorLambda const& val) const noexcept {
 				return {val, value};
 			}
 		};
