@@ -92,7 +92,7 @@ ubezpieczeni:
 	        .args =
 	            "insured edit -y --config .quick_dra.yaml --first Antoni --last Kowalski --social-id 78070707132 --scale 1/1 --salary 6500PLN"sv,
 	        .stderr =
-	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured edit: error: one of --pos and --find argument is required
 )"sv,
 	        .returncode = 2,
@@ -102,7 +102,7 @@ qdra insured edit: error: one of --pos and --find argument is required
 	        .args =
 	            "insured edit --pos 1 --find something -y --config .quick_dra.yaml --first Antoni --last Kowalski --social-id 78070707132 --scale 1/1 --salary 6500PLN"sv,
 	        .stderr =
-	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured edit: error: only one of --pos and --find is allowed
 )"sv,
 	        .returncode = 2,
@@ -129,18 +129,11 @@ ubezpieczeni:
 )"sv,
 	        .stdout = "Found:\n"
 	                  "    #2: Jan Iksiński [2 EH0123456]\n"
-	                  "\033[0;90mFirst name changed from \033[mJan\033[0;90m "
-	                  "to \033[mAntoni\n"
-	                  "\033[0;90mLast name changed from "
-	                  "\033[mIksiński\033[0;90m to \033[mKowalski\n"
-	                  "\033[0;90mDocument kind changed from \033[m2\033[0;90m "
-	                  "to \033[mP\n"
-	                  "\033[0;90mDocument changed from "
-	                  "\033[mEH0123456\033[0;90m to \033[m78070707132\n"
-	                  "\033[0;90mPart-time scale changed from "
-	                  "\033[m3/4\033[0;90m to \033[m1/1\n"
-	                  "\033[0;90mSalary changed from \033[m9000 zł\033[0;90m "
-	                  "to \033[mminimal for a given month\n"
+	                  "\033[0;90mFirst name changed from \033[mJan\033[0;90m to \033[mAntoni\n"
+	                  "\033[0;90mLast name changed from \033[mIksiński\033[0;90m to \033[mKowalski\n"
+	                  "\033[0;90mDocument kind changed from \033[m2\033[0;90m to \033[mP\n"
+	                  "\033[0;90mDocument changed from \033[mEH0123456\033[0;90m to \033[m78070707132\n"
+	                  "\033[0;90mPart-time scale changed from \033[m3/4\033[0;90m to \033[m1/1\n"
 	                  ""sv,
 	        .writes =
 	            new_file{
@@ -153,7 +146,7 @@ ubezpieczeni:
 	        .args = "insured edit --find EH0123456 --config .quick_dra.yaml"sv,
 	        .stderr =
 	            R"(Quick-DRA: file .quick_dra.yaml will be created as needed.
-usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured edit: error: --find: could not find any record using `EH0123456'
 )"sv,
 	        .returncode = 2,
@@ -225,7 +218,7 @@ ubezpieczeni:
 	    {
 	        .name = "conflict"sv,
 	        .args =
-	            "insured edit --find Maria -y --config .quick_dra.yaml --first Antoni --last Kowalski --passport EH0123456 --scale 1/1 --salary 6500PLN"sv,
+	            "insured edit --find Maria -y --config .quick_dra.yaml --first Antoni --last Kowalski --passport EH0123456 --scale 1/1 --salary 6500PLN --on 2026/04"sv,
 	        .config = R"(wersja: 1
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
@@ -275,7 +268,7 @@ ubezpieczeni:
     pensja: 7500 zł
 )"sv,
 	        .stderr =
-	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured edit: error: at least one of --social-id, --id-card and --passport is required with -y
 )"sv,
 	        .returncode = 2,
@@ -300,7 +293,7 @@ ubezpieczeni:
     pensja: 7500 zł
 )"sv,
 	        .stderr =
-	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured edit: error: at least one of --social-id, --id-card and --passport is required with -y
 )"sv,
 	        .returncode = 2,
@@ -325,10 +318,83 @@ ubezpieczeni:
     pensja: 7500 zł
 )"sv,
 	        .stderr =
-	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--scale <num>/<den>] [--salary <zł>]
+	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
 qdra insured edit: error: at least one of --social-id, --id-card and --passport is required with -y
 )"sv,
 	        .returncode = 2,
+	    },
+	    {
+	        .name = "bad month"sv,
+	        .args = R"(insured edit -y --pos 1 --on 2026/14)"sv,
+	        .config = "wersja: 1"sv,
+	        .stderr =
+	            R"(usage: qdra insured edit [-h] [--config <path>] [--pos <index>] [--find <keyword>] [-y] [--first <name>] [--last <name>] [--social-id <number>] [--id-card <number>] [--passport <number>] [--title <code>] [--on <yyyy/mm>] [--scale <num>/<den>] [--salary <zł>]
+qdra insured edit: error: --on expected YYYY/MM, got `2026/14`
+)"sv,
+	        .returncode = 2,
+	    },
+	    {
+	        .name = "start history"sv,
+	        .args =
+	            R"(insured edit --config .quick_dra.yaml -y --find maria --social-id 26211012346 --on 2026/04 --salary 7500)"sv,
+	        .config = R"(wersja: 2
+ubezpieczeni:
+  - nazwisko: 'Iksiński, Piotr'
+    dowód: ABC523456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+        2002/01:
+            wymiar: 1/4
+  - nazwisko: 'Iksiński, Jan'
+    paszport: EH0123456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+        2002/01:
+            wymiar: 3/4
+            pensja: 9000 zł
+  - nazwisko: 'Iksińska, Maria'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 26211012346
+)"sv,
+	        .stdout = R"(Found:
+    #3: Maria Iksińska [P 26211012346]
+)"
+	                  "\033[0;90mPart-time scale set to \033[m1/1\n"
+	                  "\033[0;90mSalary set to \033[m7500 zł\n"sv,
+	    },
+	    {
+	        .name = "amend history"sv,
+	        .args =
+	            R"(insured edit --config .quick_dra.yaml -y --find jan --passport EH0123456 --on 2026/04 --scale 3/4 --salary minimal)"sv,
+	        .config = R"(wersja: 2
+ubezpieczeni:
+  - nazwisko: 'Iksiński, Piotr'
+    dowód: ABC523456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+        2002/01:
+            wymiar: 1/4
+  - nazwisko: 'Iksiński, Jan'
+    paszport: EH0123456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+        2002/01:
+            wymiar: 3/4
+            pensja: 9000 zł
+  - nazwisko: 'Iksińska, Maria'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 26211012346
+)"sv,
+	        .stdout = R"(Found:
+    #2: Jan Iksiński [2 EH0123456]
+)"
+	                  "\033[0;90mPart-time scale set to \033[m3/4\n"
+	                  "\033[0;90mSalary set to \033[mminimal for a given month\n"sv,
+	        .writes =
+	            new_file{
+	                .name = ".quick_dra.yaml"sv,
+	                .cmp = ".quick_dra.amend-history.yaml"sv,
+	            },
 	    },
 	};
 

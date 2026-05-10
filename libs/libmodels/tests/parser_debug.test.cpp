@@ -196,6 +196,127 @@ ubezpieczeni:
 --     over 120000 zł at 32%
 )"sv),
 
+	    test<config>(R"(wersja: 2
+płatnik:
+  nazwisko: 'Nowak, Jan'
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: 'Iksiński, Piotr'
+    dowód: ABC523456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2022/01:
+        wymiar: 1/4
+      2026/01:
+        pensja: 8000 zł
+  - nazwisko: 'Iksiński, Jan'
+    paszport: EH0123456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2000/6:
+        wymiar: 3/4
+        pensja: 4000 zł
+      2001/6:
+        wymiar: 3/4
+        pensja: 5000 zł
+      2002/6:
+        wymiar: 3/4
+        pensja: 6000 zł
+      2003/6:
+        wymiar: 3/4
+        pensja: 7000 zł
+      2004/6:
+        wymiar: 3/4
+        pensja: 8000 zł
+      2009/6:
+        pensja: 9000 zł
+  - nazwisko: 'Iksińska, Maria'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 26211012346
+    historia:
+      2026/05:
+        pensja: 7500 zł
+)"sv)
+	        .on<verbose::names_only>(R"(-- payer: Jan Nowak
+-- insured:
+--   - Piotr Iksiński
+--   - Jan Iksiński
+--   - Maria Iksińska
+)"sv)
+	        .on<verbose::names_and_summary>(
+	            R"(-- payer: Jan Nowak (7680002466)
+-- insured:
+--   - Piotr Iksiński (ABC523456), 1/4 of <minimal pay> [2022/01]; 1/1 of 8000 zł [2026/01]
+--   - Jan Iksiński (EH0123456), 3/4 of 4000 zł [2000/06]; 3/4 of 5000 zł [2001/06]; 3/4 of 6000 zł [2002/06]; 3/4 of 7000 zł [2003/06]; 3/4 of 8000 zł [2004/06]; 1/1 of 9000 zł [2009/06]
+--   - Maria Iksińska (26211012346), 1/1 of 7500 zł [2026/05]
+)"sv)
+	        .on<verbose::names_and_details>(R"(-- payer:
+--   name: Jan Nowak
+--   social id: 26211012346
+--   tax id: 7680002466
+--   ident: 2 AB4123456
+-- insured:
+--   - name: Piotr Iksiński
+--     insurance title: 0110 0 0
+--     ident: 1 ABC523456
+--     salary: 1/4 of <minimal pay> [2022/01]
+               1/1 of 8000 zł [2026/01]
+--   - name: Jan Iksiński
+--     insurance title: 0110 0 0
+--     ident: 2 EH0123456
+--     salary: 3/4 of 4000 zł [2000/06]
+               3/4 of 5000 zł [2001/06]
+               3/4 of 6000 zł [2002/06]
+               3/4 of 7000 zł [2003/06]
+               3/4 of 8000 zł [2004/06]
+               1/1 of 9000 zł [2009/06]
+--   - name: Maria Iksińska
+--     insurance title: 0110 0 0
+--     ident: P 26211012346
+--     salary: 1/1 of 7500 zł [2026/05]
+)"sv)
+	        .on<verbose::parameters,
+	            verbose::raw_form_data,
+	            verbose::templates,
+	            verbose::calculated_sections,
+	            verbose::last>(R"(-- payer:
+--   name: Jan Nowak
+--   social id: 26211012346
+--   tax id: 7680002466
+--   ident: 2 AB4123456
+-- insured:
+--   - name: Piotr Iksiński
+--     insurance title: 0110 0 0
+--     ident: 1 ABC523456
+--     salary: 1/4 of <minimal pay> [2022/01]
+               1/1 of 8000 zł [2026/01]
+--   - name: Jan Iksiński
+--     insurance title: 0110 0 0
+--     ident: 2 EH0123456
+--     salary: 3/4 of 4000 zł [2000/06]
+               3/4 of 5000 zł [2001/06]
+               3/4 of 6000 zł [2002/06]
+               3/4 of 7000 zł [2003/06]
+               3/4 of 8000 zł [2004/06]
+               1/1 of 9000 zł [2009/06]
+--   - name: Maria Iksińska
+--     insurance title: 0110 0 0
+--     ident: P 26211012346
+--     salary: 1/1 of 7500 zł [2026/05]
+-- parameters
+--   cost of obtaining: 250 zł / 300 zł
+--   health: insured 9%
+--   pension insurance: payer 6.5%, insured 1.5%
+--   disability insurance: payer 0%
+--   health insurance: payer 9.76%, insured 9.76%
+--   accident insurance: payer 1.67%
+--   tax scale for month reported:
+--     over 30000 zł at 17%
+--     over 120000 zł at 32%
+)"sv),
+
 	    test<tax_config>(R"(version: 1
 
 scale:

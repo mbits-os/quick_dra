@@ -45,6 +45,36 @@ ubezpieczeni:
 	            },
 	    },
 	    {
+	        .name = "minimal_pay not pretty v2"sv,
+	        .args = "xml --info --today 2026-1-1 --config .quick_dra.yaml"sv,
+	        .config = R"(wersja: 2
+płatnik:
+  nazwisko: 'Nowak, Jan'
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: 'Iksiński, Piotr'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 50671500000
+    historia:
+      2020/1: {}
+)"sv,
+	        .stdout = R"(-- report: #1 2025-12
+-- output: quick-dra_202512-01.xml
+-- payments:
+   - PIOTR IKSIŃSKI: 3873.17 zł
+   - ZUS:            1476.32 zł
+   - Urząd Skarbowy:  153.12 zł
+   sum total =       5502.61 zł
+)"sv,
+	        .writes =
+	            new_file{
+	                .name = "quick-dra_202512-01.xml"sv,
+	                .cmp = "quick-dra_202512-01.AB4123456_50671500000_not-pretty-v2.xml"sv,
+	            },
+	    },
+	    {
 	        .name = "minimal_pay"sv,
 	        .args = "xml --pretty --info --today 2026-1-1 --config .quick_dra.yaml"sv,
 	        .config = R"(wersja: 1

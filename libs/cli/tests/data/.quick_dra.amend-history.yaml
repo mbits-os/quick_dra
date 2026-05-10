@@ -1,14 +1,20 @@
-wersja: 1
+wersja: 2
 ubezpieczeni:
   - nazwisko: 'Iksiński, Piotr'
     dowód: ABC523456
     tytuł ubezpieczenia: 0110 0 0
-    wymiar: 1/4
-  - nazwisko: 'Kowalski, Antoni'
+    historia:
+      2002/1:
+        wymiar: 1/4
+  - nazwisko: 'Iksiński, Jan'
+    paszport: EH0123456
     tytuł ubezpieczenia: 0110 0 0
-    pesel: 78070707132
-    pensja: 9000 zł
+    historia:
+      2002/1:
+        wymiar: 3/4
+        pensja: 9000 zł
+      2026/4:
+        wymiar: 3/4
   - nazwisko: 'Iksińska, Maria'
     tytuł ubezpieczenia: 0110 0 0
     pesel: 26211012346
-    pensja: 7500 zł

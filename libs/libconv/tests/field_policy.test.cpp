@@ -139,8 +139,8 @@ namespace quick_dra::testing {
 		EXPECT_POLICY_VALID(insured, builtin::policies::kind, "K");
 		EXPECT_POLICY_VALID(insured, builtin::policies::document, "always-valid");
 		EXPECT_POLICY_INVALID(insured, builtin::policies::title, "0110 A B");
-		EXPECT_POLICY_INVALID(insured, builtin::policies::part_time_scale, "345/B");
-		EXPECT_POLICY_VALID_(insured, builtin::policies::salary, "minimal", minimal_salary);
+		EXPECT_POLICY_INVALID(insured, builtin::policies::part_time_scale[2026y / 5], "345/B");
+		EXPECT_POLICY_VALID_(insured, builtin::policies::salary[2026y / 5], "minimal", minimal_salary);
 	}
 
 	TEST(field_policy, enums) {

@@ -195,23 +195,23 @@ namespace quick_dra::builtin::testing {
 			            "$VERSION"_sep);  //-V601
 		}
 
-		void expect_output(std::string_view actual, std::string_view expected, compare cmp) {
+		void expect_output(std::string_view expected, std::string_view actual, compare cmp) {
 			switch (cmp) {
 				case compare::all:
-					EXPECT_EQ(actual, expected);
+					EXPECT_EQ(expected, actual);
 					return;
 				case compare::begin:
 					if (actual.length() > expected.length()) {
-						EXPECT_EQ(actual.substr(0, expected.length()), expected);
+						EXPECT_EQ(expected, actual.substr(0, expected.length()));
 					} else {
-						EXPECT_EQ(actual, expected);
+						EXPECT_EQ(expected, actual);
 					}
 					return;
 				case compare::end:
 					if (actual.length() > expected.length()) {
-						EXPECT_EQ(actual.substr(actual.length() - expected.length()), expected);
+						EXPECT_EQ(expected, actual.substr(actual.length() - expected.length()));
 					} else {
-						EXPECT_EQ(actual, expected);
+						EXPECT_EQ(expected, actual);
 					}
 					return;
 			}
@@ -235,6 +235,9 @@ namespace quick_dra::builtin::testing {
 				}
 			}
 
+			for (auto const& prepare : expected.prepare) {
+				run(prepare);
+			}
 			auto actual = run(expected.args);
 			for (auto const& post : expected.post) {
 				if (actual.returncode) break;
@@ -263,9 +266,9 @@ namespace quick_dra::builtin::testing {
 				expected_stderr = lazy_stderr;
 			}
 
-			EXPECT_EQ(actual.returncode, expected.returncode);
-			expect_output(actual.stdout, expected_stdout, expected.check_stdout);
-			expect_output(actual.stderr, expected_stderr, expected.check_stderr);
+			EXPECT_EQ(expected.returncode, actual.returncode);
+			expect_output(expected_stdout, actual.stdout, expected.check_stdout);
+			expect_output(expected_stderr, actual.stderr, expected.check_stderr);
 
 			if (expected.writes) {
 				auto const& file = *expected.writes;

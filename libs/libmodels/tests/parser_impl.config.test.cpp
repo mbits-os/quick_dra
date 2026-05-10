@@ -3,7 +3,7 @@
 
 #include "parser_impl.common.hpp"
 
-namespace quick_dra::v1::testing {
+namespace quick_dra::testing {
 
 	struct payer_view {
 		std::string_view last_name;
@@ -35,6 +35,7 @@ namespace quick_dra::v1::testing {
 		std::string_view kind;
 		std::string_view document;
 		std::string_view title;
+		year_month date;
 		std::optional<ratio> part_time_scale;
 		std::optional<currency> salary;
 		std::optional<std::string_view> id_card;
@@ -54,8 +55,9 @@ namespace quick_dra::v1::testing {
 			        },
 			        out_title,
 			        as_str(social_id),
-			        part_time_scale,
-			        salary};
+			        {
+			            {date, {part_time_scale, salary}},
+			        }};
 		}
 	};
 
@@ -274,6 +276,38 @@ ubezpieczeni:
 )"sv,
 	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
 	    },
+	    {
+	        R"(wersja: 2
+płatnik:
+  nazwisko: 'A, B'
+  paszport: AA0000000
+  nip: 1234563218
+  pesel: 26211012346
+ubezpieczeni:
+- nazwisko: 'C, D'
+  pesel: 26211012346
+  paszport: AA0000000
+  tytuł ubezpieczenia: 9999 9 9
+  historia: {}
+)"sv,
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
+	    {
+	        R"(wersja: 2
+płatnik:
+  nazwisko: 'A, B'
+  paszport: AA0000000
+  nip: 1234563218
+  pesel: 26211012346
+ubezpieczeni:
+- nazwisko: 'C, D'
+  dowód: AAA0000000
+  paszport: AA0000000
+  tytuł ubezpieczenia: 9999 9 9
+  historia: {}
+)"sv,
+	        "input:1:1: error: while reading `ubezpieczeni`\n"sv,
+	    },
 	};
 
 	static constexpr auto only_C_D_id_card = std::array{
@@ -283,6 +317,7 @@ ubezpieczeni:
 	        .kind = "1"sv,
 	        .document = "AAA000000"sv,
 	        .title = "9999 9 9"sv,
+	        .date = null_month,
 	        .part_time_scale = std::nullopt,
 	        .salary = std::nullopt,
 	        .id_card = std::nullopt,
@@ -298,6 +333,7 @@ ubezpieczeni:
 	        .kind = "2"sv,
 	        .document = "AA0000000"sv,
 	        .title = "9999 9 9"sv,
+	        .date = null_month,
 	        .part_time_scale = std::nullopt,
 	        .salary = std::nullopt,
 	        .id_card = std::nullopt,
@@ -313,6 +349,7 @@ ubezpieczeni:
 	        .kind = "P"sv,
 	        .document = "26211012346"sv,
 	        .title = "9999 9 9"sv,
+	        .date = null_month,
 	        .part_time_scale = std::nullopt,
 	        .salary = std::nullopt,
 	        .id_card = std::nullopt,
@@ -335,7 +372,7 @@ ubezpieczeni:
   tytuł ubezpieczenia: 9999 9 9
 )",
 	        config_view{
-	            .version = kApiVersion,
+	            .version = v1::kApiVersion,
 	            .payer =
 	                {
 	                    .last_name = "A"sv,
@@ -363,7 +400,7 @@ ubezpieczeni:
   tytuł ubezpieczenia: 9999 9 9
 )",
 	        config_view{
-	            .version = kApiVersion,
+	            .version = v1::kApiVersion,
 	            .payer =
 	                {
 	                    .last_name = "A"sv,
@@ -391,7 +428,7 @@ ubezpieczeni:
   tytuł ubezpieczenia: 9999 9 9
 )",
 	        config_view{
-	            .version = kApiVersion,
+	            .version = v1::kApiVersion,
 	            .payer =
 	                {
 	                    .last_name = "A"sv,
@@ -411,4 +448,4 @@ ubezpieczeni:
 	INSTANTIATE_TEST_SUITE_P(yaml, bad_parser_impl, ::testing::ValuesIn(bad_configs));
 
 	INSTANTIATE_TEST_SUITE_P(yaml, good_parser_impl, ::testing::ValuesIn(good_configs));
-}  // namespace quick_dra::v1::testing
+}  // namespace quick_dra::testing

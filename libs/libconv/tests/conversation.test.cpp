@@ -9,6 +9,7 @@
 #include <quick_dra/base/types.hpp>
 #include <quick_dra/conv/conversation.hpp>
 #include <quick_dra/conv/validators.hpp>
+#include <quick_dra/models/project_reader.hpp>
 #include <sstream>
 
 // This macro is for implementing ASSERT_DEATH*, EXPECT_DEATH*,
@@ -49,6 +50,8 @@
 namespace quick_dra::testing {
 	using std::literals::operator""s;
 	using std::literals::operator""sv;
+
+	static constexpr auto employment_month = 2026y / 10;
 
 	struct conversation : quick_dra::conversation<partial::insured_t> {};
 
@@ -321,6 +324,9 @@ namespace quick_dra::testing {
 
 	template <std::same_as<std::string_view>... Args>
 	std::string test_arguments(partial::insured_t& opts, Args... args) {
+		partial::employment_history changes{};
+		std::optional<std::string> changes_date{};
+
 		auto tested_args = arg_stg{"tool"sv, args...};
 		::args::null_translator tr{};
 		::args::parser parser{""s, tested_args.argv(), &tr};
@@ -331,12 +337,15 @@ namespace quick_dra::testing {
 		        "provide insurance title code as six digits in `#### # #' "
 		        "format; for instance, for title of 0110, no social benefits, "
 		        "no disability, it should be \"0110 0 0\"");
-		parser.arg(opts.part_time_scale, "scale")
+		parser.arg(changes_date, "on")
+		    .meta("<yyyy/mm>")
+		    .help("which month the --scale and --salary arguments refer to; defaults to current month");
+		parser.arg(changes.part_time_scale, "scale")
 		    .meta("<num>/<den>")
 		    .help(
 		        "for part time workers, what scale should be applied to their "
 		        "salary; defaults to 1/1");
-		parser.arg(opts.salary, "salary")
+		parser.arg(changes.salary, "salary")
 		    .meta("<zł>")
 		    .help(
 		        "provide gross salary amount, before applying the scale, "
@@ -349,6 +358,17 @@ namespace quick_dra::testing {
 			simple_capture_stdout capture{&Stdout};
 			parser.parse();
 		}
+
+		auto month = null_month;
+		if (changes_date) {
+			if (!yaml::convert_string(*changes_date, month)) {
+				parser.error(fmt::format("--on expected YYYY/MM, got `{}`", *changes_date));
+			}
+		}
+
+		opts.history.emplace();
+		(*opts.history)[month] = changes;
+
 		return Stdout;
 	}
 
@@ -363,14 +383,18 @@ namespace quick_dra::testing {
 		                          .pension_right{8},
 		                          .disability_level{7},
 		                      }));
-		EXPECT_EQ(opts.part_time_scale, (ratio{3, 4}));
-		EXPECT_EQ(opts.salary, minimal_salary);
+
+		ASSERT_TRUE(opts.history);
+		ASSERT_NE(opts.history->find(null_month), opts.history->end());
+
+		EXPECT_EQ((*opts.history)[null_month].part_time_scale, (ratio{3, 4}));
+		EXPECT_EQ((*opts.history)[null_month].salary, minimal_salary);
 
 		test_arguments(opts, "--salary"sv, "3000zł"sv);
-		EXPECT_EQ(opts.salary, 3000_PLN);
+		EXPECT_EQ((*opts.history)[null_month].salary, 3000_PLN);
 
 		test_arguments(opts, "--salary"sv, "none"sv);
-		EXPECT_EQ(opts.salary, minimal_salary);
+		EXPECT_EQ((*opts.history)[null_month].salary, minimal_salary);
 
 		EXPECT_DEATH(test_arguments(opts, "--title"sv, "bad"sv),
 		             "tool: error: --title: expecting 6 digits in form `#### # #'");
@@ -391,8 +415,9 @@ namespace quick_dra::testing {
 		orig.kind = "P"s;
 		orig.document = "26211012346"s;
 		orig.title = insurance_title{"0110"s, 0, 0};
-		orig.part_time_scale = ratio{3, 4};
-		orig.salary = minimal_salary;
+		orig.history = {
+		    {employment_month, {.part_time_scale = ratio{3, 4}, .salary = minimal_salary}},
+		};
 
 		conversation conv{};
 		conv.dst = orig;
@@ -400,7 +425,9 @@ namespace quick_dra::testing {
 		conv.dst.first_name = "Tiberius"s;
 		conv.dst.kind = "2"s;
 		conv.dst.document = "EH0123456"s;
-		conv.dst.salary = 10'000_PLN;
+		conv.dst.history = {
+		    {employment_month, {.part_time_scale = full_time, .salary = 10'000_PLN}},
+		};
 
 		std::string Stdout{};
 		{
@@ -410,17 +437,16 @@ namespace quick_dra::testing {
 			conv.show_modified(builtin::policies::kind, orig);
 			conv.show_modified(builtin::policies::document, orig);
 			conv.show_modified(builtin::policies::title, orig);
-			conv.show_modified(builtin::policies::part_time_scale, orig);
-			conv.show_modified(builtin::policies::salary, orig);
+			conv.show_modified(builtin::policies::part_time_scale[employment_month], orig);
+			conv.show_modified(builtin::policies::salary[employment_month], orig);
 		}
 
 		EXPECT_EQ(Stdout,
-		          "\033[0;90mFirst name changed from \033[mJames\033[0;90m to "
-		          "\033[mTiberius\n\033[0;90mDocument kind changed from "
-		          "\033[mP\033[0;90m to \033[m2\n\033[0;90mDocument changed from "
-		          "\033[m26211012346\033[0;90m to \033[mEH0123456\n\033[0;90mSalary "
-		          "changed from \033[mminimal for a given month\033[0;90m to "
-		          "\033[m10000 zł\n"
+		          "\033[0;90mFirst name changed from \033[mJames\033[0;90m to \033[mTiberius\n"
+		          "\033[0;90mDocument kind changed from \033[mP\033[0;90m to \033[m2\n"
+		          "\033[0;90mDocument changed from \033[m26211012346\033[0;90m to \033[mEH0123456\n"
+		          "\033[0;90mPart-time scale changed from \033[m3/4\033[0;90m to \033[m1/1\n"
+		          "\033[0;90mSalary changed from \033[mminimal for a given month\033[0;90m to \033[m10000 zł\n"
 		          ""sv);
 	}
 
@@ -428,7 +454,9 @@ namespace quick_dra::testing {
 		conversation conv{};
 		conv.dst.first_name = "James"s;
 		conv.dst.last_name = "Kirk"s;
-		conv.dst.part_time_scale = ratio{3, 4};
+		conv.dst.history = {
+		    {employment_month, {.part_time_scale = ratio{3, 4}, .salary = std::nullopt}},
+		};
 
 		std::string Stdout{};
 		{
@@ -438,8 +466,8 @@ namespace quick_dra::testing {
 			conv.show_added(builtin::policies::kind);
 			conv.show_added(builtin::policies::document);
 			conv.show_added(builtin::policies::title);
-			conv.show_added(builtin::policies::part_time_scale);
-			conv.show_added(builtin::policies::salary);
+			conv.show_added(builtin::policies::part_time_scale[employment_month]);
+			conv.show_added(builtin::policies::salary[employment_month]);
 		}
 
 		EXPECT_EQ(Stdout,
