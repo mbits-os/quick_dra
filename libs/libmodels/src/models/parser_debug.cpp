@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace quick_dra::v1 {
+namespace quick_dra {
 	namespace {
 		std::string from_rate(rate const& r) {
 			std::vector<std::string> result{};
@@ -27,67 +27,98 @@ namespace quick_dra::v1 {
 			// GCOV_EXCL_STOP
 			return join(result, ", "_sep);  //-V601
 		}
-	}  // namespace
 
-	void config::debug_print(verbose level) const noexcept {
-		if (level == verbose::none) {
-			return;
-		}
-
-		if (level == verbose::names_only) {
+		template <typename Insured>
+		void names_only(payer_t const& payer, std::vector<Insured> const& insured) {
 			fmt::print("-- payer: {} {}\n", payer.first_name, payer.last_name);
 			fmt::print("-- insured:\n");
 			for (auto const& obj : insured) {
 				fmt::print("--   - {} {}\n", obj.first_name, obj.last_name);
 			}
-		} else if (level == verbose::names_and_summary) {
-			fmt::print("-- payer: {} {} ({})\n", payer.first_name, payer.last_name, payer.tax_id);
-			fmt::print("-- insured:\n");
-			for (auto const& obj : insured) {
-				auto const scale = obj.part_time_scale.value_or(ratio{});
-				fmt::print("--   - {} {} ({}), {}/{} of {}\n", obj.first_name, obj.last_name, obj.document,
-				           std::max(1u, scale.num), std::max(1u, scale.den),
-				           obj.salary.transform([](auto const& value) { return fmt::format("{} zł", value); })
-				               .value_or("<minimal pay>"));
-			}
-			return;
-		} else {  // GCOV_EXCL_LINE[WIN32]
+		}
+
+		void names_summary_and_beyond(payer_t const& payer, verbose level) {
+			if (level == verbose::names_and_summary) {
+				fmt::print("-- payer: {} {} ({})\n", payer.first_name, payer.last_name, payer.tax_id);
+				return;
+			}  // GCOV_EXCL_LINE[WIN32]
+
 			fmt::print("-- payer:\n");
 			fmt::print("--   name: {} {}\n", payer.first_name, payer.last_name);
 			fmt::print("--   social id: {}\n", payer.social_id);
 			fmt::print("--   tax id: {}\n", payer.tax_id);
 			fmt::print("--   ident: {} {}\n", payer.kind, payer.document);
+		}
+
+		void names_summary_and_beyond(std::vector<v2::insured_t> const& insured, verbose level) {
+			if (level == verbose::names_and_summary) {
+				fmt::print("-- insured:\n");
+				for (auto const& obj : insured) {
+					std::vector<std::string> history{};
+					history.reserve(obj.history.size());
+					for (auto const& [key, value] : obj.history) {
+						auto const scale = value.part_time_scale.value_or(ratio{});
+						auto const scale_str = fmt::format("{}/{}", std::max(1u, scale.num), std::max(1u, scale.den));
+						auto const salary_str =
+						    value.salary.transform([](auto const& value) { return fmt::format("{} zł", value); })
+						        .value_or("<minimal pay>");
+						if (key == null_month) {
+							history.push_back(fmt::format("{} of {}", scale_str, salary_str));
+						} else {
+							history.push_back(fmt::format("{} of {} [{:04}/{:02}]", scale_str, salary_str,
+							                              static_cast<int>(key.year()),
+							                              static_cast<unsigned>(key.month())));
+						}
+					}
+					fmt::print("--   - {} {} ({}), {}\n", obj.first_name, obj.last_name, obj.document,
+					           fmt::join(history, "; "));
+				}
+				return;
+			}  // GCOV_EXCL_LINE[WIN32]
 
 			fmt::print("-- insured:\n");
 			for (auto const& obj : insured) {
-				auto const scale = obj.part_time_scale.value_or(ratio{});
+				std::vector<std::string> history{};
+				history.reserve(obj.history.size());
+				for (auto const& [key, value] : obj.history) {
+					auto const scale = value.part_time_scale.value_or(ratio{});
+					auto const scale_str = fmt::format("{}/{}", std::max(1u, scale.num), std::max(1u, scale.den));
+					auto const salary_str =
+					    value.salary.transform([](auto const& value) { return fmt::format("{} zł", value); })
+					        .value_or("<minimal pay>");
+					if (key == null_month) {
+						history.push_back(fmt::format("{} of {}", scale_str, salary_str));
+					} else {
+						history.push_back(fmt::format("{} of {} [{:04}/{:02}]", scale_str, salary_str,
+						                              static_cast<int>(key.year()),
+						                              static_cast<unsigned>(key.month())));
+					}
+				}
 
 				fmt::print("--   - name: {} {}\n", obj.first_name, obj.last_name);
 				fmt::print("--     insurance title: {}\n", fmt::join(obj.title.split(), " "));
 				fmt::print("--     ident: {} {}\n", obj.kind, obj.document);
-				fmt::print("--     salary: {}/{} of {}\n", std::max(1u, scale.num), std::max(1u, scale.den),
-				           obj.salary.transform([](auto const& value) { return fmt::format("{} zł", value); })
-				               .value_or("<minimal pay>"));
+				fmt::print("--     salary: {}\n", fmt::join(history, "\n               "));
 			}
 		}
 
-		if (level < verbose::parameters) {
-			return;
+		void parameters(tax_parameters const& params) {
+			fmt::print("-- parameters\n");
+			fmt::print("--   cost of obtaining: {} zł / {} zł\n",  // GCOV_EXCL_LINE
+			           params.costs_of_obtaining.local, params.costs_of_obtaining.remote);
+			fmt::print("--   health: {}\n", from_rate(params.contributions.health));
+			fmt::print("--   pension insurance: {}\n", from_rate(params.contributions.pension_insurance));
+			fmt::print("--   disability insurance: {}\n", from_rate(params.contributions.disability_insurance));
+			fmt::print("--   health insurance: {}\n", from_rate(params.contributions.health_insurance));
+			fmt::print("--   accident insurance: {}\n", from_rate(params.contributions.accident_insurance));
+			fmt::print("--   tax scale for month reported:\n");
+			for (auto const& [amount, tax] : params.scale)
+				fmt::print("--     over {} zł at {}%\n", amount, tax);
 		}
+	}  // namespace
+}  // namespace quick_dra
 
-		fmt::print("-- parameters\n");
-		fmt::print("--   cost of obtaining: {} zł / {} zł\n", params.costs_of_obtaining.local,
-		           params.costs_of_obtaining.remote);
-		fmt::print("--   health: {}\n", from_rate(params.contributions.health));
-		fmt::print("--   pension insurance: {}\n", from_rate(params.contributions.pension_insurance));
-		fmt::print("--   disability insurance: {}\n", from_rate(params.contributions.disability_insurance));
-		fmt::print("--   health insurance: {}\n", from_rate(params.contributions.health_insurance));
-		fmt::print("--   accident insurance: {}\n", from_rate(params.contributions.accident_insurance));
-		fmt::print("--   tax scale for month reported:\n");
-		for (auto const& [amount, tax] : params.scale)
-			fmt::print("--     over {} zł at {}%\n", amount, tax);
-	}
-
+namespace quick_dra::v1 {
 	void tax_config::debug_print(verbose level) const noexcept {
 		if (level < verbose::parameters) {
 			return;
@@ -124,6 +155,27 @@ namespace quick_dra::v1 {
 		}
 	}
 }  // namespace quick_dra::v1
+
+namespace quick_dra::v2 {
+	void config::debug_print(verbose level) const noexcept {
+		if (level == verbose::none) {
+			return;
+		}
+
+		if (level == verbose::names_only) {
+			names_only(payer, insured);
+		} else {  // GCOV_EXCL_LINE[WIN32]
+			names_summary_and_beyond(payer, level);
+			names_summary_and_beyond(insured, level);
+		}
+
+		if (level < verbose::parameters) {
+			return;
+		}
+
+		parameters(params);
+	}
+}  // namespace quick_dra::v2
 
 namespace quick_dra {
 	void compiled_templates::debug_print() const noexcept {

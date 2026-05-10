@@ -28,6 +28,12 @@
   - [x] _(opt)_ Enable Open Source PVS-Studio (_v0.11.1_)
   - [x] Move `insured list` to `list`, with payer info and searching by keyword (_v0.10.0_)
   - [x] Make a release (_v1.0.0_)
+- [ ] Config v2
+  - [x] Record historical changes in salary (scale + amount)
+  - [x] Allow reading v1, write back the same version
+  - [ ] Some data should be in per-org config (e.g. accident insurance)
+  - [ ] New `qdra config` should be able to upgrade (not downgrade) between version
+  - [ ] Bug: cannot enter "10000 zł" or "Iksiński" on windows during conversation
 - [ ] Create a `qdra_gui`
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML

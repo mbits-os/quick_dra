@@ -3,27 +3,13 @@
 
 #include "cli_options.hpp"
 #include <map>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/conv/args_parser.hpp>
 #include <string>
 #include "ctre_parsing.hpp"
 
 namespace quick_dra::builtin::xml {
-	namespace {
-		template <typename D1, typename D2, typename Clock>
-		time_point<Clock, D1> floor(time_point<Clock, D1> const& from) {
-			auto const orig_dur = from.time_since_epoch();
-			auto const casted_dur = duration_cast<D1>(orig_dur);
-			return time_point<Clock, D1>{casted_dur};
-		}
-
-		year_month_day get_today() {
-			auto const now = system_clock::now();
-			auto const local = floor<days>(zoned_time{current_zone(), now}.get_local_time());
-			return year_month_day{local};
-		}
-	}  // namespace
-
 	options options_from_cli(args::args_view const& arguments, std::string_view description) {
 		std::optional<std::string> config_path;
 		std::optional<std::filesystem::path> tax_config_path;
@@ -84,7 +70,7 @@ namespace quick_dra::builtin::xml {
 		}
 
 		auto const today = today_from_args.value_or(get_today());
-		auto const date = year_month{today.year(), today.month()} + months{rel_month};
+		auto const date = today.year() / today.month() + months{rel_month};
 		return {.config_path = platform::get_config_path(config_path),
 		        .tax_config_path = tax_config_path,
 		        .verbose_level = verbose{verbose_counter},

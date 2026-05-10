@@ -5,6 +5,7 @@
 #include <array>
 #include <map>
 #include <optional>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/io/http.hpp>
 #include <quick_dra/io/options.hpp>
@@ -17,21 +18,6 @@ namespace quick_dra {
 		static constexpr auto GITHUB_MAIN_BRANCH =
 		    "https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/"sv;
 		static constexpr auto GITHUB_TAX_CONFIG = "data/config/tax_config.yaml"sv;
-
-		template <typename T>
-		T find_in_timeline(year_month const& key, std::map<year_month, T> const& minimal) {
-			year_month result_date{};
-			T result{};
-
-			for (auto const& [date, amount] : minimal) {
-				if (key < date) continue;
-				if (result_date > date) continue;
-				result_date = date;
-				result = amount;
-			}
-
-			return result;
-		}  // GCOV_EXCL_LINE[GCC]
 
 		std::optional<tax_config> download_tax_config(verbose level) {
 			std::string url{};
@@ -100,7 +86,7 @@ namespace quick_dra {
 
 		auto& params = result->params;
 
-#define FIND_IN_TIMELINE(NAME) params.NAME = find_in_timeline(date, tax_cfg.NAME)
+#define FIND_IN_TIMELINE(NAME) params.NAME = find_in_timeline(date, tax_cfg.NAME).second
 		FIND_IN_TIMELINE(scale);
 		FIND_IN_TIMELINE(minimal_pay);
 		FIND_IN_TIMELINE(costs_of_obtaining);
@@ -112,7 +98,7 @@ namespace quick_dra {
 		if (level >= verbose::names_and_summary) {
 			bool everyone_has_salary = true;
 			for (auto const& insured : result->insured) {
-				if (!insured.salary) {
+				if (!insured.lookup(date).salary) {
 					everyone_has_salary = false;
 					break;
 				}

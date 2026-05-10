@@ -61,10 +61,35 @@ namespace quick_dra::builtin::insured::edit {
 		auto found = search_insured_from_term(conv.search_term, *cfg.insured, match_level::none, nullptr,
 		                                      [&conv](std::string const& msg) { conv.parser.error(msg); });
 
+		year_month on_month{};
+		partial::employment_history employment{};
+		auto had_this_date = false;
+
 		if (found.size() == 1) {
+			std::tie(on_month, employment) = *conv.opts.history->rbegin();
 			auto& orig = cfg.insured->at(found.front());
-			if (!orig.part_time_scale) orig.part_time_scale = full_time;
-			if (!orig.salary) orig.salary = minimal_salary;
+			if (!orig.history) {
+				orig.history.emplace();
+			}
+
+			if (on_month == null_month) {
+				on_month = last_date_or_today(on_month, *orig.history);
+			}
+
+			auto it = conv.opts.history->rbegin();
+			auto opts = it->second;
+			conv.opts.history->erase(it->first);
+			(*conv.opts.history)[on_month] = opts;
+
+			had_this_date = orig.history->count(on_month) > 0;
+
+			if (!policies::part_time_scale[on_month].select(orig)) {
+				policies::part_time_scale[on_month].select(orig) = full_time;
+			}
+			if (!policies::salary[on_month].select(orig)) {
+				policies::salary[on_month].select(orig) = minimal_salary;
+			}
+
 			conv.dst = orig;
 			conv.check_required();
 		}
@@ -87,9 +112,12 @@ namespace quick_dra::builtin::insured::edit {
 			return 1;
 		}
 
+		auto const part_time_scale = policies::part_time_scale[on_month];
+		auto const salary = policies::salary[on_month];
+
 		if (!conv.check_field(policies::first_name) || !conv.check_field(policies::last_name) ||
 		    !wrap_document_edit(conv, found.front(), *cfg.insured) || !conv.check_field(policies::title) ||
-		    !conv.check_field(policies::part_time_scale) || !conv.check_field(policies::salary)) {
+		    !conv.check_field(part_time_scale) || !conv.check_field(salary)) {
 			return 1;
 		}
 
@@ -100,15 +128,21 @@ namespace quick_dra::builtin::insured::edit {
 		conv.show_modified(policies::kind, orig);
 		conv.show_modified(policies::document, orig);
 		conv.show_modified(policies::title, orig);
-		conv.show_modified(policies::part_time_scale, orig);
-		conv.show_modified(policies::salary, orig);
 
-		if (conv.dst.part_time_scale == full_time) {
-			conv.dst.part_time_scale.reset();
+		if (had_this_date) {
+			conv.show_modified(part_time_scale, orig);
+			conv.show_modified(salary, orig);
+		} else {
+			conv.show_added(part_time_scale);
+			conv.show_added(salary);
 		}
 
-		if (conv.dst.salary == minimal_salary) {
-			conv.dst.salary.reset();
+		if (part_time_scale.select(conv.dst) == full_time) {
+			part_time_scale.select(conv.dst).reset();
+		}
+
+		if (salary.select(conv.dst) == minimal_salary) {
+			salary.select(conv.dst).reset();
 		}
 
 		orig = conv.dst;

@@ -3,9 +3,11 @@
 
 #include "insured_add_conversation.hpp"
 #include <optional>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/types.hpp>
 #include <quick_dra/conv/validators.hpp>
+#include <quick_dra/models/project_reader.hpp>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -13,6 +15,8 @@
 namespace quick_dra::builtin::insured::add {
 	void conversation::parse_args(std::string_view tool_name, args::arglist arguments, std::string_view description) {
 		std::optional<std::string> config_path;
+		partial::employment_history changes{};
+		std::optional<std::string> changes_date{};
 
 		args::null_translator tr{};
 		args::parser parser{as_str(description), {tool_name, arguments}, &tr};
@@ -34,12 +38,15 @@ namespace quick_dra::builtin::insured::add {
 		        "provide insurance title code as six digits in `#### # #' "
 		        "format; for instance, for title of 0110, no social benefits, "
 		        "no disability, it should be \"0110 0 0\"");
-		parser.arg(opts.part_time_scale, "scale")
+		parser.arg(changes_date, "on")
+		    .meta("<yyyy/mm>")
+		    .help("which month the --scale and --salary arguments refer to; defaults to current month");
+		parser.arg(changes.part_time_scale, "scale")
 		    .meta("<num>/<den>")
 		    .help(
 		        "for part time workers, what scale should be applied to their "
 		        "salary; defaults to 1/1");
-		parser.arg(opts.salary, "salary")
+		parser.arg(changes.salary, "salary")
 		    .meta("<zł>")
 		    .help(
 		        "provide gross salary amount, before applying the scale, "
@@ -60,9 +67,17 @@ namespace quick_dra::builtin::insured::add {
 		RESET_EMPTY(opts.id_card);
 		RESET_EMPTY(opts.passport);
 
-		if (!opts.salary) {
-			opts.salary = minimal_salary;
+		auto month = null_month;
+		if (changes_date) {
+			if (!yaml::convert_string(*changes_date, month)) {
+				parser.error(fmt::format("--on expected YYYY/MM, got `{}`", *changes_date));
+			}
+		} else {
+			month = last_date_or_today<int>(month, {});
 		}
+
+		opts.history.emplace();
+		(*opts.history)[month] = changes;
 
 #undef RESET_EMPTY
 

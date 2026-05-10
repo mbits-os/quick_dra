@@ -10,11 +10,13 @@ set(GEN_SRCS
 )
 
 set(SRCS
+    include/quick_dra/base/chrono.hpp
     include/quick_dra/base/meta.hpp
     include/quick_dra/base/paths.hpp
     include/quick_dra/base/str.hpp
     include/quick_dra/base/types.hpp
     include/quick_dra/base/verbose.hpp
+    src/base/chrono.cpp
     src/base/paths.cpp
     src/base/str.cpp
     src/base/types.cpp
@@ -23,7 +25,7 @@ set(SRCS
 if(UNIX)
     list(APPEND SRCS src/base/exec_path_posix.cpp)
 elseif(WIN32)
-    list(APPEND SRCS src/base/exec_path_win32.cpp)
+    list(APPEND SRCS src/base/exec_path_win32.cpp base.natvis)
 endif()
 
 if(TARGET ICU::i18n)

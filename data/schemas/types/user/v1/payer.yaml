@@ -1,0 +1,16 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/user/v1/payer.yaml
+description: Płatnik składek
+type: object
+allowAdditionalProperties: false
+required: [nazwisko, pesel, nip]
+oneOf:
+  - { required: [dowód], not: { required: [paszport] } }
+  - { required: [paszport], not: { required: [dowód] } }
+
+properties:
+  nazwisko: { $ref: ../name.yaml }
+  pesel: { $ref: ../doc/pesel.yaml }
+  nip: { $ref: ../doc/nip.yaml }
+  dowód: { $ref: ../doc/dowod.yaml }
+  paszport: { $ref: ../doc/paszport.yaml }

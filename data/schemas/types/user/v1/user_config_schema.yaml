@@ -1,0 +1,17 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/types/user/v1/user_config_schema.yaml
+type: object
+required: [wersja, płatnik, ubezpieczeni]
+additionalProperties: false
+
+properties:
+  $schema: { type: string }
+  wersja: { $ref: ../../version-1.yaml }
+  płatnik: { $ref: payer.yaml }
+
+  ubezpieczeni:
+    description: |
+      Lista osób dla których istnieje obowiązek ubezpieczeniowy nie
+      na podstawie zatrudnienia, ale umowy cywilnej
+    type: array
+    items: { $ref: insured.yaml }

@@ -9,6 +9,7 @@
 #include <gtest/gtest.h>
 #include <filesystem>
 #include <optional>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/cli/builtins.hpp>
 #include <source_location>
 #include <span>

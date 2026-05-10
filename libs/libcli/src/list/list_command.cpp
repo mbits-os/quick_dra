@@ -5,6 +5,7 @@
 #include <fmt/ranges.h>
 #include <array>
 #include <filesystem>
+#include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/args_parser.hpp>
@@ -71,6 +72,9 @@ namespace quick_dra::builtin::list {
 			payer_matches = match_level::none;
 		}
 
+		auto const today = get_today();
+		auto const date = today.year() / today.month();
+
 		if (pipe) {
 			if (payer_matches != match_level::none) {
 				auto const& person = *cfg.payer;
@@ -88,6 +92,7 @@ namespace quick_dra::builtin::list {
 
 			for (unsigned const index : found) {
 				auto const& person = (*cfg.insured)[index];
+				auto const [change_date, part_time_scale, salary] = person.lookup(date);
 				auto items = std::array{
 				    fmt::to_string(index + 1),
 				    person.last_name.value_or(""s),  // GCOV_EXCL_LINE[GCC]
@@ -98,14 +103,17 @@ namespace quick_dra::builtin::list {
 				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
-				    person.part_time_scale
+				    part_time_scale
 				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
-				    person.salary
+				    salary
 				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
+				    change_date == null_month ? ""s
+				                              : fmt::format("{:04}/{:02}", static_cast<int>(change_date.year()),
+				                                            static_cast<unsigned>(change_date.month())),
 				};
 				fmt::print("{}\n", fmt::join(items, zero_pipe ? "\0"sv : "\t"sv));
 			}
@@ -123,11 +131,19 @@ namespace quick_dra::builtin::list {
 
 		for (unsigned const index : found) {
 			auto const& person = (*cfg.insured)[index];
-			std::string part_time_salary =
-			    person.salary.transform([](auto const& value) { return as_string(value); }).value_or("<minimal>"s);
+			auto const [change_date, part_time_scale, salary] = person.lookup(date);
 
-			if (person.part_time_scale && *person.part_time_scale != full_time) {
-				part_time_salary = fmt::format("{} of {}", as_string(*person.part_time_scale), part_time_salary);
+			std::string part_time_salary =
+			    salary.transform([](auto const& value) { return as_string(value); }).value_or("<minimal>"s);
+
+			if (part_time_scale && *part_time_scale != full_time) {
+				part_time_salary = fmt::format("{} of {}", as_string(*part_time_scale), part_time_salary);
+			}
+
+			if (change_date != null_month) {
+				part_time_salary =
+				    fmt::format("{} (since {}/{:02})", part_time_salary, static_cast<int>(change_date.year()),
+				                static_cast<unsigned>(change_date.month()));
 			}
 
 			fmt::print("#{}: {} {} [{} {}] {}\n", index + 1, person.first_name.value_or("??"),

@@ -1,0 +1,5 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user/doc/paszport.yaml
+description: Numer paszportu
+type: [integer, string]
+pattern: ^([0-9]{7-9})|([A-Z][A-Z0-9 ][0-9]{7})$

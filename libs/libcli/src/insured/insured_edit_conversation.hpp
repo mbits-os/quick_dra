@@ -19,7 +19,6 @@ namespace quick_dra::builtin::insured::edit {
 		conversation(std::string_view tool_name, args::arglist arguments, std::string_view description);
 
 		void parse_args();
-
 		void check_required();
 	};
 }  // namespace quick_dra::builtin::insured::edit

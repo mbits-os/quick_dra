@@ -45,11 +45,22 @@ namespace quick_dra::builtin::insured::add {
 			cfg.insured.emplace();
 		}
 
+		auto const on_date = conv.opts.history->rbegin()->first;
+		auto const part_time_scale = policies::part_time_scale[on_date];
+		auto const salary = policies::salary[on_date];
+
+		if (!part_time_scale.select(conv.dst)) {
+			part_time_scale.select(conv.dst) = full_time;
+		}
+		if (!salary.select(conv.dst)) {
+			salary.select(conv.dst) = minimal_salary;
+		}
+
 		if (!conv.check_field(policies::first_name) || !conv.check_field(policies::last_name) ||
 		    !conv.check_enum_field(""sv, policies::kind, policies::document, get_enum_item(policies::social_id),
 		                           get_enum_item(policies::id_card), get_enum_item(policies::passport)) ||
 		    has_another_insured(conv.dst, *cfg.insured) || !conv.check_field(policies::title) ||
-		    !conv.check_field(policies::part_time_scale) || !conv.check_field(policies::salary)) {
+		    !conv.check_field(part_time_scale) || !conv.check_field(salary)) {
 			return 1;
 		}
 
@@ -58,16 +69,15 @@ namespace quick_dra::builtin::insured::add {
 		conv.show_added(policies::kind);
 		conv.show_added(policies::document);
 		conv.show_added(policies::title);
-		conv.show_added(policies::part_time_scale);
-		conv.show_added(policies::salary);
+		conv.show_added(part_time_scale);
+		conv.show_added(salary);
 
-		if (conv.dst.part_time_scale == full_time) {
-			conv.dst.part_time_scale.reset();
+		if (part_time_scale.select(conv.dst) == full_time) {
+			part_time_scale.select(conv.dst).reset();
 		}
 
-		if (conv.dst.salary == minimal_salary) {
-			// minimal, in config denoted by undefined value
-			conv.dst.salary.reset();
+		if (salary.select(conv.dst) == minimal_salary) {
+			salary.select(conv.dst).reset();
 		}
 
 		cfg.insured->push_back(std::move(conv.dst));

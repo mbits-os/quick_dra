@@ -34,7 +34,7 @@ namespace yaml {
 
 		for (auto const& [key, value] : ctx) {
 			auto const& skey = as_string(key);
-			write_key(ref, {skey.c_str(), skey.data()}, value);
+			write_key(ref, {skey.c_str(), skey.length()}, value);
 		}
 	}
 

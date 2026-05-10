@@ -8,6 +8,13 @@
 #include <string_view>
 
 namespace yaml {
+	enum class syntax_type { yaml, json };
+
+	inline ryml::substr emit_root(syntax_type syntax, ryml::Tree const& tree, ryml::substr buf, bool error_on_excess) {
+		return syntax == syntax_type::yaml ? ryml::emit_yaml(tree, tree.root_id(), buf, error_on_excess)
+		                                   : ryml::emit_json(tree, tree.root_id(), buf, error_on_excess);
+	}
+
 	inline std::string_view view(ryml::csubstr const& sub) {
 		if (sub.empty()) return {};
 		return {sub.data(), sub.size()};
@@ -36,6 +43,7 @@ namespace yaml {
 			std::optional<c4::yml::Callbacks> previous{};
 		};
 
+		mutable bool ignore_errors_{false};
 		ryml::Parser const* parser{nullptr};
 
 		ref_ctx from(ryml::ConstNodeRef const& ref) const;
@@ -44,6 +52,7 @@ namespace yaml {
 	struct ref_ctx : base_ctx {
 		ryml::ConstNodeRef const* ref_{};
 
+		void ignore_errors(bool value) const { ignore_errors_ = value; }
 		bool error(std::string_view msg) const;
 		ryml::ConstNodeRef const& ref() const noexcept { return *ref_; }
 		c4::csubstr val() const { return ref_ ? ref_->val() : c4::csubstr{}; }

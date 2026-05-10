@@ -171,7 +171,7 @@ namespace yaml {
 		return convert_string(ref, value, ctx);
 	}
 
-	inline bool convert_string(ref_ctx const& ref, auto const& value, std::integral auto& ctx) {
+	inline bool convert_string(auto const& value, std::integral auto& ctx) {
 		if (value.empty()) {
 			ctx = 0;
 			return true;
@@ -182,6 +182,14 @@ namespace yaml {
 		auto const [ptr, ec] = std::from_chars(begin, end, ctx);
 		if (ptr != end || ec != std::errc{}) {
 			ctx = 0;
+			return false;
+		}
+
+		return true;  // GCOV_EXCL_LINE[LLVM]
+	}
+
+	inline bool convert_string(ref_ctx const& ref, auto const& value, std::integral auto& ctx) {
+		if (!convert_string(value, ctx)) {
 			if constexpr (std::is_signed_v<std::remove_cvref_t<decltype(ctx)>>) {
 				return ref.error("expecting a number");
 			} else {

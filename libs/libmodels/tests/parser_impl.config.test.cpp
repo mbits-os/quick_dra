@@ -3,7 +3,7 @@
 
 #include "parser_impl.common.hpp"
 
-namespace quick_dra::testing {
+namespace quick_dra::v1::testing {
 
 	struct payer_view {
 		std::string_view last_name;
@@ -79,7 +79,7 @@ namespace quick_dra::testing {
 	};
 
 	class bad_parser_impl : public ::testing::TestWithParam<std::pair<std::string_view, std::string_view>>,
-	                        public object_reader<config> {};
+	                        public quick_dra::testing::object_reader<config> {};
 
 	TEST_P(bad_parser_impl, load) {
 		auto const& [yaml, expected_log] = GetParam();
@@ -89,7 +89,7 @@ namespace quick_dra::testing {
 	}
 
 	class good_parser_impl : public ::testing::TestWithParam<std::pair<std::string_view, config_view>>,
-	                         public object_reader<config> {};
+	                         public quick_dra::testing::object_reader<config> {};
 
 	TEST_P(good_parser_impl, load) {
 		auto const& [yaml, expected_config] = GetParam();
@@ -335,7 +335,7 @@ ubezpieczeni:
   tytuł ubezpieczenia: 9999 9 9
 )",
 	        config_view{
-	            .version = kVersion,
+	            .version = kApiVersion,
 	            .payer =
 	                {
 	                    .last_name = "A"sv,
@@ -363,7 +363,7 @@ ubezpieczeni:
   tytuł ubezpieczenia: 9999 9 9
 )",
 	        config_view{
-	            .version = kVersion,
+	            .version = kApiVersion,
 	            .payer =
 	                {
 	                    .last_name = "A"sv,
@@ -391,7 +391,7 @@ ubezpieczeni:
   tytuł ubezpieczenia: 9999 9 9
 )",
 	        config_view{
-	            .version = kVersion,
+	            .version = kApiVersion,
 	            .payer =
 	                {
 	                    .last_name = "A"sv,
@@ -411,4 +411,4 @@ ubezpieczeni:
 	INSTANTIATE_TEST_SUITE_P(yaml, bad_parser_impl, ::testing::ValuesIn(bad_configs));
 
 	INSTANTIATE_TEST_SUITE_P(yaml, good_parser_impl, ::testing::ValuesIn(good_configs));
-}  // namespace quick_dra::testing
+}  // namespace quick_dra::v1::testing

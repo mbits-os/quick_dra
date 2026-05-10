@@ -9,6 +9,38 @@
 namespace quick_dra::v{{version}}::partial {
 {{# interfaces}}
 	bool {{name}}::read(ref_ctx const& ref) {
+{{#ext_attrs.versioned}}
+		unsigned selector{};
+		ref.ignore_errors(true);
+		if (!read_key(ref, "{{.}}", selector)) selector = std::numeric_limits<unsigned>::max();
+		ref.ignore_errors(false);
+
+		switch(selector) {
+{{#versions}}
+{{^current}}
+			case {{value}}: {
+				v{{value}}::partial::{{name}} v{{value}}_{{name}}{};
+				if (!v{{value}}_{{name}}.read_v{{value}}(ref)) {
+					return false;
+				}
+				upgrade(std::move(v{{value}}_{{name}}), *this);
+				return true;
+			}
+{{/current}}
+{{#current}}
+			case std::numeric_limits<unsigned>::max():
+			case {{value}}:
+				return read_v{{value}}(ref);
+{{/current}}
+{{/versions}}
+			default:
+				break;
+		}
+		return ref.error("unrecognized version when reading `{{.}}`");
+	}
+
+	bool {{name}}::read_v{{version}}(ref_ctx const& ref) {
+{{/ext_attrs.versioned}}
 {{#inheritance}}
 		if (!{{{.}}}::read(ref)) return false;
 
@@ -40,6 +72,27 @@ namespace quick_dra::v{{version}}::partial {
 	}
 
 	void {{name}}::write(ryml::NodeRef& ref) const {
+{{#ext_attrs.versioned}}
+		switch(version.value_or({{version}}u)) {
+{{#versions}}
+{{^current}}
+			case {{value}}: {
+				v{{value}}::partial::{{name}} v{{value}}_{{name}}{};
+				downgrade(*this, v{{value}}_{{name}});
+				return v{{value}}_{{name}}.write_v{{value}}(ref);
+			}
+{{/current}}
+{{#current}}
+			default:
+			case {{value}}:
+				return write_v{{value}}(ref);
+{{/current}}
+{{/versions}}
+		}
+	}
+
+	void {{name}}::write_v{{version}}(ryml::NodeRef& ref) const {
+{{/ext_attrs.versioned}}
 {{#inheritance}}
 		{{{.}}}::write(ref);
 {{/inheritance}}

@@ -100,7 +100,6 @@ namespace quick_dra::testing {
 			    std::nullopt,
 			    std::nullopt,
 			    std::nullopt,
-			    std::nullopt,
 			};
 		});
 

@@ -1,0 +1,4 @@
+$schema: http://json-schema.org/draft-04/schema#
+$id: https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user/name.yaml
+description: Nazwisko osoby w formie "Nazwisko, Imię"
+type: string
