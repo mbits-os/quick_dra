@@ -180,7 +180,6 @@ namespace quick_dra {
 		struct salary {
 			struct with_lookup : history_t {
 				using person_type = partial::insured_t;
-				year_month month{};
 				inline std::optional<currency>& operator()(person_type& insured) const { return get(insured).salary; }
 			};
 			with_lookup operator[](year_month const& month) const noexcept { return {month}; }

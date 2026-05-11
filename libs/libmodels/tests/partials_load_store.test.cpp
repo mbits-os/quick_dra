@@ -222,8 +222,8 @@ ubezpieczeni:
     pensja: 4500 zł
 )"sv;
 		auto const actual_content = get_file_contents(filename);
-		ASSERT_TRUE(actual_content);
-		EXPECT_EQ(expected_content, *actual_content);
+		ASSERT_TRUE(actual_content);                   //-V1007
+		EXPECT_EQ(expected_content, *actual_content);  //-V1007 (the uninitialized value is guarded by the ASSERT)
 		std::filesystem::remove(filename);
 	}
 
