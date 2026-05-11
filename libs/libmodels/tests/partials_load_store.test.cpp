@@ -200,7 +200,9 @@ namespace quick_dra::testing {
 		cfg.insured->push_back(jan_iksinski);
 		cfg.insured->push_back(name_surname);
 		EXPECT_TRUE(v1_store(cfg, filename));
-		static constexpr auto expected_content = R"(wersja: 1
+		static constexpr auto expected_content =
+		    R"($schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
+wersja: 1
 płatnik:
   nazwisko: 'Nowak, Jan'
   paszport: AB4123456
@@ -222,7 +224,7 @@ ubezpieczeni:
     pensja: 4500 zł
 )"sv;
 		auto const actual_content = get_file_contents(filename);
-		ASSERT_TRUE(actual_content);                   //-V1007
+		ASSERT_TRUE(actual_content);
 		EXPECT_EQ(expected_content, *actual_content);  //-V1007 (the uninitialized value is guarded by the ASSERT)
 		std::filesystem::remove(filename);
 	}

@@ -15,7 +15,9 @@ namespace quick_dra::testing {
 		value->payer->first_name = "first"s;
 		value->payer->last_name = "last"s;
 		value->prepare_for_write();
-		auto const expected_output = R"(wersja: 2
+		auto const expected_output =
+		    R"($schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
+wersja: 2
 płatnik:
   nazwisko: 'last, first'
 ubezpieczeni: []
@@ -40,7 +42,9 @@ ubezpieczeni: []
 		value->payer->first_name = std::nullopt;
 		value->prepare_for_write();
 		value->version = v2::kApiVersion;
-		auto const expected_output = R"(wersja: 2
+		auto const expected_output =
+		    R"($schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
+wersja: 2
 płatnik:
   dowód: AAA000000
 ubezpieczeni: []
@@ -61,7 +65,9 @@ ubezpieczeni: []
 		ASSERT_TRUE(value->payer->last_name);
 		value->payer->last_name = std::nullopt;
 		value->prepare_for_write();
-		auto const expected_output = R"(wersja: 1
+		auto const expected_output =
+		    R"($schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
+wersja: 1
 płatnik: {}
 ubezpieczeni: []
 )"sv;
@@ -94,7 +100,9 @@ ubezpieczeni:
 		};
 		value->prepare_for_write();
 		value->version = v2::kApiVersion;
-		auto const expected_output = R"(wersja: 2
+		auto const expected_output =
+		    R"($schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
+wersja: 2
 płatnik: {}
 ubezpieczeni:
   - dowód: AAA000000

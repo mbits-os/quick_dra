@@ -93,6 +93,9 @@ namespace quick_dra::v{{version}}::partial {
 
 	void {{name}}::write_v{{version}}(ryml::NodeRef& ref) const {
 {{/ext_attrs.versioned}}
+{{#ext_attrs.schema}}
+		write_key(ref, "$schema", "{{{.}}}"s);
+{{/ext_attrs.schema}}
 {{#inheritance}}
 		{{{.}}}::write(ref);
 {{/inheritance}}
