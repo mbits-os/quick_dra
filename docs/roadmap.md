@@ -31,6 +31,7 @@
 - [ ] Config v2
   - [x] Record historical changes in salary (scale + amount)
   - [x] Allow reading v1, write back the same version
+  - [x] Attach schema when writing user config
   - [ ] Some data should be in per-org config (e.g. accident insurance)
   - [ ] New `qdra config` should be able to upgrade (not downgrade) between version
   - [ ] Bug: cannot enter "10000 zł" or "Iksiński" on windows during conversation

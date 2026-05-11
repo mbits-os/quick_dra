@@ -1,4 +1,5 @@
-[postprocess, versioned=wersja] interface config {
+[postprocess, versioned=wersja, schema="https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml"]
+interface config {
     [yaml_name=wersja] attribute unsigned short version;
     [yaml_name="płatnik"] attribute payer_t payer;
     [yaml_name=ubezpieczeni] attribute sequence<insured_t> insured;

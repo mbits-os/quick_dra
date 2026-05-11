@@ -1,3 +1,4 @@
+$schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
 wersja: 1
 ubezpieczeni:
   - nazwisko: 'Surname, Name'

@@ -88,19 +88,20 @@
 	],
 	"ext_attrs": {
 		"interface": {
-			"no_spaceship": "bool",
-			"versioned": "str",
-			"postprocess": "bool",
 			"merge": "bool",
+			"no_spaceship": "bool",
+			"postprocess": "bool",
 			"quote": "str",
+			"schema": "str",
 			"since_ver": "min-version",
-			"until_ver": "max-version"
+			"until_ver": "max-version",
+			"versioned": "str"
 		},
 		"attribute": {
 			"opt": "bool",
-			"yaml_name": "str",
 			"since_ver": "min-version",
-			"until_ver": "max-version"
+			"until_ver": "max-version",
+			"yaml_name": "str"
 		},
 		"operation": {
 			"mutable": "bool",
