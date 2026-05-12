@@ -92,6 +92,12 @@ namespace quick_dra {
 		FIND_IN_TIMELINE(costs_of_obtaining);
 		FIND_IN_TIMELINE(contributions);
 
+		if (result->accident_insurance && !result->accident_insurance->empty()) {
+			params.contributions.accident_insurance = {
+			    .payer = find_in_timeline(date, *result->accident_insurance).second,
+			};
+		}
+
 		tax_cfg.debug_print(level);
 		result->debug_print(level);
 
