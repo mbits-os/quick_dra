@@ -111,9 +111,7 @@ namespace quick_dra::builtin::list {
 				        .transform(  // GCOV_EXCL_LINE[GCC]
 				            [](auto const& value) { return as_string(value); })
 				        .value_or(""s),
-				    change_date == null_month ? ""s
-				                              : fmt::format("{:04}/{:02}", static_cast<int>(change_date.year()),
-				                                            static_cast<unsigned>(change_date.month())),
+				    change_date == null_month ? ""s : fmt_date_slash(change_date),
 				};
 				fmt::print("{}\n", fmt::join(items, zero_pipe ? "\0"sv : "\t"sv));
 			}
@@ -141,9 +139,7 @@ namespace quick_dra::builtin::list {
 			}
 
 			if (change_date != null_month) {
-				part_time_salary =
-				    fmt::format("{} (since {}/{:02})", part_time_salary, static_cast<int>(change_date.year()),
-				                static_cast<unsigned>(change_date.month()));
+				part_time_salary = fmt::format("{} (since {})", part_time_salary, fmt_date(change_date));
 			}
 
 			fmt::print("#{}: {} {} [{} {}] {}\n", index + 1, person.first_name.value_or("??"),

@@ -65,9 +65,7 @@ namespace quick_dra {
 						if (key == null_month) {
 							history.push_back(fmt::format("{} of {}", scale_str, salary_str));
 						} else {
-							history.push_back(fmt::format("{} of {} [{:04}/{:02}]", scale_str, salary_str,
-							                              static_cast<int>(key.year()),
-							                              static_cast<unsigned>(key.month())));
+							history.push_back(fmt::format("{} of {} [{}]", scale_str, salary_str, fmt_date_slash(key)));
 						}
 					}
 					fmt::print("--   - {} {} ({}), {}\n", obj.first_name, obj.last_name, obj.document,
@@ -89,9 +87,7 @@ namespace quick_dra {
 					if (key == null_month) {
 						history.push_back(fmt::format("{} of {}", scale_str, salary_str));
 					} else {
-						history.push_back(fmt::format("{} of {} [{:04}/{:02}]", scale_str, salary_str,
-						                              static_cast<int>(key.year()),
-						                              static_cast<unsigned>(key.month())));
+						history.push_back(fmt::format("{} of {} [{}]", scale_str, salary_str, fmt_date_slash(key)));
 					}
 				}
 

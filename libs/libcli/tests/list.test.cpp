@@ -436,9 +436,9 @@ ubezpieczeni:
 )"sv,
 	        .stdout =
 	            R"(Payer: Jan Nowak [2 AB4123456] PESEL:26211012346 NIP:7680002466
-#1: Piotr Iksiński [1 ABC523456] 8000 zł (since 2026/01)
-#2: Jan Iksiński [2 EH0123456] 9000 zł (since 2009/06)
-#3: Maria Iksińska [P 26211012346] 7500 zł (since 2026/05)
+#1: Piotr Iksiński [1 ABC523456] 8000 zł (since January 2026)
+#2: Jan Iksiński [2 EH0123456] 9000 zł (since June 2009)
+#3: Maria Iksińska [P 26211012346] 7500 zł (since May 2026)
 )"sv,
 	    },
 	    {

@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <map>
+#include <string>
 #include <utility>
 
 namespace quick_dra {
@@ -12,6 +13,8 @@ namespace quick_dra {
 	using namespace std::literals;
 	static constexpr auto null_month = 0y / 1;
 	year_month_day get_today();
+	std::string fmt_date(year_month const& ym);
+	std::string fmt_date_slash(year_month const& ym);
 
 	template <typename T>
 	inline std::pair<year_month, T> find_in_timeline(year_month const& key, std::map<year_month, T> const& mapping) {
@@ -26,14 +29,18 @@ namespace quick_dra {
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]
 
+	inline year_month month_today() {
+		auto const today = get_today();
+		return today.year() / today.month();
+	}
+
 	template <typename T>
 	inline year_month last_date_or_today(year_month const& key, std::map<year_month, T> const& mapping) {
 		if (key != null_month) {
 			return key;
 		}
 		if (mapping.empty()) {
-			auto const today = get_today();
-			return today.year() / today.month();
+			return month_today();
 		}
 		return mapping.rbegin()->first;
 	}  // GCOV_EXCL_LINE[GCC]
