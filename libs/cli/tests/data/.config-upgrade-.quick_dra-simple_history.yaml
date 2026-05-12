@@ -1,0 +1,23 @@
+$schema: 'https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/schemas/user_config_schema.yaml'
+wersja: 2
+ubezpieczeni:
+  - nazwisko: 'Iksiński, Piotr'
+    dowód: ABC523456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2022/1:
+        wymiar: 1/4
+  - nazwisko: 'Iksiński, Jan'
+    paszport: EH0123456
+    tytuł ubezpieczenia: 0110 0 0
+    historia:
+      2022/1:
+        wymiar: 3/4
+        pensja: 9000 zł
+  - nazwisko: 'Iksińska, Maria'
+    tytuł ubezpieczenia: 0110 0 0
+    pesel: 26211012346
+    historia:
+      2022/1:
+        pensja: 7500 zł
+wypadkowe: {}
