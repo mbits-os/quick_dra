@@ -67,13 +67,11 @@ namespace quick_dra::builtin::insured::add {
 		RESET_EMPTY(opts.id_card);
 		RESET_EMPTY(opts.passport);
 
-		auto month = null_month;
+		auto month = month_today();
 		if (changes_date) {
 			if (!yaml::convert_string(*changes_date, month)) {
 				parser.error(fmt::format("--on expected YYYY/MM, got `{}`", *changes_date));
 			}
-		} else {
-			month = last_date_or_today<int>(month, {});
 		}
 
 		opts.history.emplace();

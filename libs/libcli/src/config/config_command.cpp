@@ -29,27 +29,6 @@ namespace quick_dra::builtin::config {
 		    help_group{"known commands"sv, config_commands},
 		};
 
-		static constexpr auto months = std::array{
-		    "January"sv, "February"sv, "March"sv,     "April"sv,   "May"sv,      "June"sv,
-		    "July"sv,    "August"sv,   "September"sv, "October"sv, "November"sv, "December"sv,
-		};
-
-		std::string fmt_date(year_month const& ym) {
-			if (ym == null_month) {
-				return "\"default\" month"s;
-			}
-			if (ym.month().ok() && ym.year() > 0y) {
-				return std::format("{} {}", months[static_cast<unsigned>(ym.month()) - 1], static_cast<int>(ym.year()));
-			}
-			// GCOV_EXCL_START
-			// Currently, there is no way of entering this line -- both command line and YAML reader code bailing on
-			// invalid dates long before we even approach this function. _However_, this stays here as fallback from
-			// neutrinos frying the RAM cell ;)
-			// These guards can be removed once the function is moved to base/chrome.cpp and becomes properly testable
-			return std::format("{:04}/{:02}", static_cast<int>(ym.year()), static_cast<unsigned>(ym.month()));
-			// GCOV_EXCL_STOP
-		}
-
 		void upgrade_v2(partial::config& cfg, year_month const& start_of_history) {
 			for (auto& insured : *cfg.insured) {
 				auto it = insured.history->begin();
@@ -93,13 +72,11 @@ namespace quick_dra::builtin::config {
 
 			parser.parse();
 
-			auto month = null_month;
+			auto month = month_today();
 			if (changes_date) {
 				if (!yaml::convert_string(*changes_date, month)) {
 					parser.error(fmt::format("--on expected YYYY/MM, got `{}`", *changes_date));
 				}
-			} else {
-				month = last_date_or_today<int>(month, {});
 			}
 
 			auto const path = platform::get_config_path(config_path);
@@ -137,13 +114,11 @@ namespace quick_dra::builtin::config {
 
 			parser.parse();
 
-			auto month = null_month;
+			auto month = month_today();
 			if (changes_date) {
 				if (!yaml::convert_string(*changes_date, month)) {
 					parser.error(fmt::format("--on expected YYYY/MM, got `{}`", *changes_date));
 				}
-			} else {
-				month = last_date_or_today<int>(month, {});
 			}
 
 			auto const path = platform::get_config_path(config_path);
