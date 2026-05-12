@@ -6,6 +6,7 @@ set(SRCS
     include/quick_dra/cli/commands.hpp
     src/builtins.cpp
     src/commands.cpp
+    src/config/config_command.cpp
     src/insured/insured_add_command.cpp
     src/insured/insured_add_conversation.cpp
     src/insured/insured_add_conversation.hpp

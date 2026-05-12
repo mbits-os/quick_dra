@@ -75,6 +75,7 @@ namespace quick_dra::testing {
 			    .version = version,
 			    .payer = payer.to_payer(),
 			    .insured = std::move(out_insured),
+			    .accident_insurance{},
 			    .params{},
 			};
 		}
