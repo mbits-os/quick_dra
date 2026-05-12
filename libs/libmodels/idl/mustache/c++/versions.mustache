@@ -8,7 +8,7 @@
 namespace quick_dra {
 {{#version}}
 	namespace v{{.}} {
-		static constexpr auto kApiVersion = {{.}}u;
+		static constexpr unsigned short kApiVersion = {{.}}u;
 	}
 {{/version}}
 	using namespace v{{current_version}};

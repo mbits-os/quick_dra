@@ -44,6 +44,22 @@ namespace args {
 	};
 
 	template <>
+	struct converter<quick_dra::percent> {
+		static inline quick_dra::percent value(parser& p, std::string const& arg, std::string const& name) {
+			using std::literals::operator""sv;
+
+			quick_dra::percent out{};
+			if (!quick_dra::percent::parse(arg, out)) {
+				p.error(fmt::format("{}: expecting a number with 0.01 "
+				                    "increment, with optional % suffix",
+				                    name),
+				        p.parse_width());
+			}
+			return out;
+		}
+	};
+
+	template <>
 	struct converter<quick_dra::currency> {
 		static inline quick_dra::currency value(parser& p, std::string const& arg, std::string const& name) {
 			using std::literals::operator""sv;

@@ -12,11 +12,16 @@
 namespace quick_dra::builtin {
 	using namespace std::literals;
 
-#define ROOT_BUILTINS_X(X)                                                  \
-	X(payer, "payer", "provide/modify the identity of the insurance payer") \
-	X(insured, "insured", "manage the insured people data")                 \
-	X(list, "list", "list people in configuration")                         \
+#define ROOT_BUILTINS_X(X)                                                    \
+	X(config, "config", "manage configuration file outside of payer/insured") \
+	X(payer, "payer", "provide/modify the identity of the insurance payer")   \
+	X(insured, "insured", "manage the insured people data")                   \
+	X(list, "list", "list people in configuration")                           \
 	X(xml, "xml", "produce KEDU 5.6 XML file")
+
+#define CONFIG_BUILTINS_X(X)                                             \
+	X(upgrade, "upgrade", "upgrade the config schema to newest version") \
+	X(accident_insurance, "accident", "update data of insurance responsibility; setting a value implies upgrading")
 
 #define INSURED_BUILTINS_X(X)                                   \
 	X(add, "add", "add a new insured person")                   \
@@ -29,6 +34,10 @@ namespace quick_dra::builtin {
 	}
 	ROOT_BUILTINS_X(BUILTINS_X_DECL)
 
+	namespace config {
+		CONFIG_BUILTINS_X(BUILTINS_X_DECL)
+	}
+
 	namespace insured {
 		INSURED_BUILTINS_X(BUILTINS_X_DECL)
 	}
@@ -36,6 +45,10 @@ namespace quick_dra::builtin {
 
 #define BUILTINS_X_DECL(NAME, TOOL, DSCR) {TOOL##sv, DSCR##sv, NAME::handle},
 	static constexpr builtin_tool tools[] = {ROOT_BUILTINS_X(BUILTINS_X_DECL)};
+
+	namespace config {
+		static constexpr builtin_tool tools[] = {CONFIG_BUILTINS_X(BUILTINS_X_DECL)};
+	}
 
 	namespace insured {
 		static constexpr builtin_tool tools[] = {INSURED_BUILTINS_X(BUILTINS_X_DECL)};

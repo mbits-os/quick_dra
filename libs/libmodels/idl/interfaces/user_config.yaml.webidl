@@ -3,6 +3,8 @@ interface config {
     [yaml_name=wersja] attribute unsigned short version;
     [yaml_name="płatnik"] attribute payer_t payer;
     [yaml_name=ubezpieczeni] attribute sequence<insured_t> insured;
+    [since_ver=2, yaml_name=wypadkowe, nullable, key=year_month]
+    attribute record<DOMString, percent> accident_insurance;
 };
 
 [postprocess] interface payer_t: person {
@@ -13,7 +15,7 @@ interface config {
 [postprocess] interface insured_t: person {
     [yaml_name="tytuł ubezpieczenia"] attribute insurance_title title;
     [yaml_name=pesel] attribute string? social_id;
-    [since_ver=2, yaml_name=historia, key=year_month] attribute record<DOMString, employment_history>? history;
+    [since_ver=2, yaml_name=historia, key=year_month] attribute record<DOMString, employment_history> history;
     [until_ver=1, yaml_name=wymiar] attribute ratio? part_time_scale;
     [until_ver=1, yaml_name=pensja] attribute currency? salary;
 };
@@ -27,8 +29,4 @@ interface person {
 interface employment_history {
     [yaml_name=wymiar] attribute ratio? part_time_scale;
     [yaml_name=pensja] attribute currency? salary;
-};
-
-enum X {
-    "one", "two", "three"
 };

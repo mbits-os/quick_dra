@@ -16,6 +16,7 @@ optional arguments:
  -v, --version show version and exit
 
 known commands:
+ config        manage configuration file outside of payer/insured
  payer         provide/modify the identity of the insurance payer
  insured       manage the insured people data
  list          list people in configuration
@@ -41,6 +42,7 @@ optional arguments:
  -v, --version show version and exit
 
 known commands:
+ config        manage configuration file outside of payer/insured
  payer         provide/modify the identity of the insurance payer
  insured       manage the insured people data
  list          list people in configuration
@@ -60,6 +62,7 @@ known commands:
 qdra: "noent" is not a qdra command
 
 known commands:
+ config  manage configuration file outside of payer/insured
  payer   provide/modify the identity of the insurance payer
  insured manage the insured people data
  list    list people in configuration
