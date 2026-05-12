@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.1.0](https://github.com/mbits-os/quick_dra/compare/v1.0.0...v1.1.0) (2026-05-12)
+
+### New Features
+
+- add `qdra config` ([ae102f0](https://github.com/mbits-os/quick_dra/commit/ae102f037719e7d2212a2baa06d788ff80d40cf6))
+- add $schema when writing user config ([7c66737](https://github.com/mbits-os/quick_dra/commit/7c66737f6e817795cfde56b98d02a31b333e182e))
+- updating tests to config v2 ([fa93e5a](https://github.com/mbits-os/quick_dra/commit/fa93e5a0dad4347f1357ada293f91b90a3fccb69))
+- create a insured history in user config v2 ([190539a](https://github.com/mbits-os/quick_dra/commit/190539a914bbe477169148885cbf4e847613080e))
+
+### Bug Fixes
+
+- give chrono.hpp more responsibilities ([2acd13f](https://github.com/mbits-os/quick_dra/commit/2acd13f796858406fa361b684b0da534e2894103))
+- favor `wypadkowe` in user config over tax config ([87fe8d1](https://github.com/mbits-os/quick_dra/commit/87fe8d1100370e287ac9561da6d6167d52d5fd18))
+- apply suggestions by PVS-Studio ([b000f0f](https://github.com/mbits-os/quick_dra/commit/b000f0f7ff47c7f0a1406d00973544ea7e69969a))
+
 ## [1.0.0](https://github.com/mbits-os/quick_dra/compare/v0.11.1...v1.0.0) (2026-04-13)
 
 ### New Features

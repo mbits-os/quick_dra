@@ -30,12 +30,16 @@
   - [x] Make a release (_v1.0.0_)
 - [ ] Config v2
   - [x] Record historical changes in salary (scale + amount)
-  - [x] Allow reading v1, write back the same version
-  - [x] Attach schema when writing user config
-  - [x] Some data should be in per-org config (e.g. accident insurance)
-  - [x] New `qdra config` should be able to upgrade (not downgrade) between version
+  - [x] Allow reading v1, write back the same version` (_v1.1.0_)
+  - [x] Attach schema when writing user config (_v1.1.0_)
+  - [x] Some data should be in per-org config (e.g. accident insurance) (_v1.1.0_)
+  - [x] New `qdra config` should be able to upgrade (not downgrade) between versions (_v1.1.0_)
   - [ ] Bug: cannot enter "10000 zł" or "Iksiński" on windows during conversation
 - [ ] Create a `qdra_gui`
+  - [ ] Build system support
+    - [ ] Use Qt6 from system
+    - [ ] Phase 1: do not build app if `Qt6_DIR` is absent
+    - [ ] Phase 2: install Qt6 on github runner
   - [ ] Support for editing of `~/.quick_dra.yaml`
   - [ ] A button to save the XML
   - _Notes:_
