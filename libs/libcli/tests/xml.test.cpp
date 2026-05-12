@@ -832,6 +832,87 @@ ubezpieczeni:
 	        .check_stdout = compare::end,
 	    },
 	    {
+	        .name = "special accident contribution"sv,
+	        .args = "xml --pretty --today 2026-2-1 -vvvv --config .quick_dra.yaml --info"sv,
+	        .config = R"(wersja: 2
+płatnik:
+  nazwisko: "Nowak, Jan"
+  paszport: AB4123456
+  nip: 7680002466
+  pesel: 26211012346
+ubezpieczeni:
+  - nazwisko: Ubezpieczona, Osoba
+    tytuł ubezpieczenia: 0110 1 1
+    pesel: 50671500000
+    historia:
+      2002/5:
+        wymiar: 1/4
+        pensja: 8000
+wypadkowe:
+  2002/01: 30%
+)"sv,
+	        .stdout = R"(-- config used: .quick_dra.yaml
+-- today: 2026-02-01
+-- report: #1 2026-01
+-- downloaded https://raw.githubusercontent.com/mbits-os/quick_dra/refs/heads/main/data/config/tax_config.yaml
+-- costs of obtaining per month:
+--   2022-01: 250 zł / 300 zł
+-- minimal pay per month:
+--   2022-01: 3010 zł
+--   2023-01: 3490 zł
+--   2023-07: 3600 zł
+--   2024-01: 4242 zł
+--   2024-07: 4300 zł
+--   2025-01: 4666 zł
+--   2026-01: 4806 zł
+-- tax scale per month:
+--   2022-01:
+--     over 30000 zł at 17%
+--     over 120000 zł at 32%
+--   2022-07:
+--     over 30000 zł at 12%
+--     over 120000 zł at 32%
+-- insurance rates per month:
+--   2022-01:
+--     health: insured 9%
+--     pension insurance: payer 9.76%, insured 9.76%
+--     disability insurance: payer 6.5%, insured 1.5%
+--     health insurance: insured 2.45%
+--     accident insurance: payer 1.67%
+-- payer:
+--   name: Jan Nowak
+--   social id: 26211012346
+--   tax id: 7680002466
+--   ident: 2 AB4123456
+-- insured:
+--   - name: Osoba Ubezpieczona
+--     insurance title: 0110 1 1
+--     ident: P 50671500000
+--     salary: 1/4 of 8000 zł [2002/05]
+-- parameters
+--   cost of obtaining: 250 zł / 300 zł
+--   health: insured 9%
+--   pension insurance: payer 9.76%, insured 9.76%
+--   disability insurance: payer 6.5%, insured 1.5%
+--   health insurance: insured 2.45%
+--   accident insurance: payer 30%
+--   tax scale for month reported:
+--     over 30000 zł at 12%
+--     over 120000 zł at 32%
+-- output: quick-dra_202601-01.xml
+-- payments:
+   - OSOBA UBEZPIECZONA: 1725.80 zł
+   - ZUS:                1199.40 zł
+   - Urząd Skarbowy:        0.00 zł
+   sum total =           2925.20 zł
+)"sv,
+	        .writes =
+	            new_file{
+	                .name = "quick-dra_202601-01.xml"sv,
+	                .cmp = "quick-dra_202601-01_30%.xml"sv,
+	            },
+	    },
+	    {
 	        .name = "no config"sv,
 	        .args = "xml --config .quick_dra.yaml"sv,
 	        .stdout = no_config_stdout,

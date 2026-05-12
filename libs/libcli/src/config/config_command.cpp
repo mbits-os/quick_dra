@@ -41,7 +41,13 @@ namespace quick_dra::builtin::config {
 			if (ym.month().ok() && ym.year() > 0y) {
 				return std::format("{} {}", months[static_cast<unsigned>(ym.month()) - 1], static_cast<int>(ym.year()));
 			}
+			// GCOV_EXCL_START
+			// Currently, there is no way of entering this line -- both command line and YAML reader code bailing on
+			// invalid dates long before we even approach this function. _However_, this stays here as fallback from
+			// neutrinos frying the RAM cell ;)
+			// These guards can be removed once the function is moved to base/chrome.cpp and becomes properly testable
 			return std::format("{:04}/{:02}", static_cast<int>(ym.year()), static_cast<unsigned>(ym.month()));
+			// GCOV_EXCL_STOP
 		}
 
 		void upgrade_v2(partial::config& cfg, year_month const& start_of_history) {
@@ -104,9 +110,10 @@ namespace quick_dra::builtin::config {
 
 			if (upgrade_all(cfg, month)) {
 				if (!cfg.store(path)) {
+					// GCOV_EXCL_START
 					fmt::print(stderr, "Quick-DRA: error: could not write to {}\n", path);
 					return 1;
-				}
+				}  // GCOV_EXCL_STOP
 			}
 
 			return 0;
@@ -152,9 +159,10 @@ namespace quick_dra::builtin::config {
 				upgrade_all(cfg, month);
 
 				if (!cfg.store(path)) {
+					// GCOV_EXCL_START
 					fmt::print(stderr, "Quick-DRA: error: could not write to {}\n", path);
 					return 1;
-				}
+				}  // GCOV_EXCL_STOP
 				return 0;
 			}
 
