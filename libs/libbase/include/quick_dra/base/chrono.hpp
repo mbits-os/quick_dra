@@ -29,6 +29,20 @@ namespace quick_dra {
 		return result;
 	}  // GCOV_EXCL_LINE[GCC]
 
+	template <typename T>
+	inline std::tuple<bool, year_month, T> find_in_timeline_opt(year_month const& key,
+	                                                            std::map<year_month, T> const& mapping) {
+		std::tuple<bool, year_month, T> result = {false, null_month, T{}};
+
+		for (auto const& [date, value] : mapping) {
+			if (key < date) continue;
+			if (std::get<year_month>(result) > date) continue;
+			result = {true, date, value};
+		}
+
+		return result;
+	}  // GCOV_EXCL_LINE[GCC]
+
 	inline year_month month_today() {
 		auto const today = get_today();
 		return today.year() / today.month();
