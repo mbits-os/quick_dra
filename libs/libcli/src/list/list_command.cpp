@@ -92,7 +92,7 @@ namespace quick_dra::builtin::list {
 
 			for (unsigned const index : found) {
 				auto const& person = (*cfg.insured)[index];
-				auto const [change_date, part_time_scale, salary] = person.lookup(date);
+				auto const [_, change_date, part_time_scale, salary] = person.lookup(date);
 				auto items = std::array{
 				    fmt::to_string(index + 1),
 				    person.last_name.value_or(""s),  // GCOV_EXCL_LINE[GCC]
@@ -129,17 +129,20 @@ namespace quick_dra::builtin::list {
 
 		for (unsigned const index : found) {
 			auto const& person = (*cfg.insured)[index];
-			auto const [change_date, part_time_scale, salary] = person.lookup(date);
+			auto const [valid, change_date, part_time_scale, salary] = person.lookup(date);
 
 			std::string part_time_salary =
-			    salary.transform([](auto const& value) { return as_string(value); }).value_or("<minimal>"s);
+			    valid ? salary.transform([](auto const& value) { return as_string(value); }).value_or("<minimal>"s)
+			          : "<outside employment>";
 
-			if (part_time_scale && *part_time_scale != full_time) {
-				part_time_salary = fmt::format("{} of {}", as_string(*part_time_scale), part_time_salary);
-			}
+			if (valid) {
+				if (part_time_scale && *part_time_scale != full_time) {
+					part_time_salary = fmt::format("{} of {}", as_string(*part_time_scale), part_time_salary);
+				}
 
-			if (change_date != null_month) {
-				part_time_salary = fmt::format("{} (since {})", part_time_salary, fmt_date(change_date));
+				if (change_date != null_month) {
+					part_time_salary = fmt::format("{} (since {})", part_time_salary, fmt_date(change_date));
+				}
 			}
 
 			fmt::print("#{}: {} {} [{} {}] {}\n", index + 1, person.first_name.value_or("??"),

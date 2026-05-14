@@ -298,7 +298,7 @@ namespace quick_dra::v2 {
 
 	dated_employment_history insured_t::lookup(std::chrono::year_month const& date) const noexcept {
 		auto const& [on, employment] = find_in_timeline(date, history);
-		return {on, employment.part_time_scale, employment.salary};
+		return {true, on, employment.part_time_scale, employment.salary};
 	}
 
 	bool insured_t::postprocess() {
@@ -437,10 +437,10 @@ namespace quick_dra::v2::partial {
 
 	dated_employment_history insured_t::lookup(std::chrono::year_month const& date) const noexcept {
 		if (!history) {
-			return {null_month, std::nullopt, std::nullopt};
+			return {false, null_month, std::nullopt, std::nullopt};
 		}
-		auto const& [on, employment] = find_in_timeline(date, *history);
-		return {on, employment.part_time_scale, employment.salary};
+		auto const& [valid, on, employment] = find_in_timeline_opt(date, *history);
+		return {valid, on, employment.part_time_scale, employment.salary};
 	}
 
 	bool insured_t::postprocess() {

@@ -126,7 +126,7 @@ namespace quick_dra {
 	              year_month const& date,
 	              year_month_day const& today,
 	              config const& cfg) {
-		auto const [_, cfg_part_time_scale, cfg_salary] = insured.lookup(date);
+		auto const [_1, _2, cfg_part_time_scale, cfg_salary] = insured.lookup(date);
 		auto const scale = cfg_part_time_scale.value_or(ratio{});
 		auto const scale_num = std::max(1u, scale.num);
 		auto const scale_den = std::max(1u, scale.den);

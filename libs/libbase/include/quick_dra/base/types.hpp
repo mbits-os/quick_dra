@@ -270,6 +270,7 @@ namespace quick_dra {
 	};
 
 	struct dated_employment_history {
+		bool valid;
 		year_month date;
 		std::optional<ratio> part_time_scale;
 		std::optional<currency> salary;
