@@ -9,6 +9,7 @@ set(SRCS
     include/quick_dra/docs/xml.hpp
     include/quick_dra/io/http.hpp
     include/quick_dra/io/options.hpp
+    include/quick_dra/io/tax_config.hpp
     src/docs/file_set.cpp
     src/docs/forms.cpp
     src/docs/summary.cpp
@@ -16,6 +17,7 @@ set(SRCS
     src/docs/xml.cpp
     src/io/http.cpp
     src/io/options.cpp
+    src/io/tax_config.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
