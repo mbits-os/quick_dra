@@ -28,5 +28,5 @@ namespace quick_dra {
 	std::optional<config> parse_config(verbose level,
 	                                   year_month const& date,
 	                                   std::filesystem::path const& path,
-	                                   std::optional<std::filesystem::path> tax_config_path);
+	                                   std::optional<std::filesystem::path> const& tax_config_path);
 }  // namespace quick_dra
