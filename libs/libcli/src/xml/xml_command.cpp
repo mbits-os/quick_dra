@@ -50,7 +50,7 @@ namespace quick_dra::builtin::xml {
 		}  // GCOV_EXCL_STOP
 
 		auto const forms = prepare_form_set(opt.verbose_level, opt.report_index, opt.date, opt.today, *cfg);
-		auto const file = build_file_set(opt, forms, compiled_templates::compile(*raw_templates));
+		auto const file = build_file_set(opt.verbose_level, forms, compiled_templates::compile(*raw_templates));
 		store_xml(file, set_filename(opt.report_index, opt.date), opt.indent_xml);
 
 		if (!opt.print_info && opt.verbose_level != verbose::none) {
