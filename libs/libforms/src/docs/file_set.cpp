@@ -8,24 +8,22 @@
 #include <vector>
 
 namespace quick_dra {
-	xml build_file_set(options const& opt,
-	                   std::vector<quick_dra::form> const& forms,
-	                   compiled_templates const& templates) {
+	xml build_file_set(verbose level, std::vector<quick_dra::form> const& forms, compiled_templates const& templates) {
 		auto doc_id = 0u;
 		auto root = build_kedu_doc(version::program, version::string);
 
-		if (opt.verbose_level == verbose::templates) {
+		if (level == verbose::templates) {
 			templates.debug_print();
 		}
 
-		if (opt.verbose_level == verbose::calculated_sections) {
+		if (level == verbose::calculated_sections) {
 			fmt::print("-- filled forms:\n");
 		}
 
 		for (auto const& form : forms) {
 			auto it = templates.reports.find(form.key);
 			if (it == templates.reports.end()) continue;
-			attach_document(root, opt.verbose_level, form, it->second, ++doc_id);
+			attach_document(root, level, form, it->second, ++doc_id);
 		}
 
 		return root;

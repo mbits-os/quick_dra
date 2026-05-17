@@ -103,7 +103,7 @@ namespace quick_dra::testing {
 
 		auto const forms = prepare_form_set(level, 1, 2016y / 1, 2016y / 2 / 10, *cfg);
 
-		build_file_set({.verbose_level = level}, forms, *compiled);
+		build_file_set(level, forms, *compiled);
 	}
 
 	static constexpr auto test_config = testcase{
