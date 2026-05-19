@@ -69,6 +69,7 @@ namespace quick_dra {
 	}
 
 	void xml::print_open_tag(std::ostream& os) const {
+		if (tag.empty()) return;
 		fmt::print(os, "<{}", tag);
 		for (auto const& [name, value] : attributes) {
 			fmt::print(os, " {}=\"{}\"", name, xml_escape(value));
@@ -76,7 +77,10 @@ namespace quick_dra {
 		fmt::print(os, ">");
 	}
 
-	void xml::print_close_tag(std::ostream& os) const { fmt::print(os, "</{}>", tag); }
+	void xml::print_close_tag(std::ostream& os) const {
+		if (tag.empty()) return;
+		fmt::print(os, "</{}>", tag);
+	}
 
 	std::ostream& operator<<(std::ostream& os, xml const& node) {
 		node.print_open_tag(os);
