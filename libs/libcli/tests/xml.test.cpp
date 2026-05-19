@@ -205,12 +205,12 @@ ubezpieczeni:
 --        first: 'OSOBA'
 --        last: 'UBEZPIECZONA'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK (HOME)'
---        name: 'JAN NOWAK (HOME)'
+--        short_name: 'JAN NOWAK (HOME)'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -224,10 +224,10 @@ ubezpieczeni:
 --        den: 4
 --        num: 1
 --      serial:
---        DATE: '2026-01'
+--        DATE: 2026/01
 --        NN: '01'
 --      tax_total: 0.00 zł
---      today: '2026-02-01'
+--      today: 2026/02/01
 --
 --   DRA:
 --      accident_insurance:
@@ -243,22 +243,22 @@ ubezpieczeni:
 --      insurance_total: 632.80 zł
 --      insured_count: 1
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK (HOME)'
---        name: 'JAN NOWAK (HOME)'
+--        short_name: 'JAN NOWAK (HOME)'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
 --        insured: 195.20 zł
 --        payer: 195.20 zł
 --      serial:
---        DATE: '2026-01'
+--        DATE: 2026/01
 --        NN: '01'
 --      tax_total: 0.00 zł
---      today: '2026-02-01'
+--      today: 2026/02/01
 --
 -- templates:
 --   [DRA]:
@@ -273,7 +273,7 @@ ubezpieczeni:
 --         3: $payer.social_id
 --         4: $payer.document_kind
 --         5: $payer.document
---         6: $payer.name
+--         6: $payer.short_name
 --         7: $payer.last
 --         8: $payer.first
 --         9: $payer.birthday
@@ -368,7 +368,7 @@ ubezpieczeni:
 --         3: $payer.social_id
 --         4: $payer.document_kind
 --         5: $payer.document
---         6: $payer.name
+--         6: $payer.short_name
 --         7: $payer.last
 --         8: $payer.first
 --         9: $payer.birthday
@@ -485,12 +485,12 @@ ubezpieczeni:
 --        first: 'OSOBA'
 --        last: 'UBEZPIECZONA'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK (HOME)'
---        name: 'JAN NOWAK (HOME)'
+--        short_name: 'JAN NOWAK (HOME)'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -504,10 +504,10 @@ ubezpieczeni:
 --        den: 4
 --        num: 1
 --      serial:
---        DATE: '2026-01'
+--        DATE: 2026/01
 --        NN: '01'
 --      tax_total: 0.00 zł
---      today: '2026-02-01'
+--      today: 2026/02/01
 --
 --   DRA:
 --      accident_insurance:
@@ -523,28 +523,28 @@ ubezpieczeni:
 --      insurance_total: 632.80 zł
 --      insured_count: 1
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK (HOME)'
---        name: 'JAN NOWAK (HOME)'
+--        short_name: 'JAN NOWAK (HOME)'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
 --        insured: 195.20 zł
 --        payer: 195.20 zł
 --      serial:
---        DATE: '2026-01'
+--        DATE: 2026/01
 --        NN: '01'
 --      tax_total: 0.00 zł
---      today: '2026-02-01'
+--      today: 2026/02/01
 --
 -- filled forms:
 --   ZUSRCA [50671500000]
 --     I:
 --       fields:
---         1: ['01', '2026-01']
+--         1: ['01', 2026/01]
 --
 --     II:
 --       fields:
@@ -555,7 +555,7 @@ ubezpieczeni:
 --         6: 'JAN NOWAK (HOME)'
 --         7: 'NOWAK (HOME)'
 --         8: 'JAN'
---         9: '2026-01-10'
+--         9: 2026/01/10
 --
 --     III[*]:
 --       - id: A
@@ -596,13 +596,13 @@ ubezpieczeni:
 --
 --     IV:
 --       fields:
---         1: '2026-02-01'
+--         1: 2026/02/01
 --
 --   ZUSDRA
 --     I:
 --       fields:
 --         1: '6'
---         2: ['01', '2026-01']
+--         2: ['01', 2026/01]
 --
 --     II:
 --       fields:
@@ -613,7 +613,7 @@ ubezpieczeni:
 --         6: 'JAN NOWAK (HOME)'
 --         7: 'NOWAK (HOME)'
 --         8: 'JAN'
---         9: '2026-01-10'
+--         9: 2026/01/10
 --
 --     III:
 --       fields:
@@ -692,7 +692,7 @@ ubezpieczeni:
 --
 --     XIII:
 --       fields:
---         1: '2026-02-01'
+--         1: 2026/02/01
 --
 -- output: quick-dra_202601-01.xml
 -- use --info to print summary of amounts to pay
@@ -765,12 +765,12 @@ ubezpieczeni:
 --        first: 'OSOBA'
 --        last: 'UBEZPIECZONA'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK (HOME)'
---        name: 'JAN NOWAK (HOME)'
+--        short_name: 'JAN NOWAK (HOME)'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -784,10 +784,10 @@ ubezpieczeni:
 --        den: 4
 --        num: 1
 --      serial:
---        DATE: '2026-01'
+--        DATE: 2026/01
 --        NN: '01'
 --      tax_total: 0.00 zł
---      today: '2026-02-01'
+--      today: 2026/02/01
 --
 --   DRA:
 --      accident_insurance:
@@ -803,22 +803,22 @@ ubezpieczeni:
 --      insurance_total: 632.80 zł
 --      insured_count: 1
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK (HOME)'
---        name: 'JAN NOWAK (HOME)'
+--        short_name: 'JAN NOWAK (HOME)'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
 --        insured: 195.20 zł
 --        payer: 195.20 zł
 --      serial:
---        DATE: '2026-01'
+--        DATE: 2026/01
 --        NN: '01'
 --      tax_total: 0.00 zł
---      today: '2026-02-01'
+--      today: 2026/02/01
 --
 -- output: quick-dra_202601-01.xml
 -- use --info to print summary of amounts to pay

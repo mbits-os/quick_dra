@@ -18,6 +18,17 @@ namespace quick_dra {
 			std::string operator()(currency const& value) const noexcept { return fmt::format("{:.2f}", value); }
 			std::string operator()(percent const& value) const noexcept { return fmt::format("{:.2f}", value); }
 			std::string operator()(uint_value const& value) const noexcept { return fmt::format("{}", value); }
+			// KEDU: xs:gYearMonth
+			// https://www.w3.org/TR/xmlschema-2/: YYYY "-" MM
+			std::string operator()(year_month const& var) const {
+				return fmt::format("{:04}-{:02}", static_cast<int>(var.year()), static_cast<unsigned>(var.month()));
+			}
+			// KEDU: xs:date
+			// https://www.w3.org/TR/xmlschema-2/: YYYY "-" MM "-" DD
+			std::string operator()(year_month_day const& var) const {
+				return fmt::format("{:04}-{:02}-{:02}", static_cast<int>(var.year()),
+				                   static_cast<unsigned>(var.month()), static_cast<unsigned>(var.day()));
+			}
 		};
 
 		void append_field(xml& parent, unsigned key, calculated_value const& value) {

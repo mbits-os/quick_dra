@@ -82,11 +82,8 @@ namespace quick_dra {
 			form result = {.key = kedu};
 			auto& serial = result.state.get(var::serial);
 			serial.insert(var::NN, fmt::format("{:02}", report_index));
-			serial.insert(var::DATE,
-			              fmt::format("{}-{:02}", static_cast<int>(date.year()), static_cast<unsigned>(date.month())));
-			result.state.insert(var::today,
-			                    fmt::format("{}-{:02}-{:02}", static_cast<int>(today.year()),
-			                                static_cast<unsigned>(today.month()), static_cast<unsigned>(today.day())));
+			serial.insert(var::DATE, date);
+			result.state.insert(var::today, today);
 
 			auto& payer = result.state.get(var::payer);
 			auto const& input = cfg.payer;
@@ -97,12 +94,10 @@ namespace quick_dra {
 			payer.insert(var::social_id, input.social_id);
 			payer.insert(var::document_kind, input.kind);
 			payer.insert(var::document, input.document);
-			payer.insert(var::name, fmt::format("{} {}", _first, _last));
+			payer.insert(var::short_name, fmt::format("{} {}", _first, _last));
 			payer.insert(var::last, _last);
 			payer.insert(var::first, _first);
-			payer.insert(var::birthday,
-			             fmt::format("{}-{:02}-{:02}", static_cast<int>(bday.year()),
-			                         static_cast<unsigned>(bday.month()), static_cast<unsigned>(bday.day())));
+			payer.insert(var::birthday, bday);
 
 			return result;
 		}

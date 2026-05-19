@@ -65,7 +65,7 @@ namespace quick_dra::testing {
 		auto const& test = GetParam();
 		auto const actual = test.capture();
 		auto const expected = test.expected;
-		ASSERT_EQ(actual, expected) << "Debug level: " << to_str(test.level);
+		ASSERT_EQ(expected, actual) << "Debug level: " << to_str(test.level);
 	}
 
 	auto& postproc_load(auto& obj) { return obj; }  //-V669
@@ -137,7 +137,7 @@ reports:
         3: $payer.social_id
         4: $payer.document_kind
         5: $payer.document
-        6: $payer.name
+        6: $payer.short_name
         7: $payer.last
         8: $payer.first
         9: $payer.birthday
@@ -234,7 +234,7 @@ reports:
         3: $payer.social_id
         4: $payer.document_kind
         5: $payer.document
-        6: $payer.name
+        6: $payer.short_name
         7: $payer.last
         8: $payer.first
         9: $payer.birthday
@@ -315,12 +315,12 @@ reports:
 --        first: 'PIOTR'
 --        last: 'IKSIŃSKI'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -334,10 +334,10 @@ reports:
 --        den: 1
 --        num: 1
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 256.70 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 --   RCA [26211012346]:
 --      accident_insurance:
@@ -362,12 +362,12 @@ reports:
 --        first: 'MARIA'
 --        last: 'IKSIŃSKA'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -381,10 +381,10 @@ reports:
 --        den: 4
 --        num: 3
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 381.14 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 --   DRA:
 --      accident_insurance:
@@ -400,22 +400,22 @@ reports:
 --      insurance_total: 3043.07 zł
 --      insured_count: 2
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
 --        insured: 156.38 zł
 --        payer: 677.63 zł
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 637.84 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 )"sv;
 
@@ -456,12 +456,12 @@ reports:
 --        first: 'PIOTR'
 --        last: 'IKSIŃSKI'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -475,10 +475,10 @@ reports:
 --        den: 1
 --        num: 1
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 256.70 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 --   RCA [26211012346]:
 --      accident_insurance:
@@ -503,12 +503,12 @@ reports:
 --        first: 'MARIA'
 --        last: 'IKSIŃSKA'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -522,10 +522,10 @@ reports:
 --        den: 4
 --        num: 3
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 381.14 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 --   DRA:
 --      accident_insurance:
@@ -541,22 +541,22 @@ reports:
 --      insurance_total: 3043.07 zł
 --      insured_count: 2
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
 --        insured: 156.38 zł
 --        payer: 677.63 zł
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 637.84 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 -- templates:
 --   [DRA]:
@@ -571,7 +571,7 @@ reports:
 --         3: $payer.social_id
 --         4: $payer.document_kind
 --         5: $payer.document
---         6: $payer.name
+--         6: $payer.short_name
 --         7: $payer.last
 --         8: $payer.first
 --         9: $payer.birthday
@@ -666,7 +666,7 @@ reports:
 --         3: $payer.social_id
 --         4: $payer.document_kind
 --         5: $payer.document
---         6: $payer.name
+--         6: $payer.short_name
 --         7: $payer.last
 --         8: $payer.first
 --         9: $payer.birthday
@@ -738,12 +738,12 @@ reports:
 --        first: 'PIOTR'
 --        last: 'IKSIŃSKI'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -757,10 +757,10 @@ reports:
 --        den: 1
 --        num: 1
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 256.70 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 --   RCA [26211012346]:
 --      accident_insurance:
@@ -785,12 +785,12 @@ reports:
 --        first: 'MARIA'
 --        last: 'IKSIŃSKA'
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
@@ -804,10 +804,10 @@ reports:
 --        den: 4
 --        num: 3
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 381.14 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 --   DRA:
 --      accident_insurance:
@@ -823,28 +823,28 @@ reports:
 --      insurance_total: 3043.07 zł
 --      insured_count: 2
 --      payer:
---        birthday: '2026-01-10'
+--        birthday: 2026/01/10
 --        document: 'AB4123456'
 --        document_kind: '2'
 --        first: 'JAN'
 --        last: 'NOWAK'
---        name: 'JAN NOWAK'
+--        short_name: 'JAN NOWAK'
 --        social_id: '26211012346'
 --        tax_id: '7680002466'
 --      pension_insurance:
 --        insured: 156.38 zł
 --        payer: 677.63 zł
 --      serial:
---        DATE: '2016-01'
+--        DATE: 2016/01
 --        NN: '01'
 --      tax_total: 637.84 zł
---      today: '2016-02-10'
+--      today: 2016/02/10
 --
 -- filled forms:
 --   ZUSRCA [50671500000]
 --     I:
 --       fields:
---         1: ['01', '2016-01']
+--         1: ['01', 2016/01]
 --
 --     II:
 --       fields:
@@ -855,7 +855,7 @@ reports:
 --         6: 'JAN NOWAK'
 --         7: 'NOWAK'
 --         8: 'JAN'
---         9: '2026-01-10'
+--         9: 2026/01/10
 --
 --     III[*]:
 --       - id: A
@@ -896,12 +896,12 @@ reports:
 --
 --     IV:
 --       fields:
---         1: '2016-02-10'
+--         1: 2016/02/10
 --
 --   ZUSRCA [26211012346]
 --     I:
 --       fields:
---         1: ['01', '2016-01']
+--         1: ['01', 2016/01]
 --
 --     II:
 --       fields:
@@ -912,7 +912,7 @@ reports:
 --         6: 'JAN NOWAK'
 --         7: 'NOWAK'
 --         8: 'JAN'
---         9: '2026-01-10'
+--         9: 2026/01/10
 --
 --     III[*]:
 --       - id: A
@@ -953,13 +953,13 @@ reports:
 --
 --     IV:
 --       fields:
---         1: '2016-02-10'
+--         1: 2016/02/10
 --
 --   ZUSDRA
 --     I:
 --       fields:
 --         1: '6'
---         2: ['01', '2016-01']
+--         2: ['01', 2016/01]
 --
 --     II:
 --       fields:
@@ -970,7 +970,7 @@ reports:
 --         6: 'JAN NOWAK'
 --         7: 'NOWAK'
 --         8: 'JAN'
---         9: '2026-01-10'
+--         9: 2026/01/10
 --
 --     III:
 --       fields:
@@ -1049,7 +1049,7 @@ reports:
 --
 --     XIII:
 --       fields:
---         1: '2016-02-10'
+--         1: 2016/02/10
 --
 )"sv},
 
