@@ -391,7 +391,7 @@ reports:
         3: $payer.social_id
         4: $payer.document_kind
         5: $payer.document
-        6: $payer.name
+        6: $payer.short_name
         7: $payer.last
         8: $payer.first
         9: $payer.birthday
@@ -488,7 +488,7 @@ reports:
         3: $payer.social_id
         4: $payer.document_kind
         5: $payer.document
-        6: $payer.name
+        6: $payer.short_name
         7: $payer.last
         8: $payer.first
         9: $payer.birthday
@@ -557,7 +557,7 @@ reports:
 --         3: $payer.social_id
 --         4: $payer.document_kind
 --         5: $payer.document
---         6: $payer.name
+--         6: $payer.short_name
 --         7: $payer.last
 --         8: $payer.first
 --         9: $payer.birthday
@@ -652,7 +652,7 @@ reports:
 --         3: $payer.social_id
 --         4: $payer.document_kind
 --         5: $payer.document
---         6: $payer.name
+--         6: $payer.short_name
 --         7: $payer.last
 --         8: $payer.first
 --         9: $payer.birthday

@@ -83,7 +83,7 @@ namespace quick_dra {
 
 		VAR(tax_id);
 		VAR(social_id);
-		VAR(name);
+		VAR(short_name);
 		VAR(last);
 		VAR(first);
 		VAR(document_kind);
@@ -123,7 +123,8 @@ namespace quick_dra {
 #undef VAR_CONST
 	};  // namespace var
 
-	using calculated_value = std::variant<std::monostate, std::string, currency, percent, uint_value>;
+	using calculated_value =
+	    std::variant<std::monostate, std::string, currency, percent, year_month, year_month_day, uint_value>;
 	using compiled_value = expand_args_t<calculated_value, addition, varname>;
 
 	template <typename ValueType>
@@ -137,6 +138,13 @@ namespace quick_dra {
 		auto operator()(uint_value const& value) const { return fmt::format("{}", value); }
 		auto operator()(addition const& sum) const { return fmt::format("({})", fmt::join(sum.refs, " + ")); }
 		auto operator()(varname const& var) const { return fmt::format("${}", fmt::join(var.path, ".")); }
+		auto operator()(year_month const& var) const {
+			return fmt::format("{:04}/{:02}", static_cast<int>(var.year()), static_cast<unsigned>(var.month()));
+		}
+		auto operator()(year_month_day const& var) const {
+			return fmt::format("{:04}/{:02}/{:02}", static_cast<int>(var.year()), static_cast<unsigned>(var.month()),
+			                   static_cast<unsigned>(var.day()));
+		}
 		auto operator()(ValueType const& value) const { return std::visit(*this, value); }
 		auto operator()(std::vector<ValueType> const& values) const {
 			std::string result{"["};
