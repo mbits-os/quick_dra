@@ -1,0 +1,24 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build Debug with proj-flow",
+            "command": "python",
+            "args": [ "${workspaceFolder}/.flow/flow.py", "build", "--dbg" ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "linux": {
+                "problemMatcher": [ "$gcc" ]
+            },
+            "windows": {
+                "problemMatcher": [ "$msCompile" ]
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        }
+    ],
+    "version": "2.0.0"
+}
