@@ -4,6 +4,7 @@
 #pragma once
 
 #include <filesystem>
+#include <map>
 #include <optional>
 #include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/verbose.hpp>

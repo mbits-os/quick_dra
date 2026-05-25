@@ -1,6 +1,8 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#pragma once
+
 // For definitions copied from true libcurl,
 // Copyright (C) Daniel Stenberg, <daniel@haxx.se>, et al.
 

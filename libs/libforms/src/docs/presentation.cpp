@@ -1,8 +1,13 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <algorithm>
 #include <array>
+#include <map>
 #include <quick_dra/docs/presentation.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 #include <yaml/parser.hpp>
 
 namespace quick_dra {
@@ -64,7 +69,7 @@ namespace quick_dra::report_format {
 		if (!read_key(ref, "align", ctx.alignment_)) return ref.error("while reading `align'");
 		if (!read_key(ref, "ignore", ctx.ignore_)) return ref.error("while reading `ignore'");
 		return true;
-	};
+	}
 
 	bool read_value(yaml::ref_ctx const& ref, report_format::ref& ctx) {
 		std::string str;
@@ -91,7 +96,7 @@ namespace quick_dra::report_format {
 		else
 			ctx.block = split[1];
 		return true;
-	};
+	}
 
 	bool read_value(yaml::ref_ctx const& ref, doc_labels& ctx) {
 		if (!read_key(ref, "label", ctx.section_label, true)) return ref.error("while reading `label'");
