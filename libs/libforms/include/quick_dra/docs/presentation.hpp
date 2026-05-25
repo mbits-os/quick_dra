@@ -3,10 +3,12 @@
 
 #pragma once
 
+#include <map>
 #include <optional>
 #include <quick_dra/models/model.hpp>
 #include <string>
 #include <variant>
+#include <vector>
 
 using namespace std::literals;
 
