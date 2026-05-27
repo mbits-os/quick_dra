@@ -13,20 +13,30 @@ namespace quick_dra {
 
 	namespace detail {
 		struct tax_id {
+			static size_t length() noexcept;
 			static unsigned short checksum(std::string_view id) noexcept;
 		};
 
 		struct social_id {
+			static size_t length() noexcept;
 			static unsigned short checksum(std::string_view id) noexcept;
 			static std::chrono::year_month_day get_birthday(std::string_view social_id) noexcept;
 		};
 
 		struct id_card {
+			static size_t length() noexcept;
 			static unsigned short checksum(std::string_view id) noexcept;
 		};
 
 		struct pl_passport {
+			static size_t length() noexcept;
 			static unsigned short checksum(std::string_view id) noexcept;
+		};
+
+		template <typename impl>
+		struct minmax : impl {
+			static size_t min_length() noexcept { return minmax::length(); }
+			static size_t max_length() noexcept { return minmax::length(); }
 		};
 
 		bool checksum_digit_is_valid(unsigned short checksum, char tested) noexcept;
@@ -54,8 +64,8 @@ namespace quick_dra {
 	};  // namespace detail
 
 	template <typename ChecksumPolicy, typename SelectorPolicy, typename ComparePolicy = detail::checksum_is_a_digit>
-	struct validator_suite : ChecksumPolicy, SelectorPolicy, ComparePolicy {
-		using checksum_t = ChecksumPolicy;
+	struct validator_suite : detail::minmax<ChecksumPolicy>, SelectorPolicy, ComparePolicy {
+		using checksum_t = detail::minmax<ChecksumPolicy>;
 		using compare_t = ComparePolicy;
 		using selector_t = SelectorPolicy;
 

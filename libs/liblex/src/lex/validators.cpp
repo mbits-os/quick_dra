@@ -43,8 +43,10 @@ namespace quick_dra::detail {
 		static constexpr auto const centuries = std::array{1900, 2000, 2100, 2200, 1800};
 	};  // namespace
 
+	size_t tax_id::length() noexcept { return decltype(tax_id_checker)::list{}.size(); }
 	unsigned short tax_id::checksum(std::string_view id) noexcept { return tax_id_checker.checksum(id); }
 
+	size_t social_id::length() noexcept { return decltype(social_id_checker)::list{}.size(); }
 	unsigned short social_id::checksum(std::string_view id) noexcept { return social_id_checker.checksum(id); }
 
 	std::chrono::year_month_day social_id::get_birthday(std::string_view social_id) noexcept {
@@ -65,8 +67,10 @@ namespace quick_dra::detail {
 		return result;
 	}
 
+	size_t id_card::length() noexcept { return decltype(id_card_checker)::list{}.size(); }
 	unsigned short id_card::checksum(std::string_view id) noexcept { return id_card_checker.checksum(id); }
 
+	size_t pl_passport::length() noexcept { return decltype(pl_passport_checker)::list{}.size(); }
 	unsigned short pl_passport::checksum(std::string_view id) noexcept { return pl_passport_checker.checksum(id); }
 
 	bool checksum_digit_is_valid(unsigned short checksum, char tested) noexcept {
