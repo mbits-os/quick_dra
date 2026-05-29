@@ -10,28 +10,36 @@ namespace quick_dra::testing {
 		using std::literals::operator""sv;
 	}  // namespace
 
-	struct uppercase_testcase {
+	struct one_case_testcase {
 		std::string_view input{};
-		std::string_view expected{};
+		std::string_view expected_to_upper{};
+		std::string_view expected_to_lower{};
 
-		friend std::ostream& operator<<(std::ostream& out, uppercase_testcase const& test) {
-			return out << '"' << test.input << "\" -> \"" << test.expected << '"';
+		friend std::ostream& operator<<(std::ostream& out, one_case_testcase const& test) {
+			return out << '"' << test.input << "\" -> \"" << test.expected_to_upper << '"';
 		}
 	};
 
-	class uppercase : public ::testing::TestWithParam<uppercase_testcase> {};
+	class one_case : public ::testing::TestWithParam<one_case_testcase> {};
 
-	TEST_P(uppercase, conv) {
-		auto const& [input, expected] = GetParam();
+	TEST_P(one_case, to_upper) {
+		auto const& [input, expected, _] = GetParam();
 		auto const actual = to_upper(input);
 		ASSERT_EQ(expected, actual);
 	}
 
-	static constinit uppercase_testcase const tests[] = {
-	    {"coöperate"sv, "COÖPERATE"sv},
-	    {"Iksiński"sv, "IKSIŃSKI"sv},
-	    {"Zażółć gęślą jaźń"sv, "ZAŻÓŁĆ GĘŚLĄ JAŹŃ"sv},
-	    {"Pchnąć w tę łódź jeża lub ośm skrzyń fig."sv, "PCHNĄĆ W TĘ ŁÓDŹ JEŻA LUB OŚM SKRZYŃ FIG."sv},
+	TEST_P(one_case, to_lower) {
+		auto const& [input, _, expected] = GetParam();
+		auto const actual = to_lower(input);
+		ASSERT_EQ(expected, actual);
+	}
+
+	static constinit one_case_testcase const tests[] = {
+	    {"coöperate"sv, "COÖPERATE"sv, "coöperate"sv},
+	    {"Iksiński"sv, "IKSIŃSKI"sv, "iksiński"sv},
+	    {"Zażółć gęślą jaźń"sv, "ZAŻÓŁĆ GĘŚLĄ JAŹŃ"sv, "zażółć gęślą jaźń"sv},
+	    {"Pchnąć w tę łódź jeża lub ośm skrzyń fig."sv, "PCHNĄĆ W TĘ ŁÓDŹ JEŻA LUB OŚM SKRZYŃ FIG."sv,
+	     "pchnąć w tę łódź jeża lub ośm skrzyń fig."sv},
 	    {
 	        "Γαζίες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο."sv,
 #ifdef WIN32
@@ -39,6 +47,7 @@ namespace quick_dra::testing {
 #else
 	        "ΓΑΖΊΕΣ ΚΑῚ ΜΥΡΤΙῈΣ ΔῈΝ ΘᾺ ΒΡΩ͂ ΠΙᾺ ΣΤῸ ΧΡΥΣΑΦῚ ΞΈΦΩΤΟ."sv,
 #endif
+	        "γαζίες καὶ μυρτιὲς δὲν θὰ βρῶ πιὰ στὸ χρυσαφὶ ξέφωτο."sv,
 	    },
 	    {
 	        "Zwölf große Boxkämpfer jagen Viktor quer über den Sylter Deich."sv,
@@ -47,10 +56,12 @@ namespace quick_dra::testing {
 #else
 	        "ZWÖLF GROSSE BOXKÄMPFER JAGEN VIKTOR QUER ÜBER DEN SYLTER DEICH."sv,
 #endif
+	        "zwölf große boxkämpfer jagen viktor quer über den sylter deich."sv,
 	    },
-	    {"Любя, съешь щипцы, — вздохнёт мэр, — кайф жгуч."sv, "ЛЮБЯ, СЪЕШЬ ЩИПЦЫ, — ВЗДОХНЁТ МЭР, — КАЙФ ЖГУЧ."sv},
+	    {"Любя, съешь щипцы, — вздохнёт мэр, — кайф жгуч."sv, "ЛЮБЯ, СЪЕШЬ ЩИПЦЫ, — ВЗДОХНЁТ МЭР, — КАЙФ ЖГУЧ."sv,
+	     "любя, съешь щипцы, — вздохнёт мэр, — кайф жгуч."sv},
 	};
 
-	INSTANTIATE_TEST_SUITE_P(test, uppercase, ::testing::ValuesIn(tests));
+	INSTANTIATE_TEST_SUITE_P(test, one_case, ::testing::ValuesIn(tests));
 
 }  // namespace quick_dra::testing

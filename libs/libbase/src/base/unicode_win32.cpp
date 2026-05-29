@@ -16,9 +16,9 @@ namespace quick_dra {
 			return WideCharToMultiByte(CP_UTF8, 0, src.data(), static_cast<DWORD>(src.size()), dst, size, nullptr,
 			                           nullptr);
 		}
-		auto lc_map(std::span<wchar_t const> src, wchar_t* dst, DWORD size) {
-			return LCMapStringW(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, src.data(), static_cast<DWORD>(src.size()), dst,
-			                    size);
+		auto lc_map(std::span<wchar_t const> src, wchar_t* dst, DWORD size, bool uppercase) {
+			return LCMapStringW(LOCALE_USER_DEFAULT, uppercase ? LCMAP_UPPERCASE : LCMAP_LOWERCASE, src.data(),
+			                    static_cast<DWORD>(src.size()), dst, size);
 		}
 
 		template <typename StringLike>
@@ -46,14 +46,19 @@ namespace quick_dra {
 			conv_one_way(view, result.data(), size);
 			return result;
 		}
-	}  // namespace
-	std::string to_upper(std::string_view input) {
-		if (input.empty()) return {};
 
-		auto wide = conv(input);
-		auto const size = lc_map(wide, nullptr, 0);
-		std::wstring upper(size, L'\0');
-		lc_map(wide, upper.data(), size);
-		return conv(upper);
-	}
+		std::string to_one_case(std::string_view input, bool uppercase) {
+			if (input.empty()) return {};
+
+			auto wide = conv(input);
+			auto const size = lc_map(wide, nullptr, 0, uppercase);
+			std::wstring upper(size, L'\0');
+			lc_map(wide, upper.data(), size, uppercase);
+			return conv(upper);
+		}
+	}  // namespace
+
+	std::string to_upper(std::string_view input) { return to_one_case(input, true); }
+
+	std::string to_lower(std::string_view input) { return to_one_case(input, false); }
 }  // namespace quick_dra
