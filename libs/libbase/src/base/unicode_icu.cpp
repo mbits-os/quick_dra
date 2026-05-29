@@ -13,4 +13,10 @@ namespace quick_dra {
 		icu::UnicodeString::fromUTF8(input).toUpper().toUTF8String(result);
 		return result;
 	}  // GCOV_EXCL_LINE
+
+	std::string to_lower(std::string_view input) {
+		std::string result{};
+		icu::UnicodeString::fromUTF8(input).toLower().toUTF8String(result);
+		return result;
+	}  // GCOV_EXCL_LINE
 }  // namespace quick_dra
