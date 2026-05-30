@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <qtypes.h>
 #include <QPainter>
 #include <QVBoxLayout>
 #include <vector>
@@ -32,7 +33,7 @@ namespace quick_dra::gui {
 		static constexpr auto TrueMargin = 18;
 		static constexpr auto Margin = TrueMargin + 2;
 		static constexpr auto Radius = 6;
-		static constexpr auto RadiusF = static_cast<float>(Radius);
+		static constexpr auto RadiusF = static_cast<qreal>(Radius);
 
 		struct Palette {
 			QColor frame{};

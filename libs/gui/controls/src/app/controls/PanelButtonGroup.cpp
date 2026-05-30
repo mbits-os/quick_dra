@@ -59,7 +59,7 @@ namespace quick_dra::gui {
 		using namespace PanelButtonStyle;
 		static constexpr auto DiameterF = RadiusF * 2;
 
-		auto const rect = item->geometry().marginsAdded({TrueMargin, TrueMargin, TrueMargin, TrueMargin});
+		auto const rect = item->geometry().marginsAdded({TrueMargin, TrueMargin, TrueMargin, TrueMargin}).toRectF();
 		QPainterPath path{};
 		if (pos & PanePosition::Bottom) {
 			path.moveTo(rect.left(), rect.bottom() - RadiusF);

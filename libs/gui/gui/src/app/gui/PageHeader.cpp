@@ -69,14 +69,18 @@ namespace quick_dra::gui {
 	float gauss_scaling(float length, float pos) {
 		auto const size = static_cast<float>(gauss.size());
 		auto const scaled_pos = pos * size / length;
-		auto const index_low = static_cast<int>(scaled_pos);
+		auto const index_low = static_cast<size_t>(scaled_pos);
 		auto const index_high = index_low + 1;
 
 		if (index_low <= 0) return gauss.front();
-		if (index_high >= size) return gauss.back();
+		if (index_high >= gauss.size()) return gauss.back();
 
 		auto const diff = gauss[index_high] - gauss[index_low];
-		return gauss[index_low] + diff * (scaled_pos - index_low);
+		return gauss[index_low] + diff * (scaled_pos - static_cast<float>(index_low));
+	}
+
+	float gauss_scaling(int length, int pos) {
+		return gauss_scaling(static_cast<float>(length), static_cast<float>(pos));
 	}
 
 	QColor getOsAccent(QPalette const& palette) { return palette.color(QPalette::Highlight); }
