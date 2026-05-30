@@ -10,6 +10,22 @@
 #include <quick_dra/models/project_reader.hpp>
 
 namespace quick_dra::gui {
+	namespace {
+		template <size_t... Index>
+		std::string_view strip_suffix(std::string_view input,
+		                              std::string_view suffix,
+		                              std::same_as<std::string_view> auto... suffixes) {
+			if (input.ends_with(suffix)) {
+				return strip_sv(input.substr(0, input.size() - suffix.size()));
+			}
+			if constexpr (sizeof...(suffixes) > 0) {
+				return strip_suffix(input, suffixes...);
+			} else {
+				return input;
+			}
+		}
+	}  // namespace
+
 	namespace detail {
 		QVariant displayRole(year_month month) {
 			if (month.year() < 1900y) return "Od zawsze";
@@ -24,7 +40,7 @@ namespace quick_dra::gui {
 		QVariant displayRole(currency salary) {
 			if (salary == minimal_salary) return "Minimalna";
 			auto const value = static_cast<double>(salary.value) / 100.0;
-			return QLocale::system().toCurrencyString(value, QString::fromUtf8("zł"), 2);
+			return QString::fromUtf8("%1 zł"sv).arg(QLocale::system().toString(value, 'f', 2));
 		}
 
 		QVariant editRole(year_month month) {
@@ -72,9 +88,12 @@ namespace quick_dra::gui {
 				return true;
 			}
 
-			currency local{};
-			if (currency::parse(text, local) && local >= 0_PLN) {
-				salary = local;
+			text = strip_suffix(text, "zł"sv, "pln"sv, "ZŁ"sv, "PLN"sv);
+			auto ok = false;
+			auto const doubleValue = QLocale::system().toDouble(QString::fromUtf8(text), &ok);
+			if (ok) {
+				auto const rawValue = static_cast<long long>(doubleValue * calc_currency::den);
+				salary = calc_currency{rawValue}.rounded();
 				return true;
 			}
 			return false;
