@@ -34,36 +34,31 @@
   - [x] Attach schema when writing user config (_v1.1.0_)
   - [x] Some data should be in per-org config (e.g. accident insurance) (_v1.1.0_)
   - [x] New `qdra config` should be able to upgrade (not downgrade) between versions (_v1.1.0_)
-  - [ ] Bug: cannot enter "10000 zł" or "Iksiński" on windows during conversation
 - [ ] Create a `qdra_gui`
   - [ ] Build system support
     - [ ] Use Qt6 from system
     - [ ] Phase 1: do not build app if `Qt6_DIR` is absent
     - [ ] Phase 2: install Qt6 on github runner
-  - [ ] Support for editing of `~/.quick_dra.yaml`
-    - [x] Modify payer
-    - [ ] Modify insured
-      - [x] Edit all, but employment history
-      - [x] Present employment history
-      - [x] In-place edit of employment history
-      - [x] Add employment
-      - [x] Remove employment
-      - [ ] Block duplicates in history
-    - [x] Edit insured list
-      - [x] Add insured
-      - [x] Remove insured
-    - [ ] Block duplicates in insured list
-  - [x] A button to save the XML
-  - [ ] _(opt)_ Show history graphs
-  - [x] Show filled forms
-  - [x] Show `--help` in message box
-  - [x] Observe changes in current config file
-  - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
-  - [ ] Add tests
-  - [ ] Bug tracking:
-    - [ ] Honor page minimum width
-    - [ ] `Panel::setInfo` in full layout, `"label"` does not properly repositions itself
-    - [ ] As used in `PersonelPage`, `Panel` lines are to fara away from each other
-    - [ ] Do not allow duplicates in the insured
-    - [ ] Employment history needs to extends to the end of available space, or be optimized when page is too short
+  - [ ] Version 1
+    - [ ] Support for editing of `~/.quick_dra.yaml`
+      - [x] Modify payer
+      - [ ] Modify insured
+        - [x] Edit properties, add and remove employment history
+        - [ ] Block duplicates in history
+      - [x] Edit insured list
+      - [ ] Block duplicates in insured list
+    - [x] A button to save the XML
+    - [x] Show filled-out RCA/DRA forms
+    - [x] Show `--help` in message box
+    - [x] Observe changes in current config file
+    - [ ] Add tests
+  - [ ] Version 2
+    - [ ] _(opt)_ Show history graphs
+    - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
 - [ ] Automatic upload to ZUS ePłatnik
+- [ ] Bug tracking
+  - [ ] cli: cannot enter "10000 zł" or "Iksiński" on windows during conversation (truncation of UTF-8 in input stream)
+  - [ ] gui: Honor page minimum width
+  - [ ] gui: `Panel::setInfo` in full layout, `"label"` does not properly repositions itself
+  - [ ] gui: as used in `PersonelPage`, `Panel` lines are to fara away from each other
+  - [ ] gui: employment history needs to extends to the end of available space, or be optimized when page is too short
