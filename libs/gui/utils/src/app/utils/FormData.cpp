@@ -4,6 +4,7 @@
 #include <QFile>
 #include <app/utils/FormData.hpp>
 #include <app/utils/forms.hpp>
+#include <format>
 #include <fstream>
 #include <map>
 #include <quick_dra/base/paths.hpp>
@@ -83,7 +84,7 @@ namespace quick_dra::gui {
 			};
 		}
 		std::string currency_info(std::string_view label, currency value) {
-			return info_span(label, fmt::format("{:.2f} zł", value));
+			return info_span(label, std::format("{:.2f} zł", value));
 		}
 	}  // namespace
 
@@ -160,8 +161,8 @@ namespace quick_dra::gui {
 			auto const insurance_total = form.state.typed_value(var::insurance_total, 0_PLN);
 			summary.push_back({
 			    .index = index - 1,
-			    .label = fmt::format("{}, {}", last_name, first_name),
-			    .value = fmt::format("{:.2f} zł", net_salary),
+			    .label = std::format("{}, {}", last_name, first_name),
+			    .value = std::format("{:.2f} zł", net_salary),
 			    .comment =
 			        second_line(currency_info("społeczne"sv, insurance_total - health_contribution),
 			                    currency_info("zdrowotne", health_contribution), currency_info("podatek", tax_total)),
@@ -177,12 +178,12 @@ namespace quick_dra::gui {
 			summary.push_back({
 			    .index = index - 1,
 			    .label = "Dla ZUS"s,
-			    .value = fmt::format("{:.2f} zł", insurance_total),
+			    .value = std::format("{:.2f} zł", insurance_total),
 			});
 			summary.push_back({
 			    .index = InvalidIndex,
 			    .label = "Dla Urzędu Skarbowego"s,
-			    .value = fmt::format("{:.2f} zł", tax_total),
+			    .value = std::format("{:.2f} zł", tax_total),
 			});
 		}
 	}
@@ -194,7 +195,7 @@ namespace quick_dra::gui {
 		auto it = templates.reports.find(form_data.key);
 		if (it == templates.reports.end()) {
 			// TODO: error scenario
-			return {.title = fmt::format("! {} <internal error>", form_data.key)};
+			return {.title = std::format("! {} <internal error>", form_data.key)};
 		}
 
 		auto const filled = form_data.fill(verbose::none, it->second);

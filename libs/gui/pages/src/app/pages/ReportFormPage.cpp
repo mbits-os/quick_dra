@@ -6,6 +6,7 @@
 #include <app/pages/ReportFormPage.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
+#include <format>
 #include <map>
 #include <optional>
 #include <quick_dra/docs/xml.hpp>
@@ -68,7 +69,7 @@ QLabel.oddRow {
 		if (split.size() > 1) {
 			for (auto const& line : split_sv(split[1], '\n'_sep)) {
 				fragment.with(
-				    E("div"sv, {{"style", "white-space:pre"}}).with(E("i"sv).with(fmt::format("\xC2\xB7 {}", line))));
+				    E("div"sv, {{"style", "white-space:pre"}}).with(E("i"sv).with(std::format("\xC2\xB7 {}", line))));
 			}
 		}
 
@@ -98,7 +99,7 @@ QLabel.oddRow {
 				    label, "", {.column = 0, .colSpan = 3},
 				    [&dataSection = it->second, firstGroup, even = (rowNumber % 2 == 0)](QLabel& label) {
 					    label.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBaseline);
-					    label.setText(QString::fromUtf8(fmt::format("{}. {}", dataSection.name, dataSection.label)));
+					    label.setText(QString::fromUtf8(std::format("{}. {}", dataSection.name, dataSection.label)));
 					    label.setProperty("class", QStringList{
 					                                   "groupHeader",
 					                                   firstGroup ? "firstHeader" : "followingHeader",

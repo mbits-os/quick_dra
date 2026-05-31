@@ -6,6 +6,7 @@
 #include <app/controls/forms/LineEdit.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/utils/utils.hpp>
+#include <format>
 #include <string>
 
 namespace quick_dra::gui {
@@ -21,7 +22,7 @@ namespace quick_dra::gui {
 	void LineEditBase::setValue(std::string_view text) { edit->setText(QString::fromUtf8(text)); }
 
 	void LineEditBase::setValue(insurance_title const& title) {
-		setValue(fmt::format("{} {} {}", title.title_code, title.pension_right, title.disability_level));
+		setValue(std::format("{} {} {}", title.title_code, title.pension_right, title.disability_level));
 	}
 
 	void LineEditBase::textChanged() {}

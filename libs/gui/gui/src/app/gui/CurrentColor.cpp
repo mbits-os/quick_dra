@@ -1,7 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <fmt/format.h>
 #include <QApplication>
 #include <QFile>
 #include <QIconEngine>
@@ -9,6 +8,7 @@
 #include <QPalette>
 #include <QSvgRenderer>
 #include <app/gui/CurrentColor.hpp>
+#include <format>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -64,11 +64,11 @@ namespace quick_dra::gui {
 
 			QByteArray replaceCurrentColor(QColor color) {
 				auto const buffer = color.name(QColor::HexRgb).toUtf8();
-				auto const colorName = fmt::format("\"{}\"", std::string_view{buffer});
+				auto const colorName = std::format("\"{}\"", std::string_view{buffer});
 				auto const alpha = color.alphaF();
 				auto bytes = svgTemplate;
 				if (alpha < 1) {
-					bytes.replace(" viewBox=\"", fmt::format(" opacity=\"{}\" viewBox=\"", alpha));
+					bytes.replace(" viewBox=\"", std::format(" opacity=\"{}\" viewBox=\"", alpha));
 				}
 
 				bytes.replace("\"currentColor\""sv, colorName);

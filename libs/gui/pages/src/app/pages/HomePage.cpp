@@ -1,7 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <fmt/format.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
@@ -20,6 +19,7 @@
 #include <app/utils/utils.hpp>
 #include <array>
 #include <concepts>
+#include <format>
 #include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>
@@ -35,7 +35,7 @@ using namespace std::literals;
 namespace quick_dra::gui {
 	namespace {
 		std::string setFilename(unsigned report_index, year_month const& date) {
-			return fmt::format("quick-dra_{}{:02}-{:02}.xml", static_cast<int>(date.year()),
+			return std::format("quick-dra_{}{:02}-{:02}.xml", static_cast<int>(date.year()),
 			                   static_cast<unsigned>(date.month()), report_index);
 		}
 	}  // namespace
@@ -194,7 +194,7 @@ namespace quick_dra::gui {
 		}
 
 		auto const& id = globals().reportId();
-		auto const sid = fmt::format("{:02} {:02}-{:04}", id.index, static_cast<unsigned>(id.date.month()),
+		auto const sid = std::format("{:02} {:02}-{:04}", id.index, static_cast<unsigned>(id.date.month()),
 		                             static_cast<int>(id.date.year()));
 
 		summaryIdentifier->setText(QString::fromStdString(sid));

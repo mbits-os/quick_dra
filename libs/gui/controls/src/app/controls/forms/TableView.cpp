@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <app/controls/forms/TableView.hpp>
 #include <app/utils/utils.hpp>
+#include <format>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/models/project_reader.hpp>
 #include <string>
@@ -47,7 +48,7 @@ namespace quick_dra::gui {
 
 		QVariant editRole(year_month month) {
 			return QString::fromUtf8(
-			    fmt::format("{:04}/{:02}", static_cast<int>(month.year()), static_cast<unsigned>(month.month())));
+			    std::format("{:04}/{:02}", static_cast<int>(month.year()), static_cast<unsigned>(month.month())));
 		}
 
 		QVariant editRole(ratio scale) {
@@ -55,7 +56,7 @@ namespace quick_dra::gui {
 			auto const value = std::gcd(num, den);
 			num /= value;
 			den /= value;
-			return QString::fromUtf8(fmt::format("{}/{}", num, den));
+			return QString::fromUtf8(std::format("{}/{}", num, den));
 		}
 
 		QVariant editRole(currency salary) {

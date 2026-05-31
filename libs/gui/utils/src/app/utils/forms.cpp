@@ -1,9 +1,9 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <fmt/format.h>
 #include <app/utils/forms.hpp>
 #include <array>
+#include <format>
 #include <numeric>
 #include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/str.hpp>
@@ -35,7 +35,7 @@ namespace quick_dra::gui {
 		auto const value = std::gcd(num, den);
 		num /= value;
 		den /= value;
-		auto const ascii = fmt::format("{}/{}", num, den);
+		auto const ascii = std::format("{}/{}", num, den);
 		for (auto const& [key, translation] : fractions) {
 			if (key == ascii) {
 				return as_str(translation);
@@ -54,7 +54,7 @@ namespace quick_dra::gui {
 	}
 
 	std::string info_span(std::string_view label, std::string_view value) {
-		return fmt::format("*{}:* {}", label, value);
+		return std::format("*{}:* {}", label, value);
 	}
 
 	std::string document_info(char kind, std::optional<std::string> const& document) {
@@ -81,19 +81,19 @@ namespace quick_dra::gui {
 		if (salary) {
 			auto const full = *salary;
 			return simple
-			           ? info_span(salary_label, fmt::format("{} zł", full))
-			           : info_span(salary_label, fmt::format("{} zł ({} z {} zł)",
+			           ? info_span(salary_label, std::format("{} zł", full))
+			           : info_span(salary_label, std::format("{} zł ({} z {} zł)",
 			                                                 calc_currency{(full.calc().value * num) / den}.rounded(),
 			                                                 ratio_from(num, den), full));
 		}
 
 		std::string since{};
 		if (month != null_month) {
-			since = fmt::format(" (od {}/{:02})", static_cast<int>(month.year()), static_cast<unsigned>(month.month()));
+			since = std::format(" (od {}/{:02})", static_cast<int>(month.year()), static_cast<unsigned>(month.month()));
 		}
 
-		return simple ? info_span(salary_label, fmt::format("minimalna{}", since))
-		              : info_span(salary_label, fmt::format("{} minimalnej{}", ratio_from(num, den), since));
+		return simple ? info_span(salary_label, std::format("minimalna{}", since))
+		              : info_span(salary_label, std::format("{} minimalnej{}", ratio_from(num, den), since));
 	}
 
 	std::string name_from(std::optional<std::string> const& first_name,
@@ -104,14 +104,14 @@ namespace quick_dra::gui {
 		auto const markers = markdown ? markdown_bold : text_markers;
 
 		if (!first_name && !last_name) {
-			return fmt::format("{}Nazwisko nieznane{}", markers[0], markers[1]);
+			return std::format("{}Nazwisko nieznane{}", markers[0], markers[1]);
 		}
 		if (!first_name) {
-			return fmt::format("{}???{} {}", markers[0], markers[1], *last_name);
+			return std::format("{}???{} {}", markers[0], markers[1], *last_name);
 		}
 		if (!last_name) {
-			return fmt::format("{} {}???{}", *first_name, markers[0], markers[1]);
+			return std::format("{} {}???{}", *first_name, markers[0], markers[1]);
 		}
-		return fmt::format("{} {}", *first_name, *last_name);
+		return std::format("{} {}", *first_name, *last_name);
 	}
 }  // namespace quick_dra::gui

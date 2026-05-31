@@ -6,6 +6,7 @@
 #include <app/gui/Globals.hpp>
 #include <app/main/MainWindow.hpp>
 #include <app/pages/HomePage.hpp>
+#include <format>
 #include <print>
 #include <quick_dra/version.hpp>
 
@@ -14,7 +15,7 @@ using namespace std::literals;
 namespace quick_dra::gui {
 	MainWindow::MainWindow(Globals* globals, QWidget* parent) : QMainWindow(parent) {
 		setupUi();
-		setWindowTitle(QString::fromStdString(fmt::format("{} {}", version::program, version::ui)));
+		setWindowTitle(QString::fromStdString(std::format("{} {}", version::program, version::ui)));
 		globals->setStack(pageStack);
 		pageStack->push<HomePage>();
 
@@ -38,7 +39,7 @@ namespace quick_dra::gui {
 		auto const title = page ? page->windowTitle() : QString{};
 		auto const prefix = title.isEmpty() ? QString{} : QString{"%1 - "}.arg(title);
 		setWindowTitle(
-		    QString::fromStdString(fmt::format("{}{} {}", prefix.toStdString(), version::program, version::ui)));
+		    QString::fromStdString(std::format("{}{} {}", prefix.toStdString(), version::program, version::ui)));
 	}
 
 	void MainWindow::configModified(bool modified) { messageBar->setVisible(modified); }
