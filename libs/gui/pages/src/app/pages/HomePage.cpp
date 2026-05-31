@@ -11,6 +11,7 @@
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/pages/HomePage.hpp>
+#include <app/pages/PersonelPage.hpp>
 #include <app/pages/ReportFormPage.hpp>
 #include <app/pages/ReportIdEditPage.hpp>
 #include <app/utils/LaidOut.hpp>
@@ -111,7 +112,6 @@ namespace quick_dra::gui {
 
 			        identifierButton->setClickable(true);
 			        personelButton->setClickable(true);
-			        personelButton->setEnabled(false);
 			        localStoreButton->setClickable(true);
 			        uploadKeduButton->setClickable(true);
 			        uploadKeduButton->setEnabled(false);
@@ -137,9 +137,7 @@ namespace quick_dra::gui {
 		QObject::connect(dlg, &ReportIdEditPage::identifierUpdated, this, &HomePage::reportIdAccepted);
 	}
 
-	void HomePage::showPersonelFilesAction() {
-		// push PersonelPage
-	}
+	void HomePage::showPersonelFilesAction() { push<PersonelPage>(); }
 
 	void HomePage::storeKeduXmlLocally() {
 		auto const& id = globals().reportId();

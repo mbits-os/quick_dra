@@ -4,10 +4,21 @@
 qt_standard_project_setup()
 
 set(SRCS
+    include/app/controls/Forms.hpp
+    include/app/controls/forms/base.hpp
+    include/app/controls/forms/ComboBox.hpp
+    include/app/controls/forms/DocumentComboBoxBase.hpp
+    include/app/controls/forms/field.hpp
+    include/app/controls/forms/LineEdit.hpp
+    include/app/controls/forms/TableView.hpp
     include/app/controls/Glyph.hpp
     include/app/controls/PageScrollArea.hpp
     include/app/controls/PanelButtonGroup_p.hpp
     include/app/controls/PanelButtonGroup.hpp
+    src/app/controls/forms/ComboBox.cpp
+    src/app/controls/forms/DocumentComboBoxBase.cpp
+    src/app/controls/forms/LineEdit.cpp
+    src/app/controls/forms/TableView.cpp
     src/app/controls/Glyph.cpp
     src/app/controls/PageScrollArea.cpp
     src/app/controls/PanelButtonGroup.cpp

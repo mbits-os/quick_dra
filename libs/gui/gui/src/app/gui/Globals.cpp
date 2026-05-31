@@ -57,6 +57,57 @@ namespace quick_dra::gui {
 		identifierChanged();
 	}
 
+	void Globals::storePayer(partial::payer_t const& payer) {
+		data_.cfg.payer = payer;
+		data_.storeConfig();
+		data_.prepareFormData(reportId_);
+		setConfigModified(false);
+		formSetChanged();
+		configurationChanged();
+	}
+
+	void Globals::storeInsured(size_t index, partial::insured_t const& insured) {
+		if (index > data_.cfg.insured->size()) {
+			return;
+		}
+		if (index == data_.cfg.insured->size()) {
+			data_.cfg.insured->push_back(insured);
+		} else {
+			data_.cfg.insured->at(index) = insured;
+		}
+		data_.storeConfig();
+		data_.prepareFormData(reportId_);
+		setConfigModified(false);
+		formSetChanged();
+		configurationChanged();
+	}
+
+	void Globals::removeInsured(std::vector<size_t> const& indexes) {
+		auto it = indexes.begin();
+		auto end = indexes.end();
+		std::vector<partial::insured_t> dst{};
+
+		auto& src = *data_.cfg.insured;
+		dst.reserve(src.size());
+
+		for (size_t index = 0; index < src.size(); ++index) {
+			if (it != end && *it == index) {
+				++it;
+				continue;
+			}
+
+			dst.push_back(std::move(src[index]));
+		}
+
+		src = std::move(dst);
+
+		data_.storeConfig();
+		data_.prepareFormData(reportId_);
+		setConfigModified(false);
+		formSetChanged();
+		configurationChanged();
+	}
+
 	bool Globals::configModified() const noexcept { return configModified_; }
 	void Globals::setConfigModified(bool value) {
 		if (configModified_ == value) {

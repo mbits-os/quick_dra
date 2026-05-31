@@ -40,10 +40,10 @@
     - [x] Phase 1: do not build app if `Qt6_DIR` is absent
     - [ ] Phase 2: install Qt6 on github runner
   - [ ] Version 1
-    - [ ] Support for editing of `~/.quick_dra.yaml`
-      - [ ] Modify payer
-      - [ ] Modify insured
-      - [ ] Edit insured list
+    - [x] Support editing of `~/.quick_dra.yaml`
+      - [x] Modify payer
+      - [x] Modify insured
+      - [x] Edit insured list
     - [x] A button to save the XML
     - [x] Show filled-out RCA/DRA forms
     - [x] Show `--help` in message box
@@ -55,3 +55,7 @@
 - [ ] Automatic upload to ZUS ePłatnik
 - [ ] Bug tracking
   - [ ] cli: cannot enter "10000 zł" or "Iksiński" on windows during conversation (truncation of UTF-8 in input stream)
+  - [ ] gui: Honor page minimum width
+  - [ ] gui: `Panel::setInfo` in full layout, `"label"` does not properly repositions itself
+  - [ ] gui: as used in `PersonelPage`, `Panel` lines are to fara away from each other
+  - [ ] gui: employment history needs to extends to the end of available space, or be optimized when page is too short

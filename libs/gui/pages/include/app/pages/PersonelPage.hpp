@@ -1,0 +1,52 @@
+// Copyright (c) 2026 midnightBITS
+// This code is licensed under MIT license (see LICENSE for details)
+
+#pragma once
+
+#include <QFont>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QList>
+#include <QSlider>
+#include <QWidget>
+#include <app/controls/PanelButtonGroup.hpp>
+#include <app/gui/PagedWidget.hpp>
+#include <app/utils/FormData.hpp>
+#include <quick_dra/docs/forms.hpp>
+#include <vector>
+
+#undef emit
+#include <quick_dra/models/types.hpp>
+
+namespace quick_dra::gui {
+	class PersonelPage : public PagedWidget {
+		Q_OBJECT
+
+	public:
+		explicit PersonelPage(QWidget* parent = nullptr);
+		~PersonelPage();
+
+		void connectPage() override;
+		bool survivesReload() const override { return true; }
+
+	public slots:
+		void configurationChanged();
+
+	private slots:
+		void editPayer();
+		void addInsured();
+		void removeInsured();
+
+	private:
+		void setupUI();
+		void editInsured(size_t);
+
+		void setPayer(partial::payer_t const&);
+		void setInsured(std::vector<partial::insured_t> const&);
+
+		PanelButtonGroup* payerGroup{};
+		PanelButtonGroup* insuredGroup{};
+		PanelButton* removeInsuredButton{};
+	};
+}  // namespace quick_dra::gui
