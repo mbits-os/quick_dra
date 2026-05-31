@@ -37,6 +37,42 @@ namespace quick_dra::gui {
 			return std::format("quick-dra_{}{:02}-{:02}.xml", static_cast<int>(date.year()),
 			                   static_cast<unsigned>(date.month()), report_index);
 		}
+
+		QString standardWritePath() {
+			QString directory{};
+			for (auto const loc : {
+			         QStandardPaths::DocumentsLocation,
+			         QStandardPaths::DownloadLocation,
+			         QStandardPaths::DesktopLocation,
+			     }) {
+				if (!directory.isEmpty()) {
+					break;
+				}
+				directory = QStandardPaths::writableLocation(loc);
+			}
+			return directory;
+		}
+
+		QString previousSaveDirectory() {
+			QSettings settings{};
+			settings.beginGroup("State");
+			auto const dirname = settings.value("SaveDirectory", "").toString();
+			settings.endGroup();
+			return !dirname.isEmpty() && QDir{dirname}.exists() ? dirname : QString{};
+		}
+
+		void storeSaveDirectory(QString const& dirname) {
+			QSettings settings{};
+			settings.beginGroup("State");
+			settings.setValue("SaveDirectory", dirname);
+			settings.endGroup();
+		}
+
+		QString writePath() {
+			auto result = previousSaveDirectory();
+			if (result.isEmpty()) result = standardWritePath();
+			return result;
+		}
 	}  // namespace
 
 	HomePage::HomePage(QWidget* parent) : PagedWidget(parent) { setupUI(); }
@@ -77,7 +113,6 @@ namespace quick_dra::gui {
 			        personelButton->setClickable(true);
 			        personelButton->setEnabled(false);
 			        localStoreButton->setClickable(true);
-			        localStoreButton->setEnabled(false);
 			        uploadKeduButton->setClickable(true);
 			        uploadKeduButton->setEnabled(false);
 
@@ -107,10 +142,19 @@ namespace quick_dra::gui {
 	}
 
 	void HomePage::storeKeduXmlLocally() {
-		// globals().data().storeKedu(path);
-	}
+		auto const& id = globals().reportId();
+		auto const input_path = QDir{writePath()}.filePath(QString::fromUtf8(setFilename(id.index, id.date)));
+		auto const output_path =
+		    QFileDialog::getSaveFileName(this, tr("Save File"), input_path, tr("XML Files (*.xml)"));
 
-	void HomePage::pushFormView(size_t index) { stack().push<ReportFormPage>(index); }
+		if (output_path.isEmpty()) {
+			return;
+		}
+
+		auto const path = std::filesystem::absolute(QFile{output_path}.filesystemFileName());
+		storeSaveDirectory(QString::fromUtf8(as_sv(path.parent_path().generic_u8string())));
+		globals().data().storeKedu(path);
+	}
 
 	void HomePage::reportIdAccepted(int serial, QDate const& date, bool moved) {
 		auto const ymd = year_month_day{date.toStdSysDays()};
@@ -164,4 +208,6 @@ namespace quick_dra::gui {
 
 		summaryIdentifier->setText(QString::fromStdString(sid));
 	}
+
+	void HomePage::pushFormView(size_t index) { stack().push<ReportFormPage>(index); }
 }  // namespace quick_dra::gui
