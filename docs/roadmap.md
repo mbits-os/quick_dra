@@ -36,8 +36,8 @@
   - [x] New `qdra config` should be able to upgrade (not downgrade) between versions (_v1.1.0_)
 - [ ] Create a `qdra_gui`
   - [ ] Build system support
-    - [ ] Use Qt6 from system
-    - [ ] Phase 1: do not build app if `Qt6_DIR` is absent
+    - [x] Use Qt6 from system
+    - [x] Phase 1: do not build app if `Qt6_DIR` is absent
     - [ ] Phase 2: install Qt6 on github runner
   - [ ] Version 1
     - [ ] Support for editing of `~/.quick_dra.yaml`
