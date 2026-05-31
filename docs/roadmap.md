@@ -44,7 +44,7 @@
       - [ ] Modify payer
       - [ ] Modify insured
       - [ ] Edit insured list
-    - [ ] A button to save the XML
+    - [x] A button to save the XML
     - [x] Show filled-out RCA/DRA forms
     - [x] Show `--help` in message box
     - [x] Observe changes in current config file
