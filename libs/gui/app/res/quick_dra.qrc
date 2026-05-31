@@ -7,5 +7,6 @@
         <file>icons/ellipsis.svg</file>
         <file>icons/null.svg</file>
         <file>icons/reset.svg</file>
+        <file>icons/warning.svg</file>
     </qresource>
 </RCC>

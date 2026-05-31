@@ -30,6 +30,9 @@ namespace quick_dra::gui {
 
 		void reloadConfig();
 		void storeIdentifier(ReportId const&);
+		void storePayer(partial::payer_t const&);
+		void storeInsured(size_t index, partial::insured_t const&);
+		void removeInsured(std::vector<size_t> const& indexes);
 
 	public slots:
 		void setConfigModified(bool value);

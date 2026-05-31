@@ -12,4 +12,5 @@ namespace quick_dra::gui {
 	QIcon checkSVGIcon();
 	QIcon nullSVGIcon();
 	QIcon resetSVGIcon();
+	QIcon warningSVGIcon();
 };  // namespace quick_dra::gui

@@ -163,4 +163,5 @@ namespace quick_dra::gui {
 	QIcon checkSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/check.svg"); }
 	QIcon nullSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/null.svg"); }
 	QIcon resetSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/reset.svg"); }
+	QIcon warningSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/warning.svg"); }
 };  // namespace quick_dra::gui

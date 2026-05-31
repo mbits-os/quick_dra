@@ -4,7 +4,6 @@
 #include <QEvent>
 #include <QSettings>
 #include <app/gui/Globals.hpp>
-#include <app/gui/PagedWidget.hpp>
 #include <app/main/MainWindow.hpp>
 #include <app/pages/HomePage.hpp>
 #include <format>
