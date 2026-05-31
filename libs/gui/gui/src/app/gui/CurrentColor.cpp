@@ -162,4 +162,5 @@ namespace quick_dra::gui {
 	QIcon ellipsisSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/ellipsis.svg"); }
 	QIcon checkSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/check.svg"); }
 	QIcon nullSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/null.svg"); }
+	QIcon resetSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/reset.svg"); }
 };  // namespace quick_dra::gui

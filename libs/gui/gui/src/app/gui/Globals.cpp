@@ -48,6 +48,15 @@ namespace quick_dra::gui {
 		configurationChanged();
 	}
 
+	void Globals::storeIdentifier(ReportId const& id) {
+		if (reportId_ == id) return;
+		reportId_ = id;
+		storeSettings();
+		data_.lookupParameters(reportId_);
+		formSetChanged();
+		identifierChanged();
+	}
+
 	bool Globals::configModified() const noexcept { return configModified_; }
 	void Globals::setConfigModified(bool value) {
 		if (configModified_ == value) {

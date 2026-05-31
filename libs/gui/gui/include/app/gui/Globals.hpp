@@ -29,6 +29,7 @@ namespace quick_dra::gui {
 		ReportId const& reportId() const noexcept { return reportId_; }
 
 		void reloadConfig();
+		void storeIdentifier(ReportId const&);
 
 	public slots:
 		void setConfigModified(bool value);
@@ -38,6 +39,7 @@ namespace quick_dra::gui {
 
 	signals:
 		void configurationChanged();
+		void identifierChanged();
 		void formSetChanged();
 		void configModifiedChanged(bool);
 

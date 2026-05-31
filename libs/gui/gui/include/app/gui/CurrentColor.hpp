@@ -11,4 +11,5 @@ namespace quick_dra::gui {
 	QIcon ellipsisSVGIcon();
 	QIcon checkSVGIcon();
 	QIcon nullSVGIcon();
+	QIcon resetSVGIcon();
 };  // namespace quick_dra::gui

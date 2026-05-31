@@ -12,6 +12,7 @@
 #include <app/gui/PageStack.hpp>
 #include <app/pages/HomePage.hpp>
 #include <app/pages/ReportFormPage.hpp>
+#include <app/pages/ReportIdEditPage.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/forms.hpp>
 #include <app/utils/utils.hpp>
@@ -73,7 +74,6 @@ namespace quick_dra::gui {
 			        self->summaryIdentifier = static_cast<Panel*>(identifierButton->widget())->value();
 
 			        identifierButton->setClickable(true);
-			        identifierButton->setEnabled(false);
 			        personelButton->setClickable(true);
 			        personelButton->setEnabled(false);
 			        localStoreButton->setClickable(true);
@@ -90,13 +90,16 @@ namespace quick_dra::gui {
 	}
 
 	void HomePage::connectPage() {
+		QObject::connect(&globals(), &Globals::identifierChanged, this, &HomePage::reportIdChanged);
 		QObject::connect(&globals(), &Globals::formSetChanged, this, &HomePage::formSetChanged);
 		reportIdChanged();
 		formSetChanged();
 	}
 
 	void HomePage::editReportIdAction() {
-		// push ReportIdEditPage
+		auto const dlg = push<ReportIdEditPage>();
+		dlg->initialData(globals().reportId());
+		QObject::connect(dlg, &ReportIdEditPage::identifierUpdated, this, &HomePage::reportIdAccepted);
 	}
 
 	void HomePage::showPersonelFilesAction() {
@@ -108,6 +111,16 @@ namespace quick_dra::gui {
 	}
 
 	void HomePage::pushFormView(size_t index) { stack().push<ReportFormPage>(index); }
+
+	void HomePage::reportIdAccepted(int serial, QDate const& date, bool moved) {
+		auto const ymd = year_month_day{date.toStdSysDays()};
+		auto const index = static_cast<unsigned>(std::min(std::max(serial, 1), 99));
+		globals().storeIdentifier({
+		    .index = index,
+		    .date = ymd.year() / ymd.month(),
+		    .isOverriden = moved,
+		});
+	}
 
 	void HomePage::reportIdChanged() { updateSummaryIdentifier(); }
 
