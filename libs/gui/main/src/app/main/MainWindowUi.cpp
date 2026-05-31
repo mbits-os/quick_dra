@@ -1,0 +1,61 @@
+// Copyright (c) 2026 midnightBITS
+// This code is licensed under MIT license (see LICENSE for details)
+
+#include <QPushButton>
+#include <app/main/MainWindow.hpp>
+#include <app/utils/LaidOut.hpp>
+#include <app/utils/utils.hpp>
+#include <quick_dra/version.hpp>
+
+using namespace std::literals;
+
+namespace quick_dra::gui {
+	namespace {
+		auto withCssMargins(int top = 0, int right = -1, int bottom = -1, int left = -1) {
+			if (right < 0) right = top;
+			if (bottom < 0) bottom = top;
+			if (left < 0) left = right;
+			return [top, right, bottom, left](QLayout& layout) { layout.setContentsMargins(left, top, right, bottom); };
+		}
+	}  // namespace
+
+	void MainWindow::setupUi() {
+		if (objectName().isEmpty()) setObjectName("MainWindow");
+		LaidOut{this}.createWidget(centralWidget, "centralWidget");
+
+		HeaderShadow* shadow{};
+		auto root = LaidOut{centralWidget};
+		root.createLayout(verticalLayout, "verticalLayout", centralWidget,
+		                  [](QVBoxLayout& layout) {
+			                  layout.setContentsMargins(0, 0, 0, 0);
+			                  layout.setSpacing(0);
+		                  })
+		    .createWidget(shadow, "", [](auto& shadow) {
+			    shadow.setShadowHeight(12);
+			    shadow.setShadowForce(.25f);
+		    });
+
+		root.withLayout(verticalLayout)
+		    .createWidget(pageHeader, "pageHeader")
+		    .createWidget(stackedWidget, "stackedWidget", []([[maybe_unused]] auto& stackedWidget) {
+#if 0
+			    auto pal = stackedWidget.palette();
+			    auto shadow = QColor(Qt::magenta);
+			    shadow.setAlpha(20);
+			    pal.setColor(QPalette::Window, shadow);
+			    stackedWidget.setPalette(pal);
+			    stackedWidget.setAutoFillBackground(true);
+#endif
+		    });
+
+		setCentralWidget(centralWidget);
+		shadow->raise();
+
+		QObject::connect(pageHeader, &PageHeader::moved, shadow, &HeaderShadow::targetMoved);
+
+		pageStack = new PageStack(pageHeader, stackedWidget);
+		pageStack->setObjectName("pageStack");
+
+		QObject::connect(pageStack, &PageStack::titleChanged, this, &MainWindow::updateTitle);
+	}
+}  // namespace quick_dra::gui

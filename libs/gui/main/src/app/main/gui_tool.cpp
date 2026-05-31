@@ -3,12 +3,16 @@
 
 #include <QApplication>
 #include <QString>
+#include <app/gui/Globals.hpp>
 #include <app/main/MainWindow.hpp>
 #include <app/main/options.hpp>
 
 namespace quick_dra {
 	int gui_tool(options const& opts) {
-		gui::MainWindow w{};
+		gui::Globals globals{};
+		globals.setConfig(opts.cfg_path, opts.tax_config_path);
+
+		gui::MainWindow w{&globals};
 		w.setWindowFilePath(QString::fromUtf8(as_sv(opts.cfg_path.u8string())));
 		w.show();
 		return QCoreApplication::exec();
