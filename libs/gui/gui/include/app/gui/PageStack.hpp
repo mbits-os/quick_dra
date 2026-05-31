@@ -38,6 +38,7 @@ namespace quick_dra::gui {
 	public slots:
 		void pushPage(PagedWidget* page);
 		void navigateBack();
+		void navigateHomeForReload();
 
 		// HEADER SLOTS:
 		void setHeaderTitle(QString const&);

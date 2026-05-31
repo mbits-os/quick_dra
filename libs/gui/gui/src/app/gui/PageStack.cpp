@@ -71,6 +71,17 @@ namespace quick_dra::gui {
 		currentPage->deleteLater();
 	}
 
+	void PageStack::navigateHomeForReload() {
+		while (parent_->count() > 1) {
+			auto const currentPage = page();
+			if (currentPage->survivesReload()) {
+				break;
+			}
+
+			navigateBack();
+		}
+	}
+
 	void PageStack::updateNavigateBackButton() { globalHeader_->setTopMost(parent_->currentIndex() == 0); }
 	void PageStack::setFormDirty(bool value) { globalHeader_->setFormDirty(value); }
 	void PageStack::setFormValid(bool value) { globalHeader_->setFormValid(value); }

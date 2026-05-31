@@ -23,6 +23,7 @@ namespace quick_dra::gui {
 		virtual void pageRemoved();
 		virtual void accept();
 		virtual void setupPageUI();
+		virtual bool survivesReload() const;
 
 		bool formDirty() const noexcept { return formDirty_; }
 		bool formValid() const noexcept { return formValid_; }
