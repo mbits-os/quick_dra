@@ -18,11 +18,15 @@ namespace quick_dra::gui {
 	public:
 		explicit MainWindow(Globals* globals, QWidget* parent = nullptr);
 
+		void closeEvent(QCloseEvent*) override;
+
 	private slots:
 		void updateTitle();
 
 	private:
 		void setupUi();
+		void storePosition();
+		void restorePosition();
 
 		PageHeader* pageHeader{};
 		QWidget* centralWidget{};
