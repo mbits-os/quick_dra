@@ -34,16 +34,24 @@
   - [x] Attach schema when writing user config (_v1.1.0_)
   - [x] Some data should be in per-org config (e.g. accident insurance) (_v1.1.0_)
   - [x] New `qdra config` should be able to upgrade (not downgrade) between versions (_v1.1.0_)
-  - [ ] Bug: cannot enter "10000 zł" or "Iksiński" on windows during conversation
 - [ ] Create a `qdra_gui`
   - [ ] Build system support
     - [ ] Use Qt6 from system
     - [ ] Phase 1: do not build app if `Qt6_DIR` is absent
     - [ ] Phase 2: install Qt6 on github runner
-  - [ ] Support for editing of `~/.quick_dra.yaml`
-  - [ ] A button to save the XML
-  - _Notes:_
-    - It must be cross-platform
-    - Using ElectronJS or Chromium's CEF is overkill
-    - If not looking native, stick to current-ish Material Design
+  - [ ] Version 1
+    - [ ] Support for editing of `~/.quick_dra.yaml`
+      - [ ] Modify payer
+      - [ ] Modify insured
+      - [ ] Edit insured list
+    - [ ] A button to save the XML
+    - [ ] Show filled-out RCA/DRA forms
+    - [ ] Show `--help` in message box
+    - [ ] Observe changes in current config file
+    - [ ] Add tests
+  - [ ] Version 2
+    - [ ] _(opt)_ Show history graphs
+    - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
 - [ ] Automatic upload to ZUS ePłatnik
+- [ ] Bug tracking
+  - [ ] cli: cannot enter "10000 zł" or "Iksiński" on windows during conversation (truncation of UTF-8 in input stream)

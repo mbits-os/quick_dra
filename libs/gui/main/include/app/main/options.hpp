@@ -16,8 +16,10 @@
 using namespace std::literals;
 
 namespace quick_dra {
+	struct exit_on_help {};
 	struct options {
 		std::filesystem::path cfg_path{};
+		std::optional<std::filesystem::path> tax_config_path;
 
 		static options parse(args::args_view const& arguments);
 	};

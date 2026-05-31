@@ -5,7 +5,7 @@
 #include <fmt/ranges.h>
 #include <fmt/std.h>
 #include <gtest/gtest.h>
-#include <quick_dra/gui/options/options.hpp>
+#include <app/main/options.hpp>
 #include <span>
 
 namespace quick_dra::testing {
