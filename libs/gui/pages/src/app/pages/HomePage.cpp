@@ -11,6 +11,7 @@
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/pages/HomePage.hpp>
+#include <app/pages/ReportFormPage.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/forms.hpp>
 #include <app/utils/utils.hpp>
@@ -106,6 +107,8 @@ namespace quick_dra::gui {
 		// globals().data().storeKedu(path);
 	}
 
+	void HomePage::pushFormView(size_t index) { stack().push<ReportFormPage>(index); }
+
 	void HomePage::reportIdChanged() { updateSummaryIdentifier(); }
 
 	void HomePage::formSetChanged() {
@@ -116,8 +119,7 @@ namespace quick_dra::gui {
 			if (ref.index != FormData::InvalidIndex) {
 				slot = [self = this, index = ref.index] { self->pushFormView(index); };
 			}
-			auto button = layoutFormReference(summaryGroup, ref, slot);
-			button->setEnabled(false);
+			layoutFormReference(summaryGroup, ref, slot);
 		}
 		updateSummaryIdentifier();
 	}
@@ -148,9 +150,5 @@ namespace quick_dra::gui {
 		                             static_cast<int>(id.date.year()));
 
 		summaryIdentifier->setText(QString::fromStdString(sid));
-	}
-
-	void HomePage::pushFormView(size_t index) {
-		// push ReportFormPage
 	}
 }  // namespace quick_dra::gui

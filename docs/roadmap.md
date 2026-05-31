@@ -45,9 +45,9 @@
       - [ ] Modify insured
       - [ ] Edit insured list
     - [ ] A button to save the XML
-    - [ ] Show filled-out RCA/DRA forms
-    - [ ] Show `--help` in message box
-    - [ ] Observe changes in current config file
+    - [x] Show filled-out RCA/DRA forms
+    - [x] Show `--help` in message box
+    - [x] Observe changes in current config file
     - [ ] Add tests
   - [ ] Version 2
     - [ ] _(opt)_ Show history graphs
