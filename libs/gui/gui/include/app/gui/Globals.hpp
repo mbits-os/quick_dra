@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <QFileSystemWatcher>
 #include <QObject>
 #include <app/utils/FormData.hpp>
 
@@ -21,13 +22,24 @@ namespace quick_dra::gui {
 		bool hasStack() const noexcept { return !!stack_; }
 		void setStack(PageStack* stack);
 
+		bool configModified() const noexcept;
+
 		void setConfig(std::filesystem::path const&, std::optional<std::filesystem::path> const&);
 		FormData const& data() const noexcept { return data_; }
 		ReportId const& reportId() const noexcept { return reportId_; }
 
+		void reloadConfig();
+
+	public slots:
+		void setConfigModified(bool value);
+
+	private slots:
+		void observedFileChanged(QString const& path);
+
 	signals:
 		void configurationChanged();
 		void formSetChanged();
+		void configModifiedChanged(bool);
 
 	private:
 		void readSettings();
@@ -37,5 +49,7 @@ namespace quick_dra::gui {
 
 		FormData data_{};
 		ReportId reportId_{};
+		QFileSystemWatcher watcher_{};
+		bool configModified_{false};
 	};
 }  // namespace quick_dra::gui

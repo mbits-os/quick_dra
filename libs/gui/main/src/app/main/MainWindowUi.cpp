@@ -1,6 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <QPushButton>
 #include <app/main/MainWindow.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
@@ -35,9 +36,30 @@ namespace quick_dra::gui {
 			    shadow.setShadowForce(.25f);
 		    });
 
+		QHBoxLayout* messageLayout{};
+		QLabel* messageLabel{};
+		QPushButton* reloadButton{};
+
 		root.withLayout(verticalLayout)
 		    .createWidget(pageHeader, "pageHeader")
-		    .createWidget(stackedWidget, "stackedWidget");
+		    .createWidget(stackedWidget, "stackedWidget")
+		    .createWidget(messageBar, "messageBar", [](auto& wgt) {
+			    wgt.setSizePolicy(TakeWidth);
+			    wgt.setVisible(false);
+		    });
+
+		LaidOut{messageBar}
+		    .createLayout(messageLayout, "messageLayout", messageBar)
+		    .withLayout(messageLayout)
+		    .createWidget(messageLabel, "messageLabel",
+		                  [](QLabel& label) {
+			                  label.setText("Konfiguracja Quick-DRA została zmodyfikowana");
+			                  label.setSizePolicy(TakeWidth / 1_XStretch);
+		                  })
+		    .createWidget(reloadButton, "reloadButton", [](QPushButton& button) {
+			    button.setText("Odśwież");
+			    button.setSizePolicy(TakeWidth);
+		    });
 
 		setCentralWidget(centralWidget);
 		shadow->raise();
@@ -48,5 +70,17 @@ namespace quick_dra::gui {
 		pageStack->setObjectName("pageStack");
 
 		QObject::connect(pageStack, &PageStack::titleChanged, this, &MainWindow::updateTitle);
+		QObject::connect(reloadButton, &QPushButton::clicked, this, &MainWindow::reloadConfig);
+
+		updateStyles();
+	}
+
+	void MainWindow::updateStyles() {
+		auto const pal = palette();
+		auto const lightMode =
+		    pal.color(QPalette::Window).toHsl().lightness() >= pal.color(QPalette::WindowText).toHsl().lightness();
+
+		messageBar->setStyleSheet(lightMode ? "#messageBar {background-color: rgba(231, 204, 70, 0.8)}"
+		                                    : "#messageBar {background-color: rgba(110, 72, 8, 0.3)}");
 	}
 }  // namespace quick_dra::gui

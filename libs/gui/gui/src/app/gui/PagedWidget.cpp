@@ -27,6 +27,7 @@ namespace quick_dra::gui {
 		stack().setFormValid(formValid_);
 		onTitleChange(windowTitle());
 	}
+	bool PagedWidget::survivesReload() const { return false; }
 
 	void PagedWidget::setFormDirty(bool value) {
 		if (formDirty_ == value) {

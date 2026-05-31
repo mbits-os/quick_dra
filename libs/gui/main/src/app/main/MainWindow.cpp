@@ -1,6 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <QEvent>
 #include <QSettings>
 #include <app/gui/Globals.hpp>
 #include <app/gui/PagedWidget.hpp>
@@ -15,11 +16,20 @@ namespace quick_dra::gui {
 		setupUi();
 		setWindowTitle(QString::fromStdString(std::format("{} {}", version::program, version::ui)));
 		globals->setStack(pageStack);
+
+		QObject::connect(globals, &Globals::configModifiedChanged, messageBar, &QWidget::setVisible);
 	}
 
 	void MainWindow::closeEvent(QCloseEvent* event) {
 		QMainWindow::closeEvent(event);
 		storePosition();
+	}
+
+	bool MainWindow::event(QEvent* event) {
+		if (event->type() == QEvent::PaletteChange) {
+			updateStyles();
+		}
+		return QMainWindow::event(event);
 	}
 
 	void MainWindow::updateTitle() {
@@ -28,6 +38,13 @@ namespace quick_dra::gui {
 		auto const prefix = title.isEmpty() ? QString{} : QString{"%1 - "}.arg(title);
 		setWindowTitle(
 		    QString::fromStdString(std::format("{}{} {}", prefix.toStdString(), version::program, version::ui)));
+	}
+
+	void MainWindow::configModified(bool modified) { messageBar->setVisible(modified); }
+
+	void MainWindow::reloadConfig() {
+		pageStack->navigateHomeForReload();
+		pageStack->globals().reloadConfig();
 	}
 
 	void MainWindow::storePosition() {
