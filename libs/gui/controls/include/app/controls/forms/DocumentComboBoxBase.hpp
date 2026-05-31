@@ -7,6 +7,7 @@
 #include <app/controls/forms/LineEdit.hpp>
 #include <app/controls/forms/base.hpp>
 #include <app/controls/forms/field.hpp>
+#include <functional>
 
 namespace quick_dra::gui {
 	class DocumentComboBoxBase : QObject {
@@ -38,7 +39,7 @@ namespace quick_dra::gui {
 		public:
 			using DeclType = DocumentDeclaration;
 
-			LineEdit() = default;
+			LineEdit();
 
 			using LineEditBase::addToLayout;
 			void addToLayout(QWidget* parentWidget, QFormLayout* layout) {
@@ -61,30 +62,11 @@ namespace quick_dra::gui {
 				QObject::connect(this, &LineEditBase::validationChanged, host, &T::updateCurrentIsValid);
 			}
 
-			void textChanged() override {
-				if (this->attaching) {
-					return;
-				}
-				auto const result = validator.validate(this->getEditText());
-				this->dirty = true;
-				this->setValidation(result, validator.error_message);
-				this->valueChanged();
-			}
+			void textChanged() override;
+			void attach(typename DeclType::target_type& target);
+			void readValue(typename DeclType::target_type& target);
 
-			void attach(typename DeclType::target_type& target) {
-				auto& text = DeclType::getField(target);
-				attaching = true;
-				setValue(text);
-				attaching = false;
-			}
-
-			void readValue(typename DeclType::target_type& target) {
-				if (!dirty) return;
-				dirty = false;
-				auto text = getEditText();
-				DeclType::getField(target) = std::move(text);
-			}
-
+			std::function<std::optional<std::string>(std::string_view)> blockChecker;
 			DocumentValidator validator{};
 		};
 
@@ -117,6 +99,12 @@ namespace quick_dra::gui {
 
 		bool isValid() const noexcept { return kind.isValid() && number.isValid(); }
 		void restyleField(bool lightMode) { number.restyleField(lightMode); }
+
+		void setBlockChecker(std::function<std::optional<std::string>(std::string_view, std::string_view)> const& cb) {
+			number.blockChecker = [self = this, cb](std::string_view view) {
+				return cb(self->kind.getCurrentDataText(), view);
+			};
+		}
 
 		ComboBox kind{this};
 		LineEdit number{};

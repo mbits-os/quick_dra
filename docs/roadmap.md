@@ -43,10 +43,10 @@
     - [ ] Support for editing of `~/.quick_dra.yaml`
       - [x] Modify payer
       - [ ] Modify insured
+        - [x] Block duplicates in insured list
         - [x] Edit properties, add and remove employment history
         - [ ] Block duplicates in history
       - [x] Edit insured list
-      - [ ] Block duplicates in insured list
     - [x] A button to save the XML
     - [x] Show filled-out RCA/DRA forms
     - [x] Show `--help` in message box

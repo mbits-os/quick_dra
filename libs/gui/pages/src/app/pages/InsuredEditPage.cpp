@@ -87,6 +87,32 @@ namespace quick_dra::gui {
 			    relax_history(from.history),
 			};
 		}
+
+		std::optional<std::string> find_duplicate(std::string_view kind,
+		                                          std::string_view document,
+		                                          size_t pos,
+		                                          std::vector<partial::insured_t> const& insured) {
+			unsigned index = 0;
+			for (auto const& person : insured) {
+				if (index == pos) {
+					++index;
+					continue;
+				}
+
+				if (person.kind == kind && person.document == document) {
+					break;
+				}
+
+				++index;
+			}
+
+			if (index == insured.size()) {
+				return {};
+			}
+
+			auto const& item = insured[index];
+			return name_from(item.first_name, item.last_name, false);
+		}
 	}  // namespace
 
 	void InsuredEditPage::UI::setupPageUI(InsuredEditPage* page) {
@@ -125,6 +151,10 @@ namespace quick_dra::gui {
 			currentValue = acceptedValue = insured_or_empty(ref);
 			setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(name_from(ref.first_name, ref.last_name, false)));
 		}
+		ui.document.setBlockChecker(
+		    [insuredIndex = insuredIndex, &insured](std::string_view kind, std::string_view number) {
+			    return find_duplicate(kind, number, insuredIndex, insured);
+		    });
 		ui.each([&currentValue = currentValue](auto& item) { item.attach(currentValue); });
 	}
 

@@ -7,3 +7,5 @@ add_subdirectory(controls)
 add_subdirectory(pages)
 add_subdirectory(main)
 add_subdirectory(app)
+
+set_target_properties(utils gui controls pages main PROPERTIES FOLDER lib/gui)
