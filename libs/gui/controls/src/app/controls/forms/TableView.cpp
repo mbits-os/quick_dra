@@ -107,17 +107,35 @@ namespace quick_dra::gui {
 	                               std::string_view label,
 	                               QAbstractItemModel* model) {
 		parent = layout;
+
+		auto buttonLayout = new QHBoxLayout{};
+		buttonLayout->setContentsMargins(0, 0, 0, 0);
+		buttonLayout->setAlignment(Qt::AlignRight);
+
+		addButton = new QPushButton{parentWidget};
+		addButton->setText("Dodaj wpis");
+		addButton->setSizePolicy(FixedSize);
+		buttonLayout->addWidget(addButton);
+
+		removeButton = new QPushButton{parentWidget};
+		removeButton->setText("Usuń wpis");
+		removeButton->setSizePolicy(FixedSize);
+		buttonLayout->addWidget(removeButton);
+
+		layout->addRow(QString::fromUtf8(label), buttonLayout);
+
 		view = new QTreeView{parentWidget};
-		view->setSizePolicy(TakeWidth);
+		view->setSizePolicy(TakeAll);
 		view->setModel(model);
 		view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 		view->setRootIsDecorated(true);
 		view->setSortingEnabled(true);
 		view->setIndentation(0);
+		view->sortByColumn(0, Qt::AscendingOrder);
 
 		// QObject::connect(edit, &QLineEdit::textChanged, [self = this]() { self->textChanged(); });
 
-		layout->addRow(QString::fromUtf8(label), view);
+		layout->addRow("", view);
 	}
 
 	void ListViewBase::restyleField(bool) {}

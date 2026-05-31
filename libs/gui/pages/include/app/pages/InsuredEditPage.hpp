@@ -30,10 +30,14 @@ namespace quick_dra::gui {
 	public slots:
 		void updateCurrentValue();
 		void updateCurrentIsValid();
+		void removeEmploymentHistoryEntries();
+		void addNewEmploymentHistoryEntry();
 
 	private:
+		void storeNewHistory(std::vector<insured_type::history_type>&&);
 		void updateValue(QString const& value, std::string& target);
 		void restyleFields();
+
 		template <typename Suite>
 		Validation validate(std::string_view value) {
 			auto const length = Suite::length();

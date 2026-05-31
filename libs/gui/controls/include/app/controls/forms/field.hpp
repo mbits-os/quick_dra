@@ -98,6 +98,12 @@ namespace quick_dra::gui {
 	DECLARE_FIELD(EmploymentHistorySinceDeclaration, detail::NullValidator, insured_type::history_type, since) {
 		static constexpr auto label = "Początek"sv;
 		static constexpr auto error_message = ""sv;
+
+		/// returns next month
+		static year_month newRow() {
+			auto const today = get_today();
+			return today.year() / today.month() + months{1};
+		}
 	};
 
 	DECLARE_FIELD(EmploymentHistoryPartTimeScaleDeclaration,
@@ -106,11 +112,15 @@ namespace quick_dra::gui {
 	              part_time_scale) {
 		static constexpr auto label = "Część"sv;
 		static constexpr auto error_message = ""sv;
+
+		static constexpr ratio newRow() { return {1, 1}; }
 	};
 
 	DECLARE_FIELD(EmploymentHistorySalaryDeclaration, detail::NullValidator, insured_type::history_type, salary) {
 		static constexpr auto label = "Pensja"sv;
 		static constexpr auto error_message = ""sv;
+
+		static constexpr currency newRow() { return minimal_salary; }
 	};
 
 	template <typename Target>

@@ -8,6 +8,7 @@ set(SRCS
     include/app/pages/InsuredEditPage.hpp
     include/app/pages/PayerEditPage.hpp
     include/app/pages/PersonelPage.hpp
+    include/app/pages/RemoveHistoryPage.hpp
     include/app/pages/RemoveInsuredPage.hpp
     include/app/pages/ReportFormPage.hpp
     include/app/pages/ReportIdEditPage.hpp
@@ -15,6 +16,7 @@ set(SRCS
     src/app/pages/InsuredEditPage.cpp
     src/app/pages/PayerEditPage.cpp
     src/app/pages/PersonelPage.cpp
+    src/app/pages/RemoveHistoryPage.cpp
     src/app/pages/RemoveInsuredPage.cpp
     src/app/pages/ReportFormPage.cpp
     src/app/pages/ReportIdEditPage.cpp

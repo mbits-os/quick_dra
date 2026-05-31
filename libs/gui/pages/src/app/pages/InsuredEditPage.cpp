@@ -4,6 +4,7 @@
 #include <QEvent>
 #include <app/controls/PageScrollArea.hpp>
 #include <app/pages/InsuredEditPage.hpp>
+#include <app/pages/RemoveHistoryPage.hpp>
 #include <app/utils/forms.hpp>
 #include <quick_dra/lex/validators.hpp>
 
@@ -96,6 +97,10 @@ namespace quick_dra::gui {
 			item.addToLayout(self->pageParent, self->formLayout);
 			item.connectTo(page);
 		});
+		QObject::connect(history.removeButton, &QPushButton::clicked, page,
+		                 &InsuredEditPage::removeEmploymentHistoryEntries);
+		QObject::connect(history.addButton, &QPushButton::clicked, page,
+		                 &InsuredEditPage::addNewEmploymentHistoryEntry);
 	}
 
 	InsuredEditPage::InsuredEditPage(size_t index, QWidget* parent) : PagedWidget{parent}, insuredIndex{index} {
@@ -140,6 +145,25 @@ namespace quick_dra::gui {
 	void InsuredEditPage::updateCurrentIsValid() {
 		auto const valid = ui.logical_and([](auto& item) { return item.isValid(); });
 		setFormValid(valid);
+	}
+
+	void InsuredEditPage::removeEmploymentHistoryEntries() {
+		stack().push<RemoveHistoryPage>(currentValue.history,
+		                                [self = this](auto&& history) { self->storeNewHistory(std::move(history)); });
+	}
+
+	void InsuredEditPage::storeNewHistory(std::vector<insured_type::history_type>&& history) {
+		using Model = typename decltype(ui.history)::Model;
+		auto const model = static_cast<Model*>(ui.history.view->model());
+		model->replaceRows(std::move(history));
+		setFormDirty(currentValue != acceptedValue);
+	}
+
+	void InsuredEditPage::addNewEmploymentHistoryEntry() {
+		using Model = typename decltype(ui.history)::Model;
+		auto const model = static_cast<Model*>(ui.history.view->model());
+		model->addNewRow();
+		setFormDirty(currentValue != acceptedValue);
 	}
 
 	void InsuredEditPage::updateValue(QString const& value, std::string& target) {

@@ -46,10 +46,10 @@
       - [x] Edit all, but employment history
       - [x] Present employment history
       - [x] In-place edit of employment history
-      - [ ] Add employment
-      - [ ] Remove employment
+      - [x] Add employment
+      - [x] Remove employment
       - [ ] Block duplicates in history
-    - [ ] Edit insured list
+    - [x] Edit insured list
       - [x] Add insured
       - [x] Remove insured
     - [ ] Block duplicates in insured list
@@ -60,9 +60,10 @@
   - [x] Observe changes in current config file
   - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
   - [ ] Add tests
-  - [ ] Honor page minimum width
   - [ ] Bug tracking:
+    - [ ] Honor page minimum width
     - [ ] `Panel::setInfo` in full layout, `"label"` does not properly repositions itself
     - [ ] As used in `PersonelPage`, `Panel` lines are to fara away from each other
     - [ ] Do not allow duplicates in the insured
+    - [ ] Employment history needs to extends to the end of available space, or be optimized when page is too short
 - [ ] Automatic upload to ZUS ePłatnik

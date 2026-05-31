@@ -4,6 +4,7 @@
 #pragma once
 
 #include <QFormLayout>
+#include <QPushButton>
 #include <QTreeView>
 #include <app/controls/forms/field.hpp>
 #include <app/utils/forms.hpp>
@@ -32,6 +33,8 @@ namespace quick_dra::gui {
 	public:
 		QFormLayout* parent{};
 		QTreeView* view{};
+		QPushButton* addButton{};
+		QPushButton* removeButton{};
 		bool attaching : 1 = false;
 		bool dirty : 1 = false;
 	};
@@ -162,12 +165,30 @@ namespace quick_dra::gui {
 			this->endResetModel();
 		}
 
-		size_t dataRowCount() const override { return ref_ ? ref_->size() : 0; }
+		size_t dataRowCount() const { return ref_ ? ref_->size() : 0; }
 		size_t dataColumnCount() const override { return sizeof...(ItemDecls); }
 
-		QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override {
-			if (!index.isValid()) return {};
+		void addNewRow() {
+			typename value_type::value_type newRow{};
+			(setNewRowValue<ItemDecls>(newRow), ...);
+			auto index = static_cast<int>(dataRowCount());
+			this->beginInsertRows({}, index, index);
+			if (ref_) ref_->push_back(std::move(newRow));
+			this->endInsertRows();
+		}
 
+		template <typename Decl>
+		static void setNewRowValue(typename value_type::value_type& newRow) {
+			Decl::getField(newRow) = Decl::newRow();
+		}
+
+		void replaceRows(value_type&& rows) {
+			this->beginResetModel();
+			if (ref_) *ref_ = std::move(rows);
+			this->endResetModel();
+		}
+
+		QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override {
 			auto& item = (*ref_)[static_cast<std::size_t>(index.row())];
 			return selectColumn(
 			    index.column(),
