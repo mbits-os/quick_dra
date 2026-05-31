@@ -40,12 +40,9 @@
     - [ ] Phase 1: do not build app if `Qt6_DIR` is absent
     - [ ] Phase 2: install Qt6 on github runner
   - [ ] Version 1
-    - [ ] Support for editing of `~/.quick_dra.yaml`
+    - [x] Support for editing of `~/.quick_dra.yaml`
       - [x] Modify payer
-      - [ ] Modify insured
-        - [x] Block duplicates in insured list
-        - [x] Edit properties, add and remove employment history
-        - [ ] Block duplicates in history
+      - [x] Modify insured
       - [x] Edit insured list
     - [x] A button to save the XML
     - [x] Show filled-out RCA/DRA forms

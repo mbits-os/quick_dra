@@ -203,9 +203,26 @@ namespace quick_dra::gui {
 			auto const val = value.toString().toStdString();
 			return selectColumn(
 			    index.column(),
-			    [&item, &val, self = this]<Declaration ColumnDecl>(ColumnDecl) {
-				    if (detail::readEditValue(ColumnDecl::getField(item), val)) {
-					    // TODO: unique values as needed (e.g. year/month)
+			    [&item, &val, self = this,
+			     pos = static_cast<size_t>(index.column())]<Declaration ColumnDecl>(ColumnDecl) {
+				    typename ColumnDecl::value_type local{};
+				    if (detail::readEditValue(local, val)) {
+					    if constexpr (ColumnDecl::unique) {
+						    unsigned index = 0;
+						    for (auto& row : *self->ref_) {
+							    if (index == pos) {
+								    ++index;
+								    continue;
+							    }
+
+							    if (ColumnDecl::getField(row) == local) {
+								    return false;
+							    }
+
+							    ++index;
+						    }
+					    }
+					    ColumnDecl::getField(item) = std::move(local);
 					    self->valueChanged();
 					    return true;
 				    }

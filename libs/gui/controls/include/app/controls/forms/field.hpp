@@ -98,6 +98,7 @@ namespace quick_dra::gui {
 	DECLARE_FIELD(EmploymentHistorySinceDeclaration, detail::NullValidator, insured_type::history_type, since) {
 		static constexpr auto label = "Początek"sv;
 		static constexpr auto error_message = ""sv;
+		static constexpr auto unique = true;
 
 		/// returns next month
 		static year_month newRow() {
@@ -112,6 +113,7 @@ namespace quick_dra::gui {
 	              part_time_scale) {
 		static constexpr auto label = "Część"sv;
 		static constexpr auto error_message = ""sv;
+		static constexpr auto unique = false;
 
 		static constexpr ratio newRow() { return {1, 1}; }
 	};
@@ -119,6 +121,7 @@ namespace quick_dra::gui {
 	DECLARE_FIELD(EmploymentHistorySalaryDeclaration, detail::NullValidator, insured_type::history_type, salary) {
 		static constexpr auto label = "Pensja"sv;
 		static constexpr auto error_message = ""sv;
+		static constexpr auto unique = false;
 
 		static constexpr currency newRow() { return minimal_salary; }
 	};
