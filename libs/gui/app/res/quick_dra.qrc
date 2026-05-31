@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file alias="report_format.yaml">../../../../data/config/report_format.yaml</file>
         <file>icons/arrow_left.svg</file>
         <file>icons/arrow_right.svg</file>
         <file>icons/check.svg</file>

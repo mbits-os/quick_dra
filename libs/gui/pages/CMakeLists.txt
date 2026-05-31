@@ -5,7 +5,9 @@ qt_standard_project_setup()
 
 set(SRCS
     include/app/pages/HomePage.hpp
+    include/app/pages/ReportFormPage.hpp
     src/app/pages/HomePage.cpp
+    src/app/pages/ReportFormPage.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
