@@ -41,6 +41,7 @@ find_package(fmt REQUIRED)
 find_package(ryml REQUIRED)
 find_package(CURL REQUIRED)
 find_package(ctre REQUIRED)
+find_package(Qt6 COMPONENTS Core Widgets Gui Svg)
 
 if(UNIX)
   find_package(ICU COMPONENTS uc i18n REQUIRED)

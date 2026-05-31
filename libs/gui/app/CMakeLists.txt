@@ -7,7 +7,7 @@ qt_standard_project_setup()
 
 set(SRCS src/main.cpp)
 
-set(QRC_SRCS)
+set(QRC_SRCS res/quick_dra.qrc)
 
 if(WIN32)
     list(APPEND QRC_SRCS res/icon_win32.qrc)
