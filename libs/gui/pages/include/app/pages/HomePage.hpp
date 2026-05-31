@@ -35,6 +35,7 @@ namespace quick_dra::gui {
 		void showPersonelFilesAction();
 		void storeKeduXmlLocally();
 
+		void reportIdAccepted(int serial, QDate const& date, bool moved);
 		void reportIdChanged();
 		void formSetChanged();
 
