@@ -35,13 +35,6 @@ set_target_properties(qdra-gui PROPERTIES
     VS_DPI_AWARE ON
 )
 
-execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
-
-# Convert command output into a CMake list
-string(REGEX REPLACE ";" "\\\\;" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
-string(REGEX REPLACE "\n" ";" CMAKE_PROPERTY_LIST "${CMAKE_PROPERTY_LIST}")
-list(REMOVE_DUPLICATES CMAKE_PROPERTY_LIST)
-
 if(WIN32)
     get_target_property(Qt6_Core_Location Qt6::Core LOCATION)
     cmake_path(GET Qt6_Core_Location PARENT_PATH Qt6_Bin_Dir)

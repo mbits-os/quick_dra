@@ -4,7 +4,6 @@
 #pragma once
 
 #include <QFileSystemWatcher>
-#include <QFont>
 #include <QObject>
 #include <app/utils/FormData.hpp>
 
@@ -26,11 +25,11 @@ namespace quick_dra::gui {
 		bool configModified() const noexcept;
 
 		void setConfig(std::filesystem::path const&, std::optional<std::filesystem::path> const&);
-		void setIdentifier(ReportId const&);
 		FormData const& data() const noexcept { return data_; }
 		ReportId const& reportId() const noexcept { return reportId_; }
 
 		void reloadConfig();
+		void storeIdentifier(ReportId const&);
 		void storePayer(partial::payer_t const&);
 		void storeInsured(size_t index, partial::insured_t const&);
 		void removeInsured(std::vector<size_t> const& indexes);
@@ -43,7 +42,6 @@ namespace quick_dra::gui {
 
 	signals:
 		void configurationChanged();
-		void payerConfigurationChanged();
 		void identifierChanged();
 		void formSetChanged();
 		void configModifiedChanged(bool);

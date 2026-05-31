@@ -4,10 +4,7 @@
 #include <QSettings>
 #include <app/gui/Globals.hpp>
 #include <app/gui/PageStack.hpp>
-#include <print>
 #include <quick_dra/models/project_reader.hpp>
-#include <utility>
-#include <vector>
 
 namespace quick_dra::gui {
 	namespace {
@@ -43,7 +40,15 @@ namespace quick_dra::gui {
 		formSetChanged();
 	}
 
-	void Globals::setIdentifier(ReportId const& id) {
+	void Globals::reloadConfig() {
+		data_.loadConfig();
+		data_.prepareFormData(reportId_);
+		setConfigModified(false);
+		formSetChanged();
+		configurationChanged();
+	}
+
+	void Globals::storeIdentifier(ReportId const& id) {
 		if (reportId_ == id) return;
 		reportId_ = id;
 		storeSettings();
@@ -52,13 +57,6 @@ namespace quick_dra::gui {
 		identifierChanged();
 	}
 
-	void Globals::reloadConfig() {
-		data_.loadConfig();
-		data_.prepareFormData(reportId_);
-		setConfigModified(false);
-		formSetChanged();
-		configurationChanged();
-	}
 	void Globals::storePayer(partial::payer_t const& payer) {
 		data_.cfg.payer = payer;
 		data_.storeConfig();

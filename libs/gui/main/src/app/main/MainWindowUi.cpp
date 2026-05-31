@@ -42,17 +42,7 @@ namespace quick_dra::gui {
 
 		root.withLayout(verticalLayout)
 		    .createWidget(pageHeader, "pageHeader")
-		    .createWidget(stackedWidget, "stackedWidget",
-		                  []([[maybe_unused]] auto& stackedWidget) {
-#if 0
-			    auto pal = stackedWidget.palette();
-			    auto shadow = QColor(Qt::magenta);
-			    shadow.setAlpha(20);
-			    pal.setColor(QPalette::Window, shadow);
-			    stackedWidget.setPalette(pal);
-			    stackedWidget.setAutoFillBackground(true);
-#endif
-		                  })
+		    .createWidget(stackedWidget, "stackedWidget")
 		    .createWidget(messageBar, "messageBar", [](auto& wgt) {
 			    wgt.setSizePolicy(TakeWidth);
 			    wgt.setVisible(false);

@@ -1,9 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <fmt/format.h>
 #include <QAction>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -11,7 +9,6 @@
 #include <algorithm>
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageHeader.hpp>
-#include <app/gui/PagedWidget.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <array>
@@ -165,28 +162,10 @@ namespace quick_dra::gui {
 			return;
 		}
 
-#if 0
-		auto const s = this->size();
-		auto const lines = std::array{
-		    addAlpha(palette().color(QPalette::Midlight), 128),
-		    addAlpha(Qt::black, 41),
-		    addAlpha(Qt::black, 28),
-		    addAlpha(Qt::black, 19),
-		};
-		auto const width = static_cast<float>(s.width());
-		auto pos = static_cast<float>(s.height() - lines.size()) - .5f;
-		p.fillRect(QRectF{0.0f, 0.0f, width, pos + 1}, color);
-		for (auto const& lineColor : lines) {
-			p.setPen(lineColor);
-			++pos;
-			p.drawLine(QPointF{0.0f, pos}, QPointF{width, pos});
-		}
-#else
 		auto const s = this->size();
 		auto const width = static_cast<float>(s.width());
 		auto pos = static_cast<float>(s.height()) - .5f;
 		p.fillRect(QRectF{0.0f, 0.0f, width, pos + 1}, color);
-#endif
 	}
 
 	void PageHeader::setupUI() {

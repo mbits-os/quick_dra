@@ -43,9 +43,9 @@ namespace quick_dra::gui {
 		void setupUI();
 
 		void updateSummaryIdentifier();
-		QLabel* layoutFormReference(PanelButtonGroup* group,
-		                            FormData::FormRef const&,
-		                            std::function<void()> const& slot);
+		PanelButton* layoutFormReference(PanelButtonGroup* group,
+		                                 FormData::FormRef const&,
+		                                 std::function<void()> const& slot);
 		void pushFormView(size_t index);
 
 		PanelButtonGroup* summaryGroup{};

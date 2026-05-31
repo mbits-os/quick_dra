@@ -7,12 +7,6 @@
 #include <app/main/MainWindow.hpp>
 #include <app/main/options.hpp>
 
-#ifdef _WIN32
-#include <dwmapi.h>
-#include <windows.h>
-#pragma comment(lib, "dwmapi.lib")
-#endif
-
 namespace quick_dra {
 	int gui_tool(options const& opts) {
 		gui::Globals globals{};

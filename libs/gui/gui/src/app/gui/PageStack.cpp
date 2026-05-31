@@ -1,11 +1,9 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <app/gui/Globals.hpp>
 #include <app/gui/PageHeader.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/gui/PagedWidget.hpp>
-#include <quick_dra/models/project_reader.hpp>
 
 namespace quick_dra::gui {
 	namespace {

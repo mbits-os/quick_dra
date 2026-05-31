@@ -5,11 +5,6 @@
 #include <app/controls/PageScrollArea.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
-#include <map>
-#include <optional>
-#include <quick_dra/docs/xml.hpp>
-#include <sstream>
-#include <string>
 #include <utility>
 
 using namespace std::literals;

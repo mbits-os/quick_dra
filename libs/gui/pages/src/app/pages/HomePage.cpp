@@ -38,6 +38,42 @@ namespace quick_dra::gui {
 			return std::format("quick-dra_{}{:02}-{:02}.xml", static_cast<int>(date.year()),
 			                   static_cast<unsigned>(date.month()), report_index);
 		}
+
+		QString standardWritePath() {
+			QString directory{};
+			for (auto const loc : {
+			         QStandardPaths::DocumentsLocation,
+			         QStandardPaths::DownloadLocation,
+			         QStandardPaths::DesktopLocation,
+			     }) {
+				if (!directory.isEmpty()) {
+					break;
+				}
+				directory = QStandardPaths::writableLocation(loc);
+			}
+			return directory;
+		}
+
+		QString previousSaveDirectory() {
+			QSettings settings{};
+			settings.beginGroup("State");
+			auto const dirname = settings.value("SaveDirectory", "").toString();
+			settings.endGroup();
+			return !dirname.isEmpty() && QDir{dirname}.exists() ? dirname : QString{};
+		}
+
+		void storeSaveDirectory(QString const& dirname) {
+			QSettings settings{};
+			settings.beginGroup("State");
+			settings.setValue("SaveDirectory", dirname);
+			settings.endGroup();
+		}
+
+		QString writePath() {
+			auto result = previousSaveDirectory();
+			if (result.isEmpty()) result = standardWritePath();
+			return result;
+		}
 	}  // namespace
 
 	HomePage::HomePage(QWidget* parent) : PagedWidget(parent) { setupUI(); }
@@ -58,8 +94,9 @@ namespace quick_dra::gui {
 		        [self = this](PanelButtonGroup& group) {
 			        group.setSizePolicy(TakeWidth / HeightForWidth);
 
-			        self->summaryIdentifier = self->layoutFormReference(&group, {.label = "Identyfikator"s},
-			                                                            [self] { self->editReportIdAction(); });
+			        auto identifierButton = group.createWidget<Panel>([](Panel& panel) {
+				        panel.setInfo(QString::fromUtf8("Identyfikator"sv), {}, {}, arrowRightSVGIcon());
+			        });
 
 			        auto personelButton = group.createWidget<Panel>("personelButton", [](Panel& panel) {
 				        panel.setInfo("Dane osobowe", {}, {}, arrowRightSVGIcon());
@@ -70,10 +107,16 @@ namespace quick_dra::gui {
 			        auto uploadKeduButton = group.createWidget<Panel>("localStoreButton", [](Panel& panel) {
 				        panel.setInfo(QString::fromUtf16(u"Wyślij KEDU XML do e-ZUS"), {}, {}, ellipsisSVGIcon());
 			        });
+
+			        self->summaryIdentifier = static_cast<Panel*>(identifierButton->widget())->value();
+
+			        identifierButton->setClickable(true);
 			        personelButton->setClickable(true);
 			        localStoreButton->setClickable(true);
 			        uploadKeduButton->setClickable(true);
 			        uploadKeduButton->setEnabled(false);
+
+			        QObject::connect(identifierButton, &PanelButton::clicked, self, &HomePage::editReportIdAction);
 			        QObject::connect(personelButton, &PanelButton::clicked, self, &HomePage::showPersonelFilesAction);
 			        QObject::connect(localStoreButton, &PanelButton::clicked, self, &HomePage::storeKeduXmlLocally);
 		        })
@@ -96,42 +139,6 @@ namespace quick_dra::gui {
 
 	void HomePage::showPersonelFilesAction() { push<PersonelPage>(); }
 
-	QString standardWritePath() {
-		QString directory{};
-		for (auto const loc : {
-		         QStandardPaths::DocumentsLocation,
-		         QStandardPaths::DownloadLocation,
-		         QStandardPaths::DesktopLocation,
-		     }) {
-			if (!directory.isEmpty()) {
-				break;
-			}
-			directory = QStandardPaths::writableLocation(loc);
-		}
-		return directory;
-	}
-
-	QString previousSaveDirectory() {
-		QSettings settings{};
-		settings.beginGroup("State");
-		auto const dirname = settings.value("SaveDirectory", "").toString();
-		settings.endGroup();
-		return !dirname.isEmpty() && QDir{dirname}.exists() ? dirname : QString{};
-	}
-
-	void storeSaveDirectory(QString const& dirname) {
-		QSettings settings{};
-		settings.beginGroup("State");
-		settings.setValue("SaveDirectory", dirname);
-		settings.endGroup();
-	}
-
-	QString writePath() {
-		auto result = previousSaveDirectory();
-		if (result.isEmpty()) result = standardWritePath();
-		return result;
-	}
-
 	void HomePage::storeKeduXmlLocally() {
 		auto const& id = globals().reportId();
 		auto const input_path = QDir{writePath()}.filePath(QString::fromUtf8(setFilename(id.index, id.date)));
@@ -150,7 +157,7 @@ namespace quick_dra::gui {
 	void HomePage::reportIdAccepted(int serial, QDate const& date, bool moved) {
 		auto const ymd = year_month_day{date.toStdSysDays()};
 		auto const index = static_cast<unsigned>(std::min(std::max(serial, 1), 99));
-		globals().setIdentifier({
+		globals().storeIdentifier({
 		    .index = index,
 		    .date = ymd.year() / ymd.month(),
 		    .isOverriden = moved,
@@ -172,9 +179,9 @@ namespace quick_dra::gui {
 		updateSummaryIdentifier();
 	}
 
-	QLabel* HomePage::layoutFormReference(PanelButtonGroup* group,
-	                                      FormData::FormRef const& ref,
-	                                      std::function<void()> const& slot) {
+	PanelButton* HomePage::layoutFormReference(PanelButtonGroup* group,
+	                                           FormData::FormRef const& ref,
+	                                           std::function<void()> const& slot) {
 		auto button = group->createWidget<Panel>([&ref, hasSlot = !!slot](Panel& panel) {
 			panel.setInfo(QString::fromUtf8(ref.label), QString::fromUtf8(ref.comment), QString::fromUtf8(ref.value),
 			              hasSlot ? arrowRightSVGIcon() : QIcon{});
@@ -185,7 +192,7 @@ namespace quick_dra::gui {
 			QObject::connect(button, &PanelButton::clicked, [slot]() { slot(); });
 		}
 
-		return static_cast<Panel*>(button->widget())->value();
+		return button;
 	}
 
 	void HomePage::updateSummaryIdentifier() {

@@ -7,7 +7,6 @@
 #include <app/main/MainWindow.hpp>
 #include <app/pages/HomePage.hpp>
 #include <format>
-#include <print>
 #include <quick_dra/version.hpp>
 
 using namespace std::literals;

@@ -1,9 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <fmt/format.h>
 #include <QLabel>
-#include <QMetaMethod>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
@@ -15,9 +13,6 @@
 #include <app/utils/utils.hpp>
 #include <memory>
 #include <utility>
-
-#include <string_view>
-using namespace std::literals;
 
 namespace quick_dra::gui {
 	namespace {
