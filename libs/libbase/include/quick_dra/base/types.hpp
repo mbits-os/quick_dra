@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <charconv>
 #include <concepts>
+#include <format>
 #include <numeric>
 #include <optional>
 #include <quick_dra/base/chrono.hpp>
@@ -318,3 +319,45 @@ namespace fmt {
 		}
 	};
 }  // namespace fmt
+
+namespace std {
+	template <typename Tag, typename Type>
+	struct formatter<quick_dra::strong_typedef<Tag, Type>> : formatter<Type> {
+		template <typename FormatContext>
+		auto format(quick_dra::strong_typedef<Tag, Type> const& value, FormatContext& ctx) const {
+			return formatter<Type>::format(value.value, ctx);
+		}
+	};
+
+	template <typename Tag, intmax_t Den>
+	struct formatter<quick_dra::fixed_point<Tag, Den>> : formatter<double> {
+		template <typename FormatContext>
+		auto format(quick_dra::fixed_point<Tag, Den> const& fp, FormatContext& ctx) const {
+			auto hundredth = Den == 100 ? fp.value : fp.rounded_impl().value;
+			return formatter<double>::format(static_cast<double>(hundredth) / 100.0, ctx);
+		}
+	};
+
+	template <>
+	struct formatter<quick_dra::currency> : formatter<quick_dra::currency::base> {};
+
+	template <>
+	struct formatter<quick_dra::percent> : formatter<quick_dra::percent::base> {};
+
+	template <>
+	struct formatter<quick_dra::ratio> : formatter<std::string> {
+		template <typename FormatContext>
+		auto format(quick_dra::ratio const& value, FormatContext& ctx) const {
+			return formatter<std::string>::format(fmt::format("{}/{}", value.num, value.den), ctx);
+		}
+	};
+
+	template <>
+	struct formatter<quick_dra::insurance_title> : formatter<std::string> {
+		template <typename FormatContext>
+		auto format(quick_dra::insurance_title const& value, FormatContext& ctx) const {
+			return formatter<std::string>::format(
+			    fmt::format("{} {} {}", value.title_code, value.pension_right, value.disability_level), ctx);
+		}
+	};
+}  // namespace std

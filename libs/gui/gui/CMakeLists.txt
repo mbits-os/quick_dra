@@ -4,32 +4,36 @@
 qt_standard_project_setup()
 
 set(SRCS
-    include/app/main/MainWindow.hpp
-    include/app/main/options.hpp
-    src/app/main/gui_tool.cpp
-    src/app/main/MainWindow.cpp
-    src/app/main/MainWindowUi.cpp
-    src/app/main/options.cpp
+    include/app/gui/CurrentColor.hpp
+    include/app/gui/Globals.hpp
+    include/app/gui/PagedWidget.hpp
+    include/app/gui/PageHeader.hpp
+    include/app/gui/PageStack.hpp
+    src/app/gui/CurrentColor.cpp
+    src/app/gui/Globals.cpp
+    src/app/gui/PagedWidget.cpp
+    src/app/gui/PageHeader.cpp
+    src/app/gui/PageStack.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
 
-qt_add_library(main STATIC ${SRCS})
+qt_add_library(gui STATIC ${SRCS})
 
-target_compile_options(main PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
-target_link_options(main PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(main PUBLIC gui)
-target_include_directories(main
+target_compile_options(gui PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+target_link_options(gui PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+target_link_libraries(gui PUBLIC utils)
+target_include_directories(gui
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-set_target_properties(main PROPERTIES FOLDER lib)
+set_target_properties(gui PROPERTIES FOLDER lib)
 
 # #################################################################
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS main COMPONENT libraries)
+    install(TARGETS gui COMPONENT libraries)
 
     install(
         DIRECTORY include/
@@ -49,6 +53,6 @@ if(QUICK_DRA_TESTING)
         ${FULL_TEST_SRCS}
     )
 
-    add_project_test(main ${FULL_TEST_SRCS})
-    target_link_libraries(main-test PUBLIC GTest::gmock_main main)
+    add_project_test(gui ${FULL_TEST_SRCS})
+    target_link_libraries(gui-test PUBLIC GTest::gmock_main gui)
 endif()
