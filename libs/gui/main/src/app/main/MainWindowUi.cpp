@@ -1,7 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <QPushButton>
 #include <app/main/MainWindow.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
@@ -21,6 +20,7 @@ namespace quick_dra::gui {
 
 	void MainWindow::setupUi() {
 		if (objectName().isEmpty()) setObjectName("MainWindow");
+		restorePosition();
 		LaidOut{this}.createWidget(centralWidget, "centralWidget");
 
 		HeaderShadow* shadow{};
@@ -37,16 +37,7 @@ namespace quick_dra::gui {
 
 		root.withLayout(verticalLayout)
 		    .createWidget(pageHeader, "pageHeader")
-		    .createWidget(stackedWidget, "stackedWidget", []([[maybe_unused]] auto& stackedWidget) {
-#if 0
-			    auto pal = stackedWidget.palette();
-			    auto shadow = QColor(Qt::magenta);
-			    shadow.setAlpha(20);
-			    pal.setColor(QPalette::Window, shadow);
-			    stackedWidget.setPalette(pal);
-			    stackedWidget.setAutoFillBackground(true);
-#endif
-		    });
+		    .createWidget(stackedWidget, "stackedWidget");
 
 		setCentralWidget(centralWidget);
 		shadow->raise();

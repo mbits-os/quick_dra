@@ -3,10 +3,8 @@
 
 #pragma once
 
-#include <QFont>
 #include <QObject>
 #include <QStackedWidget>
-#include <app/utils/FormData.hpp>
 #include <memory>
 #include <utility>
 

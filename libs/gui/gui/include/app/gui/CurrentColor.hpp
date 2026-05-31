@@ -3,10 +3,7 @@
 
 #pragma once
 
-#include <QColor>
 #include <QIcon>
-#include <QString>
-#include <memory>
 
 namespace quick_dra::gui {
 	QIcon arrowLeftSVGIcon();

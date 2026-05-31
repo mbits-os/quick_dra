@@ -1,9 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <fmt/format.h>
 #include <QAction>
-#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -11,7 +9,6 @@
 #include <algorithm>
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageHeader.hpp>
-#include <app/gui/PagedWidget.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <array>

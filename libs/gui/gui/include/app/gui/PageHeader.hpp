@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <QFont>
 #include <QLabel>
 #include <QToolBar>
 #include <QWidget>
