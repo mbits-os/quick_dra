@@ -157,6 +157,9 @@ namespace quick_dra::gui {
 		std::map<QString, std::shared_ptr<SVGIconEngine::SharedState>> loadedIcons{};
 	};
 
+	QIcon arrowRightSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/arrow_right.svg"); }
 	QIcon arrowLeftSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/arrow_left.svg"); }
+	QIcon ellipsisSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/ellipsis.svg"); }
 	QIcon checkSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/check.svg"); }
+	QIcon nullSVGIcon() { return IconCache::instance().currentColorIcon(":/icons/null.svg"); }
 };  // namespace quick_dra::gui

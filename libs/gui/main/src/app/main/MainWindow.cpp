@@ -6,6 +6,7 @@
 #include <app/gui/Globals.hpp>
 #include <app/gui/PagedWidget.hpp>
 #include <app/main/MainWindow.hpp>
+#include <app/pages/HomePage.hpp>
 #include <format>
 #include <quick_dra/version.hpp>
 
@@ -16,6 +17,7 @@ namespace quick_dra::gui {
 		setupUi();
 		setWindowTitle(QString::fromStdString(std::format("{} {}", version::program, version::ui)));
 		globals->setStack(pageStack);
+		pageStack->push<HomePage>();
 
 		QObject::connect(globals, &Globals::configModifiedChanged, messageBar, &QWidget::setVisible);
 	}

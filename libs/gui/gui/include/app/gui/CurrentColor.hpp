@@ -6,6 +6,9 @@
 #include <QIcon>
 
 namespace quick_dra::gui {
+	QIcon arrowRightSVGIcon();
 	QIcon arrowLeftSVGIcon();
+	QIcon ellipsisSVGIcon();
 	QIcon checkSVGIcon();
+	QIcon nullSVGIcon();
 };  // namespace quick_dra::gui
