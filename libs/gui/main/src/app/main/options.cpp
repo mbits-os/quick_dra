@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 #include <app/main/options.hpp>
+#include <cstdio>
 #include <map>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/base/str.hpp>

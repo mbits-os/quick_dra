@@ -3,6 +3,8 @@
 
 #include <app/controls/forms/DocumentComboBoxBase.hpp>
 #include <format>
+#include <string>
+#include <utility>
 
 namespace quick_dra::gui {
 	DocumentComboBoxBase::DocumentComboBoxBase() = default;

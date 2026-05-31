@@ -21,8 +21,10 @@
 #include <quick_dra/io/tax_config.hpp>
 #include <quick_dra/models/project_reader.hpp>
 #include <quick_dra/version.hpp>
+#include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 using namespace std::literals;
 

@@ -4,8 +4,11 @@
 #pragma once
 
 #include <app/controls/forms/base.hpp>
+#include <limits>
 #include <quick_dra/lex/validators.hpp>
 #include <quick_dra/models/types.hpp>
+#include <string>
+#include <vector>
 
 namespace quick_dra::gui {
 	namespace detail {

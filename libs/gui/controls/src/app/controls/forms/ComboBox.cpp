@@ -4,6 +4,7 @@
 #include <app/controls/forms/ComboBox.hpp>
 #include <format>
 #include <quick_dra/base/str.hpp>
+#include <string>
 
 namespace quick_dra::gui {
 	ComboBoxBase::ComboBoxBase() = default;

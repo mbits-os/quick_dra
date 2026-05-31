@@ -6,6 +6,7 @@
 #include <app/pages/PayerEditPage.hpp>
 #include <app/utils/forms.hpp>
 #include <quick_dra/lex/validators.hpp>
+#include <string>
 
 namespace quick_dra::gui {
 	namespace {

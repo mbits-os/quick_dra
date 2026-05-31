@@ -6,11 +6,13 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QTreeView>
+#include <algorithm>
 #include <app/controls/forms/field.hpp>
 #include <app/utils/forms.hpp>
 #include <string_view>
 #include <utility>
 #include <variant>
+#include <vector>
 
 namespace quick_dra::gui {
 	class ListViewBase : public QObject {

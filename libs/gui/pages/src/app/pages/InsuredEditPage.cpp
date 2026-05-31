@@ -2,11 +2,16 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <QEvent>
+#include <algorithm>
 #include <app/controls/PageScrollArea.hpp>
 #include <app/pages/InsuredEditPage.hpp>
 #include <app/pages/RemoveHistoryPage.hpp>
 #include <app/utils/forms.hpp>
+#include <map>
 #include <quick_dra/lex/validators.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace quick_dra::gui {
 	namespace {

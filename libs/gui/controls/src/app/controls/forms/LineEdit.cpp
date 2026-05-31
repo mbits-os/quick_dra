@@ -6,6 +6,7 @@
 #include <app/controls/forms/LineEdit.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/utils/utils.hpp>
+#include <string>
 
 namespace quick_dra::gui {
 	LineEditBase::LineEditBase() {}
@@ -67,7 +68,7 @@ namespace quick_dra::gui {
 				break;
 			default:
 				break;
-		};
+		}
 		edit->setToolTip(QString::fromUtf8(message));
 		errorLabel->setText(QString::fromUtf8(message));
 		parent->setRowVisible(error, !message.empty());

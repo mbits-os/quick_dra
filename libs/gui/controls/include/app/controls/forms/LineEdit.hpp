@@ -10,6 +10,8 @@
 #include <QWidget>
 #include <app/controls/forms/base.hpp>
 #include <quick_dra/models/types.hpp>
+#include <string>
+#include <utility>
 
 namespace quick_dra::gui {
 	class LineEditBase : public QObject {

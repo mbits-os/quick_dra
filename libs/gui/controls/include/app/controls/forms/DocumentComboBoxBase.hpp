@@ -8,6 +8,9 @@
 #include <app/controls/forms/base.hpp>
 #include <app/controls/forms/field.hpp>
 #include <functional>
+#include <string>
+#include <tuple>
+#include <utility>
 
 namespace quick_dra::gui {
 	class DocumentComboBoxBase : QObject {

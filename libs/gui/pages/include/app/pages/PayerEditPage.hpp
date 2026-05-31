@@ -14,6 +14,8 @@
 #include <app/utils/utils.hpp>
 #include <quick_dra/lex/validators.hpp>
 #include <quick_dra/models/types.hpp>
+#include <string>
+#include <utility>
 
 namespace quick_dra::gui {
 	class PayerEditPage : public PagedWidget {
