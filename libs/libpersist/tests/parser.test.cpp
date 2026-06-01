@@ -28,6 +28,22 @@ namespace yaml::testing {
 		}
 	};
 
+	enum class numbers {
+		one,
+		two,
+		three,
+	};
+
+	using yaml::enum_tag;
+
+	auto const& enums(numbers) noexcept {
+		static constexpr auto names = std::array{
+		    enum_tag{.id = "one"sv, .value = numbers::one},
+		    enum_tag{.id = "two"sv, .value = numbers::two},
+		    enum_tag{.id = "three"sv, .value = numbers::three},
+		};
+		return names;
+	}
 }  // namespace yaml::testing
 
 namespace fmt {
@@ -36,6 +52,22 @@ namespace fmt {
 		template <typename FormatContext>
 		auto format(yaml::testing::test_struct<T> const& value, FormatContext& ctx) const {
 			return formatter<std::string>::format(fmt::format("{{.child={}}}", value.child), ctx);
+		}
+	};
+	template <>
+	struct formatter<yaml::testing::numbers> : formatter<std::string_view> {
+		template <typename FormatContext>
+		auto format(yaml::testing::numbers value, FormatContext& ctx) const {
+			using enum yaml::testing::numbers;
+			switch (value) {
+				case one:
+					return formatter<std::string_view>::format("numbers::one", ctx);
+				case two:
+					return formatter<std::string_view>::format("numbers::two", ctx);
+				case three:
+					return formatter<std::string_view>::format("numbers::three", ctx);
+			}
+			return formatter<std::string_view>::format(fmt::format("numbers{{{}}}", std::to_underlying(value)), ctx);
 		}
 	};
 }  // namespace fmt
@@ -211,5 +243,27 @@ namespace yaml::testing {
 		auto const path = std::filesystem::current_path() / "data"sv / "test"sv / "parser.test.yml"sv;
 		using strings = test_struct<std::vector<std::string>>;
 		test_payload_file<strings>(path, "example file not found\n"sv);
+	}
+
+	TEST(yaml, map_of_enums) {
+		auto const exp = std::map<std::string, numbers>{
+		    {"key1"s, numbers::one},
+		    {"key2"s, numbers::three},
+		};
+		test_payload(
+		    "key1: one\n"
+		    "key2: three\n"
+		    ""sv,
+		    ""sv, std::optional{exp});
+	}
+
+	TEST(yaml, map_of_enums_error) {
+		test_payload<std::map<std::string, numbers>>(
+		    "key1: one\n"
+		    "key2: three\n"
+		    "key3: seven\n"
+		    ""sv,
+		    "input:3:1: error: unknown value, `seven`\n"
+		    ""sv);
 	}
 }  // namespace yaml::testing
