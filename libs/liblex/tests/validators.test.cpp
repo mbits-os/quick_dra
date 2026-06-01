@@ -92,6 +92,11 @@ namespace quick_dra::testing {
 			auto actual = ValidatorSuite::is_valid(id);
 			auto expected = checksum != kInvalidChecksum;
 			ASSERT_EQ(actual, expected);
+			if (actual) {
+				ASSERT_EQ(id.size(), ValidatorSuite::length());
+				ASSERT_EQ(id.size(), ValidatorSuite::min_length());
+				ASSERT_EQ(id.size(), ValidatorSuite::max_length());
+			}
 		}
 	};
 

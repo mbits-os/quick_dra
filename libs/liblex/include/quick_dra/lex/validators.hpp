@@ -34,9 +34,9 @@ namespace quick_dra {
 		};
 
 		template <typename impl>
-		struct minmax : impl {
-			static size_t min_length() noexcept { return minmax::length(); }
-			static size_t max_length() noexcept { return minmax::length(); }
+		struct minmax_on_const_length : impl {
+			static size_t min_length() noexcept { return minmax_on_const_length::length(); }
+			static size_t max_length() noexcept { return minmax_on_const_length::length(); }
 		};
 
 		bool checksum_digit_is_valid(unsigned short checksum, char tested) noexcept;
@@ -64,8 +64,8 @@ namespace quick_dra {
 	};  // namespace detail
 
 	template <typename ChecksumPolicy, typename SelectorPolicy, typename ComparePolicy = detail::checksum_is_a_digit>
-	struct validator_suite : detail::minmax<ChecksumPolicy>, SelectorPolicy, ComparePolicy {
-		using checksum_t = detail::minmax<ChecksumPolicy>;
+	struct validator_suite : detail::minmax_on_const_length<ChecksumPolicy>, SelectorPolicy, ComparePolicy {
+		using checksum_t = detail::minmax_on_const_length<ChecksumPolicy>;
 		using compare_t = ComparePolicy;
 		using selector_t = SelectorPolicy;
 
