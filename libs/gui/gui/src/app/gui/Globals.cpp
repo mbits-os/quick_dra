@@ -5,6 +5,8 @@
 #include <app/gui/Globals.hpp>
 #include <app/gui/PageStack.hpp>
 #include <quick_dra/models/project_reader.hpp>
+#include <utility>
+#include <vector>
 
 namespace quick_dra::gui {
 	namespace {
