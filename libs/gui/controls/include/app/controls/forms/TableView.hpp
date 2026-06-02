@@ -107,9 +107,9 @@ namespace quick_dra::gui {
 	template <typename... T>
 	struct Types {
 		template <typename Cb, typename Fallback>
-		    requires(
-		        std::same_as<decltype(std::declval<Fallback>()()), decltype(std::declval<Cb>()(std::declval<T>()))> &&
-		        ...)
+		    requires(std::same_as<decltype(std::declval<Fallback>()()),
+		                          decltype(std::declval<Cb>()(std::declval<T>()))> &&
+		             ...)
 		static auto select(int index, Cb&& cb, Fallback&& fallback) -> decltype(auto) {
 			static constexpr auto VariadicSize = static_cast<int>(sizeof...(T));
 			if (index < VariadicSize) {
