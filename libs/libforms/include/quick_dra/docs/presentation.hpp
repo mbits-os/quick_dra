@@ -61,13 +61,13 @@ namespace quick_dra {
 			static quick_dra::alignement default_alignment_for(percent) { return quick_dra::alignement::right; }
 			static quick_dra::alignement default_alignment_for(currency) { return quick_dra::alignement::right; }
 			static quick_dra::alignement default_alignment_for(uint_value) { return quick_dra::alignement::right; }
-			static quick_dra::alignement default_alignment_for(year_month const&) {
+			static quick_dra::alignement default_alignment_for(std::chrono::year_month) {
 				return quick_dra::alignement::right;
 			}
-			static quick_dra::alignement default_alignment_for(year_month_day const&) {
+			static quick_dra::alignement default_alignment_for(std::chrono::year_month_day) {
 				return quick_dra::alignement::right;
 			}
-			static quick_dra::alignement default_alignment_for(auto&&) { return quick_dra::alignement::left; }
+			static quick_dra::alignement default_alignment_for(auto const&) { return quick_dra::alignement::left; }
 			static quick_dra::alignement default_alignment_for(calculated_value const& value) {
 				return std::visit([](auto&& val) { return default_alignment_for(val); }, value);
 			}
@@ -82,7 +82,7 @@ namespace quick_dra {
 		struct ref {
 			std::string section{};
 			std::string block{};
-			unsigned field;
+			unsigned field{};
 
 			std::string title_chunk_from(calculated_block const& form_block) const;
 			std::string get_chunk(std::vector<calculated_section> const& form) const;
