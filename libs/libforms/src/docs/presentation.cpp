@@ -241,12 +241,13 @@ namespace quick_dra::report_format {
 					if (!data.empty()) data += hint.sep;
 					data += item;
 				}
+				auto const alignment = hint.alignment_.value_or(alignement::left);
 				report.add(section,
 				           {
 				               .number = pos,
 				               .formatted = std::move(data),
 				               .label = label_it != labels.end() ? label_it->second : ""s,
-				               .alignement = hint.alignment_.value_or(alignement::left),
+				               .alignement = alignment,
 				           },
 				           labels);
 			}
@@ -276,7 +277,7 @@ namespace quick_dra::report_format {
 			visit_section(section, report);
 		}
 		return report;
-	}
+	}  // GCOV_EXCL_LINE[GCC]
 
 	std::map<std::string, formatting> formatting::parse(std::string const& text, std::string const& path) {
 		auto split = yaml::parser::parse_yaml_text<yaml_shape>(text, path);
