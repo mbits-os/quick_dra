@@ -10,15 +10,6 @@
 using namespace std::literals;
 
 namespace quick_dra::gui {
-	namespace {
-		auto withCssMargins(int top = 0, int right = -1, int bottom = -1, int left = -1) {
-			if (right < 0) right = top;
-			if (bottom < 0) bottom = top;
-			if (left < 0) left = right;
-			return [top, right, bottom, left](QLayout& layout) { layout.setContentsMargins(left, top, right, bottom); };
-		}
-	}  // namespace
-
 	void MainWindow::setupUi() {
 		if (objectName().isEmpty()) setObjectName("MainWindow");
 		restorePosition();
