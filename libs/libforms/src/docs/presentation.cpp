@@ -162,13 +162,13 @@ namespace quick_dra::report_format {
 				if (sec_it->blocks.size() == 1) {
 					return title_chunk_from(sec_it->blocks.front());
 				}
-			} else {
+			} else {  // GCOV_EXCL_LINE[WIN32]
 				auto block_it = std::find_if(sec_it->blocks.begin(), sec_it->blocks.end(),
 				                             [self = this](auto const& blk) { return self->block == blk.id; });
 				if (block_it != sec_it->blocks.end()) {
 					return title_chunk_from(*block_it);
 				}
-			}
+			}  // GCOV_EXCL_LINE[WIN32]
 		}
 
 		return "?"s;
@@ -217,10 +217,11 @@ namespace quick_dra::report_format {
 
 			auto value = std::get_if<calculated_value>(&field);
 			if (value) {
+				auto data = std::visit(value_printer{}, *value);
 				report.add(section,
 				           {
 				               .number = pos,
-				               .formatted = std::visit(value_printer{}, *value),
+				               .formatted = std::move(data),
 				               .label = label_it != labels.end() ? label_it->second : ""s,
 				               .alignement = hint.alignment_for(*value),
 				           },
