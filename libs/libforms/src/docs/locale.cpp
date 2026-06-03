@@ -4,6 +4,7 @@
 #include <array>
 #include <format>
 #include <quick_dra/docs/locale.hpp>
+#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -40,7 +41,7 @@ using namespace std::literals;
 #define NO_COMMAS_3(A1, A2, A3, A4) A1 A2 A3
 #define NO_COMMAS_4(A1, A2, A3, A4) A1 A2 A3 A4
 #define NO_COMMAS(A1, A2, A3, A4, SIZE, ...) NO_COMMAS_##SIZE(A1, A2, A3, A4)
-#define VFORMAT(...) NO_COMMAS(__VA_ARGS__ __VA_OPT__(, ) 4, 3, 2, 1, 0, 0) ""sv,
+#define VFORMAT(...) NO_COMMAS(__VA_ARGS__, 4, 3, 2, 1, 0, 0) ""sv,
 
 namespace quick_dra::locale {
 	namespace {

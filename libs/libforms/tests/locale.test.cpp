@@ -1,8 +1,8 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <fmt/format.h>
 #include <gtest/gtest.h>
-#include <print>
 #include <quick_dra/docs/locale.hpp>
 #include <string>
 #include <string_view>
@@ -72,7 +72,7 @@ namespace quick_dra::locale::testing {
 		for (auto const& test : decorator_tests) {
 			test.run();
 			if (::testing::Test::HasFailure()) {
-				std::print("{} | {} | {}\n", test.cs_precedes ? "¤ < {num}" : "{num} > ¤",
+				fmt::print("{} | {} | {}\n", test.cs_precedes ? "¤ < {num}" : "{num} > ¤",
 				           test.sep_by_space ? "S" : "-", test.sign_pos);
 			}
 			if (::testing::Test::HasFatalFailure()) break;
