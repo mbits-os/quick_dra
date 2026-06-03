@@ -32,7 +32,7 @@ namespace quick_dra::locale {
 			if (use_parens) {
 				if (was_neg) {
 					return std::format("({})", decorate_number(symbol, space, ""sv, value, false, false, format_index));
-				} else {
+				} else {  // GCOV_EXCL_LINE[WIN32]
 					return decorate_number(symbol, space, ""sv, value, false, false, format_index);
 				}
 			}
