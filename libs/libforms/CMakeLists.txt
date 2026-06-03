@@ -4,6 +4,7 @@
 set(SRCS
     include/quick_dra/docs/file_set.hpp
     include/quick_dra/docs/forms.hpp
+    include/quick_dra/docs/locale.hpp
     include/quick_dra/docs/presentation.hpp
     include/quick_dra/docs/summary.hpp
     include/quick_dra/docs/xml_builder.hpp
@@ -13,6 +14,7 @@ set(SRCS
     include/quick_dra/io/tax_config.hpp
     src/docs/file_set.cpp
     src/docs/forms.cpp
+    src/docs/locale.cpp
     src/docs/presentation.cpp
     src/docs/summary.cpp
     src/docs/xml_builder.cpp

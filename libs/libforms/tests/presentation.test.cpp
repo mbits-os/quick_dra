@@ -8,6 +8,8 @@
 #include <string>
 #include <string_view>
 
+#define NBSP "\xC2\xA0"
+
 using namespace std::literals;
 using namespace std::chrono;
 
@@ -265,18 +267,18 @@ labels:
 		    {.number = 2, .formatted = "10-2026"s, .label = "Field"s},
 		    {.number = 3, .formatted = "title1"s, .alignement = alignement::right},
 		    {.number = 4, .formatted = "title2"s, .alignement = alignement::right},
-		    {.number = 6, .formatted = "1.67%"s, .alignement = alignement::right},
-		    {.number = 7, .formatted = "3.15 zł | word | 15.00%"s, .label = "Field"s},
-		    {.number = 8, .formatted = "10000.00 zł"s, .alignement = alignement::right},
+		    {.number = 6, .formatted = "1,67%"s, .alignement = alignement::right},
+		    {.number = 7, .formatted = "3,15" NBSP "zł | word | 15,00%"s, .label = "Field"s},
+		    {.number = 8, .formatted = "10" NBSP "000,00" NBSP "zł"s, .alignement = alignement::right},
 		};
 		std::vector<data_field> fields_SEG2_B{
-		    {.number = 1, .formatted = "123.00 zł"s, .alignement = alignement::right},
-		    {.number = 2, .formatted = "23.45%"s, .alignement = alignement::right},
+		    {.number = 1, .formatted = "123,00" NBSP "zł"s, .alignement = alignement::right},
+		    {.number = 2, .formatted = "23,45%"s, .alignement = alignement::right},
 		    {.number = 3, .formatted = "words"s},
 		    {.number = 4, .formatted = "12-1998"s, .alignement = alignement::right},
 		    {.number = 5, .formatted = "42"s, .alignement = alignement::right},
 		    {.number = 6, .formatted = "03-05-1997"s, .alignement = alignement::right},
-		    {.number = 7, .formatted = "3.15 zł/15.00%/42"s},
+		    {.number = 7, .formatted = "3,15" NBSP "zł/15,00%/42"s},
 		    {.number = 8},
 		};
 
@@ -328,7 +330,7 @@ labels:
 		};
 		auto const actual = report_format::formatting::format_report(mapping, "D"s, form);
 
-		EXPECT_EQ(actual.title, "D (?0.00 zł/?, ?)"sv);
+		EXPECT_EQ(actual.title, "D (?0,00" NBSP "zł/?, ?)"sv);
 		EXPECT_EQ(actual.order, (std::vector{"I"s, "II"s}));
 	}
 }  // namespace quick_dra::testing

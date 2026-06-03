@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <array>
 #include <map>
+#include <quick_dra/docs/locale.hpp>
 #include <quick_dra/docs/presentation.hpp>
 #include <string>
 #include <utility>
@@ -25,6 +26,17 @@ namespace quick_dra {
 }  // namespace quick_dra
 
 namespace quick_dra::report_format {
+	namespace {
+		static constexpr auto pl_grouping = locale::number_grouping{
+		    .decimal_point = ","sv,
+		    .group_separator = locale::nbsp,
+		    .grouping = "\003"sv,
+		};
+
+		static auto const pln_formatter = locale::formatter::PLN_with(pl_grouping);
+		static auto const percent_formatter = locale::formatter::percent_with(pl_grouping);
+	}  // namespace
+
 	using yaml::read_key;
 	using yaml::read_value;
 
@@ -44,8 +56,8 @@ namespace quick_dra::report_format {
 		std::string operator()(std::monostate) const noexcept { return {}; }
 		// GCOV_EXCL_STOP
 		std::string operator()(std::string const& str) const noexcept { return str; }
-		std::string operator()(currency const& value) const noexcept { return fmt::format("{:.2f} zł", value); }
-		std::string operator()(percent const& value) const noexcept { return fmt::format("{:.2f}%", value); }
+		std::string operator()(currency const& value) const noexcept { return pln_formatter.format(value); }
+		std::string operator()(percent const& value) const noexcept { return percent_formatter.format(value); }
 		std::string operator()(uint_value const& value) const noexcept { return fmt::format("{}", value); }
 		std::string operator()(year_month const& var) const {
 			return fmt::format("{:02}-{:04}", static_cast<unsigned>(var.month()), static_cast<int>(var.year()));
@@ -110,35 +122,6 @@ namespace quick_dra::report_format {
 		if (!read_key(ref, "labels", ctx.labels, true)) return ref.error("while reading `labels'");
 		return true;
 	}
-
-#if 0
-	bool read_value(yaml::ref_ctx const& ref, formatting& ctx) {
-		if (!ref.ref().is_map()) {
-			return ref.error("expecting a map"sv);
-		}
-
-		for (auto const& child : ref.ref()) {
-			auto const child_var = ref.from(child);
-
-			if (!child.has_key()) {
-				// GCOV_EXCL_START
-				return child_var.error("expecting a map member");
-			}  // GCOV_EXCL_STOP
-
-			std::string key;
-			if (!convert_string(child_var, child.key(), key)) return false;
-
-			if (key == "_title"sv) {
-				if (!read_value(child_var, ctx.title)) return false;
-				continue;
-			}
-
-			auto& sub = ctx.hints[std::move(key)];
-			if (!read_value(child_var, sub)) return false;
-		}
-		return true;
-	}
-#endif
 
 	std::string ref::title_chunk_from(calculated_block const& form_block) const {
 		auto const& fields = form_block.fields;

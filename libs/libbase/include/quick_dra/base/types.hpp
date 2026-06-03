@@ -329,21 +329,6 @@ namespace std {
 		}
 	};
 
-	template <typename Tag, intmax_t Den>
-	struct formatter<quick_dra::fixed_point<Tag, Den>> : formatter<double> {
-		template <typename FormatContext>
-		auto format(quick_dra::fixed_point<Tag, Den> const& fp, FormatContext& ctx) const {
-			auto hundredth = Den == 100 ? fp.value : fp.rounded_impl().value;
-			return formatter<double>::format(static_cast<double>(hundredth) / 100.0, ctx);
-		}
-	};
-
-	template <>
-	struct formatter<quick_dra::currency> : formatter<quick_dra::currency::base> {};
-
-	template <>
-	struct formatter<quick_dra::percent> : formatter<quick_dra::percent::base> {};
-
 	template <>
 	struct formatter<quick_dra::ratio> : formatter<std::string> {
 		template <typename FormatContext>
