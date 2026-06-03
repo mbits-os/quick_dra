@@ -9,6 +9,7 @@
 #include <map>
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/docs/file_set.hpp>
+#include <quick_dra/docs/locale.hpp>
 #include <quick_dra/docs/xml.hpp>
 #include <quick_dra/docs/xml_builder.hpp>
 #include <quick_dra/io/tax_config.hpp>
@@ -84,7 +85,7 @@ namespace quick_dra::gui {
 			};
 		}
 		std::string currency_info(std::string_view label, currency value) {
-			return info_span(label, std::format("{:.2f} zł", value));
+			return info_span(label, locale::from_system(value));
 		}
 	}  // namespace
 
@@ -162,7 +163,7 @@ namespace quick_dra::gui {
 			summary.push_back({
 			    .index = index - 1,
 			    .label = std::format("{}, {}", last_name, first_name),
-			    .value = std::format("{:.2f} zł", net_salary),
+			    .value = locale::from_system(net_salary),
 			    .comment =
 			        second_line(currency_info("społeczne"sv, insurance_total - health_contribution),
 			                    currency_info("zdrowotne", health_contribution), currency_info("podatek", tax_total)),
@@ -178,12 +179,12 @@ namespace quick_dra::gui {
 			summary.push_back({
 			    .index = index - 1,
 			    .label = "Dla ZUS"s,
-			    .value = std::format("{:.2f} zł", insurance_total),
+			    .value = locale::from_system(insurance_total),
 			});
 			summary.push_back({
 			    .index = InvalidIndex,
 			    .label = "Dla Urzędu Skarbowego"s,
-			    .value = std::format("{:.2f} zł", tax_total),
+			    .value = locale::from_system(tax_total),
 			});
 		}
 	}

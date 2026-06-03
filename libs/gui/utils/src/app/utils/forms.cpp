@@ -7,6 +7,7 @@
 #include <numeric>
 #include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/str.hpp>
+#include <quick_dra/docs/locale.hpp>
 #include <string>
 #include <string_view>
 
@@ -80,11 +81,12 @@ namespace quick_dra::gui {
 
 		if (salary) {
 			auto const full = *salary;
-			return simple
-			           ? info_span(salary_label, std::format("{} zł", full))
-			           : info_span(salary_label, std::format("{} zł ({} z {} zł)",
-			                                                 calc_currency{(full.calc().value * num) / den}.rounded(),
-			                                                 ratio_from(num, den), full));
+			return simple ? info_span(salary_label, locale::from_system(full))
+			              : info_span(salary_label,
+			                          std::format(
+			                              "{} ({} z {})",
+			                              locale::from_system(calc_currency{(full.calc().value * num) / den}.rounded()),
+			                              ratio_from(num, den), locale::from_system(full)));
 		}
 
 		std::string since{};

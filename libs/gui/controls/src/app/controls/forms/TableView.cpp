@@ -9,6 +9,7 @@
 #include <app/utils/utils.hpp>
 #include <format>
 #include <quick_dra/base/str.hpp>
+#include <quick_dra/docs/locale.hpp>
 #include <quick_dra/models/project_reader.hpp>
 #include <string>
 
@@ -42,8 +43,7 @@ namespace quick_dra::gui {
 
 		QVariant displayRole(currency salary) {
 			if (salary == minimal_salary) return "Minimalna";
-			auto const value = static_cast<double>(salary.value) / 100.0;
-			return QString::fromUtf8("%1 zł"sv).arg(QLocale::system().toString(value, 'f', 2));
+			return QString::fromUtf8(locale::from_system(salary));
 		}
 
 		QVariant editRole(year_month month) {
@@ -60,8 +60,7 @@ namespace quick_dra::gui {
 		}
 
 		QVariant editRole(currency salary) {
-			auto const value = std::max(0.0, static_cast<double>(salary.value) / 100.0);
-			return QLocale::system().toString(value, 'f', 2);
+			return QString::fromUtf8(locale::number_grouping::monetary_from_locale().group(salary));
 		}
 
 		bool readEditValue(year_month& month, std::string_view text) {
