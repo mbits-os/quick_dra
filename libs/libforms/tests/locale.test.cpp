@@ -124,19 +124,29 @@ namespace quick_dra::locale::testing {
 		          "123456789012345678901234567890,2345"sv);
 	}
 
+	static constexpr auto PLN_3675 = 3675_PLN;
+	static constexpr auto PLN_3675_46 = 3675.46_PLN;
+	static constexpr auto per_106_33 = 106.33_per;
+
+#ifdef _WIN32
+#define NEG(X) "(" X ")"
+#else
+#define NEG(X) "-" X
+#endif
+
 	TEST(locale, system) {
-		std::setlocale(LC_ALL, "en_US.UTF-8");
+		fmt::print("test locale: {}\n", std::setlocale(LC_ALL, "en_US.UTF-8"));
 		auto const formatter = symbol_decorator::from_locale();
 		auto const mon = number_grouping::monetary_from_locale();
 		auto const num = number_grouping::numeric_from_locale();
 
 		EXPECT_EQ(formatter.format(mon.group("123456"sv), false), "$123,456");
-		EXPECT_EQ(formatter.format(mon.group("1456"sv, "23"sv), true), "-$1,456.23");
+		EXPECT_EQ(formatter.format(mon.group("1456"sv, "23"sv), true), NEG("$1,456.23"));
 		EXPECT_EQ(num.group("1456"sv), "1,456");
 
 		auto format = formatter::monetary_from_locale();
-		EXPECT_EQ(format.format(-12345, 100), "-$123.45");
-		EXPECT_EQ(format.format(-32012045, 1000), "-$32,012.045");
+		EXPECT_EQ(format.format(-12345, 100), NEG("$123.45"));
+		EXPECT_EQ(format.format(-32012045, 1000), NEG("$32,012.045"));
 		EXPECT_EQ(format.format(12345), "$12,345");
 		EXPECT_EQ(format.format(12345, 100), "$123.45");
 		EXPECT_EQ(format.format(32012045, 1000), "$32,012.045");
@@ -149,8 +159,8 @@ namespace quick_dra::locale::testing {
 		EXPECT_EQ(format.format(32012045, 1000), "32,012.045 zł");
 
 		EXPECT_EQ(format.format((3500_PLN).calc() * 106.33_per), "3,721.5500 zł");
-		EXPECT_EQ(format.format(3675_PLN), "3,675.00 zł");
-		EXPECT_EQ(format.grouping.group(3675.46_PLN), "3,675.46");
+		EXPECT_EQ(format.format(PLN_3675), "3,675.00 zł");
+		EXPECT_EQ(format.grouping.group(PLN_3675_46), "3,675.46");
 
 		format = formatter::percent_from_locale();
 		EXPECT_EQ(format.format(-12345, 100), "-123.45%");
@@ -158,18 +168,18 @@ namespace quick_dra::locale::testing {
 		EXPECT_EQ(format.format(12345), "12,345%");
 		EXPECT_EQ(format.format(12345, 100), "123.45%");
 		EXPECT_EQ(format.format(32012045, 1000), "32,012.045%");
-		EXPECT_EQ(format.format(106.33_per), "106.33%");
-		EXPECT_EQ(format.grouping.group(106.33_per), "106.33");
+		EXPECT_EQ(format.format(per_106_33), "106.33%");
+		EXPECT_EQ(format.grouping.group(per_106_33), "106.33");
 
-		EXPECT_EQ(from_system((3500_PLN).calc() * 106.33_per), "3,721.5500" NBSP "zł");
-		EXPECT_EQ(from_system(3675_PLN, " : "), "3,675.00 : zł");
-		EXPECT_EQ(from_system(106.33_per), "106.33%");
+		EXPECT_EQ(from_system((3500_PLN).calc() * per_106_33), "3,721.5500" NBSP "zł");
+		EXPECT_EQ(from_system(PLN_3675, " : "), "3,675.00 : zł");
+		EXPECT_EQ(from_system(per_106_33), "106.33%");
 	}
 
 	TEST(locale, C) {
 		std::setlocale(LC_ALL, "C");
-		EXPECT_EQ(from_system((3500_PLN).calc() * 106.33_per), "3721.5500" NBSP "zł");
-		EXPECT_EQ(from_system((3675_PLN)), "3675.00" NBSP "zł");
-		EXPECT_EQ(from_system(106.33_per), "106.33%");
+		EXPECT_EQ(from_system((3500_PLN).calc() * per_106_33), "3721.5500" NBSP "zł");
+		EXPECT_EQ(from_system(PLN_3675), "3675.00" NBSP "zł");
+		EXPECT_EQ(from_system(per_106_33), "106.33%");
 	}
 }  // namespace quick_dra::locale::testing

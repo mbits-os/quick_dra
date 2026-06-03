@@ -11,38 +11,6 @@
 
 using namespace std::literals;
 
-#define SIGN "{0}"
-#define QUANTITY "{1}"
-#define SPACE "{2}"
-#define SYMBOL "{3}"
-
-#define NUMBER_FORMAT(X)                                                                      \
-	X(SIGN, QUANTITY, SYMBOL) /* The sign string precedes the quantity and currency_symbol.*/ \
-	X(QUANTITY, SYMBOL, SIGN) /* The sign string succeeds the quantity and currency_symbol.*/ \
-	X(QUANTITY, SIGN, SYMBOL) /* The sign string immediately precedes the currency_symbol.*/  \
-	X(QUANTITY, SYMBOL, SIGN) /* The sign string immediately succeeds the currency_symbol.*/  \
-                                                                                              \
-	X(SIGN, QUANTITY, SPACE, SYMBOL)                                                          \
-	X(QUANTITY, SPACE, SYMBOL, SIGN)                                                          \
-	X(QUANTITY, SPACE, SIGN, SYMBOL)                                                          \
-	X(QUANTITY, SPACE, SYMBOL, SIGN)                                                          \
-                                                                                              \
-	X(SIGN, SYMBOL, QUANTITY)                                                                 \
-	X(SYMBOL, QUANTITY, SIGN)                                                                 \
-	X(SIGN, SYMBOL, QUANTITY)                                                                 \
-	X(SYMBOL, SIGN, QUANTITY)                                                                 \
-                                                                                              \
-	X(SIGN, SYMBOL, SPACE, QUANTITY)                                                          \
-	X(SYMBOL, SPACE, QUANTITY, SIGN)                                                          \
-	X(SIGN, SYMBOL, SPACE, QUANTITY)                                                          \
-	X(SYMBOL, SIGN, SPACE, QUANTITY)
-
-#define NO_COMMAS_2(A1, A2, A3, A4) A1 A2
-#define NO_COMMAS_3(A1, A2, A3, A4) A1 A2 A3
-#define NO_COMMAS_4(A1, A2, A3, A4) A1 A2 A3 A4
-#define NO_COMMAS(A1, A2, A3, A4, SIZE, ...) NO_COMMAS_##SIZE(A1, A2, A3, A4)
-#define VFORMAT(...) NO_COMMAS(__VA_ARGS__, 4, 3, 2, 1, 0, 0) ""sv,
-
 namespace quick_dra::locale {
 	namespace {
 		std::string_view decimal_or_dot(std::string_view from_locale) {
@@ -69,7 +37,37 @@ namespace quick_dra::locale {
 				}
 			}
 
-			static constexpr auto number_formats = std::array{NUMBER_FORMAT(VFORMAT)};
+#define SIGN "{0}"
+#define QUANTITY "{1}"
+#define SPACE "{2}"
+#define SYMBOL "{3}"
+
+			static constexpr auto number_formats = std::array{
+			    SIGN QUANTITY SYMBOL ""sv, /* The sign string precedes the quantity and currency_symbol.*/
+			    QUANTITY SYMBOL SIGN ""sv, /* The sign string succeeds the quantity and currency_symbol.*/
+			    QUANTITY SIGN SYMBOL ""sv, /* The sign string immediately precedes the currency_symbol.*/
+			    QUANTITY SYMBOL SIGN ""sv, /* The sign string immediately succeeds the currency_symbol.*/
+
+			    SIGN QUANTITY SPACE SYMBOL ""sv,  //
+			    QUANTITY SPACE SYMBOL SIGN ""sv,  //
+			    QUANTITY SPACE SIGN SYMBOL ""sv,  //
+			    QUANTITY SPACE SYMBOL SIGN ""sv,  //
+
+			    SIGN SYMBOL QUANTITY ""sv,  //
+			    SYMBOL QUANTITY SIGN ""sv,  //
+			    SIGN SYMBOL QUANTITY ""sv,  //
+			    SYMBOL SIGN QUANTITY ""sv,  //
+
+			    SIGN SYMBOL SPACE QUANTITY ""sv,  //
+			    SYMBOL SPACE QUANTITY SIGN ""sv,  //
+			    SIGN SYMBOL SPACE QUANTITY ""sv,  //
+			    SYMBOL SIGN SPACE QUANTITY ""sv,  //
+			};
+#undef SIGN
+#undef QUANTITY
+#undef SPACE
+#undef SYMBOL
+
 			return std::vformat(number_formats[format_index], std::make_format_args(sign, value, space, symbol));
 		}
 
