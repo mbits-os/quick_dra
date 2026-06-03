@@ -4,7 +4,7 @@
 import re
 import sys
 from dataclasses import dataclass, field
-from typing import Callable, cast
+from typing import Callable
 
 
 def include_what_you_use_handler(path: str, _line: str, msg: str) -> bool:
