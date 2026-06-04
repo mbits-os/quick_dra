@@ -6,9 +6,9 @@
 #include <QLocale>
 #include <algorithm>
 #include <app/controls/forms/TableView.hpp>
+#include <app/utils/str.hpp>
 #include <app/utils/utils.hpp>
 #include <format>
-#include <quick_dra/base/str.hpp>
 #include <quick_dra/docs/locale.hpp>
 #include <quick_dra/models/project_reader.hpp>
 #include <string>
