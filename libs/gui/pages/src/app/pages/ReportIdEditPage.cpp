@@ -70,10 +70,7 @@ namespace quick_dra::gui {
 		setMoved(true);
 	}
 
-	void ReportIdEditPage::setDate(QDate const& value) {
-		auto const ymd = year_month_day{value.toStdSysDays()};
-		setDate(ymd.year() / ymd.month());
-	}
+	void ReportIdEditPage::setDate(QDate const& date) { setDate(std::chrono::year{date.year()} / date.month()); }
 
 	void ReportIdEditPage::resetMoved() {
 		setDate(month_today() - months{1});

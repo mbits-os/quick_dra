@@ -14,7 +14,7 @@
 
 namespace quick_dra::gui {
 	class ComboBoxBase : public QObject {
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		ComboBoxBase();

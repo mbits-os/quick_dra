@@ -9,7 +9,7 @@
 
 namespace quick_dra::gui {
 	class PageScrollArea : public QScrollArea {
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		explicit PageScrollArea(QWidget* parent = nullptr);

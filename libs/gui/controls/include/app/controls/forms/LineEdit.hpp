@@ -15,7 +15,7 @@
 
 namespace quick_dra::gui {
 	class LineEditBase : public QObject {
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		LineEditBase();

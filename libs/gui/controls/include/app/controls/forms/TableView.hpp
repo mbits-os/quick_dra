@@ -16,7 +16,7 @@
 
 namespace quick_dra::gui {
 	class ListViewBase : public QObject {
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		ListViewBase();
@@ -122,7 +122,7 @@ namespace quick_dra::gui {
 	};
 
 	class ListModelBase : public QAbstractItemModel {
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		using QAbstractItemModel::QAbstractItemModel;
@@ -167,7 +167,7 @@ namespace quick_dra::gui {
 			this->endResetModel();
 		}
 
-		size_t dataRowCount() const { return ref_ ? ref_->size() : 0; }
+		size_t dataRowCount() const override { return ref_ ? ref_->size() : 0; }
 		size_t dataColumnCount() const override { return sizeof...(ItemDecls); }
 
 		void addNewRow() {
