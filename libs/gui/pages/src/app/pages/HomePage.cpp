@@ -155,11 +155,10 @@ namespace quick_dra::gui {
 	}
 
 	void HomePage::reportIdAccepted(int serial, QDate const& date, bool moved) {
-		auto const ymd = year_month_day{date.toStdSysDays()};
 		auto const index = static_cast<unsigned>(std::min(std::max(serial, 1), 99));
 		globals().storeIdentifier({
 		    .index = index,
-		    .date = ymd.year() / ymd.month(),
+		    .date = year{date.year()} / date.month(),
 		    .isOverriden = moved,
 		});
 	}

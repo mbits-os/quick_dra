@@ -14,7 +14,7 @@
 
 namespace quick_dra::gui {
 	class DocumentComboBoxBase : QObject {
-		Q_OBJECT;
+		Q_OBJECT
 
 	public:
 		DocumentComboBoxBase();
@@ -88,7 +88,7 @@ namespace quick_dra::gui {
 			void readValue(person& tgt) {
 				if (!dirty) return;
 				dirty = false;
-				tgt.kind = std::move(getCurrentDataText());
+				tgt.kind = getCurrentDataText();
 			}
 
 			template <typename T>
@@ -198,6 +198,6 @@ namespace quick_dra::gui {
 			} else {
 				return std::get<N + 1>(this->storage);
 			}
-		};
+		}
 	};
 }  // namespace quick_dra::gui

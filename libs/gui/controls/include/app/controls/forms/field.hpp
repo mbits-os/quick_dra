@@ -68,8 +68,8 @@ namespace quick_dra::gui {
 	struct NAME : detail::FieldBase<VALIDATOR, TARGET, [](TARGET& p) -> auto& { return p.MEMBER; }>
 #define ERROR_CHECKSUM_NEEDED(LABEL)          \
 	static constexpr auto label = LABEL ""sv; \
-	static constexpr auto error_message = LABEL " musi mieć poprawną sumę kontrolną"sv;
-#define ENUM_KEY(ID) static constexpr auto enum_key = #ID ""sv;
+	static constexpr auto error_message = LABEL " musi mieć poprawną sumę kontrolną"sv
+#define ENUM_KEY(ID) static constexpr auto enum_key = #ID ""sv
 
 	DECLARE_FIELD(FirstNameDeclaration, detail::NonEmptyValidator, person, first_name) {
 		static constexpr auto label = "Imię pierwsze"sv;

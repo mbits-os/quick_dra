@@ -19,6 +19,9 @@ using namespace std::literals;
 
 namespace quick_dra::gui {
 	namespace {
+		static constexpr auto ZERO_F = qreal{0};
+		static constexpr auto HALF_F = qreal{0.5};
+
 		QAction* createAction(QObject* parent, std::string_view name, std::string_view toolTip, QIcon const& icon) {
 			auto result = std::make_unique<QAction>(parent);
 			result->setObjectName(QString::fromUtf8(name));
@@ -88,19 +91,19 @@ namespace quick_dra::gui {
 
 	void HeaderShadow::paintEvent(QPaintEvent*) {
 		QPainter p{this};
-		auto const w = static_cast<float>(width());
-		auto pos = 0.5f;
+		auto const w = static_cast<qreal>(width());
+		auto pos = HALF_F;
 
 		p.setPen(addAlpha(palette().color(QPalette::Midlight), 128));
-		p.drawLine(QPointF{0.0f, pos}, QPointF{w, pos});
+		p.drawLine(QPointF{ZERO_F, pos}, QPointF{w, pos});
 
 		auto const lineCount = height() - 2;
 		for (auto index = 0; index < lineCount; ++index) {
 			auto const scale = gauss_scaling(lineCount, index) * shadowForce_;
 
 			pos += 1;
-			p.setPen(addAlpha(Qt::black, static_cast<int>(255 * scale + 0.5f)));
-			p.drawLine(QPointF{0.0f, pos}, QPointF{w, pos});
+			p.setPen(addAlpha(Qt::black, static_cast<int>(255 * scale + HALF_F)));
+			p.drawLine(QPointF{ZERO_F, pos}, QPointF{w, pos});
 		}
 	}
 
@@ -165,7 +168,7 @@ namespace quick_dra::gui {
 		auto const s = this->size();
 		auto const width = static_cast<float>(s.width());
 		auto pos = static_cast<float>(s.height()) - .5f;
-		p.fillRect(QRectF{0.0f, 0.0f, width, pos + 1}, color);
+		p.fillRect(QRectF{ZERO_F, ZERO_F, width, pos + 1}, color);
 	}
 
 	void PageHeader::setupUI() {
@@ -205,7 +208,7 @@ namespace quick_dra::gui {
 			self->setSizePolicy(TakeWidth);
 		});
 
-		root.createWidget(titleLabel_, "titleLabel", [self = this](QLabel& titleLabel) {
+		root.createWidget(titleLabel_, "titleLabel", [](QLabel& titleLabel) {
 			titleLabel.setSizePolicy(TakeAll / 1_XStretch);
 			QFont font;
 			font.setBold(true);
@@ -223,7 +226,7 @@ namespace quick_dra::gui {
 #endif
 		});
 
-		root.createWidget(spacer, "spacer", [self = this, toolBar = toolBar_](HeaderSpacer& spacer) {
+		root.createWidget(spacer, "spacer", [toolBar = toolBar_](HeaderSpacer& spacer) {
 			spacer.setSizePolicy(TakeHeight);
 			QObject::connect(toolBar, &HeaderToolbar::widthChanged, &spacer, &HeaderSpacer::setHintWidth);
 		});

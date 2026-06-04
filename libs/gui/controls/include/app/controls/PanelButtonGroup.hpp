@@ -53,6 +53,11 @@ namespace quick_dra::gui {
 		Q_DECLARE_PRIVATE(PanelButtonGroup)
 		Q_DISABLE_COPY_MOVE(PanelButtonGroup)
 
+		template <typename T>
+		struct EmptyCallback {
+			void operator()(T const&) {}
+		};
+
 	public:
 		PanelButtonGroup(QWidget* parent = nullptr);
 		~PanelButtonGroup();
@@ -61,7 +66,7 @@ namespace quick_dra::gui {
 		PanelButton* addWidget(QWidget*);
 		PanelButton* addLayout(QLayout*);
 
-		template <typename Wgt, std::invocable<Wgt&> Callback = decltype([](auto const&) {})>
+		template <typename Wgt, std::invocable<Wgt&> Callback = EmptyCallback<Wgt>>
 		PanelButton* createWidget(QAnyStringView objectName, Callback&& cb = {}) {
 			auto object = std::make_unique<Wgt>(this);
 			object->setObjectName(objectName);
@@ -71,7 +76,7 @@ namespace quick_dra::gui {
 			return result;
 		}
 
-		template <typename Wgt, std::invocable<Wgt&> Callback = decltype([](auto const&) {})>
+		template <typename Wgt, std::invocable<Wgt&> Callback = EmptyCallback<Wgt>>
 		PanelButton* createWidget(Callback&& cb = {}) {
 			return this->createWidget<Wgt, Callback>("", std::forward<Callback>(cb));
 		}
