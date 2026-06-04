@@ -7,6 +7,7 @@ set(SRCS
     include/app/utils/FormData.hpp
     include/app/utils/forms.hpp
     include/app/utils/LaidOut.hpp
+    include/app/utils/str.hpp
     include/app/utils/utils.hpp
     src/app/utils/FormData.cpp
     src/app/utils/forms.cpp

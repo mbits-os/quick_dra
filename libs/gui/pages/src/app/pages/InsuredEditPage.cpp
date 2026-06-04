@@ -150,11 +150,13 @@ namespace quick_dra::gui {
 		if (insuredIndex >= insured.size()) {
 			currentValue = acceptedValue = {};
 			currentValue.title.title_code = acceptedValue.title.title_code = "0000"sv;
-			setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(name_from(std::nullopt, std::nullopt, false)));
+			setWindowTitle(
+			    QString{"%1 (Ubezpieczony)"}.arg(QString::fromUtf8(name_from(std::nullopt, std::nullopt, false))));
 		} else {
 			auto& ref = insured[insuredIndex];
 			currentValue = acceptedValue = insured_or_empty(ref);
-			setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(name_from(ref.first_name, ref.last_name, false)));
+			setWindowTitle(
+			    QString{"%1 (Ubezpieczony)"}.arg(QString::fromUtf8(name_from(ref.first_name, ref.last_name, false))));
 		}
 		ui.document.setBlockChecker(
 		    [insuredIndex = insuredIndex, &insured](std::string_view kind, std::string_view number) {

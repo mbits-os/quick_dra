@@ -3,10 +3,10 @@
 
 #include <QMessageBox>
 #include <app/main/options.hpp>
+#include <app/utils/str.hpp>
 #include <cstdio>
 #include <map>
 #include <quick_dra/base/paths.hpp>
-#include <quick_dra/base/str.hpp>
 #include <quick_dra/version.hpp>
 #include <string>
 #include <utility>
@@ -52,8 +52,8 @@ namespace quick_dra {
 
 			QMessageBox msgBox{
 			    QMessageBox::Information,
-			    QString{"Quick-DRA %1"}.arg(version::ui),
-			    QString{"```\n%1\n```"}.arg(out),
+			    QString{"Quick-DRA %1"}.arg(QString::fromUtf8(version::ui)),
+			    QString{"```\n%1\n```"}.arg(QString::fromUtf8(out)),
 			    QMessageBox::Ok,
 			};
 			msgBox.setTextFormat(Qt::MarkdownText);

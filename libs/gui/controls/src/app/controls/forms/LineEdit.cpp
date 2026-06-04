@@ -5,6 +5,7 @@
 #include <app/controls/Glyph.hpp>
 #include <app/controls/forms/LineEdit.hpp>
 #include <app/gui/CurrentColor.hpp>
+#include <app/utils/str.hpp>
 #include <app/utils/utils.hpp>
 #include <format>
 #include <string>

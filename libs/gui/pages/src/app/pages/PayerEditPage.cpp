@@ -69,7 +69,8 @@ namespace quick_dra::gui {
 	void PayerEditPage::connectPage() {
 		auto& payer = *globals().data().cfg.payer;
 		currentValue = acceptedValue = payer_or_empty(payer);
-		setWindowTitle(QString{"%1 (Płatnik)"}.arg(name_from(payer.first_name, payer.last_name, false)));
+		setWindowTitle(
+		    QString{"%1 (Płatnik)"}.arg(QString::fromUtf8(name_from(payer.first_name, payer.last_name, false))));
 		ui.each([&currentValue = currentValue](auto& item) { item.attach(currentValue); });
 	}
 
