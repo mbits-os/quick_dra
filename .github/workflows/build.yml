@@ -87,6 +87,10 @@ jobs:
           gcc-version: ${{ matrix.gcc_ver }}
           compiler: ${{ matrix.compiler }}
 
+      - name: Install Qt
+        if: ${{ matrix.github_os != 'ubuntu-22.04' }}
+        uses: jurplel/install-qt-action@v4
+
       - name: Install ICU
         if: ${{ matrix.ubuntu }}
         run: |
