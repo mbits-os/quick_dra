@@ -28,9 +28,11 @@ entry:
 
 compiler:
   names:
-    clang: [clang, clang++]
     gcc: [gcc, g++]
   os-default: { ubuntu: gcc, windows: msvc }
+
+lts:
+  windows: [windows-2022]
 
 postproc:
   exclude:
@@ -54,8 +56,6 @@ package:
 shortcuts:
   dbg: { build_type: Debug, sanitizer: false }
   rel: { build_type: Release, sanitizer: false }
-  clangd: { build_type: Debug, sanitizer: false, compiler: clang }
-  clang: { build_type: Release, sanitizer: false, compiler: clang }
   both: { build_type: [Debug, Release], sanitizer: false }
   sane: { build_type: Debug, sanitizer: true }
 
