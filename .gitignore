@@ -48,3 +48,4 @@ super-linter.log
 pvs-report.sarif
 PVS-Studio.log
 .qtcreator/
+aqtinstall.log
