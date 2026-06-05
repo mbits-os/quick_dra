@@ -81,32 +81,13 @@ endif()
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS qdra-gui COMPONENT gui)
-
-    install(
-        DIRECTORY ${PROJECT_BINARY_DIR}/share/
-        DESTINATION share/
-        USE_SOURCE_PERMISSIONS
-        COMPONENT gui
-    )
-
-    cpack_add_component(gui
-        DISPLAY_NAME "Quick-DRA GUI Application"
-        DESCRIPTION "Command line interface `qdra` application and data"
-        GROUP apps
-    )
-
-    set(OUTPUT_VAR OUTPUT_SCRIPT)
-
-    if(Qt6_VERSION_MINOR LESS 10)
-        set(OUTPUT_VAR FILENAME_VARIABLE)
-    endif()
+    install(TARGETS qdra-gui COMPONENT C002_gui)
 
     qt_generate_deploy_app_script(
         TARGET qdra-gui
-        ${OUTPUT_VAR} deploy_script
+        OUTPUT_SCRIPT deploy_script
         NO_UNSUPPORTED_PLATFORM_ERROR
     )
 
-    install(SCRIPT "${deploy_script}" COMPONENT gui)
+    install(SCRIPT "${deploy_script}" COMPONENT C003_qt_deployment)
 endif()

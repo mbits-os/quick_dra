@@ -40,12 +40,12 @@ set_target_properties(pages PROPERTIES FOLDER lib)
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS pages COMPONENT libraries)
+    install(TARGETS pages COMPONENT gui_libraries)
 
     install(
         DIRECTORY include/
         TYPE INCLUDE
-        COMPONENT libraries
+        COMPONENT gui_libraries
     )
 endif()
 
