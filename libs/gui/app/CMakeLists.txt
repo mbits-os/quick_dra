@@ -11,7 +11,7 @@ set(QRC_SRCS res/quick_dra.qrc)
 
 if(WIN32)
     list(APPEND QRC_SRCS res/icon_win32.qrc)
-    list(APPEND SRCS res/qdra-gui.exe.manifest)
+    list(APPEND SRCS res/qdra-gui.exe.manifest res/version.rc)
 else()
     list(APPEND QRC_SRCS res/icon_svg.qrc)
 endif()
