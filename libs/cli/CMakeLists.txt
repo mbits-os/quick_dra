@@ -5,6 +5,10 @@ set(SRCS
     src/main.cpp
 )
 
+if (WIN32)
+    list(APPEND SRCS res/version.rc)
+endif()
+
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
 
 add_executable(qdra ${SRCS})
@@ -63,7 +67,7 @@ if(QUICK_DRA_TESTING)
     elseif(QUICK_DRA_COV_OS STREQUAL "ubuntu")
         set(QUICK_DRA_COV_OS "Ubuntu")
         set(QUICK_DRA_DEFAULT_COMPILER "gnu")
-    elseif(QUICK_DRA_COV_OS STREQUAL "ubuntu")
+    elseif(QUICK_DRA_COV_OS STREQUAL "windows")
         set(QUICK_DRA_COV_OS "Window")
         set(QUICK_DRA_DEFAULT_COMPILER "msvc")
     endif()
