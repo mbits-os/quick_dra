@@ -29,12 +29,12 @@ set_target_properties(main PROPERTIES FOLDER lib)
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS main COMPONENT libraries)
+    install(TARGETS main COMPONENT gui_libraries)
 
     install(
         DIRECTORY include/
         TYPE INCLUDE
-        COMPONENT libraries
+        COMPONENT gui_libraries
     )
 endif()
 

@@ -41,12 +41,12 @@ set_target_properties(controls PROPERTIES FOLDER lib)
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS controls COMPONENT libraries)
+    install(TARGETS controls COMPONENT gui_libraries)
 
     install(
         DIRECTORY include/
         TYPE INCLUDE
-        COMPONENT libraries
+        COMPONENT gui_libraries
     )
 endif()
 

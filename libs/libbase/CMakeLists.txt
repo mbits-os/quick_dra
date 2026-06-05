@@ -70,13 +70,6 @@ if(QUICK_DRA_INSTALL)
         TYPE INCLUDE
         COMPONENT libraries
     )
-
-    cpack_add_component(libraries
-        DISPLAY_NAME "Quick-DRA Libraries"
-        DESCRIPTION "Library and include files"
-        DISABLED
-        GROUP devel
-    )
 endif()
 
 # #################################################################

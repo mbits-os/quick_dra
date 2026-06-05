@@ -15,7 +15,7 @@ if(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
   message(FATAL_ERROR "Building in source directory is not supported")
 endif()
 
-set(SHARE_DIR "share/${PROJECT_NAME}-${PROJECT_VERSION_SHORT}")
+set(SHARE_DIR "share/${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}")
 
 set(QUICK_DRA_TESTING ON CACHE BOOL "Compile and/or run self-tests")
 set(QUICK_DRA_INSTALL ON CACHE BOOL "Install the application")
@@ -59,30 +59,29 @@ if(QUICK_DRA_TESTING)
   endif()
 
   set(TEST_REPORT_FILE "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_BUILD_TYPE}${TEST_SANITIZER_TAG}.xml")
-endif()
 
-include(${PROJECT_SOURCE_DIR}/.flow/packages/config.cmake)
-include(CPack)
-
-cpack_add_component_group(apps
-  DISPLAY_NAME Applications
-  DESCRIPTION "End-user applications"
-  EXPANDED
-)
-
-cpack_add_component_group(devel
-  DISPLAY_NAME "Development"
-  DESCRIPTION "Development tools and libraries"
-  EXPANDED
-)
-
-if(QUICK_DRA_TESTING)
   set(COVERALLS_PREFIX QUICK_DRA_)
   include(${PROJECT_SOURCE_DIR}/tools/coveralls/build_flags.cmake)
 endif()
 
+
+if(QUICK_DRA_INSTALL)
+  include(${PROJECT_SOURCE_DIR}/.flow/packages/installer.cmake)
+
+  install(
+    DIRECTORY ${PROJECT_BINARY_DIR}/share/
+    DESTINATION share/
+    USE_SOURCE_PERMISSIONS
+    COMPONENT C004_data
+  )
+endif()
+
 add_subdirectory(external)
 add_subdirectory(libs)
+
+if (QUICK_DRA_INSTALL)
+  include(CPack)
+endif()
 
 # #################################################################
 # #  COVERAGE

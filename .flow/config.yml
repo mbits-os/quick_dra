@@ -68,7 +68,7 @@ test:
 test-runner:
   target: qdra
   report_env: QDRA_
-  install: [cli]
+  install: [C001_cli, C004_data]
   testsuite:
     root: libs/cli/tests
     data: data

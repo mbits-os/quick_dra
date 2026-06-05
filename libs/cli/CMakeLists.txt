@@ -31,20 +31,7 @@ endif()
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS qdra COMPONENT cli)
-
-    install(
-        DIRECTORY ${PROJECT_BINARY_DIR}/share/
-        DESTINATION share/
-        USE_SOURCE_PERMISSIONS
-        COMPONENT cli
-    )
-
-    cpack_add_component(cli
-        DISPLAY_NAME "Quick-DRA CLI Application"
-        DESCRIPTION "Command line interface `qdra` application and data"
-        GROUP apps
-    )
+    install(TARGETS qdra COMPONENT C001_cli)
 endif()
 
 # #################################################################
