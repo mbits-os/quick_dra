@@ -75,9 +75,10 @@ jobs:
 
       - name: Setup Windows
         if: ${{ matrix.windows }}
-        uses: proj-flow-actions/setup-windows@v1
+        uses: proj-flow-actions/setup-windows@v1.1
         with:
           install-occ: ${{ matrix.build_type == 'Debug' }}
+          install-nsis: 3.12
 
       - name: Setup Ubuntu
         if: ${{ matrix.ubuntu }}
