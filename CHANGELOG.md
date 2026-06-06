@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.2.0](https://github.com/mbits-os/quick_dra/compare/v1.1.0...v1.2.0) (2026-06-06)
+
+### New Features
+
+- use `<clocale>` for number formatting ([05c5354](https://github.com/mbits-os/quick_dra/commit/05c5354f132888b012a1c3b84c8027f7f79d36a3))
+- modify payer and insured list ([8207cc7](https://github.com/mbits-os/quick_dra/commit/8207cc766e93a92f0220ccbd726ebaa1cb6cc04d))
+- save KEDU for current config ([7743fd6](https://github.com/mbits-os/quick_dra/commit/7743fd68d5a45fcd4e6bcbe381f33e6cfe1151c6))
+- edit report id ([dc935e9](https://github.com/mbits-os/quick_dra/commit/dc935e922a569662a6ec983147a00735b4c883d5))
+- show filled-out RCA/DRA forms ([f95d621](https://github.com/mbits-os/quick_dra/commit/f95d621588b44ebba4c8f4f18d1e8df537699304))
+- add Home page, with all buttons disabled ([56205d5](https://github.com/mbits-os/quick_dra/commit/56205d5c57001033f42ba992eef0f3514ec44c01))
+- observe outside config changes ([973b63f](https://github.com/mbits-os/quick_dra/commit/973b63feee6f690b217b24a67cc75a1bf94142d2))
+- restore window position ([4b22fc5](https://github.com/mbits-os/quick_dra/commit/4b22fc5f5044ee890ae3787e8cc67fd68b10cb72))
+- add global data with page stack ([da2c993](https://github.com/mbits-os/quick_dra/commit/da2c993914be56735affe8f6f4e3ff62e78977bb))
+- add empty Qt app ([71c1049](https://github.com/mbits-os/quick_dra/commit/71c1049781917871e141e263cb6e22b598ab7fdb))
+- add `to_lower` ([fca46b7](https://github.com/mbits-os/quick_dra/commit/fca46b76cf21e44458aef79a5f18ece284eb5c22))
+- add min_length/max_length to liblex  validators ([a7dc633](https://github.com/mbits-os/quick_dra/commit/a7dc63342eb644f713c0c6184824d79a6a8390fb))
+- support graphical form presentation info ([0f5f493](https://github.com/mbits-os/quick_dra/commit/0f5f4934ab47c743385e5d6d8311888d8fd34b57))
+- add year_month as first-class value type ([b49ec66](https://github.com/mbits-os/quick_dra/commit/b49ec666aba355807a9334240c5cc10694f72920))
+
+### Bug Fixes
+
+- clean GUI code warnings ([382b672](https://github.com/mbits-os/quick_dra/commit/382b6726544eaf9eb03a3c817fc00f7b77d132a1))
+- downgrade to API from Qt 6.8.3 ([03f72bb](https://github.com/mbits-os/quick_dra/commit/03f72bbd19c168c804b73dad6a5bdd34002d158b))
+- compile locale on msvc ([c618a10](https://github.com/mbits-os/quick_dra/commit/c618a105dfa4e590a46c7b48416f5d089507ec2d))
+- remove unused function ([ee8d3f2](https://github.com/mbits-os/quick_dra/commit/ee8d3f2351a087db579921077e1455f835df18bc))
+- issues uncovered during testing ([b383c33](https://github.com/mbits-os/quick_dra/commit/b383c33d5d4284ed822d4fbd3c63253561e8a840))
+- allow rendering document fragments ([0537e87](https://github.com/mbits-os/quick_dra/commit/0537e8768f88bd76135d3ad7492791be15d73505))
+- drop xml dependency on entire options object ([6d54762](https://github.com/mbits-os/quick_dra/commit/6d54762a71b43f785478c0c181f89ac5ec267430))
+- extract tax_config loader ([f55a92f](https://github.com/mbits-os/quick_dra/commit/f55a92f6a6ad1d5760c8b6281d6f5f3c30e3115f))
+- check if lookup found anything at all ([842fff6](https://github.com/mbits-os/quick_dra/commit/842fff64efd5fcb97c9614d3a2f916e1588db3bc))
+
 ## [1.1.0](https://github.com/mbits-os/quick_dra/compare/v1.0.0...v1.1.0) (2026-05-12)
 
 ### New Features
