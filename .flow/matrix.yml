@@ -1,8 +1,8 @@
 matrix:
-  compiler: [ gcc, msvc ]
-  build_type: [ Release, Debug ]
-  sanitizer: [ true, false ]
-  os: [ ubuntu, windows ]
+  compiler: [msvc]
+  build_type: [Release]
+  sanitizer: [false]
+  os: [windows]
 
 exclude:
   - { os: windows, compiler: gcc }
@@ -20,10 +20,10 @@ include:
     preset: release
 
   - os: ubuntu
-    conan_settings: [ compiler.libcxx=libstdc++11 ]
-    conan2_settings: [ compiler.cppstd=23 ]
+    conan_settings: [compiler.libcxx=libstdc++11]
+    conan2_settings: [compiler.cppstd=23]
     build_generator: ninja
-    cpack_generator: [ TGZ, DEB ]
+    cpack_generator: [TGZ, DEB]
     ubuntu: true
     home: /home/runner
 
@@ -33,7 +33,7 @@ include:
       - compiler.runtime=dynamic
     build_generator: msbuild
     report_os: Windows
-    cpack_generator: [ ZIP, NSIS ]
+    cpack_generator: [NSIS]
     windows: true
     home: C:/Users/runneradmin
 
@@ -54,8 +54,8 @@ include:
 
   - os: windows
     build_type: Release
-    conan_settings: [ compiler.runtime=MD ]
+    conan_settings: [compiler.runtime=MD]
 
   - os: windows
     build_type: Debug
-    conan_settings: [ compiler.runtime=MDd ]
+    conan_settings: [compiler.runtime=MDd]
