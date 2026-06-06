@@ -12,6 +12,7 @@
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <array>
+#include <concepts>
 #include <memory>
 #include <string_view>
 
@@ -62,12 +63,13 @@ namespace quick_dra::gui {
 	QSize HeaderShadow::minimumSizeHint() const { return HeaderShadow::sizeHint(); }
 
 	static constexpr auto gauss = std::array{
-	    1.0f,         0.945959469f, 0.800737403f, 0.60653066f,  0.411112291f, 0.249352209f,
-	    0.135335283f, 0.065728529f, 0.028565501f, 0.011108997f, 0.00386592f,
+	    qreal{1.0},         qreal{0.945959469}, qreal{0.800737403}, qreal{0.60653066},
+	    qreal{0.411112291}, qreal{0.249352209}, qreal{0.135335283}, qreal{0.065728529},
+	    qreal{0.028565501}, qreal{0.011108997}, qreal{0.00386592},
 	};
 
-	float gauss_scaling(float length, float pos) {
-		auto const size = static_cast<float>(gauss.size());
+	qreal gauss_scaling(qreal length, qreal pos) {
+		auto const size = static_cast<qreal>(gauss.size());
 		auto const scaled_pos = pos * size / length;
 		auto const index_low = static_cast<size_t>(scaled_pos);
 		auto const index_high = index_low + 1;
@@ -76,11 +78,11 @@ namespace quick_dra::gui {
 		if (index_high >= gauss.size()) return gauss.back();
 
 		auto const diff = gauss[index_high] - gauss[index_low];
-		return gauss[index_low] + diff * (scaled_pos - static_cast<float>(index_low));
+		return gauss[index_low] + diff * (scaled_pos - static_cast<qreal>(index_low));
 	}
 
-	float gauss_scaling(int length, int pos) {
-		return gauss_scaling(static_cast<float>(length), static_cast<float>(pos));
+	qreal gauss_scaling(int length, int pos) {
+		return gauss_scaling(static_cast<qreal>(length), static_cast<qreal>(pos));
 	}
 
 	QColor getOsAccent(QPalette const& palette) { return palette.color(QPalette::Highlight); }
@@ -112,7 +114,7 @@ namespace quick_dra::gui {
 		updateGeometry();
 	}
 
-	void HeaderShadow::setShadowForce(float value) {
+	void HeaderShadow::setShadowForce(qreal value) {
 		shadowForce_ = value;
 		updateGeometry();
 	}
