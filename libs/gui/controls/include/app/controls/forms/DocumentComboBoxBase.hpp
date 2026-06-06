@@ -13,6 +13,9 @@
 #include <utility>
 
 namespace quick_dra::gui {
+	DECLARE_FIELD_ACCESS(person, kind)
+	DECLARE_FIELD_ACCESS(person, document)
+
 	class DocumentComboBoxBase : QObject {
 		Q_OBJECT
 
@@ -24,11 +27,11 @@ namespace quick_dra::gui {
 		                 std::span<std::pair<std::string_view, std::string_view> const> const& items);
 
 	public:
-		DECLARE_FIELD(DocumentKindDeclaration, detail::NullValidator, person, kind) {
+		DECLARE_FIELD_HEADER(DocumentKindDeclaration, detail::NullValidator, person, kind) {
 			static constexpr auto label = "Rodzaj dokumentu"sv;
 			static constexpr auto error_message = ""sv;
 		};
-		DECLARE_FIELD(DocumentDeclaration, detail::NullValidator, person, document) {
+		DECLARE_FIELD_HEADER(DocumentDeclaration, detail::NullValidator, person, document) {
 			static constexpr auto label = "Seria i numer dokumentu"sv;
 			static constexpr auto error_message = ""sv;
 		};

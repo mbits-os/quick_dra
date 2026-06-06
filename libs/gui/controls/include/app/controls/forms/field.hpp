@@ -12,10 +12,10 @@
 
 namespace quick_dra::gui {
 	namespace detail {
-		template <typename Suite, typename Target, std::invocable<Target&> auto Lambda>
+		template <typename Suite, typename Target, std::invocable<Target&> Lambda>
 		struct FieldBase {
 			using target_type = Target;
-			using value_type = std::remove_cvref_t<decltype(Lambda(std::declval<Target&>()))>;
+			using value_type = std::remove_cvref_t<decltype(Lambda{}(std::declval<Target&>()))>;
 			using validation_suite = Suite;
 
 			static Validation validate(std::string_view value) {
@@ -26,7 +26,7 @@ namespace quick_dra::gui {
 				                                      : Validation::Invalid;
 			}
 
-			static auto& getField(Target& payer) { return Lambda(payer); }
+			static auto& getField(Target& payer) { return Lambda{}(payer); }
 		};
 
 		struct NonEmptyValidator {
@@ -64,8 +64,18 @@ namespace quick_dra::gui {
 		constexpr auto operator<=>(insured_type const&) const noexcept = default;
 	};
 
+#define DECLARE_FIELD_ACCESS(TARGET, MEMBER)                                \
+	namespace detail::access {                                              \
+		struct MEMBER {                                                     \
+			auto& operator()(TARGET& p) const noexcept { return p.MEMBER; } \
+		};                                                                  \
+	}
+#define DECLARE_FIELD_HEADER(NAME, VALIDATOR, TARGET, MEMBER) \
+	struct NAME : detail::FieldBase<VALIDATOR, TARGET, detail::access::MEMBER>
+
 #define DECLARE_FIELD(NAME, VALIDATOR, TARGET, MEMBER) \
-	struct NAME : detail::FieldBase<VALIDATOR, TARGET, [](TARGET& p) -> auto& { return p.MEMBER; }>
+	DECLARE_FIELD_ACCESS(TARGET, MEMBER)               \
+	DECLARE_FIELD_HEADER(NAME, VALIDATOR, TARGET, MEMBER)
 #define ERROR_CHECKSUM_NEEDED(LABEL)          \
 	static constexpr auto label = LABEL ""sv; \
 	static constexpr auto error_message = LABEL " musi mieć poprawną sumę kontrolną"sv
@@ -129,8 +139,10 @@ namespace quick_dra::gui {
 		static constexpr currency newRow() { return minimal_salary; }
 	};
 
+	DECLARE_FIELD_ACCESS(auto, social_id);
+
 	template <typename Target>
-	DECLARE_FIELD(SocialIdDeclarationBase, social_id_validator, Target, social_id) {
+	DECLARE_FIELD_HEADER(SocialIdDeclarationBase, social_id_validator, Target, social_id) {
 		ERROR_CHECKSUM_NEEDED("Numer PESEL");
 	};
 

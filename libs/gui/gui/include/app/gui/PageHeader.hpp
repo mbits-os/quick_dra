@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QToolBar>
 #include <QWidget>
+#include <QtTypes>
 
 namespace quick_dra::gui {
 	class HeaderToolbar : public QToolBar {
@@ -49,16 +50,16 @@ namespace quick_dra::gui {
 		void paintEvent(QPaintEvent*) override;
 
 		int shadowHeight() const noexcept { return shadowHeight_; }
-		float shadowForce() const noexcept { return shadowForce_; }
+		qreal shadowForce() const noexcept { return shadowForce_; }
 
 	public slots:
 		void setShadowHeight(int);
-		void setShadowForce(float);
+		void setShadowForce(qreal);
 		void targetMoved(QRect const&);
 
 	private:
 		int shadowHeight_{0};
-		float shadowForce_{1.f};
+		qreal shadowForce_{1.f};
 	};
 
 	class PageHeader : public QWidget {
