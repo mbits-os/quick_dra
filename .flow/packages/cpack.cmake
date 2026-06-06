@@ -1,3 +1,5 @@
 if (CPACK_GENERATOR STREQUAL "WIX")
     include(${CMAKE_CURRENT_LIST_DIR}/wix/cpack.cmake)
+elseif (CPACK_GENERATOR STREQUAL "NSIS")
+    include(${CMAKE_CURRENT_LIST_DIR}/nsis/cpack.cmake)
 endif()
