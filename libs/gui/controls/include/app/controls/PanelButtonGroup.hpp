@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QWidget>
+#include <app/utils/empty_callback.hpp>
 #include <concepts>
 #include <memory>
 #include <utility>
@@ -52,11 +53,6 @@ namespace quick_dra::gui {
 		Q_OBJECT
 		Q_DECLARE_PRIVATE(PanelButtonGroup)
 		Q_DISABLE_COPY_MOVE(PanelButtonGroup)
-
-		template <typename T>
-		struct EmptyCallback {
-			void operator()(T const&) {}
-		};
 
 	public:
 		PanelButtonGroup(QWidget* parent = nullptr);
