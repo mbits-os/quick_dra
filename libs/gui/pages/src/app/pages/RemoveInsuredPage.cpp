@@ -90,7 +90,7 @@ namespace quick_dra::gui {
 		QList<QStandardItem*> strings{};
 		strings.reserve(static_cast<qsizetype>(people.size()));
 		for (auto const& person : people) {
-			auto name = name_from(person.first_name, person.last_name, true);
+			auto name = name_from(person.first_name, person.last_name, {.format_for = name_hint::insured});
 			std::string label{};
 			if (person.document) {
 				auto const kind = document_kind(person.kind && !person.kind->empty() ? person.kind->front() : '\0');

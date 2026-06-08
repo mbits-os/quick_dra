@@ -70,7 +70,7 @@ namespace quick_dra::gui {
 	void PersonelPage::setPayer(partial::payer_t const& payer) {
 		payerGroup->clearAll();
 
-		auto const name = name_from(payer.first_name, payer.last_name, true);
+		auto const name = name_from(payer.first_name, payer.last_name, {.format_for = name_hint::payer});
 		auto const info = second_line(document_info(payer.kind, payer.document), document_info('R', payer.tax_id),
 		                              document_info('P', payer.social_id));
 		auto const button = payerGroup->createWidget<Panel>("payerPanel", [&name, &info](Panel& panel) {
@@ -86,7 +86,7 @@ namespace quick_dra::gui {
 
 		size_t index = 0;
 		for (auto const& insured : people) {
-			auto const name = name_from(insured.first_name, insured.last_name, true);
+			auto const name = name_from(insured.first_name, insured.last_name, {.format_for = name_hint::insured});
 			auto const [employed, month, part_time_scale, salary] = insured.lookup(globals().reportId().date);
 			auto const info =
 			    employed ? second_line(document_info(insured.kind, insured.document),

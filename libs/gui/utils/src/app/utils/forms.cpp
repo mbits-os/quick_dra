@@ -34,6 +34,7 @@ namespace quick_dra::gui {
 
 	std::string ratio_from(unsigned num, unsigned den) {
 		auto const value = std::gcd(num, den);
+		if (!value) return {};
 		num /= value;
 		den /= value;
 		auto const ascii = std::format("{}/{}", num, den);
@@ -68,7 +69,7 @@ namespace quick_dra::gui {
 	}
 
 	std::string insurance_title_info(std::optional<insurance_title> const& title) {
-		return title ? info_span("tytuł", fmt::to_string(*title)) : std::string{};
+		return title ? info_span("tytuł", std::format("{}", *title)) : std::string{};
 	}
 
 	std::string salary_info(year_month const& month,
@@ -79,19 +80,24 @@ namespace quick_dra::gui {
 		auto const [num, den] = scale.value_or(ratio{1, 1});
 		auto const simple = num == den;
 
-		if (salary) {
-			auto const full = *salary;
-			return simple ? info_span(salary_label, locale::from_system(full))
-			              : info_span(salary_label,
-			                          std::format(
-			                              "{} ({} z {})",
-			                              locale::from_system(calc_currency{(full.calc().value * num) / den}.rounded()),
-			                              ratio_from(num, den), locale::from_system(full)));
-		}
-
 		std::string since{};
 		if (month != null_month) {
-			since = std::format(" (od {}/{:02})", static_cast<int>(month.year()), static_cast<unsigned>(month.month()));
+			since = std::format("od {}/{:02}", static_cast<int>(month.year()), static_cast<unsigned>(month.month()));
+			if (salary) {
+				since = simple ? std::format(" ({})", since) : std::format(", {}", since);
+			} else {
+				since = std::format(" ({})", since);
+			}
+		}
+
+		if (salary) {
+			auto const full = *salary;
+			return simple ? info_span(salary_label, std::format("{}{}", locale::from_system(full), since))
+			              : info_span(salary_label,
+			                          std::format(
+			                              "{} ({} z {}{})",
+			                              locale::from_system(calc_currency{(full.calc().value * num) / den}.rounded()),
+			                              ratio_from(num, den), locale::from_system(full), since));
 		}
 
 		return simple ? info_span(salary_label, std::format("minimalna{}", since))
@@ -100,13 +106,15 @@ namespace quick_dra::gui {
 
 	std::string name_from(std::optional<std::string> const& first_name,
 	                      std::optional<std::string> const& last_name,
-	                      bool markdown) {
+	                      name_from_config const& config) {
 		static constexpr auto markdown_bold = "**"sv;
 		static constexpr auto text_markers = "<>"sv;
-		auto const markers = markdown ? markdown_bold : text_markers;
+		auto const markers = config.format == unknown_name::markdown ? markdown_bold : text_markers;
 
 		if (!first_name && !last_name) {
-			return std::format("{}Nazwisko nieznane{}", markers[0], markers[1]);
+			return std::format("{}{}{}", markers[0],
+			                   config.format_for == name_hint::payer ? "Nieznany płatnik"sv : "Nieznany ubezpieczony"sv,
+			                   markers[1]);
 		}
 		if (!first_name) {
 			return std::format("{}???{} {}", markers[0], markers[1], *last_name);
