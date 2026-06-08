@@ -10,6 +10,11 @@
 
 namespace quick_dra::gui {
 	namespace {
+		static constexpr name_from_config payer_title{
+		    .format = unknown_name::symbolic,
+		    .format_for = name_hint::payer,
+		};
+
 		payer_t payer_or_empty(partial::payer_t const& from) {
 			return {
 			    {
@@ -70,7 +75,7 @@ namespace quick_dra::gui {
 		auto& payer = *globals().data().cfg.payer;
 		currentValue = acceptedValue = payer_or_empty(payer);
 		setWindowTitle(
-		    QString{"%1 (Płatnik)"}.arg(QString::fromUtf8(name_from(payer.first_name, payer.last_name, false))));
+		    QString{"%1 (Płatnik)"}.arg(QString::fromUtf8(name_from(payer.first_name, payer.last_name, payer_title))));
 		ui.each([&currentValue = currentValue](auto& item) { item.attach(currentValue); });
 	}
 
@@ -83,7 +88,8 @@ namespace quick_dra::gui {
 
 	void PayerEditPage::updateCurrentValue() {
 		ui.each([&currentValue = this->currentValue](auto& item) { item.readValue(currentValue); });
-		auto const name = name_from(relax_string(currentValue.first_name), relax_string(currentValue.last_name), false);
+		auto const name =
+		    name_from(relax_string(currentValue.first_name), relax_string(currentValue.last_name), payer_title);
 		setWindowTitle(QString{"%1 (Płatnik)"}.arg(QString::fromUtf8(name)));
 		setFormDirty(currentValue != acceptedValue);
 	}

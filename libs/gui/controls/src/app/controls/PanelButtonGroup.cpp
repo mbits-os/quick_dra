@@ -425,6 +425,7 @@ namespace quick_dra::gui {
 		horiz.addWidget<QLabel>("label", [&label](QLabel& lbl) {
 			lbl.setSizePolicy(TakeWidth / (HeightForWidth / 1_XStretch));
 			lbl.setText(label);
+			lbl.setTextFormat(Qt::MarkdownText);
 			lbl.setWordWrap(true);
 			lbl.setAlignment(Qt::AlignTop | Qt::AlignLeft);
 

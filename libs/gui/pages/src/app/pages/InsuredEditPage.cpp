@@ -15,6 +15,11 @@
 
 namespace quick_dra::gui {
 	namespace {
+		static constexpr name_from_config insured_title{
+		    .format = unknown_name::symbolic,
+		    .format_for = name_hint::insured,
+		};
+
 		insured_type::history_type history_conv(std::pair<year_month, partial::employment_history> const& from) {
 			return {
 			    .since = from.first,
@@ -116,7 +121,7 @@ namespace quick_dra::gui {
 			}
 
 			auto const& item = insured[index];
-			return name_from(item.first_name, item.last_name, false);
+			return name_from(item.first_name, item.last_name, insured_title);
 		}
 	}  // namespace
 
@@ -150,13 +155,13 @@ namespace quick_dra::gui {
 		if (insuredIndex >= insured.size()) {
 			currentValue = acceptedValue = {};
 			currentValue.title.title_code = acceptedValue.title.title_code = "0000"sv;
-			setWindowTitle(
-			    QString{"%1 (Ubezpieczony)"}.arg(QString::fromUtf8(name_from(std::nullopt, std::nullopt, false))));
+			setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(
+			    QString::fromUtf8(name_from(std::nullopt, std::nullopt, insured_title))));
 		} else {
 			auto& ref = insured[insuredIndex];
 			currentValue = acceptedValue = insured_or_empty(ref);
-			setWindowTitle(
-			    QString{"%1 (Ubezpieczony)"}.arg(QString::fromUtf8(name_from(ref.first_name, ref.last_name, false))));
+			setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(
+			    QString::fromUtf8(name_from(ref.first_name, ref.last_name, insured_title))));
 		}
 		ui.document.setBlockChecker(
 		    [insuredIndex = insuredIndex, &insured](std::string_view kind, std::string_view number) {
@@ -174,7 +179,8 @@ namespace quick_dra::gui {
 
 	void InsuredEditPage::updateCurrentValue() {
 		ui.each([&currentValue = this->currentValue](auto& item) { item.readValue(currentValue); });
-		auto const name = name_from(relax_string(currentValue.first_name), relax_string(currentValue.last_name), false);
+		auto const name =
+		    name_from(relax_string(currentValue.first_name), relax_string(currentValue.last_name), insured_title);
 		setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(QString::fromUtf8(name)));
 		setFormDirty(currentValue != acceptedValue);
 	}
