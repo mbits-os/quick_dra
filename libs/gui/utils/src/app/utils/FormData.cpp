@@ -90,10 +90,12 @@ namespace quick_dra::gui {
 	}  // namespace
 
 	void FormData::setConfig(std::filesystem::path const& path,
-	                         std::optional<std::filesystem::path> const& tax_config_path) {
+	                         std::optional<std::filesystem::path> const& tax_config_path,
+	                         bool download_github_config) {
 		cfg_path = path;
 		loadConfig();
-		tax_cfg = load_tax_config(verbose::none, tax_config_path);
+		tax_cfg = load_tax_config(verbose::none, tax_config_path,
+		                          download_github_config ? github_config::download : github_config::skip);
 	}
 
 	void FormData::loadConfig() {

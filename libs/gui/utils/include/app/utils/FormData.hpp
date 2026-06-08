@@ -18,8 +18,8 @@
 namespace quick_dra::gui {
 	struct ReportId {
 		unsigned index{1};
-		year_month date{};
-		bool isOverriden{};
+		year_month date{0y / 1};
+		bool isOverriden{false};
 
 		constexpr bool operator==(ReportId const&) const noexcept = default;
 	};
@@ -47,7 +47,8 @@ namespace quick_dra::gui {
 		std::map<std::string, report_format::formatting> gui_formats{};
 
 		void setConfig(std::filesystem::path const& cfg_path,
-		               std::optional<std::filesystem::path> const& tax_config_path);
+		               std::optional<std::filesystem::path> const& tax_config_path,
+		               bool download_github_config = true);
 		void loadConfig();
 		void storeConfig();
 		void loadData();
