@@ -5,6 +5,11 @@
 
 namespace quick_dra::platform {
 	namespace {
+		std::filesystem::path& _config_data_dir() {
+			static auto path = exec_dir().parent_path() / dir_names::config;
+			return path;
+		}
+
 		std::filesystem::path _home_path() {
 			auto const* const HOME = std::getenv("HOME");
 			if (HOME) {
@@ -28,6 +33,9 @@ namespace quick_dra::platform {
 			return result;
 		}
 	}  // namespace
+
+	std::filesystem::path const& config_data_dir() { return _config_data_dir(); }
+	void config_data_dir(std::filesystem::path const& new_value) { _config_data_dir() = new_value; }
 
 	std::filesystem::path const& home_path() {
 		static auto const path = _home_path();

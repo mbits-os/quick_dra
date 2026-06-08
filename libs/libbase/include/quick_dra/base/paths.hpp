@@ -24,10 +24,8 @@ namespace quick_dra::platform {
 		return path;
 	}
 
-	inline std::filesystem::path const& config_data_dir() {
-		static auto const path = exec_dir().parent_path() / dir_names::config;
-		return path;
-	}
+	std::filesystem::path const& config_data_dir();
+	void config_data_dir(std::filesystem::path const&);
 
 	std::filesystem::path const& home_path();
 
