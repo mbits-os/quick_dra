@@ -9,6 +9,7 @@
 #include <quick_dra/base/paths.hpp>
 #include <quick_dra/io/http.hpp>
 #include <quick_dra/io/options.hpp>
+#include <quick_dra/io/tax_config.hpp>
 #include <quick_dra/version.hpp>
 #include <string>
 #include <utility>
@@ -46,14 +47,18 @@ namespace quick_dra {
 	}  // namespace
 
 	std::optional<tax_config> load_tax_config(verbose level,
-	                                          std::optional<std::filesystem::path> const& tax_config_path) {
+	                                          std::optional<std::filesystem::path> const& tax_config_path,
+	                                          github_config download) {
 		auto const loaders = std::array{
 		    // tax_config_loader
 		    std::function{[&tax_config_path](verbose) -> std::optional<tax_config> {
 			    if (!tax_config_path) return std::nullopt;
 			    return tax_config::parse_yaml(*tax_config_path);
 		    }},
-		    std::function{download_tax_config},
+		    std::function{[download](verbose level) -> std::optional<tax_config> {
+			    if (download == github_config::download) return download_tax_config(level);
+			    return std::nullopt;
+		    }},
 		    std::function{
 		        +[](verbose) { return tax_config::parse_yaml(platform::config_data_dir() / "tax_config.yaml"sv); }},
 		};

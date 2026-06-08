@@ -23,18 +23,24 @@ namespace quick_dra {
 		std::string formatted{};
 		std::string label{};
 		quick_dra::alignement alignement{};
+
+		auto operator<=>(data_field const&) const noexcept = default;
 	};
 
 	struct data_section {
 		std::string name{};
 		std::string label{};
 		std::vector<data_field> fields{};
+
+		auto operator<=>(data_section const&) const noexcept = default;
 	};
 
 	struct formatted_report {
 		std::string title;
 		std::map<std::string, data_section> data{};
 		std::vector<std::string> order{};
+
+		auto operator<=>(formatted_report const&) const noexcept = default;
 
 		void add(std::string const& section, data_field const& item, std::map<std::string, std::string> const& labels) {
 			auto it = data.lower_bound(section);
