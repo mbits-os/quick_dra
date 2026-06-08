@@ -6,20 +6,14 @@
 #include <QLayout>
 #include <QString>
 #include <QToolButton>
+#include <app/utils/empty_callback.hpp>
 #include <memory>
 #include <string_view>
 #include <utility>
 
 namespace quick_dra::gui {
-	template <typename T>
-	struct EmptyCallback {
-		void operator()(T const&) {}
-	};
-
 	template <typename QType, typename QLayoutType>
 	class LaidOut;
-	template <typename QType>
-	class LaidOutForm;
 	template <typename QType>
 	class LaidOutGrid;
 
@@ -86,58 +80,6 @@ namespace quick_dra::gui {
 	};
 
 	template <typename QType>
-	class LaidOutForm {
-	public:
-		LaidOutForm(QType* self, QFormLayout* layout, int row) : self_{self}, layout_{layout}, row_{row} {}
-
-		template <typename QLayoutType2>
-		LaidOut<QType, QLayoutType2> withLayout(QLayoutType2* layout) const {
-			return {self_, layout};
-		}
-
-		template <typename T, typename Cb = EmptyCallback<T>>
-		inline T* setWidget(QAnyStringView name, QFormLayout::ItemRole role, Cb&& cb = {}) const {
-			auto result = std::make_unique<T>(self_);
-			result->setObjectName(name);
-			cb(*result.get());
-			layout_->setWidget(row_, role, result.get());
-			return result.release();
-		}
-
-		template <typename T, typename Cb = EmptyCallback<T>>
-		inline LaidOutForm const& createWidget(T*& out,
-		                                       QAnyStringView name,
-		                                       QFormLayout::ItemRole role,
-		                                       Cb&& cb = {}) const {
-			out = setWidget<T>(name, role, std::forward<Cb>(cb));
-			return *this;
-		}
-
-		template <typename T, typename Cb = EmptyCallback<T>>
-		inline T* addLayout(QAnyStringView name, QFormLayout::ItemRole role, Cb&& cb = {}) const {
-			auto result = std::make_unique<T>(nullptr);
-			result->setObjectName(name);
-			cb(*result.get());
-			if (layout_) layout_->setLayout(row_, role, result.get());
-			return result.release();
-		}
-
-		template <typename T, typename Cb = EmptyCallback<T>>
-		inline LaidOutForm const& createLayout(T*& out,
-		                                       QAnyStringView name,
-		                                       QFormLayout::ItemRole role,
-		                                       Cb&& cb = {}) const {
-			out = addLayout<T>(name, role, std::forward<Cb>(cb));
-			return *this;
-		}
-
-	private:
-		QType* self_;
-		QFormLayout* layout_;
-		int row_;
-	};
-
-	template <typename QType>
 	class LaidOutGrid {
 	public:
 		struct GridStats {
@@ -146,11 +88,6 @@ namespace quick_dra::gui {
 			int colSpan{1};
 		};
 		LaidOutGrid(QType* self, QGridLayout* layout, int row) : self_{self}, layout_{layout}, row_{row} {}
-
-		template <typename QLayoutType2>
-		LaidOut<QType, QLayoutType2> withLayout(QLayoutType2* layout) const {
-			return {self_, layout};
-		}
 
 		template <typename T, typename Cb = EmptyCallback<T>>
 		inline T* addWidget(QAnyStringView name, GridStats const& stats, Cb&& cb = {}) const {
@@ -170,24 +107,6 @@ namespace quick_dra::gui {
 			return *this;
 		}
 
-		template <typename T, typename Cb = EmptyCallback<T>>
-		inline T* addLayout(QAnyStringView name, GridStats const& stats, Cb&& cb = {}) const {
-			auto result = std::make_unique<T>(nullptr);
-			result->setObjectName(name);
-			cb(*result.get());
-			if (layout_) layout_->addLayout(result.get(), row_, stats.column, stats.rowSpan, stats.colSpan);
-			return result.release();
-		}
-
-		template <typename T, typename Cb = EmptyCallback<T>>
-		inline LaidOutGrid const& createLayout(T*& out,
-		                                       QAnyStringView name,
-		                                       GridStats const& stats,
-		                                       Cb&& cb = {}) const {
-			out = addLayout<T>(name, stats, std::forward<Cb>(cb));
-			return *this;
-		}
-
 	private:
 		QType* self_;
 		QGridLayout* layout_;
@@ -199,9 +118,6 @@ namespace quick_dra::gui {
 
 	template <typename QParent>
 	LaidOut(QParent*) -> LaidOut<QParent, QLayout>;
-
-	template <typename QParent>
-	LaidOutForm(QParent*, QFormLayout*, int) -> LaidOutForm<QParent>;
 
 	template <typename QParent>
 	LaidOutGrid(QParent*, QGridLayout*, int) -> LaidOutGrid<QParent>;
