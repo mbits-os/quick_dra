@@ -1,0 +1,12 @@
+// Copyright (c) 2026 midnightBITS
+// This code is licensed under MIT license (see LICENSE for details)
+
+#pragma once
+
+#include <quick_dra/base/paths.hpp>
+#include <string_view>
+
+namespace quick_dra::gui::testing {
+	static constexpr auto form_data_config = u8"@PROJECT_BINARY_DIR@/@SHARE_DIR@/config"sv;
+	static constexpr auto cli_test_data = u8"@QDRA_SOURCE_DIR@/tests/data"sv;
+}  // namespace quick_dra::gui::testing

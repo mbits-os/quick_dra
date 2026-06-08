@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="report_format.yaml">../../../../data/config/report_format.yaml</file>
+    </qresource>
+</RCC>
