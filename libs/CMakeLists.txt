@@ -20,12 +20,5 @@ add_to_coverage(
     libconv
     libcli
     cli
-
-    # app
-    # controls
-    # gui
-    # main
-    # pages
-    # utils
 )
 cov_set_parent_scope()

@@ -53,7 +53,7 @@ namespace quick_dra::gui {
 			}
 
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		insured_t insuredFrom(partial::insured_t const& insured) {
 			return insured_t{
@@ -73,7 +73,7 @@ namespace quick_dra::gui {
 			}
 
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		config configFrom(partial::config const& cfg, quick_dra::v1::tax_parameters const& params) {
 			return {

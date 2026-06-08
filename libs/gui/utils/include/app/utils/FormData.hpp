@@ -19,7 +19,7 @@ namespace quick_dra::gui {
 	struct ReportId {
 		unsigned index{1};
 		year_month date{0y / 1};
-		bool isOverriden{false};
+		bool isOverriden{false};  // GCOV_EXCL_LINE[GCC]
 
 		constexpr bool operator==(ReportId const&) const noexcept = default;
 	};
