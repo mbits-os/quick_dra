@@ -23,6 +23,9 @@ namespace quick_dra::gui {
 
 		void setGlobals(Globals* globals);
 		Globals& globals() const noexcept { return *globals_; }
+		bool formDirty() const noexcept;
+		bool formValid() const noexcept;
+		bool topMost() const noexcept;
 
 		PagedWidget* page();
 

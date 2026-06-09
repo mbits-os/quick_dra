@@ -5,16 +5,38 @@
 
 #include <QFileSystemWatcher>
 #include <QObject>
+#include <QSettings>
 #include <app/utils/FormData.hpp>
 
 namespace quick_dra::gui {
 	class PageStack;
 
+	class SettingsProvider {
+	public:
+		virtual ~SettingsProvider() = default;
+		virtual QSettings createContainer() const = 0;
+
+		template <typename T>
+		static std::unique_ptr<SettingsProvider> wrap(T&& lambda) {
+			struct Impl : SettingsProvider {
+				T lambda;
+				Impl(T&& lambda) : lambda{std::forward<T>(lambda)} {};
+				QSettings createContainer() const override { return lambda(); }
+			};
+
+			return std::make_unique<Impl>(std::forward<T>(lambda));
+		}
+
+		static auto native() {
+			return wrap([] { return QSettings{}; });
+		}
+	};
+
 	class Globals : public QObject {
 		Q_OBJECT
 
 	public:
-		Globals();
+		Globals(std::unique_ptr<SettingsProvider> provider = {});
 
 		static Globals* current();
 
@@ -22,9 +44,13 @@ namespace quick_dra::gui {
 		bool hasStack() const noexcept { return !!stack_; }
 		void setStack(PageStack* stack);
 
+		QSettings createSettings() const { return provider_->createContainer(); }
+
 		bool configModified() const noexcept;
 
-		void setConfig(std::filesystem::path const&, std::optional<std::filesystem::path> const&);
+		void setConfig(std::filesystem::path const&,
+		               std::optional<std::filesystem::path> const&,
+		               bool download_github_config = true);
 		FormData const& data() const noexcept { return data_; }
 		ReportId const& reportId() const noexcept { return reportId_; }
 
@@ -36,8 +62,6 @@ namespace quick_dra::gui {
 
 	public slots:
 		void setConfigModified(bool value);
-
-	private slots:
 		void observedFileChanged(QString const& path);
 
 	signals:
@@ -51,6 +75,7 @@ namespace quick_dra::gui {
 		void storeSettings();
 
 		PageStack* stack_{};
+		std::unique_ptr<SettingsProvider> provider_;
 
 		FormData data_{};
 		ReportId reportId_{};

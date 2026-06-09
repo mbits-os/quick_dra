@@ -36,6 +36,10 @@ namespace quick_dra::gui {
 
 	void PageStack::setGlobals(Globals* globalsPtr) { globals_ = globalsPtr; }
 
+	bool PageStack::formDirty() const noexcept { return globalHeader_->formDirty(); }
+	bool PageStack::formValid() const noexcept { return globalHeader_->formValid(); }
+	bool PageStack::topMost() const noexcept { return globalHeader_->topMost(); }
+
 	void PageStack::setupUi() {
 		QObject::connect(parent_, &QStackedWidget::currentChanged, this, &PageStack::currentChanged);
 		QObject::connect(globalHeader_, &PageHeader::navigatingBack, this, &PageStack::navigateBack);

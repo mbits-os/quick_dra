@@ -2,7 +2,6 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <QEvent>
-#include <QSettings>
 #include <app/gui/Globals.hpp>
 #include <app/main/MainWindow.hpp>
 #include <app/pages/HomePage.hpp>
@@ -49,7 +48,7 @@ namespace quick_dra::gui {
 	}
 
 	void MainWindow::storePosition() {
-		QSettings settings{};
+		auto settings = pageStack->globals().createSettings();
 		settings.beginGroup("State");
 		settings.setValue("Geometry", saveGeometry());
 		settings.setValue("WindowState", saveState());
@@ -57,7 +56,7 @@ namespace quick_dra::gui {
 	}
 
 	void MainWindow::restorePosition() {
-		QSettings settings{};
+		auto settings = pageStack->globals().createSettings();
 		settings.beginGroup("State");
 		if (!restoreGeometry(settings.value("Geometry").toByteArray())) {
 			resize(450, 450);

@@ -100,11 +100,10 @@ namespace quick_dra::gui {
 			QSize size{};
 		};
 
-		// explicit SVGIconEngine(QString const& templatePath) : state_{std::make_shared<SharedState>(templatePath)} {}
 		explicit SVGIconEngine(std::shared_ptr<SharedState> copy) : state_{std::move(copy)} {}
 
 		QSize actualSize(const QSize&, QIcon::Mode, QIcon::State) override { return state_->defaultSize(); }
-		QIconEngine* clone() const override { return new SVGIconEngine{state_}; }
+		QIconEngine* clone() const override { return new SVGIconEngine{state_}; }  // GCOV_EXCL_LINE
 		QPixmap pixmap(QSize const& size, QIcon::Mode mode, QIcon::State state) override {
 			QImage img(size, QImage::Format_ARGB32);
 			img.fill(qRgba(0, 0, 0, 0));
@@ -145,8 +144,8 @@ namespace quick_dra::gui {
 			auto it = loadedIcons.lower_bound(path);
 			if (it != loadedIcons.end() && it->first == path) {
 				// someone already did it
-				return it->second;
-			}
+				return it->second;  // GCOV_EXCL_LINE -- check-lock-check is not testable on single thread app :D
+			}  // GCOV_EXCL_LINE
 
 			auto state = std::make_shared<SVGIconEngine::SharedState>(path);
 			it = loadedIcons.insert(it, {path, std::move(state)});

@@ -21,7 +21,6 @@ namespace quick_dra::gui {
 	void PagedWidget::pageRemoved() {}
 	void PagedWidget::accept() { accepted(); }
 	void PagedWidget::leavePage() { stack().navigateBack(); }
-	void PagedWidget::acceptChanges() { accept(); }
 	void PagedWidget::setupPageUI() {
 		stack().setFormDirty(formDirty_);
 		stack().setFormValid(formValid_);

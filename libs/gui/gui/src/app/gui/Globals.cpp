@@ -1,7 +1,6 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <QSettings>
 #include <app/gui/Globals.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/utils/str.hpp>
@@ -14,7 +13,8 @@ namespace quick_dra::gui {
 		Globals* globals{};
 	}  // namespace
 
-	Globals::Globals() {
+	Globals::Globals(std::unique_ptr<SettingsProvider> provider)
+	    : provider_{provider ? std::move(provider) : SettingsProvider::native()} {
 		globals = this;
 		data_.loadData();
 		readSettings();
@@ -30,13 +30,14 @@ namespace quick_dra::gui {
 	}
 
 	void Globals::setConfig(std::filesystem::path const& cfg_path,
-	                        std::optional<std::filesystem::path> const& tax_config_path) {
+	                        std::optional<std::filesystem::path> const& tax_config_path,
+	                        bool download_github_config) {
 		if (!data_.cfg_path.empty()) {
 			// TODO: remove previous?
 		}
 		auto canonical = std::filesystem::weakly_canonical(cfg_path);
 		watcher_.addPath(QString::fromUtf8(as_sv(canonical.generic_u8string())));
-		data_.setConfig(canonical, tax_config_path);
+		data_.setConfig(canonical, tax_config_path, download_github_config);
 		configurationChanged();
 
 		data_.lookupParameters(reportId_);
@@ -132,7 +133,7 @@ namespace quick_dra::gui {
 	}
 
 	void Globals::readSettings() {
-		QSettings settings{};
+		auto settings = createSettings();
 		settings.beginGroup("Settings");
 		reportId_.isOverriden =
 		    yaml::convert_string(settings.value("YearMonth", "").toString().toStdString(), reportId_.date);
@@ -145,7 +146,7 @@ namespace quick_dra::gui {
 	}
 
 	void Globals::storeSettings() {
-		QSettings settings{};
+		auto settings = createSettings();
 		settings.beginGroup("Settings");
 		if (reportId_.isOverriden) {
 			settings.setValue("YearMonth", QString::fromUtf8(yaml::as_string(reportId_.date)));

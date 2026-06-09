@@ -42,8 +42,8 @@ namespace quick_dra::gui {
 
 		auto const current = width();
 		if (current == width_) {
-			return;
-		}
+			return;  // GCOV_EXCL_LINE
+		}  // GCOV_EXCL_LINE
 
 		width_ = current;
 		widthChanged(width_);
@@ -85,7 +85,6 @@ namespace quick_dra::gui {
 		return gauss_scaling(static_cast<qreal>(length), static_cast<qreal>(pos));
 	}
 
-	QColor getOsAccent(QPalette const& palette) { return palette.color(QPalette::Highlight); }
 	QColor addAlpha(QColor color, int alpha) {
 		color.setAlpha(alpha);
 		return color;
@@ -164,8 +163,8 @@ namespace quick_dra::gui {
 		auto color = palette().color(QPalette::WindowText);
 		color.setAlpha(color.alpha() * 10 / 255);
 		if (!color.alpha()) {
-			return;
-		}
+			return;  // GCOV_EXCL_LINE
+		}  // GCOV_EXCL_LINE
 
 		auto const s = this->size();
 		auto const width = static_cast<float>(s.width());
