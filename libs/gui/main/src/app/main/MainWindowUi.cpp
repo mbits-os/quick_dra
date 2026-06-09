@@ -10,9 +10,9 @@
 using namespace std::literals;
 
 namespace quick_dra::gui {
-	void MainWindow::setupUi() {
+	void MainWindow::setupUi(Globals* globals) {
 		if (objectName().isEmpty()) setObjectName("MainWindow");
-		restorePosition();
+		restorePosition(globals);
 		LaidOut{this}.createWidget(centralWidget, "centralWidget");
 
 		HeaderShadow* shadow{};
