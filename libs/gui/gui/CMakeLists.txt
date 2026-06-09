@@ -46,13 +46,34 @@ endif()
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
-    set(FULL_TEST_SRCS
-        tests/options.test.cpp
-    )
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${FULL_TEST_SRCS}
+    get_target_property(QDRA_SOURCE_DIR qdra SOURCE_DIR)
+    configure_file(tests/EnvPaths.hpp.in EnvPaths.hpp @ONLY)
+
+    set(FULL_TEST_GEN_SRCS
+        "${CMAKE_CURRENT_BINARY_DIR}/EnvPaths.hpp"
     )
 
-    add_project_test(gui ${FULL_TEST_SRCS})
+    set(FULL_TEST_SRCS
+        tests/Pages.test.cpp
+        tests/Globals.test.cpp
+    )
+
+    set(QT6_TEST_SRCS
+        tests/qt6/icons.qrc
+        tests/qt6/main.cpp
+        tests/qt6/GuiTest.cpp
+        tests/qt6/GuiTest.hpp
+        tests/qt6/CurrentColor.test.cpp
+        tests/qt6/PageHeader.test.cpp
+    )
+
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES ${FULL_TEST_SRCS} ${QT6_TEST_SRCS})
+    source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${FULL_TEST_GEN_SRCS})
+
+    add_project_test(gui ${FULL_TEST_SRCS} ${FULL_TEST_GEN_SRCS})
     target_link_libraries(gui-test PUBLIC GTest::gmock_main gui)
+
+    qt_add_project_test(gui-qt6 ${QT6_TEST_SRCS})
+    target_link_libraries(gui-qt6-test PUBLIC Qt6::Test gui)
+    set_target_properties(gui-qt6-test PROPERTIES AUTORCC ON)
 endif()
