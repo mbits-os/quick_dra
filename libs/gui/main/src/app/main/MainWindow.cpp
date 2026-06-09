@@ -12,7 +12,7 @@ using namespace std::literals;
 
 namespace quick_dra::gui {
 	MainWindow::MainWindow(Globals* globals, QWidget* parent) : QMainWindow(parent) {
-		setupUi();
+		setupUi(globals);
 		setWindowTitle(QString::fromStdString(std::format("{} {}", version::program, version::ui)));
 		globals->setStack(pageStack);
 		pageStack->push<HomePage>();
@@ -22,7 +22,7 @@ namespace quick_dra::gui {
 
 	void MainWindow::closeEvent(QCloseEvent* event) {
 		QMainWindow::closeEvent(event);
-		storePosition();
+		storePosition(&pageStack->globals());
 	}
 
 	bool MainWindow::event(QEvent* event) {
@@ -47,16 +47,16 @@ namespace quick_dra::gui {
 		pageStack->globals().reloadConfig();
 	}
 
-	void MainWindow::storePosition() {
-		auto settings = pageStack->globals().createSettings();
+	void MainWindow::storePosition(Globals* globals) {
+		auto settings = globals->createSettings();
 		settings.beginGroup("State");
 		settings.setValue("Geometry", saveGeometry());
 		settings.setValue("WindowState", saveState());
 		settings.endGroup();
 	}
 
-	void MainWindow::restorePosition() {
-		auto settings = pageStack->globals().createSettings();
+	void MainWindow::restorePosition(Globals* globals) {
+		auto settings = globals->createSettings();
 		settings.beginGroup("State");
 		if (!restoreGeometry(settings.value("Geometry").toByteArray())) {
 			resize(450, 450);

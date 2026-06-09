@@ -27,9 +27,9 @@ namespace quick_dra::gui {
 		void reloadConfig();
 
 	private:
-		void setupUi();
-		void storePosition();
-		void restorePosition();
+		void setupUi(Globals* globals);
+		void storePosition(Globals* globals);
+		void restorePosition(Globals* globals);
 		void updateStyles();
 
 		PageHeader* pageHeader{};
