@@ -36,36 +36,6 @@ set_target_properties(qdra-gui PROPERTIES
 )
 
 if(WIN32)
-    get_target_property(Qt6_Core_Location Qt6::Core LOCATION)
-    cmake_path(GET Qt6_Core_Location PARENT_PATH Qt6_Bin_Dir)
-    cmake_path(GET Qt6_Bin_Dir PARENT_PATH Qt6_Dir)
-    find_program(windeployqt_exe NAMES windeployqt6 windeployqt PATHS "${Qt6_Dir}/bin" NO_DEFAULT_PATH)
-    find_program(qtpaths_exe NAMES qtpaths6 qtpaths PATHS "${Qt6_Dir}/bin" NO_DEFAULT_PATH)
-    message(STATUS "windeployqt: ${windeployqt_exe}")
-    message(STATUS "qtpaths: ${qtpaths_exe}")
-
-    if(windeployqt_exe)
-        set(DPEPLOY_ARGS --dir .)
-        list(APPEND DEPLOY_ARGS --libdir .)
-        list(APPEND DEPLOY_ARGS --plugindir plugins)
-        list(APPEND DEPLOY_ARGS --qml-deploy-dir qml)
-        list(APPEND DEPLOY_ARGS --translationdir translations)
-
-        # list(APPEND DEPLOY_ARGS --force)
-        if(qtpaths6_exe)
-            list(APPEND DEPLOY_ARGS --qtpaths "${qtpaths6_exe}")
-        endif()
-
-        add_custom_command(TARGET qdra-gui POST_BUILD
-            COMMAND ${qtpaths_exe} --query > qt_plugins_dir.txt
-            COMMAND "${windeployqt_exe}" ${DEPLOY_ARGS} "$<TARGET_FILE:qdra-gui>"
-            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-            COMMENT "Running windeployqt to deploy Qt dependencies"
-        )
-    endif()
-endif()
-
-if(WIN32)
     if(QUICK_DRA_WIN_GUI_CONSOLE)
         message(STATUS "winapi: Build Quick-DRA GUI as Console app")
         target_link_options(qdra-gui PRIVATE /ENTRY:wmainCRTStartup)
