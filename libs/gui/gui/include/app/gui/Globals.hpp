@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QSettings>
 #include <app/utils/FormData.hpp>
+#include <memory>
+#include <utility>
 
 namespace quick_dra::gui {
 	class PageStack;

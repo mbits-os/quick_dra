@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <app/gui/Globals.hpp>
 #include <app/gui/PageStack.hpp>
+#include <utility>
 
 namespace quick_dra::gui {
 	class PagedWidget : public QWidget {
