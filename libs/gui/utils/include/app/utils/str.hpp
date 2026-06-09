@@ -12,10 +12,8 @@ namespace quick_dra {
 	// stems from changes to `QString::toUtf8` between those version, where in 6.11 the integration between the result
 	// and `string_view` was much deeper, than in 6.8.
 
-	inline auto as_u8v(QByteArray const& bytes) {
-		return as_u8v(std::string_view{bytes.data(), static_cast<size_t>(bytes.size())});
-	}
-
+	inline auto as_sv(QByteArray const& bytes) { return conv<std::string_view>(bytes); }
+	inline auto as_u8v(QByteArray const& bytes) { return conv<std::u8string_view>(bytes); }
 	inline auto strip_sv(QByteArray const& bytes) {
 		return strip_sv(std::string_view{bytes.data(), static_cast<size_t>(bytes.size())});
 	}

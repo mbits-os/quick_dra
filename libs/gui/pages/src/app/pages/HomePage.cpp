@@ -3,7 +3,6 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QStandardPaths>
 #include <QToolButton>
 #include <algorithm>
@@ -54,23 +53,23 @@ namespace quick_dra::gui {
 			return directory;
 		}
 
-		QString previousSaveDirectory() {
-			QSettings settings{};
+		QString previousSaveDirectory(Globals& globals) {
+			auto settings = globals.createSettings();
 			settings.beginGroup("State");
 			auto const dirname = settings.value("SaveDirectory", "").toString();
 			settings.endGroup();
 			return !dirname.isEmpty() && QDir{dirname}.exists() ? dirname : QString{};
 		}
 
-		void storeSaveDirectory(QString const& dirname) {
-			QSettings settings{};
+		void storeSaveDirectory(Globals& globals, QString const& dirname) {
+			auto settings = globals.createSettings();
 			settings.beginGroup("State");
 			settings.setValue("SaveDirectory", dirname);
 			settings.endGroup();
 		}
 
-		QString writePath() {
-			auto result = previousSaveDirectory();
+		QString writePath(Globals& globals) {
+			auto result = previousSaveDirectory(globals);
 			if (result.isEmpty()) result = standardWritePath();
 			return result;
 		}
@@ -141,7 +140,7 @@ namespace quick_dra::gui {
 
 	void HomePage::storeKeduXmlLocally() {
 		auto const& id = globals().reportId();
-		auto const input_path = QDir{writePath()}.filePath(QString::fromUtf8(setFilename(id.index, id.date)));
+		auto const input_path = QDir{writePath(globals())}.filePath(QString::fromUtf8(setFilename(id.index, id.date)));
 		auto const output_path =
 		    QFileDialog::getSaveFileName(this, tr("Save File"), input_path, tr("XML Files (*.xml)"));
 
@@ -150,7 +149,7 @@ namespace quick_dra::gui {
 		}
 
 		auto const path = std::filesystem::absolute(QFile{output_path}.filesystemFileName());
-		storeSaveDirectory(QString::fromUtf8(as_sv(path.parent_path().generic_u8string())));
+		storeSaveDirectory(globals(), QString::fromUtf8(as_sv(path.parent_path().generic_u8string())));
 		globals().data().storeKedu(path);
 	}
 

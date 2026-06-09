@@ -21,7 +21,7 @@ namespace quick_dra {
 		static_assert(sizeof(SrcChar) == sizeof(DstChar),
 		              "conv requires source and destination character types of "
 		              "equal size");
-		return Result{reinterpret_cast<DstChar const*>(view.data()), view.size()};
+		return Result{reinterpret_cast<DstChar const*>(view.data()), static_cast<size_t>(view.size())};
 	}
 
 	inline auto as_u8v(std::string_view view) { return conv<std::u8string_view>(view); }

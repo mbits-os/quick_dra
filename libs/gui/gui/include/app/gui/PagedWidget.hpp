@@ -30,7 +30,6 @@ namespace quick_dra::gui {
 
 	public slots:
 		void leavePage();
-		void acceptChanges();
 		void setFormDirty(bool);
 		void setFormValid(bool);
 
@@ -44,9 +43,11 @@ namespace quick_dra::gui {
 		Globals& globals() const noexcept { return *globals_; }
 		PageStack& stack() const noexcept { return globals().stack(); }
 
-		template <std::derived_from<PagedWidget> T>
-		T* push() {
-			return stack().push<T>();
+		template <std::derived_from<PagedWidget> T, typename... Args>
+		T* push(Args&&... args)
+		    requires requires(Args&&... args) { new T{std::forward<Args>(args)...}; }
+		{
+			return stack().push<T>(std::forward<Args>(args)...);
 		}
 
 	private:

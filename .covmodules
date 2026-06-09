@@ -4,7 +4,6 @@
 	path = libs/libconv
 [module "GUI"]
 	path = libs/gui
-	path = libs/libgui
 [module "Base"]
 	path = libs/libbase
 	path = libs/liblex

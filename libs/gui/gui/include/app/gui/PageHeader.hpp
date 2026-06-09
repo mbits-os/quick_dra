@@ -70,6 +70,7 @@ namespace quick_dra::gui {
 
 		HeaderToolbar* toolBar() const noexcept { return toolBar_; }
 		bool formDirty() const noexcept { return formDirty_; }
+		bool formValid() const noexcept { return formValid_; }
 		bool topMost() const noexcept { return topMost_; }
 
 		void paintEvent(QPaintEvent*) override;
