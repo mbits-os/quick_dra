@@ -5,19 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Quick-DRA GUI with VS",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/debug/bin/qdra-gui.exe",
-            "args": [ ],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [ ],
-            "console": "internalConsole"
-        },
-        {
-            "name": "Debug Quick-DRA GUI with GDB",
-            "type": "cppdbg",
+            "name": "Debug Quick-DRA GUI",
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/bin/qdra-gui",
             "args": [ ],
@@ -25,14 +13,20 @@
             "cwd": "${workspaceFolder}",
             "environment": [ ],
             "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
+            "windows": {
+                "type": "cppvsdbg"
+            },
+            "linux": {
+                "type": "cppdbg",
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ]
+            },
             "preLaunchTask": "Build Debug with proj-flow"
         }
     ]
