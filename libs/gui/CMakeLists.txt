@@ -16,11 +16,11 @@ else()
 endif()
 
 add_to_coverage(
+    gui
     utils
 
     # app
     # controls
-    # gui
     # main
     # pages
 )

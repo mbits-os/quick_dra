@@ -22,6 +22,31 @@ function(add_project_test TARGET)
     add_test(NAME ${TARGET} COMMAND ${TARGET}-test "--gtest_output=xml:${PROJECT_BINARY_DIR}/test-results/google-test/${TARGET}.xml")
 endfunction()
 
+function(qt_add_project_test TARGET)
+  cmake_parse_arguments(PARSE_ARGV 1 TST "" "" "")
+
+  set(_OUTPUT ${PROJECT_BINARY_DIR}/bin/tests)
+
+  qt_add_executable(${TARGET}-test ${TST_UNPARSED_ARGUMENTS})
+  set_target_properties(${TARGET}-test PROPERTIES
+    FOLDER tests
+    RUNTIME_OUTPUT_DIRECTORY ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_OUTPUT}
+  )
+  target_compile_options(${TARGET}-test PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+  target_link_options(${TARGET}-test PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+  target_include_directories(${TARGET}-test
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests
+    ${CMAKE_CURRENT_BINARY_DIR})
+
+    add_test(NAME ${TARGET} COMMAND ${TARGET}-test)
+endfunction()
+
+
 function(add_win32_icon TARGET NAME)
   set(RESNAME "${PROJECT_SOURCE_DIR}/data/assets/${NAME}")
   set(RC "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.dir/icon.rc")
