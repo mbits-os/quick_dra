@@ -68,5 +68,4 @@ if(QUICK_DRA_TESTING)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests
         ${CMAKE_CURRENT_BINARY_DIR}/tests
     )
-    set_target_properties(utils-test PROPERTIES AUTORCC ON)
 endif()
