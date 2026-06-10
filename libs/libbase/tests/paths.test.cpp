@@ -38,4 +38,14 @@ namespace quick_dra::testing {
 
 		ASSERT_EQ(platform::get_config_path(as_str(argument.u8string())), argument);
 	}
+
+	TEST(paths, config_data) {
+		auto original = platform::exec_dir().parent_path() / dir_names::config;
+		auto changed = std::filesystem::weakly_canonical(__FILE__).parent_path();
+
+		EXPECT_EQ(platform::config_data_dir(), original);
+		platform::config_data_dir(changed);
+		EXPECT_EQ(platform::config_data_dir(), changed);
+		platform::config_data_dir(original);
+	}
 }  // namespace quick_dra::testing

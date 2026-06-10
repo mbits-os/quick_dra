@@ -89,6 +89,28 @@ contributions:
 		ASSERT_EQ(log, expected_log);
 	}
 
+	TEST(config, skipping_github) {
+		auto const here = platform::exec_dir();
+		// reverse of build/<config>/bin/tests
+		auto const root = here.parent_path().parent_path().parent_path().parent_path();
+		auto const config_path =
+		    root / "libs"sv / "cli"sv / "tests"sv / "data"sv / ".quick_dra.AB4123456_50671500000.quarter.yaml"sv;
+		auto const custom_tax_config = here / "nonexisting-file"sv;
+
+		set_curl_factory<ImplNoTaxConfig>();
+
+		::testing::internal::CaptureStdout();
+		auto const cfg =
+		    parse_config(verbose::parameters, 2026y / 1, config_path, custom_tax_config, github_config::skip);
+		auto const log = ::testing::internal::GetCapturedStdout();
+		auto const expected_log = fmt::format(
+		    "Quick-DRA: error: cannot find {}\n"
+		    "Quick-DRA: error: cannot find {}\n"sv,
+		    custom_tax_config, platform::config_data_dir() / "tax_config.yaml"sv);
+		ASSERT_FALSE(cfg);
+		ASSERT_EQ(log, expected_log);
+	}
+
 	TEST(config, custom_tax_config) {
 		auto const here = platform::exec_dir();
 		// reverse of build/<config>/bin/tests

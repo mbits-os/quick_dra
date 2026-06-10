@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <optional>
 #include <quick_dra/base/verbose.hpp>
+#include <quick_dra/io/github_config.hpp>
 #include <quick_dra/models/types.hpp>
 #include <string>
 
@@ -28,5 +29,6 @@ namespace quick_dra {
 	std::optional<config> parse_config(verbose level,
 	                                   year_month const& date,
 	                                   std::filesystem::path const& path,
-	                                   std::optional<std::filesystem::path> const& tax_config_path);
+	                                   std::optional<std::filesystem::path> const& tax_config_path,
+	                                   github_config download = github_config::download);
 }  // namespace quick_dra
