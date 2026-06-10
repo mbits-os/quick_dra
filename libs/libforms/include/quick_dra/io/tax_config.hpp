@@ -8,10 +8,10 @@
 #include <optional>
 #include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/verbose.hpp>
+#include <quick_dra/io/github_config.hpp>
 #include <quick_dra/models/types.hpp>
 
 namespace quick_dra {
-	enum class github_config : bool { skip = false, download = true };
 	std::optional<tax_config> load_tax_config(verbose level,
 	                                          std::optional<std::filesystem::path> const& tax_config_path,
 	                                          github_config download = github_config::download);

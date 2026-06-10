@@ -23,11 +23,12 @@ namespace quick_dra {
 	std::optional<config> parse_config(verbose level,
 	                                   year_month const& date,
 	                                   std::filesystem::path const& path,
-	                                   std::optional<std::filesystem::path> const& tax_config_path) {
+	                                   std::optional<std::filesystem::path> const& tax_config_path,
+	                                   github_config download) {
 		auto result = config::parse_yaml(path);
 		if (!result) return result;
 
-		auto tax_cfg = load_tax_config(level, tax_config_path);
+		auto tax_cfg = load_tax_config(level, tax_config_path, download);
 		if (!tax_cfg) {
 			result.reset();
 			return result;
