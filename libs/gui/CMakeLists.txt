@@ -3,6 +3,10 @@
 
 if(TARGET Qt6::Gui)
     message(STATUS "Will also build Quick-DRA GUI")
+
+    set(CMAKE_AUTORCC ON)
+
+    add_subdirectory(testing)
     add_subdirectory(utils)
     add_subdirectory(gui)
     add_subdirectory(controls)
