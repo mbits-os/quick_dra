@@ -102,7 +102,10 @@ namespace quick_dra::gui {
 
 		explicit SVGIconEngine(std::shared_ptr<SharedState> copy) : state_{std::move(copy)} {}
 
-		QSize actualSize(const QSize&, QIcon::Mode, QIcon::State) override { return state_->defaultSize(); }
+		QSize actualSize(const QSize& size, QIcon::Mode, QIcon::State) override {
+			auto const defSize = state_->defaultSize();
+			return defSize.scaled(size, Qt::KeepAspectRatio);
+		}
 		QIconEngine* clone() const override { return new SVGIconEngine{state_}; }  // GCOV_EXCL_LINE
 		QPixmap pixmap(QSize const& size, QIcon::Mode mode, QIcon::State state) override {
 			QImage img(size, QImage::Format_ARGB32);
