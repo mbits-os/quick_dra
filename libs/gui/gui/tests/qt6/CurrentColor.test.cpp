@@ -25,36 +25,25 @@ static constexpr auto iconCreators = std::array{
 
 class CurrentColorWidget : public QWidget {
 public:
-	CurrentColorWidget() {
+	CurrentColorWidget(int iconWidth, int iconHeight = -1)
+	    : iconWidth_{iconWidth}, iconHeight_{iconHeight < 1 ? iconWidth : iconHeight} {
 		auto it = icons.begin();
 		for (auto const& create : iconCreators) {
 			*it++ = create();
 		}
-		int width = 0;
-		int height = 2 * margin;
 
-		for (auto const& icon : icons) {
-			auto const size = icon.actualSize({16, 16});
-			width += margin + size.width();
-			auto const h = 2 * margin + size.height();
-			height = std::max(h, height);
-		}
-		width += margin;
-		resize(std::max(width, 2 * margin), height);
+		resize(margin + (iconWidth + margin) * static_cast<int>(icons.size()), iconHeight + 2 * margin);
 	}
 
 	void paintEvent(QPaintEvent*) override {
 		QPainter painter{this};
-		auto const h = height();
+		auto const y = margin;
 		auto x = margin;
 		for (auto const& icon : icons) {
-			auto const size = icon.actualSize({16, 16});
-			auto const y = (h - size.height()) / 2;
-
-			icon.paint(&painter, QRect{x, y, size.width(), size.height()}, Qt::AlignCenter,
+			icon.paint(&painter, QRect{x, y, iconWidth_, iconHeight_}, Qt::AlignCenter,
 			           isEnabled() ? QIcon::Active : QIcon::Disabled);
 
-			x += margin + size.width();
+			x += margin + iconWidth_;
 		}
 	}
 
@@ -67,6 +56,8 @@ public:
 
 private:
 	static constexpr auto margin = 6;
+	int iconWidth_;
+	int iconHeight_;
 	std::array<QIcon, iconCreators.size()> icons{};
 };
 
@@ -76,13 +67,29 @@ static PaletteOverride const tests[] = {
     {.window = QColor{40, 0, 0}, .windowText = QColor{255, 200, 0, 192}},
 };
 
-void GuiTest::CurrentColor_changePaletteAtRuntime() {
-	CurrentColorWidget widget{};
+void GuiTest::CurrentColor_changePaletteAtRuntime_data() {
+	QTest::addColumn<int>("iconWidth");
+	QTest::addColumn<int>("iconHeight");
+	for (auto const size : {12, 16, 20, 24, 32}) {
+		QTest::newRow(std::format("{}px", size).c_str()) << size << size;
+	}
 
+	QTest::newRow("narrow") << 12 << 24;
+	QTest::newRow("wide") << 32 << 16;
+}
+
+void GuiTest::CurrentColor_changePaletteAtRuntime() {
+	QFETCH(int, iconWidth);
+	QFETCH(int, iconHeight);
+
+	CurrentColorWidget widget{iconWidth, iconHeight};
+
+	auto const path = iconWidth == iconHeight ? std::format("images/CurrentColor-{}px.png", iconWidth)
+	                                          : std::format("images/CurrentColor-{}px-{}px.png", iconWidth, iconHeight);
 	Stamper stamper{
 	    &widget,
 	    {
-	        .path = "images/CurrentColor.png"sv,
+	        .path = path,
 	        .columns = 2,
 	        .rows = static_cast<int>(std::size(tests)),
 	    },
