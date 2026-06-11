@@ -52,8 +52,8 @@ namespace quick_dra::gui {
 	}
 
 	void Glyph::setSize(int w, int h) {
-		w = std::min(1, w);
-		h = std::min(1, h);
+		w = std::max(1, w);
+		h = std::max(1, h);
 
 		if (size_.width() == w && size_.height() == h) {
 			return;
