@@ -15,7 +15,7 @@ namespace quick_dra::gui {
 
 	Glyph::Glyph(QWidget* parent) : QWidget{parent} {}
 	void Glyph::paintEvent(QPaintEvent*) {
-		auto const size = size_.isEmpty() ? intrinsicSize_ : size_;
+		auto const size = iconSize_.isEmpty() ? intrinsicSize_ : iconSize_;
 		auto geo = rect();
 		auto const rect = geo.marginsRemoved({GlyphMargin, GlyphMargin, GlyphMargin, GlyphMargin});
 		auto x = (alignment_ & Qt::AlignHCenter) ? (rect.left() + (rect.width() - size.width()) / 2)
@@ -31,18 +31,18 @@ namespace quick_dra::gui {
 	}
 
 	QSize Glyph::sizeHint() const {
-		return size_.isEmpty() ? intrinsicSize_.grownBy({
-		                             GlyphMargin,
-		                             GlyphMargin,
-		                             GlyphMargin,
-		                             GlyphMargin,
-		                         })
-		                       : size_.grownBy({
-		                             GlyphMargin,
-		                             GlyphMargin,
-		                             GlyphMargin,
-		                             GlyphMargin,
-		                         });
+		return iconSize_.isEmpty() ? intrinsicSize_.grownBy({
+		                                 GlyphMargin,
+		                                 GlyphMargin,
+		                                 GlyphMargin,
+		                                 GlyphMargin,
+		                             })
+		                           : iconSize_.grownBy({
+		                                 GlyphMargin,
+		                                 GlyphMargin,
+		                                 GlyphMargin,
+		                                 GlyphMargin,
+		                             });
 	}
 
 	void Glyph::setIcon(QIcon const& icon) {
@@ -51,15 +51,15 @@ namespace quick_dra::gui {
 		updateGeometry();
 	}
 
-	void Glyph::setSize(int w, int h) {
+	void Glyph::setIconSize(int w, int h) {
 		w = std::max(1, w);
 		h = std::max(1, h);
 
-		if (size_.width() == w && size_.height() == h) {
+		if (iconSize_.width() == w && iconSize_.height() == h) {
 			return;
 		}
 
-		size_ = {w, h};
+		iconSize_ = {w, h};
 		updateGeometry();
 	}
 

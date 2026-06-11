@@ -22,13 +22,13 @@ namespace quick_dra::gui {
 
 	public slots:
 		void setIcon(QIcon const&);
-		void setSize(int, int);
+		void setIconSize(int, int);
 		void setAlignment(Qt::Alignment);
 
 	private:
 		QIcon icon_{};
 		QSize intrinsicSize_{0, 0};
-		QSize size_{-1, -1};
+		QSize iconSize_{-1, -1};
 		Qt::Alignment alignment_{Qt::AlignCenter};
 	};
 }  // namespace quick_dra::gui
