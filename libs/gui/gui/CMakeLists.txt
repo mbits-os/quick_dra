@@ -59,8 +59,6 @@ if(QUICK_DRA_TESTING)
     )
 
     set(QT6_TEST_SRCS
-        tests/qt6/icons.qrc
-        tests/qt6/main.cpp
         tests/qt6/GuiTest.cpp
         tests/qt6/GuiTest.hpp
         tests/qt6/CurrentColor.test.cpp
@@ -74,6 +72,5 @@ if(QUICK_DRA_TESTING)
     target_link_libraries(gui-test PUBLIC GTest::gmock_main gui)
 
     qt_add_project_test(gui-qt6 ${QT6_TEST_SRCS})
-    target_link_libraries(gui-qt6-test PUBLIC Qt6::Test gui)
-    set_target_properties(gui-qt6-test PROPERTIES AUTORCC ON)
+    target_link_libraries(gui-qt6-test PUBLIC testing gui)
 endif()

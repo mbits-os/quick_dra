@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 
-#include <QApplication>
 #include <QDebug>
 #include <QPainter>
 #include <QTest>
@@ -13,6 +12,8 @@
 #include <format>
 #include <quick_dra/base/str.hpp>
 #include "GuiTest.hpp"
+#include "palette_override.hpp"
+#include "stamper.hpp"
 
 using namespace quick_dra::gui;
 using namespace quick_dra;
@@ -69,118 +70,35 @@ private:
 	std::array<QIcon, iconCreators.size()> icons{};
 };
 
-// #include "CurrentColor.test.moc"
-
-struct testcase {
-	QColor window;
-	QColor windowText;
-
-	void setPalette(auto* target) const {
-		auto const lightness = (window.toHsl().lightnessF() + windowText.toHsl().lightnessF() * 2) / 3;
-		auto const disabled = QColor::fromRgbF(lightness, lightness, lightness, windowText.alphaF()).toRgb();
-
-		auto palette = target->palette();
-		palette.setColor(QPalette::Normal, QPalette::Window, window);
-		palette.setColor(QPalette::Normal, QPalette::WindowText, windowText);
-		palette.setColor(QPalette::Disabled, QPalette::Window, window);
-		palette.setColor(QPalette::Disabled, QPalette::WindowText, disabled);
-		target->setPalette(palette);
-	}
-};
-
-static testcase const tests[] = {
+static PaletteOverride const tests[] = {
     {.window = Qt::lightGray, .windowText = Qt::black},
     {.window = Qt::black, .windowText = Qt::white},
     {.window = QColor{40, 0, 0}, .windowText = QColor{255, 200, 0, 192}},
 };
 
-QImage generateDifferenceMap(QImage const& baseline, QImage const& grabbed) {
-	// Ensure both images are a standard format, like 32-bit ARGB
-	QImage expected = baseline.convertToFormat(QImage::Format_ARGB32);
-	QImage actual = grabbed.convertToFormat(QImage::Format_ARGB32);
-
-	auto const error = qRgba(255, 0, 0, 255);
-
-	QImage diffImage{std::max(expected.width(), actual.width()), std::max(expected.height(), actual.height()),
-	                 QImage::Format_ARGB32};
-	diffImage.fill(Qt::transparent);
-	if (expected.width() != actual.width()) {
-		auto const from = std::min(expected.width(), actual.width());
-		auto const to = std::max(expected.width(), actual.width());
-		QPainter{&diffImage}.fillRect(QRect{from, 0, to - from, diffImage.height()}, error);
-	}
-	if (expected.height() != actual.height()) {
-		auto const from = std::min(expected.height(), actual.height());
-		auto const to = std::max(expected.height(), actual.height());
-		QPainter{&diffImage}.fillRect(QRect{0, from, diffImage.width(), to - from}, error);
-	}
-
-	int width = std::min(expected.width(), actual.width());
-	int height = std::min(expected.height(), actual.height());
-
-	for (int y = 0; y < height; ++y) {
-		const QRgb* line1 = reinterpret_cast<const QRgb*>(expected.constScanLine(y));
-		const QRgb* line2 = reinterpret_cast<const QRgb*>(actual.constScanLine(y));
-		QRgb* diffLine = reinterpret_cast<QRgb*>(diffImage.scanLine(y));
-
-		for (int x = 0; x < width; ++x) {
-			if (line1[x] != line2[x]) {
-				// Highlight differences in red
-				diffLine[x] = qRgba(255, 0, 0, 255);
-			} else {
-				// Dim the matching pixels
-				QRgb original = line1[x];
-				int gray = qGray(original);
-				diffLine[x] = qRgba(gray, gray, gray, 255);
-			}
-		}
-	}
-	return diffImage;
-}
-
 void GuiTest::CurrentColor_changePaletteAtRuntime() {
 	CurrentColorWidget widget{};
 
-	auto const size = widget.size() * 2;
+	Stamper stamper{
+	    &widget,
+	    {
+	        .path = "images/CurrentColor.png"sv,
+	        .columns = 2,
+	        .rows = static_cast<int>(std::size(tests)),
+	    },
+	};
 
-	QImage testedImage{size.width() * 2, size.height() * static_cast<int>(std::size(tests)), QImage::Format_RGB32};
-
-	{
-		QPainter image{&testedImage};
-
-		int y = 0;
-
-		for (auto const& test : tests) {
-			test.setPalette(qApp);
-			test.setPalette(&widget);
-			for (auto const enabled : {true, false}) {
-				widget.setEnabled(enabled);
-				auto x = enabled ? 0 : size.width();
-				image.drawImage(QRect{x, y, size.width(), size.height()}, widget.grab().toImage());
-			}
-			y += size.height();
+	for (auto const& pos : stamper) {
+		auto const enabled = pos.column == 0;
+		auto const& test = tests[pos.row];
+		if (enabled) {
+			// disabled will come next
+			test.install(&widget);
 		}
+		widget.setEnabled(enabled);
+		stamper.grab(pos);
 	}
 
-	auto const images_dir = std::filesystem::path{as_u8v(__FILE__)}.parent_path() / "images";
-	std::filesystem::create_directories(images_dir);
-
-	auto const image_path = images_dir / "CurrentColor.png";
-	auto const path = QString::fromUtf8(as_sv(image_path.u8string()));
-	if (!std::filesystem::exists(image_path)) {
-		qWarning() << "Rebuilding images/CurrentColor.png";
-		testedImage.save(path);
-	}
-
-	QImage stencil{};
-	stencil.load(path);
-	try {
-		QTest::ThrowOnFailEnabler failGuard{};
-		QCOMPARE_EQ(testedImage, stencil);
-	} catch (...) {
-		auto const error_image_path = images_dir / "CurrentColor.error.png";
-		auto const error_path = QString::fromUtf8(as_sv(error_image_path.u8string()));
-		generateDifferenceMap(stencil, testedImage).save(error_path);
-		throw;
-	}
+	auto stencil = stamper.loadStencil();
+	COMPARE_IMAGES(stencil, stamper);
 }
