@@ -45,6 +45,6 @@ namespace quick_dra::gui {
 		auto const child = widget();
 		auto const width = event->size().width();
 		auto const height = child->sizePolicy().hasHeightForWidth() ? child->heightForWidth(width) : child->height();
-		widget()->resize(width, height);
+		child->resize(width, height);
 	}
 }  // namespace quick_dra::gui

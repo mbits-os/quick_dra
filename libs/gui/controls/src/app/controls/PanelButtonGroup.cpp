@@ -12,6 +12,7 @@
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <memory>
+#include <print>
 #include <utility>
 
 namespace quick_dra::gui {
@@ -175,38 +176,45 @@ namespace quick_dra::gui {
 		}
 	}
 
-	void PanelButtonGroupPrivate::mouseMoveEvent(QPointF const& pos, Qt::MouseButtons) {
-		trackHover(fromPos(pos.toPoint()));
-	}
+	void PanelButtonGroupPrivate::mouseMoveEvent(QPointF const& pos) { trackHover(fromPos(pos.toPoint())); }
 
-	void PanelButtonGroupPrivate::mousePressEvent(QPointF const& pos, Qt::MouseButtons buttons) {
-		if (buttons & Qt::MouseButton::LeftButton) {
-			trackHover(fromPos(pos.toPoint()));
-			if (hovered_ && hovered_->isClickable()) {
-				originalActive_ = hovered_;
-			} else {
-				originalActive_ = nullptr;
-			}
-			if (originalActive_) {
-				originalActive_->setHovered(false);
-				originalActive_->setActive(true);
-			}
+	void PanelButtonGroupPrivate::mousePressEvent(QPointF const& pos, Qt::MouseButton button) {
+		if (button != Qt::MouseButton::LeftButton) {
+			return;
+		}
+
+		trackHover(fromPos(pos.toPoint()));
+
+		if (hovered_ && hovered_->isClickable()) {
+			originalActive_ = hovered_;
+		} else {
+			originalActive_ = nullptr;
+		}
+		if (originalActive_) {
+			originalActive_->setHovered(false);
+			originalActive_->setActive(true);
 		}
 	}
 
-	void PanelButtonGroupPrivate::mouseReleaseEvent(QPointF const& pos, Qt::MouseButtons) {
+	void PanelButtonGroupPrivate::mouseReleaseEvent(QPointF const& pos, Qt::MouseButton button) {
+		if (button != Qt::MouseButton::LeftButton) {
+			return;
+		}
+
 		trackHover(fromPos(pos.toPoint()));
-		if (originalActive_) {
-			// originalActive_->setHovered(false);
-			originalActive_->setActive(false);
-			if (hovered_) hovered_->setHovered(true);
-			if (originalActive_ == hovered_ && originalActive_->isEnabled() && originalActive_->isClickable()) {
-				originalActive_->clicked();
-			}
-			originalActive_ = nullptr;
-			if (!q_func()->geometry().contains(pos.toPoint())) {
-				q_func()->setMouseTracking(false);
-			}
+
+		if (!originalActive_) {
+			return;
+		}
+
+		originalActive_->setActive(false);
+		if (hovered_) hovered_->setHovered(true);
+		if (originalActive_ == hovered_ && originalActive_->isEnabled() && originalActive_->isClickable()) {
+			originalActive_->clicked();
+		}
+		originalActive_ = nullptr;
+		if (!q_func()->geometry().contains(pos.toPoint())) {
+			q_func()->setMouseTracking(false);
 		}
 	}
 
@@ -319,18 +327,14 @@ namespace quick_dra::gui {
 	}
 
 	void PanelButtonGroup::enterEvent(QEnterEvent* event) {
-		QWidget::enterEvent(event);
-
 		Q_D(PanelButtonGroup);
 
 		setMouseTracking(true);
 
-		d->mouseMoveEvent(event->position(), event->buttons());
+		d->mouseMoveEvent(event->position());
 	}
 
-	void PanelButtonGroup::leaveEvent(QEvent* event) {
-		QWidget::leaveEvent(event);
-
+	void PanelButtonGroup::leaveEvent(QEvent*) {
 		Q_D(PanelButtonGroup);
 
 		if (!d->trackingActive()) setMouseTracking(false);
@@ -338,25 +342,19 @@ namespace quick_dra::gui {
 	}
 
 	void PanelButtonGroup::mouseMoveEvent(QMouseEvent* event) {
-		QWidget::mouseMoveEvent(event);
-
 		Q_D(PanelButtonGroup);
 
-		d->mouseMoveEvent(event->position(), event->buttons());
+		d->mouseMoveEvent(event->position());
 	}
 	void PanelButtonGroup::mousePressEvent(QMouseEvent* event) {
-		QWidget::mousePressEvent(event);
-
 		Q_D(PanelButtonGroup);
 
-		d->mousePressEvent(event->position(), event->buttons());
+		d->mousePressEvent(event->position(), event->button());
 	}
 	void PanelButtonGroup::mouseReleaseEvent(QMouseEvent* event) {
-		QWidget::mouseReleaseEvent(event);
-
 		Q_D(PanelButtonGroup);
 
-		d->mouseReleaseEvent(event->position(), event->buttons());
+		d->mouseReleaseEvent(event->position(), event->button());
 	}
 
 	Panel::Panel(QWidget* parent) : QWidget{parent} {}
@@ -370,9 +368,8 @@ namespace quick_dra::gui {
 	}
 
 	void Panel::setInfo(QString const& label, QString const& details, QString const& value, QIcon const& rightIcon) {
-		if (root_) {
-			root_->setParent(nullptr);
-			root_->deleteLater();
+		if (layout()) {
+			QWidget{}.setLayout(layout());
 		}
 
 		// +-HBox----------------------------------------+--+-------------+
@@ -444,7 +441,7 @@ namespace quick_dra::gui {
 		root.addWidget<Glyph>("", [&rightIcon](Glyph& glyph) {
 			glyph.setSizePolicy(TakeHeight);
 			glyph.setIcon(rightIcon.isNull() ? nullSVGIcon() : rightIcon);
-			// setBg(&glyph, Qt::green);
+			glyph.setIconSize(24, 24);
 		});
 	}
 
