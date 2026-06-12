@@ -141,9 +141,9 @@ namespace quick_dra::gui {
 		PanelButton* addItem(QLayoutItem*);
 
 		void paintEvent(QPainter& painter, PanelButtonStyle::Palette const& palette);
-		void mouseMoveEvent(QPointF const&, Qt::MouseButtons);
-		void mousePressEvent(QPointF const&, Qt::MouseButtons);
-		void mouseReleaseEvent(QPointF const&, Qt::MouseButtons);
+		void mouseMoveEvent(QPointF const&);
+		void mousePressEvent(QPointF const&, Qt::MouseButton);
+		void mouseReleaseEvent(QPointF const&, Qt::MouseButton);
 
 		bool trackingActive() const { return !!originalActive_; }
 		PanelButton* fromPos(QPoint const&) const;
