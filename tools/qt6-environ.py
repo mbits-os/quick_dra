@@ -141,6 +141,15 @@ def parse_args():
     )
 
     parser.add_argument(
+        "-m",
+        "--modules",
+        help="specify extra modules to install",
+        nargs="*",
+        action="append",
+        required=False,
+    )
+
+    parser.add_argument(
         "--dest",
         help="destination directory for the Qt to download",
         type=Path,
@@ -173,10 +182,16 @@ def parse_args():
     else:
         args.subdir = args.arch
 
+    if args.modules is None:
+        args.modules = []
+    args.modules = [x for xs in args.modules for x in xs]
+
     return args
 
 
-def install(host: str, target: str, version: str, arch: str, dest: Path):
+def install(
+    host: str, target: str, version: str, arch: str, modules: list[str], dest: Path
+):
     args = [
         "aqt",
         "install-qt",
@@ -187,6 +202,9 @@ def install(host: str, target: str, version: str, arch: str, dest: Path):
         "-O",
         dest.as_posix(),
     ]
+    if modules:
+        args.append("-m")
+        args.extend(modules)
     print(" ".join(shlex.quote(arg) for arg in args))
     exec_path = shutil.which(args[0])
     if not exec_path:
@@ -210,7 +228,9 @@ if __name__ == "__main__":
     version_major = args.version.split(".", 1)[0]
     if not checker.check(installation, version_major):
         args.dest.mkdir(parents=True, exist_ok=True)
-        install(args.host, args.target, args.version, args.arch, args.dest)
+        install(
+            args.host, args.target, args.version, args.arch, args.modules, args.dest
+        )
 
         if not checker.check(installation, version_major):
             print(f"Installation of Qt {args.version} failed", file=sys.stderr)
