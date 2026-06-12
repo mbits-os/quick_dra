@@ -7,7 +7,7 @@
         {
             "name": "Debug Quick-DRA GUI",
             "request": "launch",
-            "program": "${workspaceFolder}/build/debug/bin/qdra-gui",
+            "program": "${workspaceFolder}/build/debug/bin/tests/controls-test",
             "args": [ ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

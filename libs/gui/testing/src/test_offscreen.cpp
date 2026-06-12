@@ -2,8 +2,11 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include "test_offscreen.hpp"
+#include <QApplication>
+#include <QFontDatabase>
 #include <filesystem>
 #include <format>
+#include <print>
 #include <quick_dra/base/str.hpp>
 #include <span>
 #include <string>
@@ -34,4 +37,19 @@ PlatformArgsStorage::PlatformArgsStorage(int& argc, char**& argv) {
 	}
 	argc = static_cast<int>(args.size() - 1);
 	argv = args.data();
+}
+
+void loadFonts() {
+	auto path = std::filesystem::path{__FILE__}.parent_path().parent_path() / "res"sv / "fonts"sv;
+	for (auto const& entry : std::filesystem::recursive_directory_iterator{path}) {
+		if (entry.is_directory()) continue;
+		auto const ext = quick_dra::as_str(entry.path().extension().generic_u8string());
+		if (ext != ".ttf"sv && ext != ".otf"sv) continue;
+		QFontDatabase::addApplicationFont(QString::fromUtf8(quick_dra::as_sv(entry.path().generic_u8string())));
+	}
+
+	QFont testFont{"DejaVu Sans"};
+	testFont.setPointSizeF(9);
+	testFont.setHintingPreference(QFont::PreferFullHinting);  // Prevents anti-aliasing bugs on some platforms
+	qApp->setFont(testFont);
 }

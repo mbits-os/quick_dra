@@ -55,12 +55,17 @@ endif()
 # #################################################################
 if(QUICK_DRA_TESTING)
     set(FULL_TEST_SRCS
-        tests/options.test.cpp
+        tests/ControlsTest.cpp
+        tests/ControlsTest.hpp
+        tests/Glyph.test.cpp
+        tests/PageScrollArea.test.cpp
+        tests/PanelButtonGroup.test.cpp
     )
+
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
         ${FULL_TEST_SRCS}
     )
 
-    add_project_test(controls ${FULL_TEST_SRCS})
-    target_link_libraries(controls-test PUBLIC GTest::gmock_main controls)
+    qt_add_project_test(controls ${FULL_TEST_SRCS})
+    target_link_libraries(controls-test PUBLIC testing controls)
 endif()

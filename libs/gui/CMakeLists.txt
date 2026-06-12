@@ -22,9 +22,9 @@ endif()
 add_to_coverage(
     gui
     utils
+    controls
 
     # app
-    # controls
     # main
     # pages
 )
