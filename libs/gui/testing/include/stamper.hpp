@@ -75,3 +75,5 @@ private:
 		STAMPER.saveDiffMap(STENCIL);                \
 		throw;                                       \
 	}
+
+inline auto safe_size_t(int pos) { return static_cast<size_t>(pos < 0 ? 0 : pos); };

@@ -12,6 +12,23 @@ namespace {
 		return weakly_canonical(std::filesystem::path{here.file_name()}.parent_path() / path);
 	}
 
+	auto clip(auto v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+
+	double distanceF(QRgb rgb1, QRgb rgb2) {
+		auto const deltaRed = qRed(rgb1) - qRed(rgb2);
+		auto const deltaGreen = qGreen(rgb1) - qGreen(rgb2);
+		auto const deltaBlue = qBlue(rgb1) - qBlue(rgb2);
+		auto const distSquared = deltaRed * deltaRed + deltaGreen * deltaGreen + deltaBlue * deltaBlue;
+		auto const dist = std::sqrt(distSquared);
+		static constexpr auto maxDist = 441.67295593;  // std::sqrt(3 * 255 * 255);
+		return clip(dist / maxDist);
+	}
+
+	int scale(double pos, int from, int to) { return static_cast<int>(static_cast<double>(from) + pos * (to - from)); }
+
+	QRgb distance(double dist) { return qRgba(255 * 3 / 5, scale(dist, 192, 0) * 3 / 5, 0, 255); }
+	QRgb distance(QRgb rgb1, QRgb rgb2) { return distance(distanceF(rgb1, rgb2)); }
+
 	QImage generateDifferenceMap(QImage const& baseline, QImage const& grabbed) {
 		// Ensure both images are a standard format, like 32-bit ARGB
 		QImage expected = baseline.convertToFormat(QImage::Format_ARGB32);
@@ -19,7 +36,7 @@ namespace {
 
 		auto const error = qRgba(255, 0, 0, 255);
 
-		QImage diffImage{std::max(expected.width(), actual.width()), std::max(expected.height(), actual.height()),
+		QImage diffImage{std::max(expected.width(), actual.width()), std::max(expected.height(), actual.height()) + 2,
 		                 QImage::Format_ARGB32};
 		diffImage.fill(Qt::transparent);
 		if (expected.width() != actual.width()) {
@@ -43,15 +60,21 @@ namespace {
 
 			for (int x = 0; x < width; ++x) {
 				if (line1[x] != line2[x]) {
-					// Highlight differences in red
-					diffLine[x] = qRgba(255, 0, 0, 255);
+					// Highlight differences in orange-to-red
+					diffLine[x] = distance(line1[x], line2[x]);
 				} else {
 					// Dim the matching pixels
-					QRgb original = line1[x];
-					int gray = qGray(original);
-					diffLine[x] = qRgba(gray, gray, gray, qAlpha(original) / 2);
+					auto const original = line1[x];
+					auto const gray = qGray(original);
+					diffLine[x] = qRgba(0, gray * 3 / 5, 0, qAlpha(original));
 				}
 			}
+		}
+
+		QRgb* diffLine = reinterpret_cast<QRgb*>(diffImage.scanLine(std::max(expected.height(), actual.height()) + 1));
+		int points = std::max(expected.width(), actual.width());
+		for (int x = 0; x < points; ++x) {
+			diffLine[x] = distance(static_cast<double>(x) / points);
 		}
 		return diffImage;
 	}
