@@ -11,11 +11,15 @@ set(SRCS
     src/test_offscreen.cpp
 )
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} src/icons.qrc)
+set(RES
+    res/icons.qrc
+)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} ${RES})
 
 qt_add_library(testing STATIC ${SRCS})
 
-target_sources(testing INTERFACE src/icons.qrc)
+target_sources(testing INTERFACE ${RES})
 target_compile_options(testing PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(testing PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
 target_link_libraries(testing PUBLIC Qt6::Test Qt6::Gui Qt6::Widgets libbase)
