@@ -7,7 +7,7 @@
 #include <QWidget>
 #include <app/controls/PageScrollArea.hpp>
 #include <app/controls/forms/ComboBox.hpp>
-#include <app/controls/forms/DocumentComboBoxBase.hpp>
+#include <app/controls/forms/DocumentComboBox.hpp>
 #include <app/controls/forms/LineEdit.hpp>
 #include <app/controls/forms/TableView.hpp>
 #include <app/controls/forms/base.hpp>

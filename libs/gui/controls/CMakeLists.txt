@@ -7,7 +7,7 @@ set(SRCS
     include/app/controls/Forms.hpp
     include/app/controls/forms/base.hpp
     include/app/controls/forms/ComboBox.hpp
-    include/app/controls/forms/DocumentComboBoxBase.hpp
+    include/app/controls/forms/DocumentComboBox.hpp
     include/app/controls/forms/field.hpp
     include/app/controls/forms/LineEdit.hpp
     include/app/controls/forms/TableView.hpp
@@ -16,7 +16,7 @@ set(SRCS
     include/app/controls/PanelButtonGroup_p.hpp
     include/app/controls/PanelButtonGroup.hpp
     src/app/controls/forms/ComboBox.cpp
-    src/app/controls/forms/DocumentComboBoxBase.cpp
+    src/app/controls/forms/DocumentComboBox.cpp
     src/app/controls/forms/LineEdit.cpp
     src/app/controls/forms/TableView.cpp
     src/app/controls/Glyph.cpp

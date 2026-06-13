@@ -28,16 +28,20 @@ namespace quick_dra::gui {
 
 	public:
 		DECLARE_FIELD_HEADER(DocumentKindDeclaration, detail::NullValidator, person, kind) {
+			static constexpr auto id = "documentKind"sv;
 			static constexpr auto label = "Rodzaj dokumentu"sv;
 			static constexpr auto error_message = ""sv;
 		};
 		DECLARE_FIELD_HEADER(DocumentDeclaration, detail::NullValidator, person, document) {
+			static constexpr auto id = "document"sv;
 			static constexpr auto label = "Seria i numer dokumentu"sv;
 			static constexpr auto error_message = ""sv;
 		};
 
 		struct DocumentValidator {
-			Validation (*validate)(std::string_view) = [](std::string_view) { return Validation::Ok; };
+			Validation (*validate)(std::string_view) = [](std::string_view) {  // GCOV_EXCL_LINE
+				return Validation::Ok;                                         // GCOV_EXCL_LINE
+			};
 			std::string_view error_message = ""sv;
 		};
 
@@ -49,7 +53,7 @@ namespace quick_dra::gui {
 
 			using LineEditBase::addToLayout;
 			void addToLayout(QWidget* parentWidget, QFormLayout* layout) {
-				addToLayout(parentWidget, layout, DeclType::label);
+				addToLayout(parentWidget, layout, DeclType::label, DeclType::id);
 			}
 
 			template <typename T>

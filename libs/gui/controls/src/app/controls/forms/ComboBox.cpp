@@ -18,14 +18,16 @@ namespace quick_dra::gui {
 		combo->setCurrentIndex(index);
 	}
 
-	void ComboBoxBase::selectionChanged() {}
+	void ComboBoxBase::selectionChanged() {}  // GCOV_EXCL_LINE
 
 	void ComboBoxBase::addToLayout(QWidget* parentWidget,
 	                               QFormLayout* layout,
 	                               std::string_view label,
-	                               std::span<std::pair<std::string_view, std::string_view> const> const& items) {
+	                               std::span<std::pair<std::string_view, std::string_view> const> const& items,
+	                               std::string_view id) {
 		parent = layout;
 		combo = new QComboBox{parentWidget};
+		combo->setObjectName(QString{"%1ComboBox"}.arg(QString::fromUtf8(id)));
 		for (auto const& [key, name] : items) {
 			auto const itemLabel = std::format("{} - {}", key, name);
 			combo->addItem(QString::fromUtf8(itemLabel), QString::fromUtf8(key));

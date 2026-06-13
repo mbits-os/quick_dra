@@ -21,7 +21,11 @@ namespace quick_dra::gui {
 	public:
 		ListViewBase();
 
-		void addToLayout(QWidget* parent, QFormLayout* layout, std::string_view label, QAbstractItemModel* model);
+		void addToLayout(QWidget* parent,
+		                 QFormLayout* layout,
+		                 std::string_view label,
+		                 std::string_view id,
+		                 QAbstractItemModel* model);
 
 		bool isValid() const noexcept { return true; }
 
@@ -112,7 +116,7 @@ namespace quick_dra::gui {
 		             ...)
 		static auto select(int index, Cb&& cb, Fallback&& fallback) -> decltype(auto) {
 			static constexpr auto VariadicSize = static_cast<int>(sizeof...(T));
-			if (index < VariadicSize) {
+			if (index >= 0 && index < VariadicSize) {
 				std::variant<T...> variant{};
 				emplaceVariantSomewhere(index, variant, std::make_integer_sequence<int, VariadicSize>{});
 				return std::visit(std::forward<Cb>(cb), variant);
@@ -170,13 +174,14 @@ namespace quick_dra::gui {
 		size_t dataRowCount() const override { return ref_ ? ref_->size() : 0; }
 		size_t dataColumnCount() const override { return sizeof...(ItemDecls); }
 
-		void addNewRow() {
+		int addNewRow() {
 			typename value_type::value_type newRow{};
 			(setNewRowValue<ItemDecls>(newRow), ...);
 			auto index = static_cast<int>(dataRowCount());
 			this->beginInsertRows({}, index, index);
 			if (ref_) ref_->push_back(std::move(newRow));
 			this->endInsertRows();
+			return index;
 		}
 
 		template <typename Decl>
@@ -188,6 +193,7 @@ namespace quick_dra::gui {
 			this->beginResetModel();
 			if (ref_) *ref_ = std::move(rows);
 			this->endResetModel();
+			reorder();
 		}
 
 		QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override {
@@ -285,7 +291,7 @@ namespace quick_dra::gui {
 		using Model = ListModel<ItemsDecl, ItemDecls...>;
 		using ListViewBase::addToLayout;
 		void addToLayout(QWidget* parentWidget, QFormLayout* layout) {
-			addToLayout(parentWidget, layout, ItemsDecl::label, new Model{this});
+			addToLayout(parentWidget, layout, ItemsDecl::label, ItemsDecl::id, new Model{this});
 		}
 
 		template <typename T>

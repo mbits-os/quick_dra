@@ -107,19 +107,25 @@ namespace quick_dra::gui {
 	void ListViewBase::addToLayout(QWidget* parentWidget,
 	                               QFormLayout* layout,
 	                               std::string_view label,
+	                               std::string_view id,
 	                               QAbstractItemModel* model) {
+		auto const qId = QString::fromUtf8(id);
+
 		parent = layout;
 
 		auto buttonLayout = new QHBoxLayout{};
+		buttonLayout->setObjectName(QString{"%1ButtonLayout"}.arg(qId));
 		buttonLayout->setContentsMargins(0, 0, 0, 0);
 		buttonLayout->setAlignment(Qt::AlignRight);
 
 		addButton = new QPushButton{parentWidget};
+		addButton->setObjectName(QString{"%1AddButton"}.arg(qId));
 		addButton->setText("Dodaj wpis");
 		addButton->setSizePolicy(FixedSize);
 		buttonLayout->addWidget(addButton);
 
 		removeButton = new QPushButton{parentWidget};
+		removeButton->setObjectName(QString{"%1RemoveButton"}.arg(qId));
 		removeButton->setText("Usuń wpis");
 		removeButton->setSizePolicy(FixedSize);
 		buttonLayout->addWidget(removeButton);
@@ -127,6 +133,7 @@ namespace quick_dra::gui {
 		layout->addRow(QString::fromUtf8(label), buttonLayout);
 
 		view = new QTreeView{parentWidget};
+		view->setObjectName(QString{"%1TreeView"}.arg(qId));
 		view->setSizePolicy(TakeAll);
 		view->setModel(model);
 		view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
@@ -135,11 +142,9 @@ namespace quick_dra::gui {
 		view->setIndentation(0);
 		view->sortByColumn(0, Qt::AscendingOrder);
 
-		// QObject::connect(edit, &QLineEdit::textChanged, [self = this]() { self->textChanged(); });
-
 		layout->addRow("", view);
 	}
 
-	void ListViewBase::restyleField(bool) {}
+	void ListViewBase::restyleField(bool) {}  // GCOV_EXCL_LINE -- no side effects to test for
 
 }  // namespace quick_dra::gui

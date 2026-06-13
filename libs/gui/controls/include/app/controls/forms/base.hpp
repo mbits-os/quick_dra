@@ -21,6 +21,7 @@ namespace quick_dra::gui {
 	template <typename T>
 	concept Declaration = requires(std::string_view value) {
 		requires TargetAccessor<T, typename T::target_type, typename T::value_type>;
+		{ T::id } -> std::convertible_to<std::string_view const&>;
 		{ T::label } -> std::convertible_to<std::string_view const&>;
 		{ T::error_message } -> std::convertible_to<std::string_view const&>;
 		{ T::validate(value) } -> std::convertible_to<Validation>;

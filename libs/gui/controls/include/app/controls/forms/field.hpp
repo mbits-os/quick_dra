@@ -82,33 +82,39 @@ namespace quick_dra::gui {
 #define ENUM_KEY(ID) static constexpr auto enum_key = #ID ""sv
 
 	DECLARE_FIELD(FirstNameDeclaration, detail::NonEmptyValidator, person, first_name) {
+		static constexpr auto id = "firstName"sv;
 		static constexpr auto label = "Imię pierwsze"sv;
 		static constexpr auto error_message = ""sv;
 	};
 
 	DECLARE_FIELD(LastNameDeclaration, detail::NonEmptyValidator, person, last_name) {
+		static constexpr auto id = "lastName"sv;
 		static constexpr auto label = "Nazwisko"sv;
 		static constexpr auto error_message = ""sv;
 	};
 
 	DECLARE_FIELD(TitleDeclaration, detail::InsuranceTitleValidator, insured_type, title) {
+		static constexpr auto id = "insuranceTitle"sv;
 		static constexpr auto label = "Kod tytułu ubezpieczenia"sv;
 		static constexpr auto error_message =
 		    "Tytuł ubezpieczenia powinien składać się z 6 cyfr w formacie \"0000 0 0\""sv;
 	};
 
 	DECLARE_FIELD(TaxIdDeclaration, tax_id_validator, payer_t, tax_id) {
+		static constexpr auto id = "taxId"sv;
 		static constexpr auto label = "Numer NIP"sv;
 		static constexpr auto error_message =
 		    "Numer NIP musi mieć poprawną sumę kontrolną i nie może zawierać kresek"sv;
 	};
 
 	DECLARE_FIELD(EmploymentHistoryDeclaration, detail::NullValidator, insured_type, history) {
+		static constexpr auto id = "employmentHistory"sv;
 		static constexpr auto label = "Historia zatrudnienia"sv;
 		static constexpr auto error_message = ""sv;
 	};
 
 	DECLARE_FIELD(EmploymentHistorySinceDeclaration, detail::NullValidator, insured_type::history_type, since) {
+		static constexpr auto id = "employmentHistorySince"sv;
 		static constexpr auto label = "Początek"sv;
 		static constexpr auto error_message = ""sv;
 		static constexpr auto unique = true;
@@ -124,6 +130,7 @@ namespace quick_dra::gui {
 	              detail::NullValidator,
 	              insured_type::history_type,
 	              part_time_scale) {
+		static constexpr auto id = "employmentHistoryPartTimeScale"sv;
 		static constexpr auto label = "Część"sv;
 		static constexpr auto error_message = ""sv;
 		static constexpr auto unique = false;
@@ -132,6 +139,7 @@ namespace quick_dra::gui {
 	};
 
 	DECLARE_FIELD(EmploymentHistorySalaryDeclaration, detail::NullValidator, insured_type::history_type, salary) {
+		static constexpr auto id = "employmentHistorySalary"sv;
 		static constexpr auto label = "Pensja"sv;
 		static constexpr auto error_message = ""sv;
 		static constexpr auto unique = false;
@@ -143,6 +151,7 @@ namespace quick_dra::gui {
 
 	template <typename Target>
 	DECLARE_FIELD_HEADER(SocialIdDeclarationBase, social_id_validator, Target, social_id) {
+		static constexpr auto id = "socialId"sv;
 		ERROR_CHECKSUM_NEEDED("Numer PESEL");
 	};
 
@@ -153,11 +162,13 @@ namespace quick_dra::gui {
 	};
 
 	DECLARE_FIELD(IdCardEnumDeclaration, id_card_validator, person, id_card) {
+		static constexpr auto id = "idCard"sv;
 		ENUM_KEY(1);
 		ERROR_CHECKSUM_NEEDED("Dowód osobisty");
 	};
 
 	DECLARE_FIELD(PassportEnumDeclaration, pl_passport_validator, person, passport) {
+		static constexpr auto id = "passport"sv;
 		ENUM_KEY(2);
 		ERROR_CHECKSUM_NEEDED("Paszport");
 	};
