@@ -126,13 +126,8 @@ namespace quick_dra::gui {
 	}  // namespace
 
 	void InsuredEditPage::UI::setupPageUI(InsuredEditPage* page) {
-		auto const [_, pageParentPtr] = PageScrollArea::setupPage(page);
-		pageParent = pageParentPtr;
-		formLayout = new QFormLayout(pageParent);
-		each([self = this, page](auto& item) {
-			item.addToLayout(self->pageParent, self->formLayout);
-			item.connectTo(page);
-		});
+		Form::setupPageUI(page);
+		auto& history = get<HistoryListView>();
 		QObject::connect(history.removeButton, &QPushButton::clicked, page,
 		                 &InsuredEditPage::removeEmploymentHistoryEntries);
 		QObject::connect(history.addButton, &QPushButton::clicked, page,
@@ -163,11 +158,11 @@ namespace quick_dra::gui {
 			setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(
 			    QString::fromUtf8(name_from(ref.first_name, ref.last_name, insured_title))));
 		}
-		ui.document.setBlockChecker(
+		ui.document().setBlockChecker(
 		    [insuredIndex = insuredIndex, &insured](std::string_view kind, std::string_view number) {
 			    return find_duplicate(kind, number, insuredIndex, insured);
 		    });
-		ui.each([&currentValue = currentValue](auto& item) { item.attach(currentValue); });
+		ui.attach(currentValue);
 	}
 
 	void InsuredEditPage::accept() {
@@ -178,17 +173,14 @@ namespace quick_dra::gui {
 	}
 
 	void InsuredEditPage::updateCurrentValue() {
-		ui.each([&currentValue = this->currentValue](auto& item) { item.readValue(currentValue); });
+		ui.readValue(currentValue);
 		auto const name =
 		    name_from(relax_string(currentValue.first_name), relax_string(currentValue.last_name), insured_title);
 		setWindowTitle(QString{"%1 (Ubezpieczony)"}.arg(QString::fromUtf8(name)));
 		setFormDirty(currentValue != acceptedValue);
 	}
 
-	void InsuredEditPage::updateCurrentIsValid() {
-		auto const valid = ui.logical_and([](auto& item) { return item.isValid(); });
-		setFormValid(valid);
-	}
+	void InsuredEditPage::updateCurrentIsValid() { setFormValid(ui.isValid()); }
 
 	void InsuredEditPage::removeEmploymentHistoryEntries() {
 		stack().push<RemoveHistoryPage>(currentValue.history,
@@ -196,15 +188,13 @@ namespace quick_dra::gui {
 	}
 
 	void InsuredEditPage::storeNewHistory(std::vector<insured_type::history_type>&& history) {
-		using Model = typename decltype(ui.history)::Model;
-		auto const model = static_cast<Model*>(ui.history.view->model());
+		auto const model = static_cast<HistoryListView::Model*>(ui.history().view->model());
 		model->replaceRows(std::move(history));
 		setFormDirty(currentValue != acceptedValue);
 	}
 
 	void InsuredEditPage::addNewEmploymentHistoryEntry() {
-		using Model = typename decltype(ui.history)::Model;
-		auto const model = static_cast<Model*>(ui.history.view->model());
+		auto const model = static_cast<HistoryListView::Model*>(ui.history().view->model());
 		model->addNewRow();
 		setFormDirty(currentValue != acceptedValue);
 	}
@@ -215,8 +205,5 @@ namespace quick_dra::gui {
 		setFormDirty(currentValue != acceptedValue);
 	}
 
-	void InsuredEditPage::restyleFields() {
-		auto const lightMode = LineEditBase::isLightMode();
-		ui.each([lightMode](auto& item) { item.restyleField(lightMode); });
-	}
+	void InsuredEditPage::restyleFields() { ui.restyleFields(); }
 }  // namespace quick_dra::gui

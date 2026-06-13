@@ -49,40 +49,20 @@ namespace quick_dra::gui {
 			return Suite::is_valid(value) ? Validation::Ok : Validation::Invalid;
 		}
 
-		struct UI {
-			QWidget* pageParent{};
-			QFormLayout* formLayout{};
-			LineEdit<FirstNameDeclaration> firstName{};
-			LineEdit<LastNameDeclaration> lastName{};
-			LineEdit<TitleDeclaration> title{};
-			DocumentComboBox<IdCardEnumDeclaration, PassportEnumDeclaration, SocialIdEnumDeclaration> document{};
-			ListView<EmploymentHistoryDeclaration,
-			         EmploymentHistorySinceDeclaration,
-			         EmploymentHistoryPartTimeScaleDeclaration,
-			         EmploymentHistorySalaryDeclaration>
-			    history{};
-
+		using HistoryListView = ListView<EmploymentHistoryDeclaration,
+		                                 EmploymentHistorySinceDeclaration,
+		                                 EmploymentHistoryPartTimeScaleDeclaration,
+		                                 EmploymentHistorySalaryDeclaration>;
+		using DocumentCombo = DocumentComboBox<IdCardEnumDeclaration, PassportEnumDeclaration, SocialIdEnumDeclaration>;
+		using Form = FormUI<LineEdit<FirstNameDeclaration>,
+		                    LineEdit<LastNameDeclaration>,
+		                    LineEdit<TitleDeclaration>,
+		                    DocumentCombo,
+		                    HistoryListView>;
+		struct UI : Form {
 			void setupPageUI(InsuredEditPage* page);
-
-			template <typename Cb>
-			void each(Cb&& cb) {
-				UI::each_impl(std::forward<Cb>(cb), firstName, lastName, title, document, history);
-			}
-
-			template <typename Cb>
-			bool logical_and(Cb&& cb) {
-				return UI::and_impl(std::forward<Cb>(cb), firstName, lastName, title, document, history);
-			}
-
-		private:
-			template <typename... Items, typename Cb>
-			static void each_impl(Cb&& cb, Items&&... items) {
-				(cb(std::forward<Items>(items)), ...);
-			}
-			template <typename... Items, typename Cb>
-			static bool and_impl(Cb&& cb, Items&&... items) {
-				return (cb(std::forward<Items>(items)) && ...);
-			}
+			HistoryListView& history() { return get<HistoryListView>(); }
+			DocumentCombo& document() { return get<DocumentCombo>(); }
 		};
 
 		UI ui{};
