@@ -52,16 +52,6 @@ namespace quick_dra::gui {
 		}
 	}  // namespace
 
-	void PayerEditPage::UI::setupPageUI(PayerEditPage* page) {
-		auto const [_, pageParentPtr] = PageScrollArea::setupPage(page);
-		pageParent = pageParentPtr;
-		formLayout = new QFormLayout(pageParent);
-		each([self = this, page](auto& item) {
-			item.addToLayout(self->pageParent, self->formLayout);
-			item.connectTo(page);
-		});
-	}
-
 	PayerEditPage::PayerEditPage(QWidget* parent) : PagedWidget{parent} { ui.setupPageUI(this); }
 
 	PayerEditPage::~PayerEditPage() = default;
@@ -76,7 +66,7 @@ namespace quick_dra::gui {
 		currentValue = acceptedValue = payer_or_empty(payer);
 		setWindowTitle(
 		    QString{"%1 (Płatnik)"}.arg(QString::fromUtf8(name_from(payer.first_name, payer.last_name, payer_title))));
-		ui.each([&currentValue = currentValue](auto& item) { item.attach(currentValue); });
+		ui.attach(currentValue);
 	}
 
 	void PayerEditPage::accept() {
@@ -87,17 +77,14 @@ namespace quick_dra::gui {
 	}
 
 	void PayerEditPage::updateCurrentValue() {
-		ui.each([&currentValue = this->currentValue](auto& item) { item.readValue(currentValue); });
+		ui.readValue(currentValue);
 		auto const name =
 		    name_from(relax_string(currentValue.first_name), relax_string(currentValue.last_name), payer_title);
 		setWindowTitle(QString{"%1 (Płatnik)"}.arg(QString::fromUtf8(name)));
 		setFormDirty(currentValue != acceptedValue);
 	}
 
-	void PayerEditPage::updateCurrentIsValid() {
-		auto const valid = ui.logical_and([](auto& item) { return item.isValid(); });
-		setFormValid(valid);
-	}
+	void PayerEditPage::updateCurrentIsValid() { setFormValid(ui.isValid()); }
 
 	void PayerEditPage::updateValue(QString const& value, std::string& target) {
 		auto bytes = value.toUtf8();
@@ -105,8 +92,5 @@ namespace quick_dra::gui {
 		setFormDirty(currentValue != acceptedValue);
 	}
 
-	void PayerEditPage::restyleFields() {
-		auto const lightMode = LineEditBase::isLightMode();
-		ui.each([lightMode](auto& item) { item.restyleField(lightMode); });
-	}
+	void PayerEditPage::restyleFields() { ui.restyleFields(); }
 }  // namespace quick_dra::gui

@@ -45,37 +45,11 @@ namespace quick_dra::gui {
 			return Suite::is_valid(value) ? Validation::Ok : Validation::Invalid;
 		}
 
-		struct UI {
-			QWidget* pageParent{};
-			QFormLayout* formLayout{};
-			LineEdit<FirstNameDeclaration> firstName{};
-			LineEdit<LastNameDeclaration> lastName{};
-			LineEdit<TaxIdDeclaration> taxIdName{};
-			LineEdit<SocialIdDeclaration> socialName{};
-			DocumentComboBox<IdCardEnumDeclaration, PassportEnumDeclaration> document{};
-
-			void setupPageUI(PayerEditPage* page);
-
-			template <typename Cb>
-			void each(Cb&& cb) {
-				UI::each_impl(std::forward<Cb>(cb), firstName, lastName, taxIdName, socialName, document);
-			}
-
-			template <typename Cb>
-			bool logical_and(Cb&& cb) {
-				return UI::and_impl(std::forward<Cb>(cb), firstName, lastName, taxIdName, socialName, document);
-			}
-
-		private:
-			template <typename... Items, typename Cb>
-			static void each_impl(Cb&& cb, Items&&... items) {
-				(cb(std::forward<Items>(items)), ...);
-			}
-			template <typename... Items, typename Cb>
-			static bool and_impl(Cb&& cb, Items&&... items) {
-				return (cb(std::forward<Items>(items)) && ...);
-			}
-		};
+		using UI = FormUI<LineEdit<FirstNameDeclaration>,
+		                  LineEdit<LastNameDeclaration>,
+		                  LineEdit<TaxIdDeclaration>,
+		                  LineEdit<SocialIdDeclaration>,
+		                  DocumentComboBox<IdCardEnumDeclaration, PassportEnumDeclaration>>;
 
 		UI ui{};
 		payer_t acceptedValue{};
