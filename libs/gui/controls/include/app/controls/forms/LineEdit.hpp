@@ -30,7 +30,7 @@ namespace quick_dra::gui {
 
 		virtual void textChanged();
 
-		void addToLayout(QWidget* parent, QFormLayout* layout, std::string_view label);
+		void addToLayout(QWidget* parent, QFormLayout* layout, std::string_view label, std::string_view id);
 		void setValidation(Validation value, std::string_view error_message);
 
 		bool isValid() const noexcept { return validation == Validation::Ok; }
@@ -67,7 +67,7 @@ namespace quick_dra::gui {
 
 		using LineEditBase::addToLayout;
 		void addToLayout(QWidget* parentWidget, QFormLayout* layout) {
-			addToLayout(parentWidget, layout, DeclType::label);
+			addToLayout(parentWidget, layout, DeclType::label, DeclType::id);
 		}
 
 		template <typename T>

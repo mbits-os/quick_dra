@@ -1,7 +1,7 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
-#include <app/controls/forms/DocumentComboBoxBase.hpp>
+#include <app/controls/forms/DocumentComboBox.hpp>
 #include <format>
 #include <string>
 #include <utility>
@@ -13,11 +13,11 @@ namespace quick_dra::gui {
 	    QWidget* parent,
 	    QFormLayout* layout,
 	    std::span<std::pair<std::string_view, std::string_view> const> const& items) {
-		kind.addToLayout(parent, layout, DocumentKindDeclaration::label, items);
-		number.addToLayout(parent, layout, DocumentDeclaration::label);
+		kind.addToLayout(parent, layout, DocumentKindDeclaration::label, items, DocumentKindDeclaration::id);
+		number.addToLayout(parent, layout, DocumentDeclaration::label, DocumentDeclaration::id);
 	}
 
-	void DocumentComboBoxBase::selectionChanged(std::string_view) {}
+	void DocumentComboBoxBase::selectionChanged(std::string_view) {}  // GCOV_EXCL_LINE
 
 	void DocumentComboBoxBase::ComboBox::selectionChanged() {
 		target->selectionChanged(getCurrentDataText());

@@ -26,24 +26,33 @@ namespace quick_dra::gui {
 		setValue(std::format("{} {} {}", title.title_code, title.pension_right, title.disability_level));
 	}
 
-	void LineEditBase::textChanged() {}
+	void LineEditBase::textChanged() {}  // GCOV_EXCL_LINE
 
-	void LineEditBase::addToLayout(QWidget* parentWidget, QFormLayout* layout, std::string_view label) {
+	void LineEditBase::addToLayout(QWidget* parentWidget,
+	                               QFormLayout* layout,
+	                               std::string_view label,
+	                               std::string_view id) {
+		auto const qId = QString::fromUtf8(id);
+
 		parent = layout;
 		edit = new QLineEdit{parentWidget};
+		edit->setObjectName(QString{"%1Edit"}.arg(qId));
 
 		QObject::connect(edit, &QLineEdit::textChanged, [self = this]() { self->textChanged(); });
 
 		layout->addRow(QString::fromUtf8(label), edit);
 
 		auto errorGlyph = new Glyph{parentWidget};
+		errorGlyph->setObjectName(QString{"%1ErrorGlyph"}.arg(qId));
 		errorGlyph->setIcon(warningSVGIcon());
 		errorGlyph->setSizePolicy(FixedSize);
 		errorLabel = new QLabel{parentWidget};
+		errorLabel->setObjectName(QString{"%1ErrorLabel"}.arg(qId));
 		errorLabel->setSizePolicy(TakeWidth / (HeightForWidth / 1_XStretch));
 		errorLabel->setWordWrap(true);
 
 		error = new QHBoxLayout{};
+		error->setObjectName(QString{"%1Error"}.arg(qId));
 		error->setContentsMargins(0, 0, 0, 0);
 		error->addWidget(errorGlyph);
 		error->addWidget(errorLabel);
@@ -68,8 +77,8 @@ namespace quick_dra::gui {
 			case Validation::Invalid:
 				message = error_message.empty() ? "Pole jest niepoprawne"sv : error_message;
 				break;
-			default:
-				break;
+			default:    // GCOV_EXCL_LINE
+				break;  // GCOV_EXCL_LINE
 		}
 		edit->setToolTip(QString::fromUtf8(message));
 		errorLabel->setText(QString::fromUtf8(message));

@@ -25,7 +25,8 @@ namespace quick_dra::gui {
 		void addToLayout(QWidget* parent,
 		                 QFormLayout* layout,
 		                 std::string_view label,
-		                 std::span<std::pair<std::string_view, std::string_view> const> const& items);
+		                 std::span<std::pair<std::string_view, std::string_view> const> const& items,
+		                 std::string_view id);
 
 		bool isValid() const noexcept { return true; }
 
