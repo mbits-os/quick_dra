@@ -3,6 +3,7 @@
 
 #include "stamper.hpp"
 #include <QPainter>
+#include <algorithm>
 #include <quick_dra/base/str.hpp>
 
 using namespace std::literals;

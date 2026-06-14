@@ -35,7 +35,6 @@ namespace quick_dra::gui {
 		void valueChanged();
 		void validationChanged();
 
-	protected:
 	public:
 		QFormLayout* parent{};
 		QTreeView* view{};
