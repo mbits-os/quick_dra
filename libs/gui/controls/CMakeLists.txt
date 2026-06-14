@@ -57,6 +57,7 @@ if(QUICK_DRA_TESTING)
     set(FULL_TEST_SRCS
         tests/ControlsTest.cpp
         tests/ControlsTest.hpp
+        tests/Forms.test.cpp
         tests/Glyph.test.cpp
         tests/PageScrollArea.test.cpp
         tests/PanelButtonGroup.test.cpp
