@@ -164,15 +164,8 @@ QLabel.oddRow {
 	}
 
 	bool ReportFormPage::event(QEvent* event) {
-		switch (event->type()) {
-			case QEvent::ApplicationPaletteChange:
-				[[fallthrough]];
-			case QEvent::PaletteChange:
-				ui.gridParent->setStyleSheet(ui.gridParent->styleSheet());
-				break;
-
-			default:
-				break;
+		if (event->type() == QEvent::PaletteChange) {
+			ui.gridParent->setStyleSheet(ui.gridParent->styleSheet());
 		}
 		return PagedWidget::event(event);
 	}

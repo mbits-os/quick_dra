@@ -52,7 +52,6 @@ namespace quick_dra::gui {
 		                  [](auto& wgt) {
 			                  wgt.setSizePolicy(TakeWidth);
 			                  wgt.setText("Wybierz wszystko");
-			                  // wgt.setTristate();
 		                  })
 		    .createWidget(historyList, "historyList", [](auto& wgt) {
 			    wgt.setSizePolicy(TakeWidth);
@@ -63,17 +62,6 @@ namespace quick_dra::gui {
 		QObject::connect(historyList, &QTreeView::activated, this, &RemoveHistoryPage::swapCheckState);
 
 		buildModel();
-	}
-
-	QVariant displayRole(ratio scale) {
-		if (scale.num == scale.den) return "Pełny";
-		return QString::fromUtf8(ratio_from(scale.num, scale.den));
-	}
-
-	QVariant displayRole(currency salary) {
-		if (salary == minimal_salary) return "Minimalna";
-		auto const value = static_cast<double>(salary.value) / 100.0;
-		return QString::fromUtf8("%1 zł"sv).arg(QLocale::system().toString(value, 'f', 2));
 	}
 
 	void RemoveHistoryPage::buildModel() {
