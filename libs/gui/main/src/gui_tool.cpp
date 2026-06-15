@@ -5,7 +5,7 @@
 #include <QString>
 #include <app/gui/Globals.hpp>
 #include <app/main/MainWindow.hpp>
-#include <app/main/options.hpp>
+#include "options.hpp"
 
 namespace quick_dra {
 	int gui_tool(options const& opts) {

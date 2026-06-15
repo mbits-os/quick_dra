@@ -23,7 +23,6 @@ namespace quick_dra::gui {
 
 	private slots:
 		void updateTitle();
-		void configModified(bool);
 		void reloadConfig();
 
 	private:

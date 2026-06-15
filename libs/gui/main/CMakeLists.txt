@@ -1,54 +1,68 @@
 # Copyright (c) 2026 midnightBITS
 # This file is licensed under MIT license (see LICENSE for details)
 
+option(QUICK_DRA_WIN_GUI_CONSOLE "Subsystem for the qdra-gui on Windows should default to CONSOLE" OFF)
+
 qt_standard_project_setup()
 
 set(SRCS
-    include/app/main/MainWindow.hpp
-    include/app/main/options.hpp
-    src/app/main/gui_tool.cpp
-    src/app/main/MainWindow.cpp
-    src/app/main/MainWindowUi.cpp
-    src/app/main/options.cpp
+    src/main.cpp
+    src/options.hpp
+    src/gui_tool.cpp
+    src/options.cpp
 )
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
+set(QRC_SRCS res/quick_dra.qrc)
 
-qt_add_library(main STATIC ${SRCS})
+if(WIN32)
+    list(APPEND QRC_SRCS res/icon_win32.qrc)
+    list(APPEND SRCS res/qdra-gui.exe.manifest res/version.rc)
+else()
+    list(APPEND QRC_SRCS res/icon_svg.qrc)
+endif()
 
-target_compile_options(main PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
-target_link_options(main PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(main PUBLIC pages)
-target_include_directories(main
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+set(CMAKE_AUTORCC ON)
+qt_add_resources(RESOURCES ${QRC_SRCS})
+message(STATUS "Generated resource files: ${RESOURCES}")
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} ${QRC_SRCS})
+source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${RESOURCES})
+
+qt_add_executable(qdra-gui MACOSX_BUNDLE ${SRCS} ${QRC_SRCS} ${RESOURCES})
+
+add_win32_icon(qdra-gui appicon.ico)
+target_compile_options(qdra-gui PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+target_include_directories(qdra-gui PRIVATE src)
+target_link_options(qdra-gui PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+target_link_libraries(qdra-gui PRIVATE pages)
+set_target_properties(qdra-gui PROPERTIES
+    VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+    VS_DPI_AWARE ON
 )
-set_target_properties(main PROPERTIES FOLDER lib)
+
+if(WIN32)
+    if(QUICK_DRA_WIN_GUI_CONSOLE)
+        message(STATUS "winapi: Build Quick-DRA GUI as Console app")
+        target_link_options(qdra-gui PRIVATE /ENTRY:wmainCRTStartup)
+    else()
+        message(STATUS "winapi: Build Quick-DRA GUI as Windows app")
+        target_link_options(qdra-gui PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup)
+    endif()
+
+    target_compile_options(qdra-gui PRIVATE /D_UNICODE /DUNICODE)
+endif()
 
 # #################################################################
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS main COMPONENT gui_libraries)
+    install(TARGETS qdra-gui COMPONENT C002_gui)
 
-    install(
-        DIRECTORY include/
-        TYPE INCLUDE
-        COMPONENT gui_libraries
-    )
-endif()
-
-# #################################################################
-# #  TESTING
-# #################################################################
-if(QUICK_DRA_TESTING)
-    set(FULL_TEST_SRCS
-        tests/options.test.cpp
-    )
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${FULL_TEST_SRCS}
+    qt_generate_deploy_app_script(
+        TARGET qdra-gui
+        OUTPUT_SCRIPT deploy_script
+        NO_UNSUPPORTED_PLATFORM_ERROR
     )
 
-    add_project_test(main ${FULL_TEST_SRCS})
-    target_link_libraries(main-test PUBLIC GTest::gmock_main main)
+    install(SCRIPT "${deploy_script}" COMPONENT C003_qt_deployment)
 endif()
