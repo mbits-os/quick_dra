@@ -28,18 +28,18 @@
   - [x] _(opt)_ Enable Open Source PVS-Studio (_v0.11.1_)
   - [x] Move `insured list` to `list`, with payer info and searching by keyword (_v0.10.0_)
   - [x] Make a release (_v1.0.0_)
-- [ ] Config v2
+- [x] Config v2
   - [x] Record historical changes in salary (scale + amount)
   - [x] Allow reading v1, write back the same version` (_v1.1.0_)
   - [x] Attach schema when writing user config (_v1.1.0_)
   - [x] Some data should be in per-org config (e.g. accident insurance) (_v1.1.0_)
   - [x] New `qdra config` should be able to upgrade (not downgrade) between versions (_v1.1.0_)
 - [ ] Create a `qdra_gui`
-  - [ ] Build system support
+  - [x] Build system support (_v1.2.0_)
     - [x] Use Qt6 from system
     - [x] Phase 1: do not build app if `Qt6_DIR` is absent
-    - [ ] Phase 2: install Qt6 on github runner
-  - [ ] Version 1
+    - [x] Phase 2: install Qt6 on github runner
+  - [x] Version 1 (_v1.2.0_)
     - [x] Support editing of `~/.quick_dra.yaml`
       - [x] Modify payer
       - [x] Modify insured
@@ -48,7 +48,7 @@
     - [x] Show filled-out RCA/DRA forms
     - [x] Show `--help` in message box
     - [x] Observe changes in current config file
-    - [ ] Add tests
+    - [x] Add tests (_v1.2.1_)
   - [ ] Version 2
     - [ ] _(opt)_ Show history graphs
     - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
