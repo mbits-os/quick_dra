@@ -14,6 +14,7 @@
 #include <app/utils/str.hpp>
 #include <app/utils/utils.hpp>
 #include <array>
+#include <cassert>
 #include <concepts>
 #include <format>
 #include <quick_dra/base/chrono.hpp>
@@ -46,7 +47,6 @@ namespace quick_dra::gui {
 		                  [](auto& wgt) {
 			                  wgt.setSizePolicy(TakeWidth);
 			                  wgt.setText("Wybierz wszystko");
-			                  // wgt.setTristate();
 		                  })
 		    .createWidget(insuredList, "insuredList", [](auto& wgt) {
 			    wgt.setSizePolicy(TakeWidth);
@@ -116,11 +116,8 @@ namespace quick_dra::gui {
 
 	void RemoveInsuredPage::configurationChanged() {
 		auto const& formData = globals().data();
-		if (formData.cfg.insured) {
-			setInsured(formData.cfg.insured.value());
-		} else {
-			setInsured({});
-		}
+		assert(formData.cfg.insured);
+		setInsured(formData.cfg.insured.value());
 	}
 
 	void RemoveInsuredPage::selectAllStateChanged(Qt::CheckState state) {

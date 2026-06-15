@@ -57,7 +57,9 @@ namespace quick_dra::gui {
 	PayerEditPage::~PayerEditPage() = default;
 
 	bool PayerEditPage::event(QEvent* event) {
-		if (event->type() == QEvent::PaletteChange) restyleFields();
+		if (event->type() == QEvent::PaletteChange) {
+			ui.restyleFields();
+		}
 		return PagedWidget::event(event);
 	}
 
@@ -85,12 +87,4 @@ namespace quick_dra::gui {
 	}
 
 	void PayerEditPage::updateFormValid() { setFormValid(ui.isValid()); }
-
-	void PayerEditPage::updateValue(QString const& value, std::string& target) {
-		auto bytes = value.toUtf8();
-		target.assign(bytes);
-		setFormDirty(currentValue != acceptedValue);
-	}
-
-	void PayerEditPage::restyleFields() { ui.restyleFields(); }
 }  // namespace quick_dra::gui

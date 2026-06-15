@@ -32,15 +32,13 @@ namespace quick_dra::gui {
 
 	public slots:
 		void configurationChanged();
-
-	private slots:
 		void editPayer();
 		void addInsured();
 		void removeInsured();
+		void editInsured(size_t);
 
 	private:
 		void setupUI();
-		void editInsured(size_t);
 
 		void setPayer(partial::payer_t const&);
 		void setInsured(std::vector<partial::insured_t> const&);

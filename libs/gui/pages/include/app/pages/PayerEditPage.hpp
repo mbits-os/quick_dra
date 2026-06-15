@@ -34,8 +34,6 @@ namespace quick_dra::gui {
 		void updateFormValid();
 
 	private:
-		void updateValue(QString const& value, std::string& target);
-		void restyleFields();
 		template <typename Suite>
 		Validation validate(std::string_view value) {
 			auto const length = Suite::length();

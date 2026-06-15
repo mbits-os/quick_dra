@@ -17,6 +17,7 @@
 #include <app/utils/str.hpp>
 #include <app/utils/utils.hpp>
 #include <array>
+#include <cassert>
 #include <concepts>
 #include <quick_dra/base/chrono.hpp>
 #include <quick_dra/base/paths.hpp>
@@ -103,16 +104,10 @@ namespace quick_dra::gui {
 
 	void PersonelPage::configurationChanged() {
 		auto const& formData = globals().data();
-		if (formData.cfg.payer) {
-			setPayer(formData.cfg.payer.value());
-		} else {
-			setPayer({});
-		}
-		if (formData.cfg.insured) {
-			setInsured(formData.cfg.insured.value());
-		} else {
-			setInsured({});
-		}
+		assert(formData.cfg.payer);
+		assert(formData.cfg.insured);
+		setPayer(formData.cfg.payer.value());
+		setInsured(formData.cfg.insured.value());
 	}
 
 	void PersonelPage::editPayer() { stack().push<PayerEditPage>(); }
