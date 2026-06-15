@@ -31,7 +31,7 @@ namespace quick_dra::gui {
 
 	public slots:
 		void updateCurrentValue();
-		void updateCurrentIsValid();
+		void updateFormValid();
 
 	private:
 		void updateValue(QString const& value, std::string& target);

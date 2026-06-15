@@ -31,7 +31,7 @@ namespace quick_dra::gui {
 
 	public slots:
 		void updateCurrentValue();
-		void updateCurrentIsValid();
+		void updateFormValid();
 		void removeEmploymentHistoryEntries();
 		void addNewEmploymentHistoryEntry();
 

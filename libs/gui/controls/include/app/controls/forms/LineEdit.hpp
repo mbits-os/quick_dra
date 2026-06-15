@@ -73,7 +73,7 @@ namespace quick_dra::gui {
 		template <typename T>
 		void connectTo(T* host) {
 			QObject::connect(this, &LineEditBase::valueChanged, host, &T::updateCurrentValue);
-			QObject::connect(this, &LineEditBase::validationChanged, host, &T::updateCurrentIsValid);
+			QObject::connect(this, &LineEditBase::validationChanged, host, &T::updateFormValid);
 		}
 
 		void textChanged() override {

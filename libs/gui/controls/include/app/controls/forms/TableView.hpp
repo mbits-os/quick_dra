@@ -297,7 +297,7 @@ namespace quick_dra::gui {
 		void connectTo(T* host) {
 			auto model = static_cast<Model*>(this->view->model());
 			QObject::connect(this, &ListViewBase::valueChanged, host, &T::updateCurrentValue);
-			QObject::connect(this, &ListViewBase::validationChanged, host, &T::updateCurrentIsValid);
+			QObject::connect(this, &ListViewBase::validationChanged, host, &T::updateFormValid);
 			QObject::connect(model, &Model::valueChanged, this, &ListViewBase::valueChanged);
 		}
 
