@@ -29,6 +29,7 @@ namespace quick_dra::gui {
 
 		void connectPage() override;
 		bool survivesReload() const override { return true; }
+		PanelButtonGroup* insuredButtons() const { return insuredGroup; }
 
 	public slots:
 		void configurationChanged();
