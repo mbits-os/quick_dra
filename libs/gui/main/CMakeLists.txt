@@ -12,7 +12,7 @@ set(SRCS
     src/options.cpp
 )
 
-set(QRC_SRCS res/quick_dra.qrc)
+set(QRC_SRCS)
 
 if(WIN32)
     list(APPEND QRC_SRCS res/icon_win32.qrc)
