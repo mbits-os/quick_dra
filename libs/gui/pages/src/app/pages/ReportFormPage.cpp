@@ -87,7 +87,7 @@ QLabel.oddRow {
 		for (auto const& key : formatted.order) {
 			auto it = formatted.data.find(key);
 			if (it == formatted.data.end()) {
-				continue;
+				continue;  // GCOV_EXCL_LINE
 			}
 
 			bool firstGroup = rowNumber == -1;

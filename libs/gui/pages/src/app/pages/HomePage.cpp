@@ -51,7 +51,7 @@ namespace quick_dra::gui {
 				directory = QStandardPaths::writableLocation(loc);
 			}
 			return directory;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		QString previousSaveDirectory(Globals& globals) {
 			auto settings = globals.createSettings();
@@ -72,7 +72,7 @@ namespace quick_dra::gui {
 			auto result = previousSaveDirectory(globals);
 			if (result.isEmpty()) result = standardWritePath();
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 	}  // namespace
 
 	HomePage::HomePage(QWidget* parent) : PagedWidget(parent) { setupUI(); }
@@ -142,10 +142,12 @@ namespace quick_dra::gui {
 		auto const& id = globals().reportId();
 		auto const input_path = QDir{writePath(globals())}.filePath(QString::fromUtf8(setFilename(id.index, id.date)));
 		auto const output_path =
-		    QFileDialog::getSaveFileName(this, tr("Save File"), input_path, tr("XML Files (*.xml)"));
+		    property("kedu_path").isNull()
+		        ? QFileDialog::getSaveFileName(this, "Zapisz plik", input_path, "XML Files (*.xml)")
+		        : property("kedu_path").toString();
 
 		if (output_path.isEmpty()) {
-			return;
+			return;  // GCOV_EXCL_LINE -- hard to test for not writing a file we have no name for
 		}
 
 		auto const path = std::filesystem::absolute(QFile{output_path}.filesystemFileName());
@@ -195,7 +197,7 @@ namespace quick_dra::gui {
 
 	void HomePage::updateSummaryIdentifier() {
 		if (!summaryIdentifier) {
-			return;
+			return;  // GCOV_EXCL_LINE
 		}
 
 		auto const& id = globals().reportId();

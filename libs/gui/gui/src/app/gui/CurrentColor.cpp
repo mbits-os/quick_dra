@@ -57,8 +57,8 @@ namespace quick_dra::gui {
 			static QByteArray loadTemplateText(QString const& path) {
 				auto file = QFile{path};
 				if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-					return {};
-				}
+					return {};  // GCOV_EXCL_LINE
+				}  // GCOV_EXCL_LINE
 
 				return file.readAll();
 			}

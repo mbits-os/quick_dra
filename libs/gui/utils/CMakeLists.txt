@@ -66,7 +66,7 @@ if(QUICK_DRA_TESTING)
     source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${FULL_TEST_GEN_SRCS})
 
     add_project_test(utils ${FULL_TEST_SRCS} ${FULL_TEST_GEN_SRCS})
-    target_link_libraries(utils-test PUBLIC GTest::gmock_main utils)
+    target_link_libraries(utils-test PUBLIC GTest::gmock_main testing utils)
     target_include_directories(utils-test
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/tests

@@ -48,7 +48,7 @@ namespace quick_dra::gui {
 				result.insert(it, pair);
 			}
 			return result;
-		}
+		}  // GCOV_EXCL_LINE[GCC]
 
 		insured_type insured_or_empty(partial::insured_t const& from) {
 			using history_type = std::vector<insured_type::history_type>;
@@ -71,7 +71,7 @@ namespace quick_dra::gui {
 				                       [](auto const& item) { return history_conv(item); });
 
 				        return result;
-			        })
+			        })  // GCOV_EXCL_LINE[GCC]
 			        .value_or(history_type{}),
 			};
 		}

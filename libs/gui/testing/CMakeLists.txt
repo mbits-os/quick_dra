@@ -7,8 +7,10 @@ set(SRCS
     include/palette_override.hpp
     include/stamper.hpp
     include/test_offscreen.hpp
+    include/ui_helpers.hpp
     src/stamper.cpp
     src/test_offscreen.cpp
+    src/ui_helpers.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
