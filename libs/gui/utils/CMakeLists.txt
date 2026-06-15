@@ -14,10 +14,15 @@ set(SRCS
     src/app/utils/utils.cpp
 )
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
+set(RES
+    res/report_format.qrc
+)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} ${RES})
 
 qt_add_library(utils STATIC ${SRCS})
 
+target_sources(utils INTERFACE ${RES})
 target_compile_options(utils PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(utils PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
 target_link_libraries(utils PUBLIC libconv Qt6::Gui Qt6::Widgets Qt6::Svg)
@@ -56,7 +61,6 @@ if(QUICK_DRA_TESTING)
         tests/forms.test.cpp
         tests/LaidOut.test.cpp
         tests/utils.test.cpp
-        tests/report_format.qrc
     )
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES ${FULL_TEST_SRCS})
     source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${FULL_TEST_GEN_SRCS})

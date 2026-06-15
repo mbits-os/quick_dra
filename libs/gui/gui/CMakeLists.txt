@@ -16,10 +16,13 @@ set(SRCS
     src/app/gui/PageStack.cpp
 )
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
+set(RES res/icons.qrc)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} ${RES})
 
 qt_add_library(gui STATIC ${SRCS})
 
+target_sources(gui INTERFACE ${RES})
 target_compile_options(gui PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
 target_link_options(gui PUBLIC ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
 target_link_libraries(gui PUBLIC utils)
