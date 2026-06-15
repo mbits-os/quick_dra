@@ -84,7 +84,7 @@ namespace quick_dra::gui {
 		setFormDirty(currentValue != acceptedValue);
 	}
 
-	void PayerEditPage::updateCurrentIsValid() { setFormValid(ui.isValid()); }
+	void PayerEditPage::updateFormValid() { setFormValid(ui.isValid()); }
 
 	void PayerEditPage::updateValue(QString const& value, std::string& target) {
 		auto bytes = value.toUtf8();

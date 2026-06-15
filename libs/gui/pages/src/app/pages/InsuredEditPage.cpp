@@ -180,7 +180,7 @@ namespace quick_dra::gui {
 		setFormDirty(currentValue != acceptedValue);
 	}
 
-	void InsuredEditPage::updateCurrentIsValid() { setFormValid(ui.isValid()); }
+	void InsuredEditPage::updateFormValid() { setFormValid(ui.isValid()); }
 
 	void InsuredEditPage::removeEmploymentHistoryEntries() {
 		stack().push<RemoveHistoryPage>(currentValue.history,

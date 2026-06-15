@@ -89,7 +89,7 @@ namespace quick_dra::gui {
 
 	public slots:
 		void updateCurrentValue() {}
-		void updateCurrentIsValid() {}
+		void updateFormValid() {}
 	};
 
 	QStringList itemTexts(QComboBox const& combo) {
