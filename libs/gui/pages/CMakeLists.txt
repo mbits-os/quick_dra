@@ -4,6 +4,10 @@
 qt_standard_project_setup()
 
 set(SRCS
+    include/app/main/MainWindow.hpp
+    src/app/main/MainWindow.cpp
+    src/app/main/MainWindowUi.cpp
+
     include/app/pages/HomePage.hpp
     include/app/pages/InsuredEditPage.hpp
     include/app/pages/PayerEditPage.hpp

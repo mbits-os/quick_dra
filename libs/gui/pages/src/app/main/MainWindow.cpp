@@ -40,8 +40,6 @@ namespace quick_dra::gui {
 		    QString::fromStdString(std::format("{}{} {}", prefix.toStdString(), version::program, version::ui)));
 	}
 
-	void MainWindow::configModified(bool modified) { messageBar->setVisible(modified); }
-
 	void MainWindow::reloadConfig() {
 		pageStack->navigateHomeForReload();
 		pageStack->globals().reloadConfig();

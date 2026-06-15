@@ -1,8 +1,8 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include "options.hpp"
 #include <QMessageBox>
-#include <app/main/options.hpp>
 #include <app/utils/str.hpp>
 #include <cstdio>
 #include <map>

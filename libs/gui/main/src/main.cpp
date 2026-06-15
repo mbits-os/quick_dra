@@ -13,7 +13,6 @@
 
 extern int gui_tool(int argc, char** argv);
 
-// GCOV_EXCL_START
 #ifdef _WIN32
 static std::string ut8f_str(wchar_t const* arg) {
 	if (!arg) return {};
@@ -79,4 +78,3 @@ int wmain(int argc, wchar_t* argv[]) {
 #else
 int main(int argc, char* argv[]) { return gui_tool(argc, argv); }
 #endif
-// GCOV_EXCL_STOP
