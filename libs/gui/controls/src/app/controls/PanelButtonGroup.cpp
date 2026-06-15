@@ -135,6 +135,8 @@ namespace quick_dra::gui {
 	PanelButtonGroupPrivate::PanelButtonGroupPrivate() = default;
 	PanelButtonGroupPrivate::~PanelButtonGroupPrivate() = default;
 
+	int PanelButtonGroupPrivate::count() const { return static_cast<int>(controls_.size()); }
+	PanelButton* PanelButtonGroupPrivate::itemAt(int pos) const { return controls_.at(static_cast<size_t>(pos)).get(); }
 	PanelButton* PanelButtonGroupPrivate::addItem(QLayoutItem* item) {
 		auto priv = std::make_unique<PanelButton>();
 		auto result = priv.get();
@@ -260,6 +262,10 @@ namespace quick_dra::gui {
 	}
 
 	PanelButtonGroup::~PanelButtonGroup() = default;
+
+	int PanelButtonGroup::count() const { return d_func()->count(); }
+
+	PanelButton* PanelButtonGroup::itemAt(int pos) const { return d_func()->itemAt(pos); }
 
 	PanelButton* PanelButtonGroup::addButton(QString const& label, bool bold) {
 		return createWidget<QLabel>([&label, bold](QLabel& control) {

@@ -138,6 +138,9 @@ namespace quick_dra::gui {
 	public:
 		PanelButtonGroupPrivate();
 		~PanelButtonGroupPrivate();
+
+		int count() const;
+		PanelButton* itemAt(int) const;
 		PanelButton* addItem(QLayoutItem*);
 
 		void paintEvent(QPainter& painter, PanelButtonStyle::Palette const& palette);
