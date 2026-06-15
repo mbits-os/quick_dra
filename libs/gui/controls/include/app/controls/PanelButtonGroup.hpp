@@ -58,6 +58,9 @@ namespace quick_dra::gui {
 		PanelButtonGroup(QWidget* parent = nullptr);
 		~PanelButtonGroup();
 
+		int count() const;
+		PanelButton* itemAt(int) const;
+
 		PanelButton* addButton(QString const&, bool bold = false);
 		PanelButton* addWidget(QWidget*);
 		PanelButton* addLayout(QLayout*);
