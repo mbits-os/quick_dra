@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.2.1](https://github.com/mbits-os/quick_dra/compare/v1.2.0...v1.2.1) (2026-06-15)
+
+### Bug Fixes
+
+- expose insured and report button groups ([abafe01](https://github.com/mbits-os/quick_dra/commit/abafe0168705c157a61212a928237f54483fe347))
+- enumerate buttons in a group ([d965914](https://github.com/mbits-os/quick_dra/commit/d9659147dbd4e3e4fa67fd5b4a7e2e8a8bc6aea1))
+- reorganize mouse code, react to LButton only ([bbd88ee](https://github.com/mbits-os/quick_dra/commit/bbd88ee4e0c3d5f75e1d7b06f927d6924e1c42a4))
+- allow SVG scaling ([5e1154d](https://github.com/mbits-os/quick_dra/commit/5e1154d2c3ef42028cdbb3d14ef9e71363bd507c))
+- do not mix icon size API with `QWidget::size()` ([34fd250](https://github.com/mbits-os/quick_dra/commit/34fd250d095a4efb94d189c04ac1749052611ca7))
+- flip size guards for `Glyph::setIconSize` ([35a136d](https://github.com/mbits-os/quick_dra/commit/35a136d5cf6a3ffaf6715b77533cf9b90695503e))
+- remove unnecessary copy leading to use after free ([f787880](https://github.com/mbits-os/quick_dra/commit/f7878804f4b0f5014d99f5f276ac96b05065b101))
+- be aware of globals initialization order ([f1abed0](https://github.com/mbits-os/quick_dra/commit/f1abed0c25fbae6a6ca50bad18a38e66fc07b85d))
+- cleanup and general test friendliness ([33288b5](https://github.com/mbits-os/quick_dra/commit/33288b5c3b8d92972156bf995656706d5a7f34e6))
+- add skipping GitHub as an option in GUI code ([392309d](https://github.com/mbits-os/quick_dra/commit/392309da66f5cd09a912d16ddd773cf251c2a5da))
+- differentiate payer and insured, when name is missing ([a0202a6](https://github.com/mbits-os/quick_dra/commit/a0202a6494ac3c06757abcc64621d034a5b11af3))
+- clean up LaidOut code ([3fd7f2f](https://github.com/mbits-os/quick_dra/commit/3fd7f2f310fdbe9fd2ed4aa4874f5e8b0284edb1))
+- skip downloading tax config from GitHub as needed ([f83db73](https://github.com/mbits-os/quick_dra/commit/f83db73060bd6e26f3807e88a401900287d7664d))
+- allow overriding config data directory ([2ca8713](https://github.com/mbits-os/quick_dra/commit/2ca8713c43045342a21e7d79f9d5bd8bead9560f))
+- don't use `decltype` on lambda in template base classes ([341f374](https://github.com/mbits-os/quick_dra/commit/341f3746f1c64cc97ed56277186706cd600f8bba))
+
 ## [1.2.0](https://github.com/mbits-os/quick_dra/compare/v1.1.0...v1.2.0) (2026-06-06)
 
 ### New Features
