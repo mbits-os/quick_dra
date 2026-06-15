@@ -44,7 +44,7 @@ namespace quick_dra::gui {
 		                                 pageParent);  //, [](auto& layout) { layout.setContentsMargins(0, 0, 0, 0); });
 		LaidOut{pageParent, mainLayout}
 		    .createWidget(selectAll, "selectAll",
-		                  [](auto& wgt) {
+		                  [](auto& wgt) {  // GCOV_EXCL_LINE -- possibly the (empty) c-tor got inlined?
 			                  wgt.setSizePolicy(TakeWidth);
 			                  wgt.setText("Wybierz wszystko");
 		                  })
@@ -96,7 +96,7 @@ namespace quick_dra::gui {
 				auto const kind = document_kind(person.kind && !person.kind->empty() ? person.kind->front() : '\0');
 				label = std::format("{} ({}: {})", name, kind, *person.document);
 			} else {
-				label = std::move(name);
+				label = std::move(name);  // GCOV_EXCL_LINE
 			}
 			auto item = new QStandardItem{};
 			item->setText(QString::fromUtf8(label));

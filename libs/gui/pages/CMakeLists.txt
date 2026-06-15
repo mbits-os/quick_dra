@@ -58,12 +58,28 @@ endif()
 # #################################################################
 if(QUICK_DRA_TESTING)
     set(FULL_TEST_SRCS
-        tests/options.test.cpp
-    )
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES
-        ${FULL_TEST_SRCS}
+        tests/MainWindow.test.cpp
+        tests/PagesTest.cpp
+        tests/PagesTest.hpp
+        tests/PagesTest.verify.HomePage.cpp
+        tests/PagesTest.verify.InsuredEditPage.cpp
+        tests/PagesTest.verify.PayerEditPage.cpp
+        tests/PagesTest.verify.PersonelPage.cpp
+        tests/PagesTest.verify.RemoveInsuredPage.cpp
+        tests/PagesTest.verify.ReportFormPage.cpp
+        tests/PagesTest.verify.ReportIdEditPage.cpp
     )
 
-    add_project_test(pages ${FULL_TEST_SRCS})
-    target_link_libraries(pages-test PUBLIC GTest::gmock_main pages)
+    get_target_property(QDRA_SOURCE_DIR qdra SOURCE_DIR)
+    configure_file(tests/TestPaths.hpp.in TestPaths.hpp @ONLY)
+
+    set(FULL_TEST_GEN_SRCS
+        "${CMAKE_CURRENT_BINARY_DIR}/TestPaths.hpp"
+    )
+
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES ${FULL_TEST_SRCS})
+    source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${FULL_TEST_GEN_SRCS})
+
+    qt_add_project_test(pages ${FULL_TEST_SRCS} ${FULL_TEST_GEN_SRCS})
+    target_link_libraries(pages-test PUBLIC testing libcli pages)
 endif()

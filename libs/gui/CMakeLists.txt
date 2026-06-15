@@ -22,9 +22,6 @@ add_to_coverage(
     gui
     utils
     controls
-
-    # app
-    # main
-    # pages
+    pages
 )
 cov_set_parent_scope()

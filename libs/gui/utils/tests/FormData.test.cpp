@@ -12,6 +12,7 @@
 #include <sstream>
 #include "FormDataPaths.hpp"
 #include "TestApp.hpp"
+#include "ui_helpers.hpp"
 
 #ifdef _WIN32
 #define NOMINMAX
@@ -23,41 +24,12 @@
 namespace quick_dra::gui::testing {
 	namespace {
 #ifdef WIN32
-		char* mkdtemp(char* buffer) {
-			_mktemp(buffer);
-			auto const path = std::filesystem::path{as_u8v(buffer)};
-			create_directories(path);
-			return buffer;
-		}
 		struct win32_utf8 {
 			win32_utf8() { SetConsoleOutputCP(CP_UTF8); }
 		};
 
 		win32_utf8 _utf8{};
 #endif
-
-		struct temp_directory {
-			temp_directory() { std::filesystem::current_path(dirname_); }
-			temp_directory(temp_directory const&) = delete;
-			temp_directory(temp_directory&&) = delete;
-			~temp_directory() {
-				std::error_code ec{};
-				std::filesystem::current_path(cwd_);
-				std::filesystem::remove_all(dirname_, ec);
-			}
-
-			[[nodiscard]] std::filesystem::path const& cwd() const noexcept { return dirname_; };
-
-		private:
-			std::filesystem::path make_temp_dir() {
-				auto const path = std::filesystem::temp_directory_path() / fmt::format("dirXXXXXX");
-				auto name = as_str(path.u8string());
-				return as_u8v(mkdtemp(name.data()));
-			}
-
-			std::filesystem::path dirname_{make_temp_dir()};
-			std::filesystem::path cwd_{std::filesystem::current_path()};
-		};
 
 		std::string file_contents(std::filesystem::path const& path) {
 			auto file = std::ifstream{path};
@@ -199,14 +171,15 @@ namespace quick_dra::gui::testing {
 		auto data = loadWithConfig(".quick_dra.AB4123456_50671500000.quarter.yaml"sv);
 		data.lookupParameters({.date = 2024y / 5});
 
-		temp_directory tmp_dir{};  //-V821
+		TmpDir tmp_dir{};  //-V821
 		auto const cfg_path = tmp_dir.cwd() / ".quick_dra.yaml";
 		auto const xml_path = tmp_dir.cwd() / "report.xml";
 
 		ASSERT_FALSE(std::filesystem::exists(cfg_path));
 		ASSERT_FALSE(std::filesystem::exists(xml_path));
 
-		data.cfg.version = 2;
+		static constexpr unsigned short v2 = 2u;
+		data.cfg.version = v2;
 		data.cfg.payer->first_name = "First"sv;
 		data.cfg.payer->last_name = "Last"sv;
 		data.cfg_path = cfg_path;

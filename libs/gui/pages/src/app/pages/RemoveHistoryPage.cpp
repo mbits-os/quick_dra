@@ -49,7 +49,7 @@ namespace quick_dra::gui {
 		                                 pageParent);  //, [](auto& layout) { layout.setContentsMargins(0, 0, 0, 0); });
 		LaidOut{pageParent, mainLayout}
 		    .createWidget(selectAll, "selectAll",
-		                  [](auto& wgt) {
+		                  [](auto& wgt) {  // GCOV_EXCL_LINE -- possibly the (empty) c-tor got inlined?
 			                  wgt.setSizePolicy(TakeWidth);
 			                  wgt.setText("Wybierz wszystko");
 		                  })

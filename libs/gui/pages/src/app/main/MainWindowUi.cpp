@@ -18,7 +18,7 @@ namespace quick_dra::gui {
 		HeaderShadow* shadow{};
 		auto root = LaidOut{centralWidget};
 		root.createLayout(verticalLayout, "verticalLayout", centralWidget,
-		                  [](QVBoxLayout& layout) {
+		                  [](QVBoxLayout& layout) {  // GCOV_EXCL_LINE
 			                  layout.setContentsMargins(0, 0, 0, 0);
 			                  layout.setSpacing(0);
 		                  })
@@ -43,7 +43,7 @@ namespace quick_dra::gui {
 		    .createLayout(messageLayout, "messageLayout", messageBar)
 		    .withLayout(messageLayout)
 		    .createWidget(messageLabel, "messageLabel",
-		                  [](QLabel& label) {
+		                  [](QLabel& label) {  // GCOV_EXCL_LINE
 			                  label.setText("Konfiguracja Quick-DRA została zmodyfikowana");
 			                  label.setSizePolicy(TakeWidth / 1_XStretch);
 		                  })

@@ -108,16 +108,16 @@ namespace quick_dra::gui::testing {
 #else
 		static constexpr auto expected_settings = "[Settings]\nReportIndex=1\nYearMonth=2020/5\n"sv;
 #endif
-		EXPECT_EQ(file_contents(env.tmp_dir.cwd() / "config.ini"), expected_settings);
+		EXPECT_EQ(fileContents(env.tmp_dir.cwd() / "config.ini"), expected_settings);
 
-		Globals globals2{SettingsProvider::wrap([&env] { return env.provideSettings(); })};
+		Globals globals2{SettingsProvider::wrap([&env] { return openSettings(env.tmp_dir.cwd()); })};
 		EXPECT_EQ(globals2.reportId().index, 1);
 		EXPECT_EQ(globals2.reportId().date, 2020y / 5);
 		EXPECT_TRUE(globals2.reportId().isOverriden);
 
 		env.globals.storeIdentifier({.index = 1, .date = 2020y / 5, .isOverriden = false});
 		EXPECT_CALLS(0, 1, 1, 0);
-		EXPECT_EQ(file_contents(env.tmp_dir.cwd() / "config.ini"), "[Settings]\nReportIndex=1\n"sv);
+		EXPECT_EQ(fileContents(env.tmp_dir.cwd() / "config.ini"), "[Settings]\nReportIndex=1\n"sv);
 	}
 
 	TEST(Globals, settingsProvider) {

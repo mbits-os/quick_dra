@@ -72,7 +72,7 @@ if(QUICK_DRA_TESTING)
     source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${FULL_TEST_GEN_SRCS})
 
     add_project_test(gui ${FULL_TEST_SRCS} ${FULL_TEST_GEN_SRCS})
-    target_link_libraries(gui-test PUBLIC GTest::gmock_main gui)
+    target_link_libraries(gui-test PUBLIC GTest::gmock_main testing gui)
 
     qt_add_project_test(gui-qt6 ${QT6_TEST_SRCS})
     target_link_libraries(gui-qt6-test PUBLIC testing gui)
