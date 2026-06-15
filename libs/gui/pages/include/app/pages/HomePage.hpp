@@ -29,6 +29,7 @@ namespace quick_dra::gui {
 
 		void connectPage() override;
 		bool survivesReload() const override { return true; }
+		PanelButtonGroup* reportButtons() const { return summaryGroup; }
 
 	public slots:
 		void editReportIdAction();
