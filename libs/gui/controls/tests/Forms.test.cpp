@@ -409,7 +409,6 @@ void ControlsTest::Forms_documentComboBox() {
 }
 
 void ControlsTest::Forms_tableView() {
-	std::setlocale(LC_ALL, "pl_PL.UTF-8");
 	TestPage page{};
 	HistoryUI ui{};
 	ui.setupPageUI(&page);
