@@ -26,6 +26,9 @@ entry:
     - BinInst
     - DevInst
 
+run-env.Test:
+  LC_ALL: pl_PL.UTF-8
+
 compiler:
   names:
     gcc: [gcc, g++]
