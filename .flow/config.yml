@@ -10,6 +10,7 @@ extensions:
   - quick_dra.icons
   - quick_dra.yaml_reader
   - quick_dra.qtest2junit
+  - quick_dra.image_errors
   - proj_flow_test_coverage.ext
 
 entry:
@@ -78,3 +79,7 @@ test-runner:
     data: data
     default-set: core
   patches: {}
+
+image-errors:
+  tests/controls-test: libs/gui/controls/tests/images
+  tests/gui-6-test: libs/gui/gui/tests/qt6/images
