@@ -67,6 +67,23 @@ if(QUICK_DRA_TESTING)
         ${FULL_TEST_SRCS}
     )
 
+    execute_process(COMMAND ${Python3_EXECUTABLE}
+        "${PROJECT_SOURCE_DIR}/.flow/flow.py" system --format=os
+        OUTPUT_VARIABLE OS_NAME
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    string(REGEX REPLACE "^(.*)-latest$" "\\1" OS_NAME "${OS_NAME}")
+    string(REGEX REPLACE "\\.[0-9]+$" "" OS_NAME "${OS_NAME}")
+    string(REGEX REPLACE "-[0-9]+$" "" OS_NAME_PREFIX "${OS_NAME}")
+
+    # Ubuntu 24.04 => "ubuntu-14"
+    # Ubuntu 26.04 => "ubuntu"
+    # Ubuntu 28.04 => "ubuntu" => changes in font renderer shown
+    if(OS_NAME_PREFIX STREQUAL "ubuntu" AND NOT(OS_NAME STREQUAL "ubuntu-24"))
+        set(OS_NAME "ubuntu")
+    endif()
+
     qt_add_project_test(controls ${FULL_TEST_SRCS})
     target_link_libraries(controls-test PUBLIC testing controls)
+    target_compile_definitions(controls-test PUBLIC "OS_NAME=\"${OS_NAME}\"")
 endif()
