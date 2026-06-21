@@ -31,13 +31,19 @@ namespace quick_dra::gui {
 		QSize sizeHint() const override;
 		QSize minimumSizeHint() const override;
 
-		int hintWidth() const noexcept { return hintWidth_; }
-
-	public slots:
-		void setHintWidth(int);
+		int widthHint() const noexcept { return widthHint_; }
 
 	private:
-		int hintWidth_{0};
+		void resizeEvent(QResizeEvent*) override;
+
+	public slots:
+		void setWidthHint(int);
+
+	signals:
+		void widthChanged(int);
+
+	private:
+		int widthHint_{0};
 	};
 
 	class HeaderShadow : public QWidget {
