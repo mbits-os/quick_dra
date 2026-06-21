@@ -6,10 +6,6 @@
 #include <QTest>
 #include "ui_helpers.hpp"
 
-#define QVERIFY_CHILD(TYPE, NAME)                      \
-	auto const NAME = locateChild<TYPE*>(page, #NAME); \
-	QVERIFY(NAME)
-
 #define QCOMPARE_STR(lhs, rhs)                                                                               \
 	do {                                                                                                     \
 		QString s1{lhs};                                                                                     \

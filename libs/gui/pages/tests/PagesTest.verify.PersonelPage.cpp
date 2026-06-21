@@ -13,12 +13,12 @@ using namespace quick_dra;
 
 void verify_page(PersonelPage& page) {
 	auto group = page.insuredButtons();
-	auto const last = group->count() ? group->itemAt(group->count() - 1) : nullptr;
-	QVERIFY(last && last->isClickable());
+	auto const lastButton = group->count() ? group->itemAt(group->count() - 1) : nullptr;
+	QVERIFY(lastButton && lastButton->isClickable());
 
 	QVERIFY_NAVIGATION(page.editPayer(), PayerEditPage, u"Jan Nowak (P\u0142atnik)");
 	QVERIFY_NAVIGATION(page.editInsured(0), InsuredEditPage, u"Piotr Iksi\u0144ski (Ubezpieczony)");
-	QVERIFY_NAVIGATION(last->clicked(), InsuredEditPage, u"Antonia Iksi\u0144ska (Ubezpieczony)");
+	QVERIFY_NAVIGATION(lastButton->clicked(), InsuredEditPage, u"Antonia Iksi\u0144ska (Ubezpieczony)");
 	QVERIFY_NAVIGATION(page.addInsured(), InsuredEditPage, u"<Nieznany ubezpieczony> (Ubezpieczony)");
 	QVERIFY_NAVIGATION(page.removeInsured(), RemoveInsuredPage, u"Wybierz pozycje do usuni\u0119cia");
 

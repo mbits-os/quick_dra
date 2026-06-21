@@ -20,10 +20,6 @@ namespace fs = std::filesystem;
 
 static auto cliTestDataDir() { return fs::path{testing::cli_test_data}; }
 
-#define QVERIFY_CHILD(TYPE, NAME)                        \
-	auto const NAME = locateChild<TYPE*>(window, #NAME); \
-	QVERIFY(NAME)
-
 #define QVERIFY_TITLE(TITLE) QCOMPARE_EQ(window.windowTitle(), QString{TITLE " - Quick-DRA " QUICK_DRA_VERSION})
 
 void PagesTest::mainWindow() {
@@ -53,8 +49,9 @@ void PagesTest::mainWindow() {
 		QVERIFY(settings.value("WindowState").isValid());
 	}
 
-	QVERIFY_CHILD(QWidget, messageBar);
-	QVERIFY_CHILD(QPushButton, reloadButton);
+	PARENT_CONTEXT(window);
+	ENSURE_CHILD(MessageBar, messageBar);
+	ENSURE_CHILD(QPushButton, reloadButton);
 
 	QSignalSpy spy{&globals, &Globals::configModifiedChanged};
 

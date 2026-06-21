@@ -55,6 +55,10 @@ void GuiTest::PageHeader_movingShadow() {
 void GuiTest::PageHeader_centeringTitle() {
 	QMainWindow window{};
 	auto pageHeader = new PageHeader{&window};
+	PARENT_CONTEXT(pageHeader);
+	ENSURE_CHILD(HeaderToolbar, toolBar);
+	ENSURE_CHILD(HeaderSpacer, spacer);
+
 	pageHeader->setObjectName("centralWidget");
 	pageHeader->setTopMost(true);
 	window.setCentralWidget(pageHeader);
@@ -62,10 +66,6 @@ void GuiTest::PageHeader_centeringTitle() {
 	window.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&window));
 
-	auto const toolBar = pageHeader->findChild<QWidget*>("toolBar");
-	auto const spacer = pageHeader->findChild<QWidget*>("spacer");
-	QVERIFY(toolBar);
-	QVERIFY(spacer);
 	QCOMPARE_EQ(spacer->width(), toolBar->width());
 	QVERIFY(pageHeader->topMost());
 	QVERIFY(!pageHeader->formDirty());
