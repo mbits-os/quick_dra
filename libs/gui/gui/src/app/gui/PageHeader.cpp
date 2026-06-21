@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
+#include <QResizeEvent>
 #include <QToolBar>
 #include <algorithm>
 #include <app/gui/CurrentColor.hpp>
@@ -49,13 +50,21 @@ namespace quick_dra::gui {
 		widthChanged(width_);
 	}
 
-	QSize HeaderSpacer::sizeHint() const { return {std::max(hintWidth_, 1), 1}; }
+	QSize HeaderSpacer::sizeHint() const { return {std::max(widthHint_, 1), 1}; }
 
 	QSize HeaderSpacer::minimumSizeHint() const { return HeaderSpacer::sizeHint(); }
 
-	void HeaderSpacer::setHintWidth(int value) {
-		hintWidth_ = value;
+	void HeaderSpacer::setWidthHint(int value) {
+		widthHint_ = value;
 		updateGeometry();
+	}
+
+	void HeaderSpacer::resizeEvent(QResizeEvent* event) {
+		auto const next = event->size().width();
+		auto const prev = event->oldSize().width();
+		if (next != prev) {
+			widthChanged(next);
+		}
 	}
 
 	QSize HeaderShadow::sizeHint() const { return {1, std::max(shadowHeight_, 1)}; }
@@ -229,7 +238,7 @@ namespace quick_dra::gui {
 
 		root.createWidget(spacer, "spacer", [toolBar = toolBar_](HeaderSpacer& spacer) {
 			spacer.setSizePolicy(TakeHeight);
-			QObject::connect(toolBar, &HeaderToolbar::widthChanged, &spacer, &HeaderSpacer::setHintWidth);
+			QObject::connect(toolBar, &HeaderToolbar::widthChanged, &spacer, &HeaderSpacer::setWidthHint);
 		});
 	}
 }  // namespace quick_dra::gui

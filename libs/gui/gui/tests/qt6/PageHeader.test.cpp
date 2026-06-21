@@ -9,6 +9,7 @@
 #include <app/gui/PageHeader.hpp>
 #include <app/utils/utils.hpp>
 #include "GuiTest.hpp"
+#include "ui_helpers.hpp"
 
 // #include "PageHeader.test.moc"
 
@@ -71,15 +72,18 @@ void GuiTest::PageHeader_centeringTitle() {
 	QVERIFY(!pageHeader->formDirty());
 	QVERIFY(pageHeader->formValid());
 
+	QSignalSpy toolBarWidthSpy{toolBar, &HeaderToolbar::widthChanged};
+	QSignalSpy spacerWidthSpy{spacer, &HeaderSpacer::widthChanged};
+
 	auto const origSpace = toolBar->width();
 	pageHeader->setTopMost(false);
-	QTest::qWait(100ms);
+	waitFor(toolBarWidthSpy, spacerWidthSpy);
 	QCOMPARE_NE(toolBar->width(), origSpace);
 	QCOMPARE_EQ(spacer->width(), toolBar->width());
 
 	auto const subPageSpace = toolBar->width();
 	pageHeader->setFormDirty(true);
-	QTest::qWait(100ms);
+	waitFor(toolBarWidthSpy, spacerWidthSpy);
 	QCOMPARE_NE(toolBar->width(), origSpace);
 	QCOMPARE_NE(toolBar->width(), subPageSpace);
 	QCOMPARE_EQ(spacer->width(), toolBar->width());
