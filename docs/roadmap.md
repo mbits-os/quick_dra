@@ -55,8 +55,8 @@
 - [ ] GitHub social templates (_Bug report_ and _Feature request_) should both use YAML template (issue: [#79](https://github.com/mbits-os/quick_dra/issues/79))
 - [ ] Automatic upload to ZUS ePłatnik
 - [ ] Bug tracking
-  - [ ] gui test: `ControlsTest::Forms_tableView()` fails on CI on Ubuntu (issue: [#72](https://github.com/mbits-os/quick_dra/issues/72))
-  - [ ] gui test: `Globals.configModified` fails on CI on Windows (issue: [#73](https://github.com/mbits-os/quick_dra/issues/73))
+  - [x] gui test: `ControlsTest::Forms_tableView()` fails on CI on Ubuntu (issue: [#72](https://github.com/mbits-os/quick_dra/issues/72))
+  - [x] gui test: `Globals.configModified` fails on CI on Windows (issue: [#73](https://github.com/mbits-os/quick_dra/issues/73))
   - [ ] gui: `Panel::setInfo` in full layout, `"label"` does not properly repositions itself (issue: [#74](https://github.com/mbits-os/quick_dra/issues/74))
   - [ ] gui: as used in `PersonelPage`, `Panel` lines are to far away from each other (issue: [#75](https://github.com/mbits-os/quick_dra/issues/75))
   - [ ] gui: employment history needs to extends to the end of available space, or be optimized when page is too short (issue: [#76](https://github.com/mbits-os/quick_dra/issues/76))
