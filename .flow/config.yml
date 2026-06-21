@@ -15,7 +15,7 @@ entry:
   config: [Conan, CMake]
   build: [Build]
   test: [Build, Test]
-  test-report: [GTestToCtrf, MergeCtrfFiles]
+  test-report: [JUnitToCtrf, MergeCtrfFiles]
   verify:
     - Build
     - Test

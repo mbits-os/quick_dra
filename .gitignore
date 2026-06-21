@@ -49,3 +49,5 @@ pvs-report.sarif
 PVS-Studio.log
 .qtcreator/
 aqtinstall.log
+
+/.cache
