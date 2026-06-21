@@ -41,7 +41,7 @@ namespace quick_dra::gui {
 		struct DocumentValidator {
 			Validation (*validate)(std::string_view) = [](std::string_view) {  // GCOV_EXCL_LINE
 				return Validation::Ok;                                         // GCOV_EXCL_LINE
-			};
+			};  // GCOV_EXCL_LINE
 			std::string_view error_message = ""sv;
 		};
 

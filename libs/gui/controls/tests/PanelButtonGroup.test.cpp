@@ -22,6 +22,10 @@ using namespace quick_dra::gui;
 using namespace quick_dra;
 using namespace std::literals;
 
+#ifndef OS_NAME
+#error Must define OS_NAME
+#endif
+
 struct Cursor {
 	PanelButtonGroup* wgt{};
 	Qt::MouseButtons buttons{};
@@ -168,11 +172,7 @@ void ControlsTest::PanelButtonGroup_layout() {
 
 	Stamper stamper{&widget,
 	                {
-#ifdef WIN32
-	                    .path = "images/PanelButtonGroup.layout-windows.png"sv,
-#else
-	                    .path = "images/PanelButtonGroup.layout-ubuntu.png"sv,
-#endif
+	                    .path = "images/PanelButtonGroup.layout_" OS_NAME ".png"sv,
 	                    .columns = std::size(actions) + 1,
 	                    .rows = std::size(themes),
 	                }};
