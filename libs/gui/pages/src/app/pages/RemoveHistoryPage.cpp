@@ -70,19 +70,17 @@ namespace quick_dra::gui {
 		for (auto const& entry : history) {
 			auto const [num, den] = entry.part_time_scale;
 			auto const value = static_cast<double>(entry.salary.value) / 100.0;
-			auto const salary = num == den
-			                        ? entry.salary == minimal_salary
-			                              ? "Minimalna krajowa"
-			                              : QString::fromUtf8("%1 zł"sv).arg(QLocale::system().toString(value, 'f', 2))
+			auto const salary = num == den ? entry.salary == minimal_salary
+			                                     ? "Minimalna krajowa"
+			                                     : QString::fromUtf8("%1 zł"sv).arg(QLocale{}.toString(value, 'f', 2))
 			                    : entry.salary == minimal_salary
 			                        ? QString{"%1 minimalnej krajowej"}.arg(QString::fromUtf8(ratio_from(num, den)))
 			                        : QString::fromUtf8("%1 z %2 zł"sv)
 			                              .arg(QString::fromUtf8(ratio_from(num, den)))
-			                              .arg(QLocale::system().toString(value, 'f', 2));
-			auto const since =
-			    entry.since.year() < 1900y
-			        ? QString{}
-			        : QString{" (od %1)"}.arg(QLocale::system().toString(QDate{entry.since / 1d}, "MMM yyyy"));
+			                              .arg(QLocale{}.toString(value, 'f', 2));
+			auto const since = entry.since.year() < 1900y
+			                       ? QString{}
+			                       : QString{" (od %1)"}.arg(QLocale{}.toString(QDate{entry.since / 1d}, "MMM yyyy"));
 
 			auto item = new QStandardItem{};
 			item->setText(salary + since);

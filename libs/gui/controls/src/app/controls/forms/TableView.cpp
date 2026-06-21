@@ -33,7 +33,7 @@ namespace quick_dra::gui {
 	namespace detail {
 		QVariant displayRole(year_month month) {
 			if (month.year() < 1900y) return "Od zawsze";
-			return QLocale::system().toString(QDate{month / 1d}, "MMM yyyy");
+			return QLocale{}.toString(QDate{month / 1d}, "MMM yyyy");
 		}
 
 		QVariant displayRole(ratio scale) {
@@ -92,7 +92,7 @@ namespace quick_dra::gui {
 
 			text = strip_suffix(text, "zł"sv, "pln"sv, "ZŁ"sv, "PLN"sv);
 			auto ok = false;
-			auto const doubleValue = QLocale::system().toDouble(QString::fromUtf8(text), &ok);
+			auto const doubleValue = QLocale{}.toDouble(QString::fromUtf8(text), &ok);
 			if (ok) {
 				auto const rawValue = static_cast<long long>(doubleValue * calc_currency::den);
 				salary = calc_currency{rawValue}.rounded();
