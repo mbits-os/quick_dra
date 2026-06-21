@@ -15,11 +15,12 @@ void verify_page(InsuredEditPage& page) {
 	QEvent pce{QEvent::PaletteChange};
 	page.event(&pce);
 
-	QVERIFY_CHILD(QLineEdit, firstNameEdit);
-	QVERIFY_CHILD(QComboBox, documentKindComboBox);
-	QVERIFY_CHILD(QLineEdit, documentEdit);
-	QVERIFY_CHILD(QLabel, documentErrorLabel);
-	QVERIFY_CHILD(QTreeView, employmentHistoryTreeView);
+	PARENT_CONTEXT(page);
+	ENSURE_CHILD(QLineEdit, firstNameEdit);
+	ENSURE_CHILD(QComboBox, documentKindComboBox);
+	ENSURE_CHILD(QLineEdit, documentEdit);
+	ENSURE_CHILD(QLabel, documentErrorLabel);
+	ENSURE_CHILD(QTreeView, employmentHistoryTreeView);
 
 	firstNameEdit->setText("");
 	QVERIFY(page.formDirty());
@@ -59,8 +60,9 @@ void verify_page(InsuredEditPage& page) {
 }
 
 void insured_verify_page(RemoveHistoryPage& page) {
-	QVERIFY_CHILD(QCheckBox, selectAll);
-	QVERIFY_CHILD(QTreeView, historyList);
+	PARENT_CONTEXT(page);
+	ENSURE_CHILD(QCheckBox, selectAll);
+	ENSURE_CHILD(QTreeView, historyList);
 
 	auto const historyListModel = historyList->model();
 

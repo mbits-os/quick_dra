@@ -6,21 +6,40 @@
 #include <QAbstractItemModel>
 #include <QList>
 #include <QSettings>
+#include <QSignalSpy>
 #include <QString>
 #include <QVariant>
 #include <QWidget>
 #include <filesystem>
 #include <string>
 
-template <typename T>
-inline T locateChild(QObject* root, QAnyStringView aName, Qt::FindChildOptions options = Qt::FindChildrenRecursively) {
-	return root->findChild<T>(aName, options);
-}
+struct ParentContext {
+	explicit ParentContext(QObject* object) : ref{object} { curr() = this; }
+	explicit ParentContext(QObject& object) : ref{&object} { curr() = this; }
+	~ParentContext() { curr() = prev; }
 
-template <typename T>
-inline T locateChild(QObject& root, QAnyStringView aName, Qt::FindChildOptions options = Qt::FindChildrenRecursively) {
-	return root.findChild<T>(aName, options);
-}
+	template <typename T>
+	static inline T locateChild(QAnyStringView aName, Qt::FindChildOptions options = Qt::FindChildrenRecursively) {
+		return curr()->ref->findChild<T>(aName, options);
+	}
+
+private:
+	static ParentContext*& curr() {
+		static thread_local ParentContext* on_thread{nullptr};
+		return on_thread;
+	}
+	QObject* ref{};
+	ParentContext* prev{curr()};
+};
+
+#define JOIN2(X, Y) X##Y
+#define JOIN1(X, Y) JOIN2(X, Y)
+#define PARENT_CONTEXT(REF) \
+	auto const JOIN1(parentContext, __LINE__) = ParentContext { REF }
+
+#define ENSURE_CHILD(TYPE, NAME)                                \
+	auto const NAME = ParentContext::locateChild<TYPE*>(#NAME); \
+	QVERIFY(NAME)
 
 using DataRow = QList<QVariant>;
 using DataSet = QList<DataRow>;
@@ -48,6 +67,12 @@ private:
 
 std::string fileContents(std::filesystem::path const& path);
 inline QString qFileContents(std::filesystem::path const& path) { return QString::fromUtf8(fileContents(path)); }
+void setFileContents(std::filesystem::path const& path, std::string_view contents);
 void writeConfig(std::filesystem::path const& cwd, std::filesystem::path const& data);
 QSettings openSettings(std::filesystem::path const& cwd);
 void enumObject(QObject const* obj, size_t indent = 0);
+std::optional<QList<QVariant>> takeFirst(QSignalSpy& spy);
+template <std::same_as<QSignalSpy>... Spy>
+static inline void waitFor(Spy&... spy) {
+	(takeFirst(spy), ...);
+}

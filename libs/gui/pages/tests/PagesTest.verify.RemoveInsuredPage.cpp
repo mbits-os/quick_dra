@@ -9,8 +9,9 @@ using namespace quick_dra::gui;
 using namespace quick_dra;
 
 void verify_page(RemoveInsuredPage& page) {
-	QVERIFY_CHILD(QCheckBox, selectAll);
-	QVERIFY_CHILD(QTreeView, insuredList);
+	PARENT_CONTEXT(page);
+	ENSURE_CHILD(QCheckBox, selectAll);
+	ENSURE_CHILD(QTreeView, insuredList);
 
 	auto const insuredListModel = insuredList->model();
 

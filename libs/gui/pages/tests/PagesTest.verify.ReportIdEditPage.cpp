@@ -14,9 +14,10 @@ using namespace quick_dra;
 void verify_page(ReportIdEditPage& page) {
 	page.initialData(Globals::current()->reportId());
 
-	QVERIFY_CHILD(QSpinBox, spinBox);
-	QVERIFY_CHILD(QDateEdit, dateEdit);
-	QVERIFY_CHILD(QToolButton, toolButton);
+	PARENT_CONTEXT(page);
+	ENSURE_CHILD(QSpinBox, spinBox);
+	ENSURE_CHILD(QDateEdit, dateEdit);
+	ENSURE_CHILD(QToolButton, toolButton);
 
 	page.setSerial(spinBox->value());
 	spinBox->setValue(spinBox->value() + 1);

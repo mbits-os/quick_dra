@@ -12,7 +12,8 @@ void verify_page(PayerEditPage& page) {
 	QEvent pce{QEvent::PaletteChange};
 	page.event(&pce);
 
-	QVERIFY_CHILD(QLineEdit, firstNameEdit);
+	PARENT_CONTEXT(page);
+	ENSURE_CHILD(QLineEdit, firstNameEdit);
 
 	auto const previous = firstNameEdit->text();
 	firstNameEdit->setText("");

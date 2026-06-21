@@ -62,8 +62,13 @@ std::string fileContents(std::filesystem::path const& path) {
 	return std::move(str).str();
 }
 
+void setFileContents(std::filesystem::path const& path, std::string_view contents) {
+	auto file = std::ofstream{path};
+	file.write(contents.data(), contents.size());
+}
+
 void writeConfig(std::filesystem::path const& cwd, std::filesystem::path const& data) {
-	std::filesystem::copy_file(data / ".quick_dra.testing.yaml"sv, cwd / ".quick_dra.yaml"sv);
+	setFileContents(cwd / ".quick_dra.yaml"sv, fileContents(data / ".quick_dra.testing.yaml"sv));
 	auto out_file = std::ofstream{cwd / "config.ini"sv, std::ios::binary | std::ios::out};
 	static constexpr auto ini = "[Settings]\nReportIndex=1\nYearMonth=2020/5\n"sv;
 	out_file.write(ini.data(), ini.size());
@@ -79,28 +84,28 @@ void enumObject(QObject const* obj, size_t indent) {
 		auto const label = qobject_cast<QLabel const*>(child);
 		auto const layout = qobject_cast<QLayout const*>(child);
 
-#define TYPE child->metaObject()->className() << static_cast<void const*>(child)
+#define TYPE(PTR) PTR->metaObject()->className() << static_cast<void const*>(PTR)
 		if (label) {
-			qDebug() << indent_s.c_str() << TYPE << label->text();
+			qDebug() << indent_s.c_str() << TYPE(child) << label->text();
 		} else if (layout) {
 			auto const margins = layout->contentsMargins();
-			qDebug() << indent_s.c_str() << TYPE << child->objectName()
+			qDebug() << indent_s.c_str() << TYPE(child) << child->objectName()
 			         << std::format("({}, {}, {}, {}), {}", margins.left(), margins.top(), margins.right(),
 			                        margins.bottom(), layout->spacing())
 			                .c_str();
 		} else {
-			qDebug() << indent_s.c_str() << TYPE << child->objectName();
+			qDebug() << indent_s.c_str() << TYPE(child) << child->objectName();
 		}
 
 		if (layout) {
 			auto const count = layout->count();
 			for (auto index = 0; index < count; ++index) {
 				auto const item = layout->itemAt(index);
-				QObject const* child = item->widget();
-				if (!child) child = item->layout();
+				QObject const* layoutItem = item->widget();
+				if (!layoutItem) layoutItem = item->layout();
 				auto const spacer = item->spacerItem();
-				if (child) {
-					qDebug() << indent_s.c_str() << " -" << TYPE;
+				if (layoutItem) {
+					qDebug() << indent_s.c_str() << " -" << TYPE(layoutItem);
 				} else if (spacer) {
 					qDebug() << indent_s.c_str() << " - <spacer>";
 				} else {
@@ -110,4 +115,12 @@ void enumObject(QObject const* obj, size_t indent) {
 		}
 		enumObject(child, indent + 2);
 	}
+}
+
+std::optional<QList<QVariant>> takeFirst(QSignalSpy& spy) {
+	if (spy.empty()) {
+		spy.wait();
+	}
+	if (spy.empty()) return std::nullopt;
+	return spy.takeFirst();
 }
