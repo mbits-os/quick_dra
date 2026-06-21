@@ -9,13 +9,14 @@ extensions:
   - proj_flow.ext.webidl
   - quick_dra.icons
   - quick_dra.yaml_reader
+  - quick_dra.qtest2junit
   - proj_flow_test_coverage.ext
 
 entry:
   config: [Conan, CMake]
   build: [Build]
   test: [Build, Test]
-  test-report: [JUnitToCtrf, MergeCtrfFiles]
+  test-report: [QTestToJUnit, JUnitToCtrf, MergeCtrfFiles]
   verify:
     - Build
     - Test
@@ -64,7 +65,7 @@ shortcuts:
 
 test:
   target: QUICK_DRA_coveralls
-  gtest-dir: test-results/google-test
+  junit-dir: test-results/junit-test
   ctrf-dir: test-results/ctrf
   ctrf-report: ../artifacts/test-results/ctrf.json
 

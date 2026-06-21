@@ -19,7 +19,7 @@ function(add_project_test TARGET)
     ${CMAKE_CURRENT_SOURCE_DIR}/tests
     ${CMAKE_CURRENT_BINARY_DIR})
 
-    add_test(NAME ${TARGET} COMMAND ${TARGET}-test "--gtest_output=xml:${PROJECT_BINARY_DIR}/test-results/google-test/${TARGET}.xml")
+  add_test(NAME ${TARGET} COMMAND ${TARGET}-test "--gtest_output=xml:${PROJECT_BINARY_DIR}/test-results/junit-test/${TARGET}.xml")
 endfunction()
 
 function(qt_add_project_test TARGET)
@@ -43,9 +43,9 @@ function(qt_add_project_test TARGET)
     ${CMAKE_CURRENT_SOURCE_DIR}/tests
     ${CMAKE_CURRENT_BINARY_DIR})
 
-    add_test(NAME ${TARGET} COMMAND ${TARGET}-test)
+  file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/test-results/qt-test")
+  add_test(NAME ${TARGET} COMMAND ${TARGET}-test -o -,txt -o "${PROJECT_BINARY_DIR}/test-results/qt-test/${TARGET}.qtest.xml,xml")
 endfunction()
-
 
 function(add_win32_icon TARGET NAME)
   set(RESNAME "${PROJECT_SOURCE_DIR}/data/assets/${NAME}")
@@ -100,6 +100,7 @@ if(MSVC)
       /D_DISABLE_STRING_ANNOTATION
     )
   endif()
+
   if(QUICK_DRA_W_ERROR)
     list(APPEND QUICK_DRA_ADDITIONAL_COMPILE_FLAGS /WX)
   endif()
@@ -147,6 +148,7 @@ else()
       -fsanitize=undefined
     )
   endif()
+
   if(QUICK_DRA_W_ERROR)
     list(APPEND QUICK_DRA_ADDITIONAL_COMPILE_FLAGS -Werror)
   endif()
