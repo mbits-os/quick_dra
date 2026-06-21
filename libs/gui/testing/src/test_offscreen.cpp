@@ -13,6 +13,11 @@
 #include <string_view>
 #include <vector>
 
+#ifdef WIN32
+#define NOMINMAX
+#include <Windows.h>
+#endif
+
 using namespace std::literals;
 
 std::string calc_offscreen() {
@@ -37,6 +42,14 @@ PlatformArgsStorage::PlatformArgsStorage(int& argc, char**& argv) {
 	}
 	argc = static_cast<int>(args.size() - 1);
 	argv = args.data();
+}
+
+void setupLocale() {
+	std::setlocale(LC_ALL, "pl_PL.UTF-8");
+	QLocale::setDefault({QLocale::Polish, QLocale::Poland});
+#ifdef WIN32
+	SetConsoleOutputCP(CP_UTF8);
+#endif
 }
 
 void loadFonts() {

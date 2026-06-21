@@ -20,9 +20,10 @@ private:
 	std::vector<char*> args{};
 };
 
+void setupLocale();
 void loadFonts();
 
 #define OFFSCREEN_PLATFORM_SETUP PlatformArgsStorage offscreenPlatform{argc, argv};
 
 #define QTEST_OFFSCREEN_MAIN(TEST_CLASS) \
-	QTEST_MAIN_WRAPPER(TEST_CLASS, OFFSCREEN_PLATFORM_SETUP QTEST_MAIN_SETUP() loadFonts();)
+	QTEST_MAIN_WRAPPER(TEST_CLASS, setupLocale(); OFFSCREEN_PLATFORM_SETUP QTEST_MAIN_SETUP() loadFonts();)
