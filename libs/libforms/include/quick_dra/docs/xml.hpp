@@ -12,6 +12,8 @@
 using namespace std::literals;
 
 namespace quick_dra {
+	std::string xml_escape(std::string_view value);
+
 	struct xml {
 		using vector = std::vector<xml>;
 
@@ -28,6 +30,7 @@ namespace quick_dra {
 		xml& with(xml& child);
 
 		void print_open_tag(std::ostream& os) const;
+		void print_attributes(std::ostream& os) const;
 		void print_close_tag(std::ostream& os) const;
 
 		friend std::ostream& operator<<(std::ostream& os, xml const& node);
