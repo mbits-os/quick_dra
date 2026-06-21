@@ -17,35 +17,35 @@ namespace quick_dra {
 	namespace {
 		static constexpr auto entities = std::array{
 		    std::pair{'&', "&amp;"sv},  std::pair{'<', "&lt;"sv},   std::pair{'>', "&gt;"sv},
-		    std::pair{'"', "&quot;"sv}, std::pair{'\'', "&#39;"sv},
+		    std::pair{'"', "&quot;"sv}, std::pair{'\'', "&#39;"sv}, std::pair{'\n', "&#10;"sv},
 		};
-
-		std::string xml_escape(std::string_view value) {
-			size_t length = value.size();
-			for (auto const c : value) {
-				for (auto const& [key, esc] : entities) {
-					if (c != key) continue;
-					length += esc.length() - 1;
-					break;
-				}  // GCOV_EXCL_LINE[WIN32]
-			}
-
-			std::string result{};
-			result.reserve(length);
-			for (auto const c : value) {
-				bool found = false;
-				for (auto const& [key, esc] : entities) {
-					if (c != key) continue;
-					result.append(esc);
-					found = true;
-					break;
-				}  // GCOV_EXCL_LINE[WIN32]
-
-				if (!found) result.push_back(c);
-			}
-			return result;
-		}  // GCOV_EXCL_LINE[GCC]
 	}  // namespace
+
+	std::string xml_escape(std::string_view value) {
+		size_t length = value.size();
+		for (auto const c : value) {
+			for (auto const& [key, esc] : entities) {
+				if (c != key) continue;
+				length += esc.length() - 1;
+				break;
+			}  // GCOV_EXCL_LINE[WIN32]
+		}
+
+		std::string result{};
+		result.reserve(length);
+		for (auto const c : value) {
+			bool found = false;
+			for (auto const& [key, esc] : entities) {
+				if (c != key) continue;
+				result.append(esc);
+				found = true;
+				break;
+			}  // GCOV_EXCL_LINE[WIN32]
+
+			if (!found) result.push_back(c);
+		}
+		return result;
+	}  // GCOV_EXCL_LINE[GCC]
 
 	xml& xml::with(std::string_view child) {
 		inside = std::string{child.data(), child.size()};
@@ -71,10 +71,14 @@ namespace quick_dra {
 	void xml::print_open_tag(std::ostream& os) const {
 		if (tag.empty()) return;
 		fmt::print(os, "<{}", tag);
+		print_attributes(os);
+		fmt::print(os, ">");
+	}
+
+	void xml::print_attributes(std::ostream& os) const {
 		for (auto const& [name, value] : attributes) {
 			fmt::print(os, " {}=\"{}\"", name, xml_escape(value));
 		}
-		fmt::print(os, ">");
 	}
 
 	void xml::print_close_tag(std::ostream& os) const {

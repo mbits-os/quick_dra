@@ -4,6 +4,7 @@ fmt/12.1.0
 rapidyaml/0.10.0
 libcurl/8.17.0
 ctre/3.10.0
+tinyxml2/11.0.0
 
 [generators]
 CMakeDeps

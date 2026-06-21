@@ -41,6 +41,7 @@ find_package(fmt REQUIRED)
 find_package(ryml REQUIRED)
 find_package(CURL REQUIRED)
 find_package(ctre REQUIRED)
+find_package(tinyxml2 REQUIRED)
 find_package(Qt6 COMPONENTS Core Widgets Gui Svg Test)
 
 if(UNIX)
@@ -64,7 +65,6 @@ if(QUICK_DRA_TESTING)
   include(${PROJECT_SOURCE_DIR}/tools/coveralls/build_flags.cmake)
 endif()
 
-
 if(QUICK_DRA_INSTALL)
   include(${PROJECT_SOURCE_DIR}/.flow/packages/installer.cmake)
 
@@ -78,8 +78,9 @@ endif()
 
 add_subdirectory(external)
 add_subdirectory(libs)
+add_subdirectory(tools/qtxml-to-junit qtxml-to-junit)
 
-if (QUICK_DRA_INSTALL)
+if(QUICK_DRA_INSTALL)
   include(CPack)
 endif()
 
