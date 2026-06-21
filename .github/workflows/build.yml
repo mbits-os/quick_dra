@@ -162,6 +162,13 @@ jobs:
           fetch-previous-results: true
           pull-request-report: true
 
+      - name: Upload error images
+        uses: actions/upload-artifact@v7
+        with:
+          name: image_errors-${{ env.ARTIFACT_SUFFIX }}
+          path: ${{github.workspace}}/build/artifacts/test-results/images
+          if-no-files-found: ignore
+
       - name: Upload packages
         uses: actions/upload-artifact@v7
         if: ${{ steps.artifacts.outputs.CPACK_GENERATORS != '' }}
