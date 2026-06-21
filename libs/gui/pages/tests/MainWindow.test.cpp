@@ -53,18 +53,16 @@ void PagesTest::mainWindow() {
 	ENSURE_CHILD(MessageBar, messageBar);
 	ENSURE_CHILD(QPushButton, reloadButton);
 
-	QSignalSpy spy{&globals, &Globals::configModifiedChanged};
+	QSignalSpy configModifiedSpy{&globals, &Globals::configModifiedChanged};
+	QSignalSpy visibleChangedSpy{messageBar, &MessageBar::visibleChanged};
 
 	QVERIFY(!messageBar->isVisible());
-	fs::copy_file(cliTestDataDir() / ".quick_dra.AB4123456_50671500000.quarter.yaml"sv, tmp.cwd() / ".quick_dra.yaml"sv,
-	              fs::copy_options::overwrite_existing);
-	QTest::qWait(0);
+	setFileContents(tmp.cwd() / ".quick_dra.yaml"sv,
+	                fileContents(cliTestDataDir() / ".quick_dra.AB4123456_50671500000.quarter.yaml"sv));
+	waitFor(configModifiedSpy, visibleChangedSpy);
 	QVERIFY(messageBar->isVisible());
 
 	reloadButton->click();
-	QTest::qWait(0);
-
-	QCOMPARE(spy.size(), 2);
-	QCOMPARE(spy[0][0], true);
-	QCOMPARE(spy[1][0], false);
+	waitFor(configModifiedSpy, visibleChangedSpy);
+	QVERIFY(!messageBar->isVisible());
 }

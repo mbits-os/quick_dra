@@ -12,6 +12,18 @@
 
 namespace quick_dra::gui {
 	class Globals;
+	class MessageBar : public QWidget {
+		Q_OBJECT
+
+	public:
+		using QWidget::QWidget;
+
+		void setVisible(bool value) override;
+
+	signals:
+		void visibleChanged(bool value);
+	};
+
 	class MainWindow : public QMainWindow {
 		Q_OBJECT
 
@@ -35,7 +47,7 @@ namespace quick_dra::gui {
 		QWidget* centralWidget{};
 		QStackedWidget* stackedWidget{};
 		QVBoxLayout* verticalLayout{};
-		QWidget* messageBar{};
+		MessageBar* messageBar{};
 		PageStack* pageStack{};
 	};
 }  // namespace quick_dra::gui

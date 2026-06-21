@@ -11,6 +11,12 @@
 using namespace std::literals;
 
 namespace quick_dra::gui {
+	void MessageBar::setVisible(bool value) {
+		auto const prev = isVisible();
+		QWidget::setVisible(value);
+		if (prev != value) visibleChanged(value);
+	}
+
 	MainWindow::MainWindow(Globals* globals, QWidget* parent) : QMainWindow(parent) {
 		setupUi(globals);
 		setWindowTitle(QString::fromStdString(std::format("{} {}", version::program, version::ui)));
