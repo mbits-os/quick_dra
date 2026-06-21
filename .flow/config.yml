@@ -42,6 +42,7 @@ lts:
 postproc:
   exclude:
     - { github_os: ubuntu-24.04, sanitizer: true }
+    - { github_os: ubuntu-26.04, sanitizer: true }
   include:
     - { os: ubuntu, gcc_ver: 13 }
     - { github_os: ubuntu-24.04, gcc_ver: 14 }

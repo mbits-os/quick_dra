@@ -64,7 +64,7 @@ namespace quick_dra::gui {
 			    from.title.value_or(insurance_title{}),
 			    {},
 			    from.history
-			        .transform([](auto const& values) {
+			        .transform([](auto const& values) {  // GCOV_EXCL_LINE[GCC]
 				        history_type result{};
 				        result.reserve(values.size());
 				        std::transform(values.begin(), values.end(), std::back_inserter(result),

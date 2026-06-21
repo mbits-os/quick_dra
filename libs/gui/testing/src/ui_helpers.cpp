@@ -64,7 +64,7 @@ std::string fileContents(std::filesystem::path const& path) {
 
 void setFileContents(std::filesystem::path const& path, std::string_view contents) {
 	auto file = std::ofstream{path};
-	file.write(contents.data(), contents.size());
+	file.write(contents.data(), static_cast<std::streamsize>(contents.size()));
 }
 
 void writeConfig(std::filesystem::path const& cwd, std::filesystem::path const& data) {
