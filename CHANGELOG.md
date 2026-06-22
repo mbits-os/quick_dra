@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.2.2](https://github.com/mbits-os/quick_dra/compare/v1.2.1...v1.2.2) (2026-06-22)
+
+### Bug Fixes
+
+- use `nowide::cin` in conversations ([92d2ead](https://github.com/mbits-os/quick_dra/commit/92d2ead98eeabda388a984ce5e440e60ae47e821)), fixes #78
+
+### Continuous Integration
+
+- redesign issue templates to use YAML ([7e3ec58](https://github.com/mbits-os/quick_dra/commit/7e3ec58c3b42d1f6cec668ee60eb1251f98f016c)), closes #79
+- tweaks for Ubuntu 26.04 / gcc-15 ([7564ecc](https://github.com/mbits-os/quick_dra/commit/7564ecc80070ef7a1abcf0430ed190b0e006396a)), closes #83
+- gather images created by failing tests ([a042b74](https://github.com/mbits-os/quick_dra/commit/a042b745fda8fce957003c3302e70fc20657f791))
+- use proj-flow to set `$LC_ALL` for tests ([4ecd416](https://github.com/mbits-os/quick_dra/commit/4ecd416a4bfdbea17dc9efb7e0c446864475dba5)), closes #72
+
+### Tests
+
+- stabilize `PagesTest::mainWindow` test ([b167b4a](https://github.com/mbits-os/quick_dra/commit/b167b4aadbe4258249b0f5cc2ab3737bacca5424))
+- stabilize `Globals.config` and `Globals.configModified` ([c2b334e](https://github.com/mbits-os/quick_dra/commit/c2b334e44ba0c7d6598b82770aee8e30fba8d8bd))
+- stabilize `ControlsTest::PanelButtonGroup_layout` for Ubuntu 26.04 ([0459339](https://github.com/mbits-os/quick_dra/commit/045933917ad2eaaa3869b5073145dbacaab72c8e))
+- stabilize `GuiTest::PageHeader_centeringTitle` test ([9f9e4e0](https://github.com/mbits-os/quick_dra/commit/9f9e4e04e233086610869f8bd616196e0bf0f830))
+- gather test results from QTest-based runs ([c17cb0c](https://github.com/mbits-os/quick_dra/commit/c17cb0c7107e7470bf299fc15ae7f84e291cd229))
+- convert Qt XMLs to JUnit with a tool ([0826bb3](https://github.com/mbits-os/quick_dra/commit/0826bb3513832c9059a7ea61ae07eb30ba98679c))
+- unify control checks ([d52ff50](https://github.com/mbits-os/quick_dra/commit/d52ff50c5de0328989db37555e6b3f502503d6f4))
+- preselect pl_PL in QLocale ([a0b21de](https://github.com/mbits-os/quick_dra/commit/a0b21deccd6339cfc24a16d04e821419f15a7c0c))
+
 ## [1.2.1](https://github.com/mbits-os/quick_dra/compare/v1.2.0...v1.2.1) (2026-06-15)
 
 ### Bug Fixes

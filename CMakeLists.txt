@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.28)
 project(quick_dra
-  VERSION 1.2.1
+  VERSION 1.2.2
   DESCRIPTION "Generate simple ZUS RCA/DRA document set."
   LANGUAGES CXX)
 
