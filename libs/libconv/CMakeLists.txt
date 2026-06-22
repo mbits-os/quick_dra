@@ -22,7 +22,7 @@ target_include_directories(libconv
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-target_link_libraries(libconv PUBLIC libforms args)
+target_link_libraries(libconv PUBLIC libforms args nowide::nowide)
 set_target_properties(libconv PROPERTIES FOLDER lib)
 
 # #################################################################
