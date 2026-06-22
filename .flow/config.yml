@@ -7,6 +7,7 @@ extensions:
   - proj_flow.ext.tools
   - proj_flow.ext.tests
   - proj_flow.ext.webidl
+  - proj_flow.minimal.ext.bug_report
   - quick_dra.icons
   - quick_dra.yaml_reader
   - quick_dra.qtest2junit
