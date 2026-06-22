@@ -1,3 +1,4 @@
 add_subdirectory(args)
+add_subdirectory(nowide)
 
-set_target_properties(args PROPERTIES FOLDER lib/external)
+set_target_properties(args nowide PROPERTIES FOLDER lib/external)

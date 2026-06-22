@@ -6,6 +6,7 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 #include <iostream>
+#include <nowide/iostream.hpp>
 #include <quick_dra/base/str.hpp>
 #include <quick_dra/conv/args_parser.hpp>
 #include <quick_dra/conv/concepts.hpp>
@@ -95,7 +96,7 @@ namespace quick_dra {
 		value_type opts{};
 		value_type dst{};
 
-		std::istream* cin = &std::cin;
+		std::istream* cin = &nowide::cin;
 		void attach(std::istream& in) { cin = &in; }
 
 		struct no_questions_verifier {
