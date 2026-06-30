@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QToolButton>
 #include <app/controls/PageScrollArea.hpp>
+#include <app/controls/Panel.hpp>
 #include <app/controls/PanelButtonGroup.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageStack.hpp>
@@ -48,15 +49,15 @@ namespace quick_dra::gui {
 		    .createWidget(insuredGroup, "insuredGroup",
 		                  [](PanelButtonGroup& group) { group.setSizePolicy(TakeWidth / HeightForWidth); });
 
-		auto addNewInsuredButton = editInsuredGroup->createWidget<Panel>("addNewInsuredButton", [](Panel& panel) {
-			panel.setInfo(QString::fromUtf8("Dodaj ubezpieczonego"), {}, {}, arrowRightSVGIcon());
-		});
+		auto addNewInsuredButton = editInsuredGroup->createPanel(
+		    {.label = QString::fromUtf16(u"Dodaj ubezpieczonego"), .rightIcon = arrowRightSVGIcon()},
+		    "addNewInsuredButton");
 		addNewInsuredButton->setClickable(true);
 		QObject::connect(addNewInsuredButton, &PanelButton::clicked, this, &PersonelPage::addInsured);
 
-		removeInsuredButton = editInsuredGroup->createWidget<Panel>("removeInsuredButton", [](Panel& panel) {
-			panel.setInfo(QString::fromUtf8("Usuń ubezpieczonych"), {}, {}, arrowRightSVGIcon());
-		});
+		removeInsuredButton = editInsuredGroup->createPanel(
+		    {.label = QString::fromUtf16(u"Usuń ubezpieczonych"), .rightIcon = arrowRightSVGIcon()},
+		    "removeInsuredButton");
 		removeInsuredButton->setClickable(true);
 		removeInsuredButton->setEnabled(false);
 		QObject::connect(removeInsuredButton, &PanelButton::clicked, this, &PersonelPage::removeInsured);
@@ -74,9 +75,9 @@ namespace quick_dra::gui {
 		auto const name = name_from(payer.first_name, payer.last_name, {.format_for = name_hint::payer});
 		auto const info = second_line(document_info(payer.kind, payer.document), document_info('R', payer.tax_id),
 		                              document_info('P', payer.social_id));
-		auto const button = payerGroup->createWidget<Panel>("payerPanel", [&name, &info](Panel& panel) {
-			panel.setInfo(QString::fromUtf8(name), QString::fromUtf8(info), {}, arrowRightSVGIcon());
-		});
+		auto const button = payerGroup->createPanel(
+		    {.label = QString::fromUtf8(name), .details = QString::fromUtf8(info), .rightIcon = arrowRightSVGIcon()},
+		    "payerPanel");
 		button->setClickable(true);
 		QObject::connect(button, &PanelButton::clicked, this, &PersonelPage::editPayer);
 	}
@@ -93,9 +94,10 @@ namespace quick_dra::gui {
 			    employed ? second_line(document_info(insured.kind, insured.document),
 			                           insurance_title_info(insured.title), salary_info(month, part_time_scale, salary))
 			             : second_line(document_info(insured.kind, insured.document), "*poza okresem zatrudnienia*");
-			auto const button = insuredGroup->createWidget<Panel>("payerPanel", [&name, &info](Panel& panel) {
-				panel.setInfo(QString::fromUtf8(name), QString::fromUtf8(info), {}, arrowRightSVGIcon());
-			});
+			auto const button = insuredGroup->createPanel({.label = QString::fromUtf8(name),
+			                                               .details = QString::fromUtf8(info),
+			                                               .rightIcon = arrowRightSVGIcon()},
+			                                              "payerPanel");
 			button->setClickable(true);
 			QObject::connect(button, &PanelButton::clicked, [self = this, index]() { self->editInsured(index); });
 			++index;

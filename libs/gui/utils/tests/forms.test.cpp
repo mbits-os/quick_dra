@@ -6,7 +6,6 @@
 #include <app/utils/str.hpp>
 #include <clocale>
 #include <optional>
-#include <print>
 #include <span>
 #include <string_view>
 

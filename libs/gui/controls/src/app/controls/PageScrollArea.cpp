@@ -44,7 +44,7 @@ namespace quick_dra::gui {
 		QScrollArea::resizeEvent(event);
 		auto const child = widget();
 		auto const width = event->size().width();
-		auto const height = child->sizePolicy().hasHeightForWidth() ? child->heightForWidth(width) : child->height();
+		auto const height = child->hasHeightForWidth() ? child->heightForWidth(width) : child->height();
 		child->resize(width, height);
 	}
 }  // namespace quick_dra::gui

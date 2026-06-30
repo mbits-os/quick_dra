@@ -16,6 +16,7 @@ private slots:
 	void PageScrollArea_simpleResize();
 	void PageScrollArea_longText();
 
+	void DevicePixelScale();
 	void PanelButtonGroup_layout();
 	void PanelButtonGroup_contents();
 	void PanelButtonGroup_mouseMove();
@@ -30,4 +31,13 @@ private slots:
 	void Forms_lineEdit();
 	void Forms_documentComboBox();
 	void Forms_tableView();
+
+	void SplitSpaces_data();
+	void SplitSpaces();
+	void InlineMarkdown_data();
+	void InlineMarkdown();
+	void MeasureText_data();
+	void MeasureText();
+	void PaintMarkdown();
+	void FindSmallestRect();
 };

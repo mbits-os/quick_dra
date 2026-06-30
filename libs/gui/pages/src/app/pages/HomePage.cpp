@@ -7,6 +7,7 @@
 #include <QToolButton>
 #include <algorithm>
 #include <app/controls/PageScrollArea.hpp>
+#include <app/controls/Panel.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/pages/HomePage.hpp>
@@ -93,27 +94,19 @@ namespace quick_dra::gui {
 		        [self = this](PanelButtonGroup& group) {
 			        group.setSizePolicy(TakeWidth / HeightForWidth);
 
-			        auto identifierButton = group.createWidget<Panel>([](Panel& panel) {
-				        panel.setInfo(QString::fromUtf8("Identyfikator"sv), {}, {}, arrowRightSVGIcon());
-			        });
+			        auto identifierButton =
+			            group.createPanel({.label = "Identyfikator", .rightIcon = arrowRightSVGIcon()});
 
-			        auto personelButton = group.createWidget<Panel>("personelButton", [](Panel& panel) {
-				        panel.setInfo("Dane osobowe", {}, {}, arrowRightSVGIcon());
-			        });
-			        auto localStoreButton = group.createWidget<Panel>("localStoreButton", [](Panel& panel) {
-				        panel.setInfo("Zapisz plik KEDU XML na dysku", {}, {}, ellipsisSVGIcon());
-			        });
-			        auto uploadKeduButton = group.createWidget<Panel>("localStoreButton", [](Panel& panel) {
-				        panel.setInfo(QString::fromUtf16(u"Wyślij KEDU XML do e-ZUS"), {}, {}, ellipsisSVGIcon());
-			        });
+			        auto personelButton = group.createPanel({.label = "Dane osobowe", .rightIcon = arrowRightSVGIcon()},
+			                                                "personelButton");
+			        auto localStoreButton = group.createPanel(
+			            {.label = "Zapisz plik KEDU XML na dysku", .rightIcon = ellipsisSVGIcon()}, "localStoreButton");
+			        group.createPanel({.label = QString::fromUtf16(u"Wyślij KEDU XML do e-ZUS"),
+			                           .rightIcon = ellipsisSVGIcon(),
+			                           .isEnabled = false},
+			                          "localStoreButton");
 
-			        self->summaryIdentifier = static_cast<Panel*>(identifierButton->widget())->value();
-
-			        identifierButton->setClickable(true);
-			        personelButton->setClickable(true);
-			        localStoreButton->setClickable(true);
-			        uploadKeduButton->setClickable(true);
-			        uploadKeduButton->setEnabled(false);
+			        self->identifierPanel = static_cast<Panel*>(identifierButton->widget());
 
 			        QObject::connect(identifierButton, &PanelButton::clicked, self, &HomePage::editReportIdAction);
 			        QObject::connect(personelButton, &PanelButton::clicked, self, &HomePage::showPersonelFilesAction);
@@ -164,7 +157,7 @@ namespace quick_dra::gui {
 		});
 	}
 
-	void HomePage::reportIdChanged() { updateSummaryIdentifier(); }
+	void HomePage::reportIdChanged() { updateIdentifierPanel(); }
 
 	void HomePage::formSetChanged() {
 		summaryGroup->clearAll();
@@ -176,27 +169,30 @@ namespace quick_dra::gui {
 			}
 			layoutFormReference(summaryGroup, ref, slot);
 		}
-		updateSummaryIdentifier();
+		updateIdentifierPanel();
 	}
 
 	PanelButton* HomePage::layoutFormReference(PanelButtonGroup* group,
 	                                           FormData::FormRef const& ref,
 	                                           std::function<void()> const& slot) {
-		auto button = group->createWidget<Panel>([&ref, hasSlot = !!slot](Panel& panel) {
-			panel.setInfo(QString::fromUtf8(ref.label), QString::fromUtf8(ref.comment), QString::fromUtf8(ref.value),
-			              hasSlot ? arrowRightSVGIcon() : QIcon{});
+		auto const hasSlot = !!slot;
+		auto button = group->createPanel({
+		    .label = QString::fromUtf8(ref.label),
+		    .details = ref.comment.empty() ? QString() : QString::fromUtf8(ref.comment),
+		    .value = ref.value.empty() ? QString() : QString::fromUtf8(ref.value),
+		    .rightIcon = hasSlot ? arrowRightSVGIcon() : QIcon{},
+		    .isClickable = hasSlot,
 		});
 
-		if (slot) {
-			button->setClickable(true);
+		if (hasSlot) {
 			QObject::connect(button, &PanelButton::clicked, [slot]() { slot(); });
 		}
 
 		return button;
 	}
 
-	void HomePage::updateSummaryIdentifier() {
-		if (!summaryIdentifier) {
+	void HomePage::updateIdentifierPanel() {
+		if (!identifierPanel) {
 			return;  // GCOV_EXCL_LINE
 		}
 
@@ -204,7 +200,7 @@ namespace quick_dra::gui {
 		auto const sid = std::format("{:02} {:02}-{:04}", id.index, static_cast<unsigned>(id.date.month()),
 		                             static_cast<int>(id.date.year()));
 
-		summaryIdentifier->setText(QString::fromStdString(sid));
+		identifierPanel->setValue(QString::fromStdString(sid));
 	}
 
 	void HomePage::pushFormView(size_t index) { stack().push<ReportFormPage>(index); }
