@@ -99,7 +99,11 @@ namespace quick_dra::gui {
 	}
 
 	void FormData::loadConfig() {
-		last_access = std::filesystem::last_write_time(cfg_path);
+		std::error_code ec{};
+		last_access = std::filesystem::last_write_time(cfg_path, ec);
+		if (ec) {
+			last_access = std::filesystem::file_time_type::min();
+		}
 		cfg = partial::config::load_partial(cfg_path, false);
 		if (!cfg.insured) cfg.insured.emplace();
 		if (!cfg.payer) cfg.payer.emplace();
