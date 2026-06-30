@@ -6,13 +6,13 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <app/controls/Glyph.hpp>
+#include <app/controls/Panel.hpp>
 #include <app/controls/PanelButtonGroup.hpp>
 #include <app/controls/PanelButtonGroup_p.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <memory>
-#include <print>
 #include <utility>
 
 namespace quick_dra::gui {
@@ -22,8 +22,8 @@ namespace quick_dra::gui {
 			       palette.color(QPalette::WindowText).toHsl().lightness();
 		}
 
-		PanelButtonStyle::Palette const& selectPalette(QWidget* widget) {
-			return lightModeActive(widget->palette()) ? PanelButtonStyle::lightPalette : PanelButtonStyle::darkPalette;
+		PanelButtonStyle::Palette const& selectPalette() {
+			return lightModeActive(qApp->palette()) ? PanelButtonStyle::lightPalette : PanelButtonStyle::darkPalette;
 		}
 
 		void clear(QLayoutItem* item);
@@ -51,27 +51,32 @@ namespace quick_dra::gui {
 		}
 	}
 
-	void PanelButtonPrivate::paint(QPainter& painter, Positions pos, PanelButtonStyle::Palette const& palette) const {
+	void PanelButtonPrivate::paint(QPainter& painter,
+	                               DevicePixelScale const& scale,
+	                               Positions pos,
+	                               PanelButtonStyle::Palette const& palette) const {
 		using namespace PanelButtonStyle;
-		static constexpr auto DiameterF = RadiusF * 2;
+		auto const radius = scale.toDeviceF(Radius);
+		auto const diameter = radius * 2;
+		auto const margin = scale.toDevice(TrueMargin);
 
-		auto const rect = item->geometry().marginsAdded({TrueMargin, TrueMargin, TrueMargin, TrueMargin}).toRectF();
+		auto const rect = item->geometry().marginsAdded({margin, margin, margin, margin}).toRectF();
 		QPainterPath path{};
 		if (pos & PanePosition::Bottom) {
-			path.moveTo(rect.left(), rect.bottom() - RadiusF);
+			path.moveTo(rect.left(), rect.bottom() - radius);
 		} else {
 			path.moveTo(rect.left(), rect.bottom());
 		}
 
 		if (pos & PanePosition::Top) {
 			// RIGHT
-			path.lineTo(rect.left(), rect.top() + RadiusF);
+			path.lineTo(rect.left(), rect.top() + radius);
 			// TL corner
-			path.arcTo(rect.left(), rect.top(), DiameterF, DiameterF, 180, -90);
+			path.arcTo(rect.left(), rect.top(), diameter, diameter, 180, -90);
 			// TOP
-			path.lineTo(rect.right() - RadiusF, rect.top());
+			path.lineTo(rect.right() - radius, rect.top());
 			// TR corner
-			path.arcTo(rect.right() - DiameterF, rect.top(), DiameterF, DiameterF, 90, -90);
+			path.arcTo(rect.right() - diameter, rect.top(), diameter, diameter, 90, -90);
 		} else {
 			// RIGHT
 			path.lineTo(rect.left(), rect.top());
@@ -80,10 +85,10 @@ namespace quick_dra::gui {
 		}
 
 		if (pos & PanePosition::Bottom) {
-			path.lineTo(rect.right(), rect.bottom() - RadiusF);
-			path.arcTo(rect.right() - DiameterF, rect.bottom() - DiameterF, DiameterF, DiameterF, 0, -90);
-			path.lineTo(rect.left() + RadiusF, rect.bottom());
-			path.arcTo(rect.left(), rect.bottom() - DiameterF, DiameterF, DiameterF, 270, -90);
+			path.lineTo(rect.right(), rect.bottom() - radius);
+			path.arcTo(rect.right() - diameter, rect.bottom() - diameter, diameter, diameter, 0, -90);
+			path.lineTo(rect.left() + radius, rect.bottom());
+			path.arcTo(rect.left(), rect.bottom() - diameter, diameter, diameter, 270, -90);
 		} else {
 			path.lineTo(rect.right(), rect.bottom());
 		}
@@ -123,16 +128,22 @@ namespace quick_dra::gui {
 	FWD(PanelButton, Active)
 #undef GWD
 
-	void PanelButtonGroupPrivate::UI::setupUI(PanelButtonGroup* parent) {
-		LaidOut{parent}.createLayout(layout, "layout", parent, [](auto& layout) {
-			using PanelButtonStyle::Margin;
-
-			layout.setContentsMargins(Margin, Margin, Margin, Margin);
-			layout.setSpacing(2 * PanelButtonStyle::TrueMargin - 1);  // only one separating line...
-		});
+	void PanelButtonGroupPrivate::UI::setupUI(DevicePixelScale const& scale, PanelButtonGroup* parent) {
+		LaidOut{parent}.createLayout(layout, "layout", parent);
+		setMargins(scale);
 	}
 
-	PanelButtonGroupPrivate::PanelButtonGroupPrivate() = default;
+	void PanelButtonGroupPrivate::UI::setMargins(DevicePixelScale const& scale) {
+		auto const spacing = 2 * PanelButtonStyle::TrueMargin - 1_px;  // only one separating line...
+		auto const margin = scale.toDevice(PanelButtonStyle::Margin);
+		layout->setContentsMargins(margin, margin, margin, margin);
+		layout->setSpacing(scale.toDevice(spacing));
+	}
+
+	PanelButtonGroupPrivate::PanelButtonGroupPrivate(PanelButtonGroup* q_ptr) : q_ptr{q_ptr} {
+		ui.setupUI(scale, q_ptr);
+	}
+
 	PanelButtonGroupPrivate::~PanelButtonGroupPrivate() = default;
 
 	int PanelButtonGroupPrivate::count() const { return static_cast<int>(controls_.size()); }
@@ -150,6 +161,13 @@ namespace quick_dra::gui {
 	}
 
 	void PanelButtonGroupPrivate::paintEvent(QPainter& painter, PanelButtonStyle::Palette const& palette) {
+		// GCOV_EXCL_START
+		if (scale.updateScale(q_ptr->logicalDpiX())) {
+			[[unlikely]];
+			ui.setMargins(scale);
+		}
+		// GCOV_EXCL_STOP
+
 		auto lastIndex = -1;
 
 		for (auto index = -1; auto const& control : controls_) {
@@ -174,18 +192,20 @@ namespace quick_dra::gui {
 			if (index == lastIndex) pos |= PanePosition::Bottom;
 			first = false;
 
-			d.paint(painter, pos, palette);
+			d.paint(painter, scale, pos, palette);
 		}
 	}
 
-	void PanelButtonGroupPrivate::mouseMoveEvent(QPointF const& pos) { trackHover(fromPos(pos.toPoint())); }
+	void PanelButtonGroupPrivate::mouseMoveEvent(QPointF const& inWidgetPos) {
+		trackHover(fromPos(inWidgetPos.toPoint()));
+	}
 
-	void PanelButtonGroupPrivate::mousePressEvent(QPointF const& pos, Qt::MouseButton button) {
+	void PanelButtonGroupPrivate::mousePressEvent(QPointF const& inWidgetPos, Qt::MouseButton button) {
 		if (button != Qt::MouseButton::LeftButton) {
 			return;
 		}
 
-		trackHover(fromPos(pos.toPoint()));
+		trackHover(fromPos(inWidgetPos.toPoint()));
 
 		if (hovered_ && hovered_->isClickable()) {
 			originalActive_ = hovered_;
@@ -198,12 +218,12 @@ namespace quick_dra::gui {
 		}
 	}
 
-	void PanelButtonGroupPrivate::mouseReleaseEvent(QPointF const& pos, Qt::MouseButton button) {
+	void PanelButtonGroupPrivate::mouseReleaseEvent(QPointF const& inWidgetPos, Qt::MouseButton button) {
 		if (button != Qt::MouseButton::LeftButton) {
 			return;
 		}
 
-		trackHover(fromPos(pos.toPoint()));
+		trackHover(fromPos(inWidgetPos.toPoint()));
 
 		if (!originalActive_) {
 			return;
@@ -215,13 +235,22 @@ namespace quick_dra::gui {
 			originalActive_->clicked();
 		}
 		originalActive_ = nullptr;
-		if (!q_func()->geometry().contains(pos.toPoint())) {
+		auto const rect = q_func()->rect().toRectF();  // scale.fromDevice(q_func()->rect());
+		qDebug() << "mouseRelease" << inWidgetPos << q_func()->rect() << rect.contains(inWidgetPos);
+		if (!rect.contains(inWidgetPos)) {
 			q_func()->setMouseTracking(false);
 		}
 	}
 
-	PanelButton* PanelButtonGroupPrivate::fromPos(QPoint const& pos) const {
-		using namespace PanelButtonStyle;
+	PanelButton* PanelButtonGroupPrivate::fromPos(QPoint const& inWidgetPos) {
+		// GCOV_EXCL_START
+		if (scale.updateScale(q_ptr->logicalDpiX())) {
+			[[unlikely]];
+			ui.setMargins(scale);
+		}
+		// GCOV_EXCL_STOP
+
+		auto const trueMargin = scale.toDevice(PanelButtonStyle::TrueMargin);
 
 		for (auto const& control : controls_) {
 			auto const& d = *control.get()->d_func();
@@ -229,8 +258,8 @@ namespace quick_dra::gui {
 				continue;
 			}
 
-			auto const rect = d.item->geometry().marginsAdded({TrueMargin, TrueMargin, TrueMargin, TrueMargin});
-			if (rect.contains(pos)) {
+			auto const rect = d.item->geometry().marginsAdded({trueMargin, trueMargin, trueMargin, trueMargin});
+			if (rect.contains(inWidgetPos)) {
 				return control.get();
 			}
 		}
@@ -255,11 +284,7 @@ namespace quick_dra::gui {
 		}
 	}
 
-	PanelButtonGroup::PanelButtonGroup(QWidget* parent) : QWidget{parent}, d_ptr{new PanelButtonGroupPrivate} {
-		Q_D(PanelButtonGroup);
-		d->q_ptr = this;
-		d->ui.setupUI(this);
-	}
+	PanelButtonGroup::PanelButtonGroup(QWidget* parent) : QWidget{parent}, d_ptr{new PanelButtonGroupPrivate{this}} {}
 
 	PanelButtonGroup::~PanelButtonGroup() = default;
 
@@ -296,6 +321,17 @@ namespace quick_dra::gui {
 		return d->addItem(item);
 	}
 
+	PanelButton* PanelButtonGroup::createPanel(PanelInfo const& info, QAnyStringView objectName) {
+		auto const result = createWidget<Panel>(objectName, [&info](Panel& panel) { panel.setInfo(info); });
+		if (info.isClickable) {
+			result->setClickable(*info.isClickable);
+		}
+		if (info.isEnabled) {
+			result->setEnabled(*info.isEnabled);
+		}
+		return result;
+	}
+
 	PanelButton* PanelButtonGroup::takeLast() {
 		Q_D(PanelButtonGroup);
 		if (d->controls_.empty()) {
@@ -328,8 +364,7 @@ namespace quick_dra::gui {
 		Q_D(PanelButtonGroup);
 
 		QPainter painter{this};
-		painter.scale(1, 1);
-		d->paintEvent(painter, selectPalette(this));
+		d->paintEvent(painter, selectPalette());
 	}
 
 	void PanelButtonGroup::enterEvent(QEnterEvent* event) {
@@ -362,93 +397,4 @@ namespace quick_dra::gui {
 
 		d->mouseReleaseEvent(event->position(), event->button());
 	}
-
-	Panel::Panel(QWidget* parent) : QWidget{parent} {}
-
-	void setBg(auto* widget, QColor baseColor, int alpha = 20) {
-		auto pal = widget->palette();
-		baseColor.setAlpha(alpha);
-		pal.setColor(QPalette::Window, baseColor);
-		widget->setPalette(pal);
-		widget->setAutoFillBackground(true);
-	}
-
-	void Panel::setInfo(QString const& label, QString const& details, QString const& value, QIcon const& rightIcon) {
-		if (layout()) {
-			QWidget{}.setLayout(layout());
-		}
-
-		// +-HBox----------------------------------------+--+-------------+
-		// |+-VBox--------------------------------------+|  |             |
-		// ||+-HBox-----------------+------------------+||  |             |
-		// |||[label] TakeWidth/1_x |[value] TakeWidth |||  | TakeHeight  |
-		// ||+----------------------+------------------+||  | [rightIcon] |
-		// |+-------------------------------------------+|  |             |
-		// ||[details] TakeWidth                        ||  |             |
-		// |+-------------------------------------------+|  |             |
-		// +---------------------------------------------+--+-------------+
-
-		// +-HBox------------------------------------+--+-----------------------+
-		// |[label] TakeWidth/1_x |[value] TakeWidth |  |[rightIcon] TakeHeight |
-		// +-----------------------------------------+--+-----------------------+
-
-		QHBoxLayout* labelAndValue{};
-
-		auto const tight = [](auto& layout) {
-			layout.setContentsMargins(0, 0, 0, 0);
-			layout.setSpacing(0);
-		};
-
-		LaidOut{this}.createLayout(root_, "rootLayout", this, tight);
-		auto root = LaidOut{this, root_};
-
-		if (details.isEmpty()) {
-			labelAndValue = root_;
-		} else {
-			QVBoxLayout* leftHandSide{};
-			QLabel* detailsLabel{};
-
-			root.createLayout(leftHandSide, "leftLayout", tight);
-
-			LaidOut{this, leftHandSide}
-			    .createLayout(labelAndValue, "labelLayout", tight)
-			    .createWidget(detailsLabel, "details", [&details](QLabel& lbl) {
-				    lbl.setSizePolicy(TakeWidth / HeightForWidth);
-				    lbl.setText(details);
-				    lbl.setTextFormat(Qt::MarkdownText);
-				    lbl.setWordWrap(true);
-
-				    auto font = lbl.font();
-				    font.setPointSizeF(font.pointSizeF() * .85);
-				    lbl.setFont(font);
-			    });
-		}
-
-		auto horiz = LaidOut{this, labelAndValue};
-		horiz.addWidget<QLabel>("label", [&label](QLabel& lbl) {
-			lbl.setSizePolicy(TakeWidth / (HeightForWidth / 1_XStretch));
-			lbl.setText(label);
-			lbl.setTextFormat(Qt::MarkdownText);
-			lbl.setWordWrap(true);
-			lbl.setAlignment(Qt::AlignTop | Qt::AlignLeft);
-
-			auto font = lbl.font();
-			font.setWeight(QFont::ExtraBold);
-			lbl.setFont(font);
-		});
-		value_ = horiz.addWidget<QLabel>("value", [value](QLabel& lbl) {
-			lbl.setSizePolicy(TakeWidth);
-			lbl.setText(value);
-			lbl.setAlignment(Qt::AlignTop | Qt::AlignRight);
-		});
-
-		root_->addSpacing(10);
-
-		root.addWidget<Glyph>("", [&rightIcon](Glyph& glyph) {
-			glyph.setSizePolicy(TakeHeight);
-			glyph.setIcon(rightIcon.isNull() ? nullSVGIcon() : rightIcon);
-			glyph.setIconSize(24, 24);
-		});
-	}
-
 }  // namespace quick_dra::gui

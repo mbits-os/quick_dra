@@ -6,7 +6,6 @@
 #include <QFontDatabase>
 #include <filesystem>
 #include <format>
-#include <print>
 #include <quick_dra/base/str.hpp>
 #include <span>
 #include <string>

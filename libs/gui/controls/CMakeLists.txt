@@ -6,6 +6,7 @@ qt_standard_project_setup()
 set(SRCS
     include/app/controls/Forms.hpp
     include/app/controls/forms/base.hpp
+    include/app/controls/DevicePixelScale.hpp
     include/app/controls/forms/ComboBox.hpp
     include/app/controls/forms/DocumentComboBox.hpp
     include/app/controls/forms/field.hpp
@@ -13,15 +14,21 @@ set(SRCS
     include/app/controls/forms/TableView.hpp
     include/app/controls/Glyph.hpp
     include/app/controls/PageScrollArea.hpp
+    include/app/controls/Panel_p.hpp
+    include/app/controls/Panel.hpp
     include/app/controls/PanelButtonGroup_p.hpp
     include/app/controls/PanelButtonGroup.hpp
+    include/app/controls/PanelButtonStyle.hpp
+    include/app/controls/WordWrap.hpp
     src/app/controls/forms/ComboBox.cpp
     src/app/controls/forms/DocumentComboBox.cpp
     src/app/controls/forms/LineEdit.cpp
     src/app/controls/forms/TableView.cpp
     src/app/controls/Glyph.cpp
     src/app/controls/PageScrollArea.cpp
+    src/app/controls/Panel.cpp
     src/app/controls/PanelButtonGroup.cpp
+    src/app/controls/WordWrap.cpp
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS})
@@ -61,6 +68,7 @@ if(QUICK_DRA_TESTING)
         tests/Glyph.test.cpp
         tests/PageScrollArea.test.cpp
         tests/PanelButtonGroup.test.cpp
+        tests/WordWrap.test.cpp
     )
 
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES

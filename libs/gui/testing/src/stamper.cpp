@@ -81,30 +81,13 @@ namespace {
 	}
 }  // namespace
 
-Stamper::Stamper(QWidget* target, Options const& options, std::source_location const& here)
-    : target_{target}
-    , imagePath_{buildTarget(options.path, here)}
+RenderCompare::RenderCompare(Options const& options, std::source_location const& here)
+    : imagePath_{buildTarget(options.path, here)}
+    , dpScale_{options.dpScale}
     , imageTitle_{QString::fromUtf8(options.path)}
-    , columns_{options.columns}
-    , rows_{options.rows}
-    , margins_{options.margins}
-    , spacing_{options.spacing} {
-	auto const width = (margins_.left() + margins_.right()) + (widgetSize_.width() + spacing_) * columns_ - spacing_;
-	auto const height = (margins_.top() + margins_.bottom()) + (widgetSize_.height() + spacing_) * rows_ - spacing_;
-	tested_ = QImage{width, height, options.format};
+    , tested_{(options.size * dpScale_).toSize(), options.format} {
+	if (options.setDPScale) tested_.setDevicePixelRatio(dpScale_);
 	tested_.fill(options.background);
-}
-
-void Stamper::grab(int row, int column) {
-	if (row >= rows_ || column >= columns_) {
-		return;
-	}
-
-	auto const x = margins_.left() + (widgetSize_.width() + spacing_) * column;
-	auto const y = margins_.top() + (widgetSize_.height() + spacing_) * row;
-
-	QPainter image{&tested_};
-	image.drawImage(QRect{x, y, widgetSize_.width(), widgetSize_.height()}, target_->grab().toImage());
 }
 
 struct noquote_t {
@@ -116,7 +99,12 @@ struct noquote_t {
 
 static constexpr noquote_t noquote{};
 
-QImage Stamper::loadStencil(bool always) {
+void RenderCompare::storeTested() {
+	std::filesystem::create_directories(imagePath_.parent_path());
+	tested_.save(QString::fromUtf8(quick_dra::as_sv(imagePath_.u8string())));
+}
+
+QImage RenderCompare::loadStencil(bool always) {
 	std::filesystem::create_directories(imagePath_.parent_path());
 	auto const path = QString::fromUtf8(quick_dra::as_sv(imagePath_.u8string()));
 	if (always || !std::filesystem::exists(imagePath_)) {
@@ -129,10 +117,47 @@ QImage Stamper::loadStencil(bool always) {
 	return stencil;
 }
 
-void Stamper::saveDiffMap(QImage const& stencil) {
+void RenderCompare::saveDiffMap(QImage const& stencil) {
 	auto const filename =
 	    imagePath_.stem().generic_u8string() + u8".error"s + imagePath_.extension().generic_u8string();
 	auto const error_path = imagePath_.parent_path() / filename;
 	auto const path = QString::fromUtf8(quick_dra::as_sv(error_path.u8string()));
 	generateDifferenceMap(stencil, tested_).save(path);
+}
+
+static QSize stamperSize(QWidget* target, Stamper::Options const& options) {
+	auto const widgetSize = target->size().toSizeF() * options.dpScale;
+	auto const margins = options.margins.toMarginsF();
+	auto const width =
+	    (margins.left() + margins.right()) + (widgetSize.width() + options.spacing) * options.columns - options.spacing;
+	auto const height =
+	    (margins.top() + margins.bottom()) + (widgetSize.height() + options.spacing) * options.rows - options.spacing;
+	return (QSizeF{width, height} / options.dpScale).toSize();
+}
+
+Stamper::Stamper(QWidget* target, Options const& options, std::source_location const& here)
+    : RenderCompare{{.path = options.path,
+                     .size{stamperSize(target, options)},
+                     .dpScale = options.dpScale,
+                     .setDPScale = false,
+                     .format = options.format,
+                     .background = options.background},
+                    here}
+    , target_{target}
+    , columns_{options.columns}
+    , rows_{options.rows}
+    , margins_{options.margins.toMarginsF() / dpScale()}
+    , spacing_{static_cast<qreal>(options.spacing) / dpScale()} {}
+
+void Stamper::grab(int row, int column) {
+	if (row >= rows_ || column >= columns_) {
+		return;
+	}
+
+	auto const widgetSize = target_->size();
+	auto const x = margins_.left() + (widgetSize.width() + spacing_) * column;
+	auto const y = margins_.top() + (widgetSize.height() + spacing_) * row;
+	auto const pt = QPointF{x, y};
+
+	painter().drawImage(QRectF{pt * dpScale(), widgetSize * dpScale()}, target_->grab().toImage());
 }

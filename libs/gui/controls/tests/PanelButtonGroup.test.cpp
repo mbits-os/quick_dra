@@ -5,14 +5,15 @@
 #include <QPainter>
 #include <QSignalSpy>
 #include <QTest>
+#include <app/controls/DevicePixelScale.hpp>
 #include <app/controls/Glyph.hpp>
+#include <app/controls/Panel.hpp>
 #include <app/controls/PanelButtonGroup.hpp>
+#include <app/controls/PanelButtonStyle.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <array>
-#include <chrono>
-#include <print>
 #include <vector>
 #include "ControlsTest.hpp"
 #include "palette_override.hpp"
@@ -83,52 +84,89 @@ static constexpr auto iconCreators = std::array{
     gui::checkSVGIcon,      gui::resetSVGIcon,     gui::warningSVGIcon,
 };
 
+void setBg(auto* widget, QColor baseColor, int alpha = 20) {
+	auto pal = widget->palette();
+	baseColor.setAlpha(alpha);
+	pal.setColor(QPalette::Window, baseColor);
+	widget->setPalette(pal);
+	widget->setAutoFillBackground(true);
+}
+
 struct Buttons {
 	std::vector<PanelButton*> buttons{};
-	Panel* second{};
 
 	explicit Buttons(PanelButtonGroup& widget) {
+		auto const scale = DevicePixelScale{widget.logicalDpiX()};
+		static constexpr auto contentsWidth = 215_px;
+		static constexpr auto width = contentsWidth + PanelButtonStyle::Margin * 2;
+		widget.resize(scale.toDevice(width), 1);
 		buttons.reserve(8);
-		buttons.push_back(widget.createWidget<Panel>([](Panel& panel) {
-			panel.setInfo("Label #1 (original)", "*tag*: info, *iteration*: #1", "Value A", arrowRightSVGIcon());
-			panel.setInfo("Label #1 (changed)", "*tag*: info, *iteration*: #2", "Value B", arrowRightSVGIcon());
-		}));
-		buttons.push_back(widget.createWidget<Panel>(
-		    [](Panel& panel) { panel.setInfo("Label #2", {}, "123,50 zł", arrowRightSVGIcon()); }));
-		buttons.push_back(widget.createWidget<Panel>([](Panel& panel) {
-			panel.setInfo(
-			    "Label #3",
-			    "*date*: 2002-01-15, *tags*: alpha beta gamma delta long-words long list many words wrap around", {},
-			    arrowRightSVGIcon());
-		}));
-		buttons.push_back(widget.createWidget<Panel>([](Panel& panel) {
-			panel.setInfo(
-			    "Label #3 (but hidden)",
-			    "*date*: 2002-01-15, *tags*: alpha beta gamma delta long-words long list many words wrap around", {},
-			    arrowRightSVGIcon());
-			panel.setHidden(true);
-		}));
+		buttons.push_back(widget.createPanel({.label = "Label #1 (original)",
+		                                      .details = "*tag*: info, *iteration*: #1",
+		                                      .value = "Value A",
+		                                      .rightIcon = arrowRightSVGIcon()}));
+		static_cast<Panel*>(buttons.back()->widget())
+		    ->setInfo({.label = "Label #1 (changed)",
+		               .details = "*tag*: info, *iteration*: #2",
+		               .value = "Value B",
+		               .rightIcon = arrowRightSVGIcon()});
 		buttons.push_back(
-		    widget.createWidget<Panel>([](Panel& panel) { panel.setInfo("Open dialog", {}, {}, ellipsisSVGIcon()); }));
+		    widget.createPanel({.label = "Label #2", .value = "123,50 zł", .rightIcon = arrowRightSVGIcon()}));
+		buttons.push_back(
+		    widget.createPanel({.label = "Label #3",
+		                        .details = "*date*: 2002-01-15, *tags*: alpha beta gamma delta long-words long list "
+		                                   "many words wrap around",
+		                        .rightIcon = arrowRightSVGIcon()}));
+		buttons.push_back(
+		    widget.createPanel({.label = "Label #3 (but hidden)",
+		                        .details = "*date*: 2002-01-15, *tags*: alpha beta gamma delta long-words long list "
+		                                   "many words wrap around",
+		                        .rightIcon = arrowRightSVGIcon()}));
+		buttons.back()->widget()->setHidden(true);
+		buttons.push_back(widget.createPanel({.label = "Open dialog", .rightIcon = ellipsisSVGIcon()}));
 
 		auto const layout = new QHBoxLayout{};
-		layout->setContentsMargins(5, 5, 5, 5);
-		layout->setSpacing(5);
+		auto const spacing = scale.toDevice(5_px);
+		auto const iconSize = scale.toDevice(16_px);
+		layout->setContentsMargins(spacing, spacing, spacing, spacing);
+		layout->setSpacing(spacing);
 		for (auto creator : iconCreators) {
 			auto const glyph = new Glyph{&widget};
 			glyph->setIcon(creator());
-			glyph->setIconSize(20, 20);
+			glyph->setIconSize(iconSize, iconSize);
 			layout->addWidget(glyph);
+			glyph->setSizePolicy(TakeWidth);
 		}
 
 		buttons.push_back(widget.addLayout(layout));
 		buttons.push_back(widget.addButton("Normal label", false));
 		buttons.push_back(widget.addButton("Bold label", true));
 	}
+
+	void resize(PanelButtonGroup& widget, qreal scale = 1) {
+		int height = 0;
+		auto const widgetLayout = widget.layout();
+		auto const margins = widgetLayout->contentsMargins();
+		auto const spacing = widgetLayout->spacing();
+		auto const width = widget.width() - (margins.left() + margins.right());
+
+		auto const count = widgetLayout->count();
+		for (auto index = 0; index < count; ++index) {
+			auto const item = widgetLayout->itemAt(index);
+			auto const child = item->widget();
+			if (child && child->isHidden()) continue;
+			if (height) height += spacing;
+			height += item->hasHeightForWidth() ? item->heightForWidth(width) : item->sizeHint().height();
+		}
+		height += margins.top() + margins.bottom();
+
+		height = qRound(height * scale);
+		widget.resize(widget.width(), height);
+	}
 };
 
 static PaletteOverride const themes[] = {
-    {.window = Qt::lightGray, .windowText = Qt::black},
+    {.window = Qt::white, .windowText = Qt::black},
     {.window = QColor{18, 18, 18, 255}, .windowText = QColor{224, 224, 224, 255}},
 };
 
@@ -142,7 +180,7 @@ static constexpr ButtonOp actions[] = {
 		    button->setActive(false);
 	    }
 	    auto const widget = static_cast<Panel*>(btns.buttons[1]->widget());
-	    widget->value()->setText("123,50 zł");
+	    widget->setValue("123,50 zł");
     },
     [](Buttons& btns) {
 	    btns.buttons[0]->setClickable(false);
@@ -159,16 +197,27 @@ static constexpr ButtonOp actions[] = {
 	    btns.buttons[1]->setActive(false);
 	    btns.buttons[1]->setHovered(true);
 	    auto const widget = static_cast<Panel*>(btns.buttons[1]->widget());
-	    widget->value()->setText("Clicked!");
+	    widget->setValue("Clicked!");
     },
 };
 
+void ControlsTest::DevicePixelScale() {
+	QCOMPARE_EQ(12_px, 9_pt);
+	QCOMPARE_EQ(1_in, 96_px);
+	QCOMPARE_EQ(1_in, 72_pt);
+	QCOMPARE_EQ(std::format("{}", 2.4_in), "2.4in"sv);
+	QCOMPARE_EQ(std::format("{}", 15_px), "15px"sv);
+	QCOMPARE_EQ(std::format("{}", 32_pt), "32pt"sv);
+	QCOMPARE_EQ(std::format("{}", Length<std::ratio<15, 17>>(45)), "45[15/17]in"sv);
+}
+
 void ControlsTest::PanelButtonGroup_layout() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Buttons btns{widget};
+	btns.buttons.front()->widget()->setFont(QFont{"DejaVu Sans Mono", qApp->font().pointSize()});
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
+	btns.resize(widget);
 
 	Stamper stamper{&widget,
 	                {
@@ -201,7 +250,6 @@ void ControlsTest::PanelButtonGroup_layout() {
 
 void ControlsTest::PanelButtonGroup_contents() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Buttons btns{widget};
 	int layoutId = 5;
 	int pos = -1;
@@ -215,30 +263,47 @@ void ControlsTest::PanelButtonGroup_contents() {
 	}
 }
 
+QPointF midpoint(QWidget* widget) {
+	auto const geo = widget->geometry().toRectF();
+	return (geo.topLeft() + geo.bottomRight()) / 2;
+}
+
 void ControlsTest::PanelButtonGroup_mouseMove() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
 	btns.buttons[2]->setEnabled(false);
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
-	QCOMPARE_EQ(widget.height(), 648);
-
 	struct pti {
 		int y{0};
 		size_t index{0};
 	};
-	static constexpr auto y_positions = std::array{
-	    pti{.y = 0, .index = 8},   pti{.y = 50, .index = 0},  pti{.y = 100, .index = 1},
-	    pti{.y = 300, .index = 2}, pti{.y = 390, .index = 4}, pti{.y = 500, .index = 5},
-	    pti{.y = 540, .index = 6}, pti{.y = 590, .index = 7}, pti{.y = 653, .index = 8},
+
+	auto const make_pti = [btns](size_t index) {
+		auto const button = btns.buttons[index];
+		auto const widget = button->widget();
+		auto const layout = button->layout();
+		auto geo = widget ? widget->geometry() : layout->geometry();
+		return pti{(geo.top() + geo.bottom()) / 2, index};
+	};
+
+	auto const y_positions = std::array{
+	    pti{.y = 0, .index = 8},
+	    make_pti(0),
+	    make_pti(1),
+	    make_pti(2),
+	    make_pti(4),
+	    make_pti(5),
+	    make_pti(6),
+	    make_pti(7),
+	    pti{.y = std::numeric_limits<int>::max(), .index = 8},
 	};
 
 	int x = widget.width() / 2;
 
-	click.enter(QPoint{0, y_positions[0].y}.toPointF());
+	click.enter({0, 0});
 
 	for (auto const [y, expected] : y_positions) {
 		auto const pt = QPoint{x, y}.toPointF();
@@ -272,21 +337,16 @@ void ControlsTest::PanelButtonGroup_mouseMove() {
 
 void ControlsTest::PanelButtonGroup_mouseClick() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
-	btns.buttons[2]->setClickable(true);
+	auto third = btns.buttons[2];
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
-	QSignalSpy spy{btns.buttons[2], &PanelButton::clicked};
-
+	QSignalSpy spy{third, &PanelButton::clicked};
 	QVERIFY(spy.isValid());
 
-	int x = widget.width() / 2;
-	int y = 300;
-
-	auto const pt = QPoint{x, y}.toPointF();
+	auto const pt = midpoint(third->widget());
 	click.enter({0, 0});
 	click.buttonPress(pt, Qt::LeftButton);
 	click.buttonRelease(pt, Qt::LeftButton);
@@ -298,21 +358,17 @@ void ControlsTest::PanelButtonGroup_mouseClick() {
 
 void ControlsTest::PanelButtonGroup_mouseClickWrongPlace() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
-	btns.buttons[2]->setClickable(true);
+	auto third = btns.buttons[2];
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
-	QSignalSpy spy{btns.buttons[2], &PanelButton::clicked};
-
+	QSignalSpy spy{third, &PanelButton::clicked};
 	QVERIFY(spy.isValid());
 
-	int x = widget.width() / 2;
-
-	auto const pt1 = QPoint{x, 300}.toPointF();
-	auto const pt2 = QPoint{x, 0}.toPointF();
+	auto const pt1 = midpoint(third->widget());
+	auto const pt2 = QPointF{pt1.x(), 0};
 	click.enter({0, 0});
 	click.buttonPress(pt2, Qt::LeftButton);
 	click.move(pt1);
@@ -325,21 +381,16 @@ void ControlsTest::PanelButtonGroup_mouseClickWrongPlace() {
 
 void ControlsTest::PanelButtonGroup_mouseClickLeftRight() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
-	btns.buttons[2]->setClickable(true);
+	auto third = btns.buttons[2];
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
-	QSignalSpy spy{btns.buttons[2], &PanelButton::clicked};
-
+	QSignalSpy spy{third, &PanelButton::clicked};
 	QVERIFY(spy.isValid());
 
-	int x = widget.width() / 2;
-	int y = 300;
-
-	auto const pt = QPoint{x, y}.toPointF();
+	auto const pt = midpoint(third->widget());
 	click.enter({0, 0});
 	click.buttonPress(pt, Qt::LeftButton);
 	click.buttonPress(pt, Qt::RightButton);
@@ -357,21 +408,17 @@ void ControlsTest::PanelButtonGroup_mouseClickLeftRight() {
 
 void ControlsTest::PanelButtonGroup_mouseClickMoveAway() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
-	btns.buttons[2]->setClickable(true);
+	auto third = btns.buttons[2];
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
-	QSignalSpy spy{btns.buttons[2], &PanelButton::clicked};
-
+	QSignalSpy spy{third, &PanelButton::clicked};
 	QVERIFY(spy.isValid());
 
-	int x = widget.width() / 2;
-
-	auto const pt1 = QPoint{x, 300}.toPointF();
-	auto const pt2 = QPoint{x, 390}.toPointF();
+	auto const pt1 = midpoint(third->widget());
+	auto const pt2 = midpoint(btns.buttons[3]->widget());
 	click.enter({0, 0});
 	click.buttonPress(pt1, Qt::LeftButton);
 	click.move(pt2);
@@ -384,21 +431,17 @@ void ControlsTest::PanelButtonGroup_mouseClickMoveAway() {
 
 void ControlsTest::PanelButtonGroup_mouseClickMoveAwayAndReturn() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
-	btns.buttons[2]->setClickable(true);
+	auto third = btns.buttons[2];
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
-	QSignalSpy spy{btns.buttons[2], &PanelButton::clicked};
-
+	QSignalSpy spy{third, &PanelButton::clicked};
 	QVERIFY(spy.isValid());
 
-	int x = widget.width() / 2;
-
-	auto const pt1 = QPoint{x, 300}.toPointF();
-	auto const pt2 = QPoint{x, 390}.toPointF();
+	auto const pt1 = midpoint(third->widget());
+	auto const pt2 = midpoint(btns.buttons[3]->widget());
 	click.enter({0, 0});
 	click.buttonPress(pt1, Qt::LeftButton);
 	click.move(pt2);
@@ -412,10 +455,9 @@ void ControlsTest::PanelButtonGroup_mouseClickMoveAwayAndReturn() {
 
 void ControlsTest::PanelButtonGroup_mouseClickMoveOutside() {
 	PanelButtonGroup widget{};
-	widget.resize(450, 1);
 	Cursor click{.wgt = &widget};
 	Buttons btns{widget};
-	btns.buttons[2]->setClickable(true);
+	auto third = btns.buttons[2];
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 
@@ -423,10 +465,9 @@ void ControlsTest::PanelButtonGroup_mouseClickMoveOutside() {
 
 	QVERIFY(spy.isValid());
 
-	int x = widget.width() / 2;
+	auto const pt1 = midpoint(third->widget());
+	auto const pt2 = QPointF{pt1.x() + widget.width(), pt1.y()};
 
-	auto const pt1 = QPoint{x, 300}.toPointF();
-	auto const pt2 = QPoint{x + widget.width(), 300}.toPointF();
 	click.enter({0, 0});
 	click.buttonPress(pt1, Qt::LeftButton);
 	click.move(pt2);

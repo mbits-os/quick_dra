@@ -6,12 +6,47 @@
 #include <QColor>
 #include <QImage>
 #include <QMargins>
+#include <QPainter>
 #include <QString>
 #include <QWidget>
 #include <filesystem>
+#include <functional>
 #include <source_location>
 
-class Stamper {
+class RenderCompare {
+public:
+	struct Options {
+		std::string_view path{};
+		QSizeF size{1, 1};
+		qreal dpScale{1};
+		bool setDPScale{true};
+		QImage::Format format{QImage::Format_RGB32};
+		QColor background{format == QImage::Format_ARGB32 ? Qt::transparent : Qt::black};
+	};
+
+	RenderCompare(Options const& options, std::source_location const& = std::source_location::current());
+
+	QString const& imageTitle() const noexcept { return imageTitle_; }
+	qreal dpScale() const noexcept { return dpScale_; };
+
+	void storeTested();
+	QImage loadStencil(bool always = false);
+	QImage const& testedImage() const noexcept { return tested_; }
+
+	void saveDiffMap(QImage const& stencil);
+
+protected:
+	QPainter painter() { return QPainter{&tested_}; }
+	QImage& tested() noexcept { return tested_; }
+
+private:
+	std::filesystem::path imagePath_;
+	qreal dpScale_;
+	QString imageTitle_;
+	QImage tested_;
+};
+
+class Stamper : public RenderCompare {
 public:
 	struct Options {
 		std::string_view path{};
@@ -19,6 +54,7 @@ public:
 		int rows{1};
 		QMargins margins{};
 		int spacing{0};
+		qreal dpScale{2};
 		QImage::Format format{QImage::Format_RGB32};
 		QColor background{format == QImage::Format_ARGB32 ? Qt::transparent : Qt::black};
 	};
@@ -43,28 +79,18 @@ public:
 
 	Stamper(QWidget* target, Options const& options, std::source_location const& = std::source_location::current());
 
-	QString const& imageTitle() const noexcept { return imageTitle_; }
 	Iterator begin() const noexcept { return {.columns = columns_}; }
 	Iterator end() const noexcept { return {.columns = columns_, .curr = {.row = rows_, .column = 0}}; }
 
 	void grab(int row, int column);
 	void grab(Position const& pos) { grab(pos.row, pos.column); }
 
-	QImage loadStencil(bool always = false);
-	QImage const& testedImage() const noexcept { return tested_; }
-
-	void saveDiffMap(QImage const& stencil);
-
 private:
 	QWidget* target_;
-	std::filesystem::path imagePath_;
-	QString imageTitle_;
 	int columns_;
 	int rows_;
-	QMargins margins_;
-	int spacing_;
-	QImage tested_;
-	QSize widgetSize_{target_->size() * 2};
+	QMarginsF margins_;
+	qreal spacing_;
 };
 
 #define COMPARE_IMAGES(STENCIL, STAMPER)             \

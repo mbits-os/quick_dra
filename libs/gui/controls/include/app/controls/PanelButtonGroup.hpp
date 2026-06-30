@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QWidget>
+#include <app/controls/DevicePixelScale.hpp>
 #include <app/utils/empty_callback.hpp>
 #include <concepts>
 #include <memory>
@@ -15,6 +16,8 @@
 namespace quick_dra::gui {
 	class PanelButtonPrivate;
 	class PanelButtonGroupPrivate;
+
+	struct PanelInfo;
 
 	class PanelButton : public QObject {
 		Q_OBJECT
@@ -80,6 +83,8 @@ namespace quick_dra::gui {
 			return this->createWidget<Wgt, Callback>("", std::forward<Callback>(cb));
 		}
 
+		PanelButton* createPanel(PanelInfo const&, QAnyStringView objectName = {});
+
 		PanelButton* takeLast();
 		void clearAll();
 
@@ -92,21 +97,5 @@ namespace quick_dra::gui {
 
 	private:
 		std::unique_ptr<PanelButtonGroupPrivate> d_ptr{};
-	};
-
-	class Panel : public QWidget {
-		Q_OBJECT
-		Q_DISABLE_COPY_MOVE(Panel)
-
-	public:
-		Panel(QWidget* parent = nullptr);
-
-		void setInfo(QString const& label, QString const& details, QString const& value, QIcon const& rightIcon);
-
-		QLabel* value() const noexcept { return value_; }
-
-	private:
-		QHBoxLayout* root_{};
-		QLabel* value_{};
 	};
 }  // namespace quick_dra::gui

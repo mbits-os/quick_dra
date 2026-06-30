@@ -6,6 +6,8 @@
 #include <qtypes.h>
 #include <QPainter>
 #include <QVBoxLayout>
+#include <app/controls/DevicePixelScale.hpp>
+#include <app/controls/PanelButtonStyle.hpp>
 #include <vector>
 #include "PanelButtonGroup.hpp"
 
@@ -30,19 +32,6 @@ namespace quick_dra::gui {
 	};
 
 	namespace PanelButtonStyle {
-		static constexpr auto TrueMargin = 18;
-		static constexpr auto Margin = TrueMargin + 2;
-		static constexpr auto Radius = 6;
-		static constexpr auto RadiusF = static_cast<qreal>(Radius);
-
-		struct Palette {
-			QColor frame{};
-			QColor normal{};
-			QColor hover{};
-			QColor active{};
-			QColor disabled{};
-		};
-
 		static constexpr auto lightPalette = Palette{
 		    .frame = QColor{230, 228, 230},     // #e6e4e6
 		    .normal = QColor{252, 251, 252},    // #fcfbfc
@@ -103,7 +92,10 @@ namespace quick_dra::gui {
 			q_parent->update();
 		}
 
-		void paint(QPainter& painter, Positions pos, PanelButtonStyle::Palette const& palette) const;
+		void paint(QPainter& painter,
+		           DevicePixelScale const& scale,
+		           Positions pos,
+		           PanelButtonStyle::Palette const& palette) const;
 
 	private:
 		void propagate(QLayoutItem* item, auto&& callback) {
@@ -136,7 +128,7 @@ namespace quick_dra::gui {
 		Q_GADGET
 
 	public:
-		PanelButtonGroupPrivate();
+		PanelButtonGroupPrivate(PanelButtonGroup* q_ptr);
 		~PanelButtonGroupPrivate();
 
 		int count() const;
@@ -149,17 +141,19 @@ namespace quick_dra::gui {
 		void mouseReleaseEvent(QPointF const&, Qt::MouseButton);
 
 		bool trackingActive() const { return !!originalActive_; }
-		PanelButton* fromPos(QPoint const&) const;
+		PanelButton* fromPos(QPoint const&);
 		void trackHover(PanelButton*);
 
 	private:
 		struct UI {
-			void setupUI(PanelButtonGroup*);
+			void setupUI(DevicePixelScale const& scale, PanelButtonGroup*);
+			void setMargins(DevicePixelScale const& scale);
 
 			QVBoxLayout* layout{};
 		};
 
 		PanelButtonGroup* q_ptr{};
+		DevicePixelScale scale{q_ptr->logicalDpiX()};
 		UI ui{};
 		std::vector<std::unique_ptr<PanelButton>> controls_{};
 		PanelButton* hovered_{};

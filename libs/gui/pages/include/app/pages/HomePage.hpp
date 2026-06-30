@@ -43,13 +43,13 @@ namespace quick_dra::gui {
 	private:
 		void setupUI();
 
-		void updateSummaryIdentifier();
+		void updateIdentifierPanel();
 		PanelButton* layoutFormReference(PanelButtonGroup* group,
 		                                 FormData::FormRef const&,
 		                                 std::function<void()> const& slot);
 		void pushFormView(size_t index);
 
 		PanelButtonGroup* summaryGroup{};
-		QLabel* summaryIdentifier{};
+		class Panel* identifierPanel{};
 	};
 }  // namespace quick_dra::gui
