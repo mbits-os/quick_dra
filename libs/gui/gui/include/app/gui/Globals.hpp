@@ -65,6 +65,7 @@ namespace quick_dra::gui {
 	public slots:
 		void setConfigModified(bool value);
 		void observedFileChanged(QString const& path);
+		void observedDirectoryChanged(QString const& path);
 
 	signals:
 		void configurationChanged();

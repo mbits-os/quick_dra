@@ -20,6 +20,7 @@ namespace quick_dra::gui {
 		readSettings();
 
 		QObject::connect(&watcher_, &QFileSystemWatcher::fileChanged, this, &Globals::observedFileChanged);
+		QObject::connect(&watcher_, &QFileSystemWatcher::directoryChanged, this, &Globals::observedDirectoryChanged);
 	}
 
 	Globals* Globals::current() { return globals; }
@@ -35,8 +36,12 @@ namespace quick_dra::gui {
 		if (!data_.cfg_path.empty()) {
 			// TODO: remove previous?
 		}
-		auto canonical = std::filesystem::weakly_canonical(cfg_path);
-		watcher_.addPath(QString::fromUtf8(as_sv(canonical.generic_u8string())));
+		auto canonical = std::filesystem::weakly_canonical(std::filesystem::current_path() / cfg_path);
+		if (std::filesystem::exists(canonical)) {
+			watcher_.addPath(QString::fromUtf8(as_sv(canonical.generic_u8string())));
+		} else {
+			watcher_.addPath(QString::fromUtf8(as_sv(canonical.parent_path().generic_u8string())));
+		}
 		data_.setConfig(canonical, tax_config_path, download_github_config);
 		configurationChanged();
 
@@ -125,11 +130,28 @@ namespace quick_dra::gui {
 	void Globals::observedFileChanged(QString const& path) {
 		auto const stdPath = std::filesystem::weakly_canonical(as_u8v(path.toUtf8()));
 		if (stdPath == data_.cfg_path) {
-			auto const access = std::filesystem::last_write_time(data_.cfg_path);
+			std::error_code ec{};
+			auto access = std::filesystem::last_write_time(data_.cfg_path, ec);
+			if (ec) {
+				access = std::filesystem::file_time_type::min();
+				auto const filePath = QString::fromUtf8(as_sv(data_.cfg_path.generic_u8string()));
+				watcher_.removePath(filePath);
+				watcher_.addPath(QString::fromUtf8(as_sv(data_.cfg_path.parent_path().generic_u8string())));
+			}
 			if (access != data_.last_access) {
 				setConfigModified(true);
 			}
 		}
+	}
+
+	void Globals::observedDirectoryChanged(QString const& path) {
+		if (!std::filesystem::exists(data_.cfg_path)) {
+			return;
+		}
+		auto const filePath = QString::fromUtf8(as_sv(data_.cfg_path.generic_u8string()));
+		watcher_.addPath(filePath);
+		watcher_.removePath(QString::fromUtf8(as_sv(data_.cfg_path.parent_path().generic_u8string())));
+		observedFileChanged(filePath);
 	}
 
 	void Globals::readSettings() {
