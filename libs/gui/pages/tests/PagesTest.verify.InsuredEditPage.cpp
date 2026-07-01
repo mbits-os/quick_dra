@@ -9,6 +9,18 @@
 using namespace quick_dra::gui;
 using namespace quick_dra;
 
+namespace {
+	static constexpr auto abmon = std::array{"sty"sv, "lut"sv, "mar"sv, "kwi"sv, "maj"sv, "cze"sv,
+	                                         "lip"sv, "sie"sv, "wrz"sv, "paź"sv, "lis"sv, "gru"sv};
+	QString nextMonth() {
+		auto const today = get_today();
+		auto const next = today.year() / today.month() + months{1};
+		auto const result =
+		    std::format("{} {}", abmon[static_cast<unsigned>(next.month()) - 1], static_cast<int>(next.year()));
+		return QString::fromUtf8(result);
+	}
+}  // namespace
+
 void insured_verify_page(RemoveHistoryPage& page);
 
 void verify_page(InsuredEditPage& page) {
@@ -46,7 +58,7 @@ void verify_page(InsuredEditPage& page) {
 	page.addNewEmploymentHistoryEntry();
 	DataSet expected{
 	    {QString{"Od zawsze"}, QString{u"¼"}, QString{"Minimalna"}},
-	    {QString{"lip 2026"}, QString{"Pełny"}, QString{"Minimalna"}},
+	    {nextMonth(), QString{"Pełny"}, QString{"Minimalna"}},
 	};
 	QCOMPARE_EQ(itemData(employmentHistoryTreeView->model(), Qt::DisplayRole), expected);
 	// enum_object(&page, 0);
@@ -68,7 +80,7 @@ void insured_verify_page(RemoveHistoryPage& page) {
 
 	DataSet expected{
 	    {QString{u"¼ minimalnej krajowej"}},
-	    {QString{u"Minimalna krajowa (od lip 2026)"}},
+	    {QString{u"Minimalna krajowa (od %1)"}.arg(nextMonth())},
 	};
 	QCOMPARE_EQ(itemData(historyListModel, Qt::DisplayRole), expected);
 
