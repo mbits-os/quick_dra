@@ -118,8 +118,9 @@ void enumObject(QObject const* obj, size_t indent) {
 }
 
 std::optional<QList<QVariant>> takeFirst(QSignalSpy& spy) {
+	using namespace std::literals;
 	if (spy.empty()) {
-		spy.wait();
+		spy.wait(1s);
 	}
 	if (spy.empty()) return std::nullopt;
 	return spy.takeFirst();
