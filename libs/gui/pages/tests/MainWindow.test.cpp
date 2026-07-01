@@ -66,3 +66,39 @@ void PagesTest::mainWindow() {
 	waitFor(configModifiedSpy, visibleChangedSpy);
 	QVERIFY(!messageBar->isVisible());
 }
+
+void PagesTest::createAndDeleteConfig() {
+	TmpDir tmp{};
+	// no writeConfigs here...
+	Globals globals{SettingsProvider::wrap([&tmp] { return openSettings(tmp.cwd()); })};
+	globals.setConfig(tmp.cwd() / ".quick_dra.yaml"sv, std::nullopt, false);
+
+	gui::MainWindow window{&globals};
+	window.show();
+	QVERIFY(QTest::qWaitForWindowExposed(&window));
+
+	PARENT_CONTEXT(window);
+	ENSURE_CHILD(MessageBar, messageBar);
+	ENSURE_CHILD(QPushButton, reloadButton);
+
+	QSignalSpy configModifiedSpy{&globals, &Globals::configModifiedChanged};
+	QSignalSpy visibleChangedSpy{messageBar, &MessageBar::visibleChanged};
+
+	QVERIFY(!messageBar->isVisible());
+	setFileContents(tmp.cwd() / ".not-the-quick_dra.yaml"sv,
+	                fileContents(cliTestDataDir() / ".quick_dra.testing.yaml"sv));
+	waitFor(configModifiedSpy, visibleChangedSpy);
+	QVERIFY(!messageBar->isVisible());
+
+	setFileContents(tmp.cwd() / ".quick_dra.yaml"sv, fileContents(cliTestDataDir() / ".quick_dra.testing.yaml"sv));
+	waitFor(configModifiedSpy, visibleChangedSpy);
+	QVERIFY(messageBar->isVisible());
+
+	reloadButton->click();
+	waitFor(configModifiedSpy, visibleChangedSpy);
+	QVERIFY(!messageBar->isVisible());
+
+	std::filesystem::remove(tmp.cwd() / ".quick_dra.yaml"sv);
+	waitFor(configModifiedSpy, visibleChangedSpy);
+	QVERIFY(messageBar->isVisible());
+}

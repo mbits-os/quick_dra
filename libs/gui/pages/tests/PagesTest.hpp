@@ -10,6 +10,7 @@ class PagesTest : public QObject {
 
 private slots:
 	void mainWindow();
+	void createAndDeleteConfig();
 	void pushPage_data();
 	void pushPage();
 };
