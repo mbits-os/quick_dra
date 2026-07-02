@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.3.0](https://github.com/mbits-os/quick_dra/compare/v1.2.2...v1.3.0) (2026-07-02)
+
+### New Features
+
+- redesign panel layout ([2a7f6bd](https://github.com/mbits-os/quick_dra/commit/2a7f6bd215c45f2a94a35fde09b214d1e63307f0)), closes #74 and #75
+
+### Bug Fixes
+
+- use arcTo properly (Antialiasing render hint) ([b52d243](https://github.com/mbits-os/quick_dra/commit/b52d2437ea4df36d97670cc181790fe1bdff11df)), fixes #92
+- starting with non-existing file ends with crash ([f278c78](https://github.com/mbits-os/quick_dra/commit/f278c78d9495511a8aa7728604b9f136e0b2c12f)), fixes #87
+
 ## [1.2.2](https://github.com/mbits-os/quick_dra/compare/v1.2.1...v1.2.2) (2026-06-22)
 
 ### Bug Fixes

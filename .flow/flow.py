@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
-PROJ_FLOW_VERSION = "0.30.1"
+PROJ_FLOW_VERSION = "0.32.0"
 
 
 def exe(ver: str):

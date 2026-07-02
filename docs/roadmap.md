@@ -52,13 +52,13 @@
   - [ ] Version 2
     - [ ] _(opt)_ Show history graphs
     - [ ] Check possibility of title/page animations (direction determined by index change - lowering "to right", rising "to left")
-- [ ] GitHub social templates (_Bug report_ and _Feature request_) should both use YAML template (issue: [#79](https://github.com/mbits-os/quick_dra/issues/79))
+- [x] GitHub social templates (_Bug report_ and _Feature request_) should both use YAML template (issue: [#79](https://github.com/mbits-os/quick_dra/issues/79))
 - [ ] Automatic upload to ZUS ePłatnik
 - [ ] Bug tracking
   - [x] gui test: `ControlsTest::Forms_tableView()` fails on CI on Ubuntu (issue: [#72](https://github.com/mbits-os/quick_dra/issues/72))
   - [x] gui test: `Globals.configModified` fails on CI on Windows (issue: [#73](https://github.com/mbits-os/quick_dra/issues/73))
-  - [ ] gui: `Panel::setInfo` in full layout, `"label"` does not properly repositions itself (issue: [#74](https://github.com/mbits-os/quick_dra/issues/74))
-  - [ ] gui: as used in `PersonelPage`, `Panel` lines are to far away from each other (issue: [#75](https://github.com/mbits-os/quick_dra/issues/75))
+  - [x] gui: `Panel::setInfo` in full layout, `"label"` does not properly repositions itself (issue: [#74](https://github.com/mbits-os/quick_dra/issues/74))
+  - [x] gui: as used in `PersonelPage`, `Panel` lines are to far away from each other (issue: [#75](https://github.com/mbits-os/quick_dra/issues/75))
   - [ ] gui: employment history needs to extends to the end of available space, or be optimized when page is too short (issue: [#76](https://github.com/mbits-os/quick_dra/issues/76))
   - [ ] gui: Honor page minimum width (issue: [#77](https://github.com/mbits-os/quick_dra/issues/77))
-  - [ ] cli: cannot enter "10000 zł" or "Iksiński" on windows during conversation (truncation of UTF-8 in input stream) (issue: [#78](https://github.com/mbits-os/quick_dra/issues/78))
+  - [x] cli: cannot enter "10000 zł" or "Iksiński" on windows during conversation (truncation of UTF-8 in input stream) (issue: [#78](https://github.com/mbits-os/quick_dra/issues/78))

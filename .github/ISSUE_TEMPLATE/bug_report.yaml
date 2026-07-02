@@ -57,9 +57,9 @@ body:
       label: Version
       description: Which version of Project Flow was used?
       options:
-        - Current (v1.2.2)
-        - Previous (v1.1.0)
-        - Older, than v1.1.0
+        - Current (v1.3.0)
+        - Previous (v1.2.2)
+        - Older, than v1.2.2
         - Other, e.g. main branch
     validations:
       required: true
