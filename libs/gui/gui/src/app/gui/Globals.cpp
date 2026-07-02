@@ -144,7 +144,7 @@ namespace quick_dra::gui {
 		}
 	}
 
-	void Globals::observedDirectoryChanged(QString const& path) {
+	void Globals::observedDirectoryChanged(QString const&) {
 		if (!std::filesystem::exists(data_.cfg_path)) {
 			return;
 		}
