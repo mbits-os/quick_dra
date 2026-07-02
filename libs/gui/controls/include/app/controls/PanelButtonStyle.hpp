@@ -11,9 +11,9 @@
 #include "PanelButtonGroup.hpp"
 
 namespace quick_dra::gui::PanelButtonStyle {
-	static constexpr auto TrueMargin = 10_px;
+	static constexpr auto TrueMargin = 15_px;
 	static constexpr auto Margin = TrueMargin + 2_px;
-	static constexpr auto Radius = 3_px;
+	static constexpr auto Radius = 6_px;
 
 	struct Palette {
 		QColor frame{};

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <app/controls/DevicePixelScale.hpp>
+#include <app/controls/PanelButtonStyle.hpp>
 #include <app/controls/WordWrap.hpp>
 #include "Panel.hpp"
 
@@ -12,7 +13,7 @@ namespace quick_dra::gui {
 	class PanelPrivate {
 	public:
 		static constexpr auto TEXT_MARGIN_PIXELS = 4_px;
-		static constexpr auto ICON_MARGIN_PIXELS = 6_px;
+		static constexpr auto ICON_MARGIN_PIXELS = PanelButtonStyle::TrueMargin;
 		static constexpr auto ICON_SIZE_PIXELS = 16_px;
 		static constexpr auto DETAIL_FONT_SIZE = qreal{.85};
 
