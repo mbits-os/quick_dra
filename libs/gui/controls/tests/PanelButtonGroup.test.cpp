@@ -167,7 +167,7 @@ struct Buttons {
 
 static PaletteOverride const themes[] = {
     {.window = Qt::white, .windowText = Qt::black},
-    {.window = QColor{18, 18, 18, 255}, .windowText = QColor{224, 224, 224, 255}},
+    {.window = Qt::black, .windowText = Qt::white},
 };
 
 using ButtonOp = void (*)(Buttons&);
@@ -348,8 +348,11 @@ void ControlsTest::PanelButtonGroup_mouseClick() {
 
 	auto const pt = midpoint(third->widget());
 	click.enter({0, 0});
+	QVERIFY(!third->isActive());
 	click.buttonPress(pt, Qt::LeftButton);
+	QVERIFY(third->isActive());
 	click.buttonRelease(pt, Qt::LeftButton);
+	QVERIFY(!third->isActive());
 	click.leave();
 
 	QTest::qWait(0);

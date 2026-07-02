@@ -58,9 +58,9 @@ namespace quick_dra::gui {
 		using namespace PanelButtonStyle;
 		auto const radius = scale.toDeviceF(Radius);
 		auto const diameter = radius * 2;
-		auto const margin = scale.toDevice(TrueMargin);
+		auto const margin = scale.toDeviceF(TrueMargin) + qreal{.5};
 
-		auto const rect = item->geometry().marginsAdded({margin, margin, margin, margin}).toRectF();
+		auto const rect = item->geometry().toRectF().marginsAdded({margin, margin, margin, margin});
 		QPainterPath path{};
 		if (pos & PanePosition::Bottom) {
 			path.moveTo(rect.left(), rect.bottom() - radius);
@@ -364,6 +364,7 @@ namespace quick_dra::gui {
 		Q_D(PanelButtonGroup);
 
 		QPainter painter{this};
+		painter.setRenderHint(QPainter::Antialiasing);
 		d->paintEvent(painter, selectPalette());
 	}
 
