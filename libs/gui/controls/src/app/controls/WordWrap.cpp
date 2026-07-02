@@ -359,7 +359,7 @@ namespace quick_dra::gui {
 			                          [](LabelInfo::Span& span) { span.isBold = true; });
 			return {.spans = applyMarkup(std::move(strong), markdown.italic, text,
 			                             [](LabelInfo::Span& span) { span.isItalic = true; })};
-		}
+		}  // GCOV_EXCL_LINE[WIN32]
 	}  // namespace
 
 	QList<StringSpan> splitForWordWrap(QStringView const& text) {
