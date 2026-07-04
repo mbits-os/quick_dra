@@ -37,6 +37,7 @@ namespace quick_dra::gui {
 		parent = layout;
 		edit = new QLineEdit{parentWidget};
 		edit->setObjectName(QString{"%1Edit"}.arg(qId));
+		edit->setTextMargins(2, 4, 2, 4);
 
 		QObject::connect(edit, &QLineEdit::textChanged, [self = this]() { self->textChanged(); });
 

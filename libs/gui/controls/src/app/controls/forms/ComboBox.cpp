@@ -33,6 +33,19 @@ namespace quick_dra::gui {
 			combo->addItem(QString::fromUtf8(itemLabel), QString::fromUtf8(key));
 		}
 		combo->setCurrentIndex(-1);
+		combo->setStyleSheet(
+		    R"(
+QComboBox
+{
+  padding: 5px;
+  padding-left: 8px;
+}
+
+QComboBox QAbstractItemView::item {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+)");
 		layout->addRow(QString::fromUtf8(label), combo);
 
 		QObject::connect(combo, &QComboBox::currentIndexChanged, this, &ComboBoxBase::selectionChanged);

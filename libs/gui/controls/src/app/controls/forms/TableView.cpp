@@ -3,6 +3,7 @@
 
 #include <QDate>
 #include <QFormLayout>
+#include <QHeaderView>
 #include <QLocale>
 #include <algorithm>
 #include <app/controls/forms/TableView.hpp>
@@ -118,16 +119,24 @@ namespace quick_dra::gui {
 		buttonLayout->setContentsMargins(0, 0, 0, 0);
 		buttonLayout->setAlignment(Qt::AlignRight);
 
+		static constexpr auto buttonStyle = R"(
+QPushButton
+{
+  padding: 10px 20px;
+}
+)";
 		addButton = new QPushButton{parentWidget};
 		addButton->setObjectName(QString{"%1AddButton"}.arg(qId));
 		addButton->setText("Dodaj wpis");
 		addButton->setSizePolicy(FixedSize);
+		addButton->setStyleSheet(buttonStyle);
 		buttonLayout->addWidget(addButton);
 
 		removeButton = new QPushButton{parentWidget};
 		removeButton->setObjectName(QString{"%1RemoveButton"}.arg(qId));
 		removeButton->setText("Usuń wpis");
 		removeButton->setSizePolicy(FixedSize);
+		removeButton->setStyleSheet(buttonStyle);
 		buttonLayout->addWidget(removeButton);
 
 		layout->addRow(QString::fromUtf8(label), buttonLayout);
@@ -141,6 +150,7 @@ namespace quick_dra::gui {
 		view->setSortingEnabled(true);
 		view->setIndentation(0);
 		view->sortByColumn(0, Qt::AscendingOrder);
+		view->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 		layout->addRow("", view);
 	}
