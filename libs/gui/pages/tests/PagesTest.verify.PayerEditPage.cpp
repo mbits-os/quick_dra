@@ -17,20 +17,20 @@ void verify_page(PayerEditPage& page) {
 
 	auto const previous = firstNameEdit->text();
 	firstNameEdit->setText("");
-	QVERIFY(page.formDirty());
-	QVERIFY(!page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(!page.isFormValid());
 
 	firstNameEdit->setText("Word");
-	QVERIFY(page.formDirty());
-	QVERIFY(page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(page.isFormValid());
 
 	firstNameEdit->setText(previous);
-	QVERIFY(!page.formDirty());
-	QVERIFY(page.formValid());
+	QVERIFY(!page.isFormDirty());
+	QVERIFY(page.isFormValid());
 
 	firstNameEdit->setText(QString::fromUtf16(u"Imię"));
-	QVERIFY(page.formDirty());
-	QVERIFY(page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(page.isFormValid());
 
 	QVERIFY_ACCEPTS_STR(payer->first_name, u"Imię");
 }

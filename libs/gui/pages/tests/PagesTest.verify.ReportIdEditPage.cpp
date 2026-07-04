@@ -21,13 +21,13 @@ void verify_page(ReportIdEditPage& page) {
 
 	page.setSerial(spinBox->value());
 	spinBox->setValue(spinBox->value() + 1);
-	QVERIFY(page.formDirty());
+	QVERIFY(page.isFormDirty());
 
 	spinBox->setValue(spinBox->value() - 1);
-	QVERIFY(!page.formDirty());
+	QVERIFY(!page.isFormDirty());
 
 	dateEdit->setDate(2020y / August / 10);
-	QVERIFY(page.formDirty());
+	QVERIFY(page.isFormDirty());
 	QVERIFY(toolButton->isEnabled());
 
 	toolButton->click();

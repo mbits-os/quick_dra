@@ -37,12 +37,12 @@
 		QCOMPARE_NE(PageStack::current()->page(), &page); \
 	} while (false)
 
-#define QVERIFY_ACCEPTS()           \
-	do {                            \
-		page.accept();              \
-                                    \
-		QVERIFY(!page.formDirty()); \
-		QVERIFY(page.formValid());  \
+#define QVERIFY_ACCEPTS()             \
+	do {                              \
+		page.accept();                \
+                                      \
+		QVERIFY(!page.isFormDirty()); \
+		QVERIFY(page.isFormValid());  \
 	} while (false)
 
 #define QVERIFY_ACCEPTED_STR(FIELD, VALUE) \
