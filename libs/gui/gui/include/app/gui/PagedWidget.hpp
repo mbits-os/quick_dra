@@ -26,8 +26,8 @@ namespace quick_dra::gui {
 		virtual void setupPageUI();
 		virtual bool survivesReload() const;
 
-		bool formDirty() const noexcept { return formDirty_; }
-		bool formValid() const noexcept { return formValid_; }
+		bool isFormDirty() const noexcept { return formDirty_; }
+		bool isFormValid() const noexcept { return formValid_; }
 
 	public slots:
 		void leavePage();

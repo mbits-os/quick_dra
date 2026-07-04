@@ -35,21 +35,21 @@ void verify_page(InsuredEditPage& page) {
 	ENSURE_CHILD(QTreeView, employmentHistoryTreeView);
 
 	firstNameEdit->setText("");
-	QVERIFY(page.formDirty());
-	QVERIFY(!page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(!page.isFormValid());
 
 	firstNameEdit->setText(QString::fromUtf16(u"Imię"));
-	QVERIFY(page.formDirty());
-	QVERIFY(page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(page.isFormValid());
 
 	documentKindComboBox->setCurrentIndex(documentKindComboBox->findData("P"));
 	QCOMPARE_EQ(documentKindComboBox->currentData(), QString("P"));
-	QVERIFY(page.formDirty());
-	QVERIFY(!page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(!page.isFormValid());
 
 	documentEdit->setText("78070707132");
-	QVERIFY(page.formDirty());
-	QVERIFY(!page.formValid());
+	QVERIFY(page.isFormDirty());
+	QVERIFY(!page.isFormValid());
 	QCOMPARE_STR(documentErrorLabel->text(),
 	             u"Antoni Kowalski: znaleziono inn\u0105 ubezpieczon\u0105 osob\u0119 z tym dokumentem");
 

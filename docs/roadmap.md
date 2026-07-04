@@ -34,7 +34,7 @@
   - [x] Attach schema when writing user config (_v1.1.0_)
   - [x] Some data should be in per-org config (e.g. accident insurance) (_v1.1.0_)
   - [x] New `qdra config` should be able to upgrade (not downgrade) between versions (_v1.1.0_)
-- [ ] Create a `qdra_gui`
+- [x] Create a `qdra_gui`
   - [x] Build system support (_v1.2.0_)
     - [x] Use Qt6 from system
     - [x] Phase 1: do not build app if `Qt6_DIR` is absent
@@ -49,9 +49,10 @@
     - [x] Show `--help` in message box
     - [x] Observe changes in current config file
     - [x] Add tests (_v1.2.1_)
-  - [ ] Phase 2
-    - [ ] _(opt)_ Show history graphs
-    - [x] Animate title on page change (_v1.4.0_)
+  - [ ] ~~_(opt)_ Show history graphs~~
+  - [x] Animate title on page change (_v1.4.0_)
+  - [ ] Update documentation
+  - [ ] Keyboard navigation
 - [x] GitHub social templates (_Bug report_ and _Feature request_) should both use YAML template (issue: [#79](https://github.com/mbits-os/quick_dra/issues/79))
 - [ ] Automatic upload to ZUS ePłatnik
 - [x] Setup bug tracking in GitHub

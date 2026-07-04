@@ -25,11 +25,16 @@ namespace quick_dra::gui {
 		static constexpr auto ZERO_F = qreal{0};
 		static constexpr auto HALF_F = qreal{0.5};
 
-		QAction* createAction(QObject* parent, std::string_view name, std::string_view toolTip, QIcon const& icon) {
+		QAction* createAction(QObject* parent,
+		                      std::string_view name,
+		                      std::string_view toolTip,
+		                      QList<QKeySequence> const& shortcuts,
+		                      QIcon const& icon) {
 			auto result = std::make_unique<QAction>(parent);
 			result->setObjectName(QString::fromUtf8(name));
 			result->setIcon(icon);
 			result->setToolTip(QString::fromUtf8(toolTip));
+			result->setShortcuts(shortcuts);
 			result->setMenuRole(QAction::MenuRole::NoRole);
 			return result.release();
 		}
@@ -210,8 +215,13 @@ namespace quick_dra::gui {
 			toolBar.setIconSize({16, 16});
 			toolBar.setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonIconOnly);
 
-			auto actionBack = createAction(self, "actionBack"sv, "Cofnij"sv, arrowLeftSVGIcon());
-			auto actionAccept = createAction(self, "actionAccept"sv, "Zastosuj"sv, checkSVGIcon());
+			auto actionBack = createAction(
+			    self, "actionBack"sv, "Cofnij [Esc]"sv,
+			    {Qt::Key_Escape, Qt::CTRL | Qt::Key_Backspace, Qt::META | Qt::Key_Backspace, Qt::ALT | Qt::Key_Left},
+			    arrowLeftSVGIcon());
+			auto actionAccept = createAction(
+			    self, "actionAccept"sv, "Zastosuj [Shift+Esc]"sv,
+			    {Qt::SHIFT | Qt::Key_Escape, Qt::CTRL | Qt::Key_Escape, Qt::META | Qt::Key_Escape}, checkSVGIcon());
 
 			toolBar.addAction(actionBack);
 			toolBar.addAction(actionAccept);
