@@ -11,8 +11,6 @@
 #include "GuiTest.hpp"
 #include "ui_helpers.hpp"
 
-// #include "PageHeader.test.moc"
-
 using namespace quick_dra::gui;
 using namespace std::literals;
 
@@ -87,4 +85,29 @@ void GuiTest::PageHeader_centeringTitle() {
 	QCOMPARE_NE(toolBar->width(), origSpace);
 	QCOMPARE_NE(toolBar->width(), subPageSpace);
 	QCOMPARE_EQ(spacer->width(), toolBar->width());
+}
+
+QList<QVariant> dirArg(int dir) { return {dir}; }
+
+void GuiTest::PageHeader_animate() {
+	QMainWindow window{};
+	auto pageHeader = new PageHeader{&window};
+	pageHeader->setObjectName("centralWidget");
+	pageHeader->setTopMost(true);
+	window.setCentralWidget(pageHeader);
+
+	QSignalSpy finishedSpy{pageHeader, &PageHeader::animationFinished};
+	QSignalSpy directionSpy{pageHeader, &PageHeader::animationDirectionChange};
+
+	pageHeader->animate(PageChangeDirection::Push);
+	finishedSpy.wait();
+	if (directionSpy.length() < 2) directionSpy.wait();
+	QCOMPARE_EQ(finishedSpy.length(), 1);
+	QCOMPARE_EQ(directionSpy, (QList{dirArg(1), dirArg(0)}));
+
+	pageHeader->animate(PageChangeDirection::Pop);
+	finishedSpy.wait();
+	QCOMPARE_EQ(finishedSpy.length(), 2);
+	if (directionSpy.length() < 4) directionSpy.wait();
+	QCOMPARE_EQ(directionSpy, (QList{dirArg(1), dirArg(0), dirArg(-1), dirArg(0)}));
 }

@@ -7,6 +7,8 @@
 #include <QToolBar>
 #include <QWidget>
 #include <QtTypes>
+#include <app/gui/HeaderTitle.hpp>
+#include <app/gui/types.hpp>
 
 namespace quick_dra::gui {
 	class HeaderToolbar : public QToolBar {
@@ -48,6 +50,7 @@ namespace quick_dra::gui {
 
 	class HeaderShadow : public QWidget {
 		Q_OBJECT
+
 	public:
 		using QWidget::QWidget;
 
@@ -74,10 +77,11 @@ namespace quick_dra::gui {
 	public:
 		explicit PageHeader(QWidget* parent);
 
-		HeaderToolbar* toolBar() const noexcept { return toolBar_; }
-		bool formDirty() const noexcept { return formDirty_; }
-		bool formValid() const noexcept { return formValid_; }
-		bool topMost() const noexcept { return topMost_; }
+		HeaderToolbar* toolBar() const noexcept { return ui.toolBar; }
+		bool formDirty() const noexcept { return ui.formDirty; }
+		bool formValid() const noexcept { return ui.formValid; }
+		bool topMost() const noexcept { return ui.topMost; }
+		void animate(PageChangeDirection);
 
 		void paintEvent(QPaintEvent*) override;
 		void resizeEvent(QResizeEvent*) override;
@@ -99,14 +103,19 @@ namespace quick_dra::gui {
 		void formDirtyChanged(bool);
 		void formValidChanged(bool);
 		void moved(QRect const&);
+		void animationFinished();
+		void animationDirectionChange(int);
 
 	private:
-		void setupUI();
+		struct UI {
+			void setupUI(PageHeader*);
 
-		bool formDirty_{false};
-		bool formValid_{true};
-		bool topMost_{false};
-		HeaderToolbar* toolBar_{};
-		QLabel* titleLabel_{};
+			bool formDirty{false};
+			bool formValid{true};
+			bool topMost{false};
+			HeaderToolbar* toolBar{};
+			HeaderTitle* titleLabel{};
+		};
+		UI ui{};
 	};
 }  // namespace quick_dra::gui

@@ -11,6 +11,7 @@ class GuiTest : public QObject {
 private slots:
 	void PageHeader_movingShadow();
 	void PageHeader_centeringTitle();
+	void PageHeader_animate();
 	void CurrentColor_changePaletteAtRuntime_data();
 	void CurrentColor_changePaletteAtRuntime();
 };

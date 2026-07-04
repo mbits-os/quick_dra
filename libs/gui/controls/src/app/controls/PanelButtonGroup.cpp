@@ -236,7 +236,6 @@ namespace quick_dra::gui {
 		}
 		originalActive_ = nullptr;
 		auto const rect = q_func()->rect().toRectF();  // scale.fromDevice(q_func()->rect());
-		qDebug() << "mouseRelease" << inWidgetPos << q_func()->rect() << rect.contains(inWidgetPos);
 		if (!rect.contains(inWidgetPos)) {
 			q_func()->setMouseTracking(false);
 		}

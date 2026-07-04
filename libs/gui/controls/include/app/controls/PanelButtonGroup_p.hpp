@@ -6,8 +6,8 @@
 #include <qtypes.h>
 #include <QPainter>
 #include <QVBoxLayout>
-#include <app/controls/DevicePixelScale.hpp>
 #include <app/controls/PanelButtonStyle.hpp>
+#include <app/utils/DevicePixelScale.hpp>
 #include <vector>
 #include "PanelButtonGroup.hpp"
 

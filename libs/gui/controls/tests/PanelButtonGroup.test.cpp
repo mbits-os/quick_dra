@@ -5,12 +5,12 @@
 #include <QPainter>
 #include <QSignalSpy>
 #include <QTest>
-#include <app/controls/DevicePixelScale.hpp>
 #include <app/controls/Glyph.hpp>
 #include <app/controls/Panel.hpp>
 #include <app/controls/PanelButtonGroup.hpp>
 #include <app/controls/PanelButtonStyle.hpp>
 #include <app/gui/CurrentColor.hpp>
+#include <app/utils/DevicePixelScale.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <array>

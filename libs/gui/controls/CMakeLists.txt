@@ -6,7 +6,6 @@ qt_standard_project_setup()
 set(SRCS
     include/app/controls/Forms.hpp
     include/app/controls/forms/base.hpp
-    include/app/controls/DevicePixelScale.hpp
     include/app/controls/forms/ComboBox.hpp
     include/app/controls/forms/DocumentComboBox.hpp
     include/app/controls/forms/field.hpp

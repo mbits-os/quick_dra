@@ -4,7 +4,7 @@
 #pragma once
 
 #include <QWidget>
-#include <app/controls/DevicePixelScale.hpp>
+#include <app/utils/DevicePixelScale.hpp>
 #include <memory>
 #include <optional>
 

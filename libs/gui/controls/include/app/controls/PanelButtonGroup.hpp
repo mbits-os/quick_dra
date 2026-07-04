@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QWidget>
-#include <app/controls/DevicePixelScale.hpp>
+#include <app/utils/DevicePixelScale.hpp>
 #include <app/utils/empty_callback.hpp>
 #include <concepts>
 #include <memory>

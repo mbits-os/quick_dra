@@ -4,6 +4,7 @@
 qt_standard_project_setup()
 
 set(SRCS
+    include/app/utils/DevicePixelScale.hpp
     include/app/utils/FormData.hpp
     include/app/utils/forms.hpp
     include/app/utils/LaidOut.hpp

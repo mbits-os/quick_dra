@@ -241,9 +241,8 @@ namespace quick_dra::gui::testing {
 		}
 
 		std::vector<action_item> expected_history{
-		    SWAP_PAGES("Page #4"sv, "Page #3"sv),
+		    SWAP_PAGES("Page #4"sv, "Page #2"sv),
 		    actions::page_removed("Page #4"sv),
-		    SWAP_PAGES("Page #3"sv, "Page #2"sv),
 		    actions::page_removed("Page #3"sv),
 		};
 		EXPECT_EQ(env.tape.history, expected_history);

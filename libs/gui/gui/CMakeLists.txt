@@ -6,11 +6,15 @@ qt_standard_project_setup()
 set(SRCS
     include/app/gui/CurrentColor.hpp
     include/app/gui/Globals.hpp
+    include/app/gui/HeaderTitle_p.hpp
+    include/app/gui/HeaderTitle.hpp
     include/app/gui/PagedWidget.hpp
     include/app/gui/PageHeader.hpp
     include/app/gui/PageStack.hpp
+    include/app/gui/types.hpp
     src/app/gui/CurrentColor.cpp
     src/app/gui/Globals.cpp
+    src/app/gui/HeaderTitle.cpp
     src/app/gui/PagedWidget.cpp
     src/app/gui/PageHeader.cpp
     src/app/gui/PageStack.cpp
