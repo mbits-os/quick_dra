@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QStackedWidget>
+#include <app/gui/types.hpp>
 #include <memory>
 #include <utility>
 
@@ -49,6 +50,7 @@ namespace quick_dra::gui {
 		void setFormDirty(bool);
 		void setFormValid(bool);
 		void formAccepted();
+		void animatePageChange(PageChangeDirection);
 
 	private slots:
 		void currentChanged(int);

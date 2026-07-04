@@ -4,12 +4,17 @@
 #include <app/gui/PageHeader.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/gui/PagedWidget.hpp>
+#include <vector>
 
 namespace quick_dra::gui {
 	namespace {
 		PageStack* currentStack{};
 
-		void swapPages(PageStack* stack, PagedWidget* previous, PagedWidget* next, auto&& action) {
+		void swapPages(PageStack* stack,
+		               PageChangeDirection dir,
+		               PagedWidget* previous,
+		               PagedWidget* next,
+		               auto&& action) {
 			if (previous) {
 				previous->beforePageBlur();
 			}
@@ -19,6 +24,7 @@ namespace quick_dra::gui {
 
 			if (previous) {
 				previous->pageBlur();
+				stack->animatePageChange(dir);
 			}
 			next->setupPageUI();
 			stack->updateNavigateBackButton();
@@ -52,7 +58,7 @@ namespace quick_dra::gui {
 		if (newPage->parent() == nullptr) newPage->setParent(parent_);
 		newPage->pageAdded(globals_);
 
-		swapPages(this, page(), newPage, [parent = parent_, newPage] {
+		swapPages(this, PageChangeDirection::Push, page(), newPage, [parent = parent_, newPage] {
 			auto const index = parent->addWidget(newPage);
 			parent->setCurrentIndex(index);
 		});
@@ -69,20 +75,42 @@ namespace quick_dra::gui {
 		auto const currentPage = page();
 		auto const nextPage = qobject_cast<PagedWidget*>(parent_->widget(index));
 
-		swapPages(this, currentPage, nextPage, [parent = parent_, currentPage] { parent->removeWidget(currentPage); });
+		swapPages(this, PageChangeDirection::Pop, currentPage, nextPage,
+		          [parent = parent_, currentPage] { parent->removeWidget(currentPage); });
 
 		currentPage->pageRemoved();
 		currentPage->deleteLater();
 	}
 
 	void PageStack::navigateHomeForReload() {
-		while (parent_->count() > 1) {
-			auto const currentPage = page();
-			if (currentPage->survivesReload()) {
+		auto const currentIndex = parent_->currentIndex();
+		auto index = currentIndex;
+		while (index > 0) {
+			auto pagedWidget = qobject_cast<PagedWidget*>(parent_->widget(index));
+			if (pagedWidget->survivesReload()) {
 				break;
 			}
+			--index;
+		}
+		auto const currentPage = page();
+		auto const nextPage = qobject_cast<PagedWidget*>(parent_->widget(index));
 
-			navigateBack();
+		std::vector<PagedWidget*> removed{};
+		removed.reserve(static_cast<size_t>(currentIndex - index));
+		for (auto wgtIndex = currentIndex; wgtIndex > index; --wgtIndex) {
+			auto const wgt = qobject_cast<PagedWidget*>(parent_->widget(wgtIndex));
+			removed.push_back(wgt);
+		}
+
+		swapPages(this, PageChangeDirection::Pop, currentPage, nextPage, [parent = parent_, &removed] {
+			for (auto const widget : removed) {
+				parent->removeWidget(widget);
+			}
+		});
+
+		for (auto const widget : removed) {
+			widget->pageRemoved();
+			widget->deleteLater();
 		}
 	}
 
@@ -90,6 +118,7 @@ namespace quick_dra::gui {
 	void PageStack::setFormDirty(bool value) { globalHeader_->setFormDirty(value); }
 	void PageStack::setFormValid(bool value) { globalHeader_->setFormValid(value); }
 	void PageStack::formAccepted() { page()->accept(); }
+	void PageStack::animatePageChange(PageChangeDirection dir) { globalHeader_->animate(dir); }
 
 	void PageStack::setHeaderTitle(QString const& title) {
 		globalHeader_->setTitle(title);

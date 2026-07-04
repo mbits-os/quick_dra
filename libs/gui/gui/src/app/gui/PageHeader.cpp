@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
+#include <QPropertyAnimation>
 #include <QResizeEvent>
 #include <QToolBar>
 #include <algorithm>
@@ -133,33 +134,47 @@ namespace quick_dra::gui {
 		setGeometry({pos, size});
 	}
 
-	PageHeader::PageHeader(QWidget* parent) : QWidget{parent} { setupUI(); }
+	PageHeader::PageHeader(QWidget* parent) : QWidget{parent} { ui.setupUI(this); }
+
+	void PageHeader::animate(PageChangeDirection dir) {
+		ui.titleLabel->beforeAnimation(dir);
+		auto anim = new QPropertyAnimation{ui.titleLabel, "animationProgress", this};
+		QObject::connect(anim, &QAbstractAnimation::finished, this, &PageHeader::animationFinished);
+
+		using namespace std::chrono;
+		using namespace PageChangeAnimation;
+		anim->setDuration(duration_cast<milliseconds>(Duration).count());
+		anim->setStartValue(ProgressFrom);
+		anim->setEndValue(ProgressTo);
+		anim->setEasingCurve(QEasingCurve::OutQuad);
+		anim->start(QAbstractAnimation::DeleteWhenStopped);
+	}
 
 	void PageHeader::leavePage() { navigatingBack(); }
 	void PageHeader::acceptChanges() { changesAccepted(); }
 
 	// PAGE STACK API
 	void PageHeader::setFormDirty(bool value) {
-		if (formDirty_ == value) {
+		if (ui.formDirty == value) {
 			return;
 		}
-		formDirty_ = value;
-		formDirtyChanged(formDirty_);
+		ui.formDirty = value;
+		formDirtyChanged(ui.formDirty);
 	}
 	void PageHeader::setFormValid(bool value) {
-		if (formValid_ == value) {
+		if (ui.formValid == value) {
 			return;
 		}
-		formValid_ = value;
-		formValidChanged(formValid_);
+		ui.formValid = value;
+		formValidChanged(ui.formValid);
 	}
-	void PageHeader::setTitle(QString const& title) { titleLabel_->setText(title); }
+	void PageHeader::setTitle(QString const& title) { ui.titleLabel->setText(title); }
 	void PageHeader::setTopMost(bool value) {
-		if (topMost_ == value) {
+		if (ui.topMost == value) {
 			return;
 		}
-		topMost_ = value;
-		showActionBack(!topMost_);
+		ui.topMost = value;
+		showActionBack(!ui.topMost);
 	}
 
 	void PageHeader::resizeEvent(QResizeEvent* event) {
@@ -181,17 +196,17 @@ namespace quick_dra::gui {
 		p.fillRect(QRectF{ZERO_F, ZERO_F, width, pos + 1}, color);
 	}
 
-	void PageHeader::setupUI() {
+	void PageHeader::UI::setupUI(PageHeader* self) {
 		QHBoxLayout* horizontalLayout{};
 		HeaderSpacer* spacer{};
 
-		LaidOut{this}.createLayout(horizontalLayout, "horizontalLayout", this, [](QHBoxLayout& horizontalLayout) {
+		LaidOut{self}.createLayout(horizontalLayout, "horizontalLayout", self, [](QHBoxLayout& horizontalLayout) {
 			horizontalLayout.setContentsMargins(0, 0, 0, 0);
 			horizontalLayout.setSpacing(0);
 		});
-		auto root = LaidOut{this, horizontalLayout};
+		auto root = LaidOut{self, horizontalLayout};
 
-		root.createWidget(toolBar_, "toolBar", [self = this, horizontalLayout](QToolBar& toolBar) {
+		root.createWidget(toolBar, "toolBar", [self, horizontalLayout](QToolBar& toolBar) {
 			toolBar.setIconSize({16, 16});
 			toolBar.setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonIconOnly);
 
@@ -218,25 +233,18 @@ namespace quick_dra::gui {
 			self->setSizePolicy(TakeWidth);
 		});
 
-		root.createWidget(titleLabel_, "titleLabel", [](QLabel& titleLabel) {
+		root.createWidget(titleLabel, "titleLabel", [self](auto& titleLabel) {
 			titleLabel.setSizePolicy(TakeAll / 1_XStretch);
 			QFont font;
 			font.setBold(true);
 			font.setPointSizeF(font.pointSizeF() * 1.2);
 			titleLabel.setFont(font);
 			titleLabel.setAlignment(Qt::AlignmentFlag::AlignCenter);
-
-#if 0
-			auto pal = titleLabel.palette();
-			auto shadow = pal.color(QPalette::WindowText);
-			shadow.setAlpha(12);
-			pal.setColor(QPalette::Window, shadow);
-			titleLabel.setPalette(pal);
-			titleLabel.setAutoFillBackground(true);
-#endif
+			QObject::connect(&titleLabel, &HeaderTitle::animationDirectionChange, self,
+			                 &PageHeader::animationDirectionChange);
 		});
 
-		root.createWidget(spacer, "spacer", [toolBar = toolBar_](HeaderSpacer& spacer) {
+		root.createWidget(spacer, "spacer", [toolBar = toolBar](HeaderSpacer& spacer) {
 			spacer.setSizePolicy(TakeHeight);
 			QObject::connect(toolBar, &HeaderToolbar::widthChanged, &spacer, &HeaderSpacer::setWidthHint);
 		});

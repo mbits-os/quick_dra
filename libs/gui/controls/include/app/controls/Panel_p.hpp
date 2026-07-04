@@ -4,9 +4,9 @@
 #pragma once
 
 #include <algorithm>
-#include <app/controls/DevicePixelScale.hpp>
 #include <app/controls/PanelButtonStyle.hpp>
 #include <app/controls/WordWrap.hpp>
+#include <app/utils/DevicePixelScale.hpp>
 #include "Panel.hpp"
 
 namespace quick_dra::gui {
