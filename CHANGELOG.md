@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.4.0](https://github.com/mbits-os/quick_dra/compare/v1.3.0...v1.4.0) (2026-07-04)
+
+### New Features
+
+- animate title in page header on page change ([03e4628](https://github.com/mbits-os/quick_dra/commit/03e462835c8aa247d81da1f284b8bb8303872f89)), closes #94
+
 ## [1.3.0](https://github.com/mbits-os/quick_dra/compare/v1.2.2...v1.3.0) (2026-07-02)
 
 ### New Features
