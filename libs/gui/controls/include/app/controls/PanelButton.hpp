@@ -39,6 +39,7 @@ namespace quick_dra::gui {
 		void setEnabled(bool value) noexcept;
 		void setHovered(bool value) noexcept;
 		void setActive(bool value) noexcept;
+		void setFocused(bool value) noexcept;
 
 	signals:
 		void clicked();

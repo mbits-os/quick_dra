@@ -3,7 +3,9 @@
 
 #pragma once
 
+#include <QShortcut>
 #include <app/controls/PanelButtonStyle.hpp>
+#include <vector>
 #include "PanelButton.hpp"
 
 namespace quick_dra::gui {
@@ -23,9 +25,31 @@ namespace quick_dra::gui {
 		Pressed,
 	};
 
+	class PanelButtonPrivate;
+	struct Shortcuts : QObject {
+		Q_OBJECT
+
+	public:
+		explicit Shortcuts(PanelButtonPrivate* parent);
+
+		void setEnabled(bool value);
+		void setFocused(bool value);
+		void setSequences(QList<QKeySequence> const&);
+
+	private slots:
+		void activated();
+		void activatedAmbiguously();
+
+	private:
+		void enableShortcuts(bool enabledAndFocused);
+
+		QList<QKeySequence> sequences{};
+		std::vector<QShortcut*> shortcuts{};
+		bool enabled : 1 = true;
+		bool focused : 1 = true;
+	};
+
 	class PanelButtonPrivate : public QObject {
-		inline PanelButton* q_func() noexcept { return static_cast<PanelButton*>(q_ptr); }
-		inline const PanelButton* q_func() const noexcept { return static_cast<const PanelButton*>(q_ptr); }
 		friend class PanelButton;
 		friend class PanelButtonGroup;
 		friend class PanelButtonGroupPrivate;
@@ -34,6 +58,9 @@ namespace quick_dra::gui {
 
 	public:
 		~PanelButtonPrivate();
+
+		inline PanelButton* q_func() noexcept { return static_cast<PanelButton*>(q_ptr); }
+		inline const PanelButton* q_func() const noexcept { return static_cast<const PanelButton*>(q_ptr); }
 
 		void setSequences(QList<QKeySequence> const&);
 		QString const& toolTip() const noexcept { return toolTip_; }
@@ -53,6 +80,7 @@ namespace quick_dra::gui {
 			propagate(item, [value](QWidget* wgt) { wgt->setEnabled(value); });
 			if (value == enabled_) return;
 			enabled_ = value;
+			shortcuts->setEnabled(value);
 			q_parent->update();
 		}
 
@@ -69,6 +97,8 @@ namespace quick_dra::gui {
 			active_ = value;
 			q_parent->update();
 		}
+
+		void setFocused(bool value) noexcept { shortcuts->setFocused(value); }
 
 		void paint(QPainter& painter,
 		           DevicePixelScale const& scale,
@@ -93,7 +123,7 @@ namespace quick_dra::gui {
 		PanelButton* q_ptr{};
 		PanelButtonGroup* q_parent{};
 		QLayoutItem* item{};
-		QList<QKeySequence> sequences_{};
+		Shortcuts* shortcuts{new Shortcuts{this}};
 		QString buttonTip{};
 		QString keyTip{};
 		QString toolTip_{};

@@ -1,9 +1,20 @@
 // Copyright (c) 2026 midnightBITS
 // This code is licensed under MIT license (see LICENSE for details)
 
+#include <QApplication>
+#include <app/gui/PageFocusEvent.hpp>
 #include <app/gui/PagedWidget.hpp>
 
 namespace quick_dra::gui {
+	namespace {
+		void broadcastPageFocusEvent(QWidget* parent, bool hasFocus) {
+			auto const children = parent->findChildren<QWidget*>();
+			for (auto const child : children) {
+				qApp->notify(child, new PageFocusEvent{hasFocus});
+			}
+		}
+	}  // namespace
+
 	PagedWidget::PagedWidget(QWidget* parent) : QWidget{parent} {
 		QObject::connect(this, &QWidget::windowTitleChanged, this, &PagedWidget::onTitleChange);
 	}
@@ -15,8 +26,8 @@ namespace quick_dra::gui {
 
 	void PagedWidget::connectPage() {}
 	void PagedWidget::beforePageFocus() {}
-	void PagedWidget::pageFocus() {}
-	void PagedWidget::beforePageBlur() {}
+	void PagedWidget::pageFocus() { broadcastPageFocusEvent(this, true); }
+	void PagedWidget::beforePageBlur() { broadcastPageFocusEvent(this, false); }
 	void PagedWidget::pageBlur() {}
 	void PagedWidget::pageRemoved() {}
 	void PagedWidget::accept() { accepted(); }

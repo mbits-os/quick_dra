@@ -28,6 +28,62 @@ namespace quick_dra::gui {
 		}
 	}  // namespace
 
+	Shortcuts::Shortcuts(PanelButtonPrivate* parent) : QObject{parent} {}
+
+	void Shortcuts::setEnabled(bool value) {
+		if (value == enabled) return;
+		auto const prevEnabledAndFocused = enabled && focused;
+		enabled = value;
+		auto const enabledAndFocused = enabled && focused;
+		if (enabledAndFocused == prevEnabledAndFocused) return;
+		enableShortcuts(enabledAndFocused);
+	}
+
+	void Shortcuts::setFocused(bool value) {
+		if (value == focused) return;
+		auto const prevEnabledAndFocused = enabled && focused;
+		focused = value;
+		auto const enabledAndFocused = enabled && focused;
+		if (enabledAndFocused == prevEnabledAndFocused) return;
+		enableShortcuts(enabledAndFocused);
+	}
+
+	void Shortcuts::enableShortcuts(bool enabledAndFocused) {
+		for (auto shortcut : shortcuts) {
+			shortcut->setEnabled(enabledAndFocused);
+		}
+	}
+
+	void Shortcuts::setSequences(QList<QKeySequence> const& keys) {
+		for (auto const& shortcut : shortcuts) {
+			shortcut->setEnabled(false);
+			shortcut->setParent(nullptr);
+			shortcut->deleteLater();
+		}
+
+		shortcuts.clear();
+		shortcuts.reserve(static_cast<size_t>(keys.size()));
+		for (auto const& key : keys) {
+			shortcuts.push_back(new QShortcut{key, parent(), this, &Shortcuts::activated,
+			                                  &Shortcuts::activatedAmbiguously, Qt::ApplicationShortcut});
+		}
+
+		enableShortcuts(enabled && focused);
+
+		sequences = keys;
+	}
+
+	void Shortcuts::activated() {
+		auto const d = static_cast<PanelButtonPrivate*>(parent());
+		d->q_func()->clicked();
+	}
+
+	void Shortcuts::activatedAmbiguously() {
+		auto const d = static_cast<PanelButtonPrivate*>(parent());
+		qWarning() << "Ambiguous call to" << d->toolTip();
+		d->q_func()->clicked();
+	}
+
 	PanelButtonPrivate::~PanelButtonPrivate() {
 		if (has_item_ownership) {
 			delete item;
@@ -51,6 +107,7 @@ namespace quick_dra::gui {
 			keyTip = sequences.front().toString(QKeySequence::NativeText);
 		}
 		updateToolTip();
+		shortcuts->setSequences(sequences);
 	}
 
 	void PanelButtonPrivate::setToolTip(QString const& text) {
@@ -136,6 +193,7 @@ namespace quick_dra::gui {
 	FWD(PanelButton, Hovered)
 	FWD(PanelButton, Active)
 #undef GWD
+	void PanelButton::setFocused(bool value) noexcept { d_func()->setFocused(value); }
 
 	QString const& PanelButton::toolTip() const noexcept { return d_func()->toolTip(); }
 	void PanelButton::setToolTip(QString const& text) { d_func()->setToolTip(text); }
