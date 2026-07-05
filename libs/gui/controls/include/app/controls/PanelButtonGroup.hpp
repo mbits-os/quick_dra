@@ -49,9 +49,11 @@ namespace quick_dra::gui {
 			QString label{};
 			QString details{};
 			QString value{};
+			QString toolTip{};
 			QIcon rightIcon{};
 			std::optional<bool> isClickable{true};
 			std::optional<bool> isEnabled{};
+			QList<QKeySequence> sequences{};
 		};
 
 		PanelButton* createPanel(CreatePanelOptions const&, QAnyStringView objectName = {});
@@ -59,6 +61,7 @@ namespace quick_dra::gui {
 		PanelButton* takeLast();
 		void clearAll();
 
+		bool event(QEvent* event) override;
 		void paintEvent(QPaintEvent* event) override;
 		void enterEvent(QEnterEvent* event) override;
 		void leaveEvent(QEvent* event) override;
