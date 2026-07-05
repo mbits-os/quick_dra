@@ -23,17 +23,21 @@ namespace quick_dra::gui {
 		Pressed,
 	};
 
-	class PanelButtonPrivate {
+	class PanelButtonPrivate : public QObject {
 		inline PanelButton* q_func() noexcept { return static_cast<PanelButton*>(q_ptr); }
 		inline const PanelButton* q_func() const noexcept { return static_cast<const PanelButton*>(q_ptr); }
 		friend class PanelButton;
 		friend class PanelButtonGroup;
 		friend class PanelButtonGroupPrivate;
 
-		Q_GADGET
+		Q_OBJECT
 
 	public:
 		~PanelButtonPrivate();
+
+		void setSequences(QList<QKeySequence> const&);
+		QString const& toolTip() const noexcept { return toolTip_; }
+		void setToolTip(QString const&);
 
 		auto cursor() const noexcept { return clickable_ && enabled_ ? Qt::PointingHandCursor : Qt::ArrowCursor; }
 
@@ -84,9 +88,15 @@ namespace quick_dra::gui {
 			}
 		}
 
+		void updateToolTip();
+
 		PanelButton* q_ptr{};
 		PanelButtonGroup* q_parent{};
 		QLayoutItem* item{};
+		QList<QKeySequence> sequences_{};
+		QString buttonTip{};
+		QString keyTip{};
+		QString toolTip_{};
 		bool has_item_ownership : 1 = false;
 		bool clickable_ : 1 = false;
 		bool enabled_ : 1 = true;

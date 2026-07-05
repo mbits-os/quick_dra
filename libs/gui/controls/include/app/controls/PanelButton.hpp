@@ -20,6 +20,8 @@ namespace quick_dra::gui {
 		PanelButton();
 		~PanelButton();
 
+		void setSequences(QList<QKeySequence> const&);
+
 		QWidget* widget() const;
 		QLayout* layout() const;
 		void clearItem();
@@ -28,6 +30,9 @@ namespace quick_dra::gui {
 		bool isEnabled() const noexcept;
 		bool isHovered() const noexcept;
 		bool isActive() const noexcept;
+
+		QString const& toolTip() const noexcept;
+		void setToolTip(QString const&);
 
 	public slots:
 		void setClickable(bool value) noexcept;

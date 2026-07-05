@@ -34,6 +34,30 @@ namespace quick_dra::gui {
 		}
 	}
 
+	void PanelButtonPrivate::updateToolTip() {
+		toolTip_.clear();
+		toolTip_.reserve(buttonTip.size() + keyTip.size() + 1);
+		toolTip_.append(buttonTip);
+		if (!buttonTip.isEmpty() && !keyTip.isEmpty()) {
+			toolTip_.append(u'\t');
+		}
+		toolTip_.append(keyTip);
+	}
+
+	void PanelButtonPrivate::setSequences(QList<QKeySequence> const& sequences) {
+		if (sequences.isEmpty()) {
+			keyTip.clear();
+		} else {
+			keyTip = sequences.front().toString(QKeySequence::NativeText);
+		}
+		updateToolTip();
+	}
+
+	void PanelButtonPrivate::setToolTip(QString const& text) {
+		buttonTip = text;
+		updateToolTip();
+	}
+
 	void PanelButtonPrivate::paint(QPainter& painter,
 	                               DevicePixelScale const& scale,
 	                               Positions pos,
@@ -94,6 +118,8 @@ namespace quick_dra::gui {
 
 	PanelButton::~PanelButton() = default;
 
+	void PanelButton::setSequences(QList<QKeySequence> const& sequences) { d_ptr->setSequences(sequences); }
+
 	QWidget* PanelButton::widget() const { return d_func()->item->widget(); }
 	QLayout* PanelButton::layout() const { return d_func()->item->layout(); }
 
@@ -110,4 +136,7 @@ namespace quick_dra::gui {
 	FWD(PanelButton, Hovered)
 	FWD(PanelButton, Active)
 #undef GWD
+
+	QString const& PanelButton::toolTip() const noexcept { return d_func()->toolTip(); }
+	void PanelButton::setToolTip(QString const& text) { d_func()->setToolTip(text); }
 }  // namespace quick_dra::gui

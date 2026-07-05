@@ -140,6 +140,17 @@ namespace quick_dra::gui {
 		}
 	}
 
+	bool PanelButtonGroupPrivate::toolTipEvent(QPoint const& inWidgetPos, QPoint const& globalPos) {
+		auto const button = fromPos(inWidgetPos);
+		if (button == nullptr || button->toolTip().isEmpty()) {
+			QToolTip::hideText();
+			return false;
+		}
+
+		QToolTip::showText(globalPos, button->toolTip());
+		return true;
+	}
+
 	PanelButton* PanelButtonGroupPrivate::fromPos(QPoint const& inWidgetPos) {
 		// GCOV_EXCL_START
 		if (scale.updateScale(q_ptr->logicalDpiX())) {
@@ -234,6 +245,8 @@ namespace quick_dra::gui {
 		if (info.isEnabled) {
 			panelButton->setEnabled(*info.isEnabled);
 		}
+		panelButton->setToolTip(info.toolTip);
+		panelButton->setSequences(info.sequences);
 		return panelButton;
 	}
 
@@ -261,6 +274,17 @@ namespace quick_dra::gui {
 			item->clearItem();
 			delete item;
 		}
+	}
+
+	bool PanelButtonGroup::event(QEvent* event) {
+		if (event->type() == QEvent::ToolTip) {
+			auto helpEvent = static_cast<QHelpEvent*>(event);
+			if (!d_ptr->toolTipEvent(helpEvent->pos(), helpEvent->globalPos())) {
+				event->ignore();
+			}
+			return true;
+		}
+		return QWidget::event(event);
 	}
 
 	void PanelButtonGroup::paintEvent(QPaintEvent* event) {
