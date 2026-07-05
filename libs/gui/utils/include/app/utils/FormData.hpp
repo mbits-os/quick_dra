@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <QKeySequence>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <filesystem>
@@ -30,8 +31,10 @@ namespace quick_dra::gui {
 		struct FormRef {
 			size_t index{InvalidIndex};
 			std::string label{};
+			std::string toolTip{};
 			std::string value{};
 			std::string comment{};
+			QKeySequence sequence{};
 
 			QWidget* createWidget(LaidOut<QWidget, QVBoxLayout> const&);
 		};

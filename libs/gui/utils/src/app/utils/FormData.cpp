@@ -166,13 +166,18 @@ namespace quick_dra::gui {
 			auto const health_contribution = form.state.typed_value(var::health_contribution, 0_PLN);
 			auto const tax_total = form.state.typed_value(var::tax_total, 0_PLN);
 			auto const insurance_total = form.state.typed_value(var::insurance_total, 0_PLN);
+			static constexpr auto key0 = std::to_underlying(Qt::Key_0);
+			auto const key = static_cast<Qt::Key>(key0 + index);
+			auto const sequence = key <= Qt::Key_9 ? Qt::CTRL | key : QKeySequence{};
 			summary.push_back({
 			    .index = index - 1,
 			    .label = std::format("{}, {}", last_name, first_name),
+			    .toolTip = std::format("Formularz RCA nr {}", index),
 			    .value = locale::from_system(net_salary),
 			    .comment =
 			        second_line(currency_info("społeczne"sv, insurance_total - health_contribution),
 			                    currency_info("zdrowotne", health_contribution), currency_info("podatek", tax_total)),
+			    .sequence = sequence,
 			});
 		}
 
@@ -185,7 +190,9 @@ namespace quick_dra::gui {
 			summary.push_back({
 			    .index = index - 1,
 			    .label = "Dla ZUS"s,
+			    .toolTip = "Formularz DRA"s,
 			    .value = locale::from_system(insurance_total),
+			    .sequence = Qt::CTRL | Qt::Key_0,
 			});
 			summary.push_back({
 			    .index = InvalidIndex,

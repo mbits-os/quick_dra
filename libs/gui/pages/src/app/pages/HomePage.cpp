@@ -95,13 +95,21 @@ namespace quick_dra::gui {
 		        [self = this](PanelButtonGroup& group) {
 			        group.setSizePolicy(TakeWidth / HeightForWidth);
 
-			        auto identifierButton =
-			            group.createPanel({.label = "Identyfikator", .rightIcon = arrowRightSVGIcon()});
+			        auto identifierButton = group.createPanel({.label = "Identyfikator",
+			                                                   .toolTip = "Identyfikator",
+			                                                   .rightIcon = arrowRightSVGIcon(),
+			                                                   .sequences = {Qt::CTRL | Qt::Key_I}});
 
-			        auto personelButton = group.createPanel({.label = "Dane osobowe", .rightIcon = arrowRightSVGIcon()},
+			        auto personelButton = group.createPanel({.label = "Dane osobowe",
+			                                                 .toolTip = "Dane osobowe",
+			                                                 .rightIcon = arrowRightSVGIcon(),
+			                                                 .sequences = {Qt::CTRL | Qt::Key_D}},
 			                                                "personelButton");
-			        auto localStoreButton = group.createPanel(
-			            {.label = "Zapisz plik KEDU XML na dysku", .rightIcon = ellipsisSVGIcon()}, "localStoreButton");
+			        auto localStoreButton = group.createPanel({.label = "Zapisz plik KEDU XML na dysku",
+			                                                   .toolTip = "Zapisz plik",
+			                                                   .rightIcon = ellipsisSVGIcon(),
+			                                                   .sequences = {Qt::CTRL | Qt::Key_S}},
+			                                                  "localStoreButton");
 			        group.createPanel({.label = QString::fromUtf16(u"Wyślij KEDU XML do e-ZUS"),
 			                           .rightIcon = ellipsisSVGIcon(),
 			                           .isEnabled = false},
@@ -177,12 +185,20 @@ namespace quick_dra::gui {
 	                                           FormData::FormRef const& ref,
 	                                           std::function<void()> const& slot) {
 		auto const hasSlot = !!slot;
+
+		QList<QKeySequence> sequences{};
+		if (!ref.sequence.isEmpty()) {
+			sequences.push_back(ref.sequence);
+		}
+
 		auto button = group->createPanel({
 		    .label = QString::fromUtf8(ref.label),
 		    .details = ref.comment.empty() ? QString() : QString::fromUtf8(ref.comment),
 		    .value = ref.value.empty() ? QString() : QString::fromUtf8(ref.value),
+		    .toolTip = ref.toolTip.empty() ? QString() : QString::fromUtf8(ref.toolTip),
 		    .rightIcon = hasSlot ? arrowRightSVGIcon() : QIcon{},
 		    .isClickable = hasSlot,
+		    .sequences = std::move(sequences),
 		});
 
 		if (hasSlot) {
