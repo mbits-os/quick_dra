@@ -54,13 +54,20 @@ namespace quick_dra::gui {
 		    .createWidget(insuredGroup, "insuredGroup",
 		                  [](PanelButtonGroup& group) { group.setSizePolicy(TakeWidth / HeightForWidth); });
 
-		auto addNewInsuredButton = editInsuredGroup->createPanel(
-		    {.label = u"Dodaj ubezpieczonego"_s, .rightIcon = arrowRightSVGIcon()}, "addNewInsuredButton");
+		auto addNewInsuredButton =
+		    editInsuredGroup->createPanel({.label = u"Dodaj ubezpieczonego"_s,
+		                                   .toolTip = u"Dodaj ubezpieczonego"_s,
+		                                   .rightIcon = arrowRightSVGIcon(),
+		                                   .sequences = {Qt::CTRL | Qt::Key_A, Qt::CTRL | Qt::Key_D}},
+		                                  "addNewInsuredButton");
 		addNewInsuredButton->setClickable(true);
 		QObject::connect(addNewInsuredButton, &PanelButton::clicked, this, &PersonnelPage::addInsured);
 
-		removeInsuredButton = editInsuredGroup->createPanel(
-		    {.label = u"Usuń ubezpieczonych"_s, .rightIcon = arrowRightSVGIcon()}, "removeInsuredButton");
+		removeInsuredButton = editInsuredGroup->createPanel({.label = u"Usuń ubezpieczonych"_s,
+		                                                     .toolTip = u"Usuń ubezpieczonych"_s,
+		                                                     .rightIcon = arrowRightSVGIcon(),
+		                                                     .sequences = {Qt::CTRL | Qt::Key_U, Qt::CTRL | Qt::Key_R}},
+		                                                    "removeInsuredButton");
 		removeInsuredButton->setClickable(true);
 		removeInsuredButton->setEnabled(false);
 		QObject::connect(removeInsuredButton, &PanelButton::clicked, this, &PersonnelPage::removeInsured);
@@ -78,9 +85,12 @@ namespace quick_dra::gui {
 		auto const name = name_from(payer.first_name, payer.last_name, {.format_for = name_hint::payer});
 		auto const info = second_line(document_info(payer.kind, payer.document), document_info('R', payer.tax_id),
 		                              document_info('P', payer.social_id));
-		auto const button = payerGroup->createPanel(
-		    {.label = QString::fromUtf8(name), .details = QString::fromUtf8(info), .rightIcon = arrowRightSVGIcon()},
-		    "payerPanel");
+		auto const button = payerGroup->createPanel({.label = QString::fromUtf8(name),
+		                                             .details = QString::fromUtf8(info),
+		                                             .toolTip = u"Płatnik"_s,
+		                                             .rightIcon = arrowRightSVGIcon(),
+		                                             .sequences = {Qt::CTRL | Qt::Key_P}},
+		                                            "payerPanel");
 		button->setClickable(true);
 		QObject::connect(button, &PanelButton::clicked, this, &PersonnelPage::editPayer);
 	}
@@ -92,14 +102,20 @@ namespace quick_dra::gui {
 		size_t index = 0;
 		for (auto const& insured : people) {
 			auto const name = name_from(insured.first_name, insured.last_name, {.format_for = name_hint::insured});
+			auto const toolTip = std::format("Ubezpieczony nr {}", index + 1);
 			auto const [employed, month, part_time_scale, salary] = insured.lookup(globals().reportId().date);
 			auto const info =
 			    employed ? second_line(document_info(insured.kind, insured.document),
 			                           insurance_title_info(insured.title), salary_info(month, part_time_scale, salary))
 			             : second_line(document_info(insured.kind, insured.document), "*poza okresem zatrudnienia*");
+			static constexpr auto key1 = std::to_underlying(Qt::Key_1);
+			auto const key = static_cast<Qt::Key>(key1 + index);
+			auto const sequences = key <= Qt::Key_9 ? QList<QKeySequence>{Qt::CTRL | key} : QList<QKeySequence>{};
 			auto const button = insuredGroup->createPanel({.label = QString::fromUtf8(name),
 			                                               .details = QString::fromUtf8(info),
-			                                               .rightIcon = arrowRightSVGIcon()},
+			                                               .toolTip = QString::fromUtf8(toolTip),
+			                                               .rightIcon = arrowRightSVGIcon(),
+			                                               .sequences = sequences},
 			                                              "payerPanel");
 			button->setClickable(true);
 			QObject::connect(button, &PanelButton::clicked, [self = this, index]() { self->editInsured(index); });
