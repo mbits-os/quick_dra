@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QSignalSpy>
 #include <QTest>
+#include <QToolTip>
 #include <app/controls/Glyph.hpp>
 #include <app/controls/Panel.hpp>
 #include <app/controls/PanelButton.hpp>
@@ -27,6 +28,8 @@ using namespace std::literals;
 #ifndef OS_NAME
 #error Must define OS_NAME
 #endif
+
+QStringView operator""_sv(char16_t const* text, size_t length) { return {text, static_cast<qsizetype>(length)}; }
 
 struct Cursor {
 	PanelButtonGroup* wgt{};
@@ -94,9 +97,10 @@ void setBg(auto* widget, QColor baseColor, int alpha = 20) {
 }
 
 struct Buttons {
+	PanelButtonGroup* parent{};
 	std::vector<PanelButton*> buttons{};
 
-	explicit Buttons(PanelButtonGroup& widget) {
+	explicit Buttons(PanelButtonGroup& widget) : parent{&widget} {
 		auto const scale = DevicePixelScale{widget.logicalDpiX()};
 		static constexpr auto contentsWidth = 215_px;
 		static constexpr auto width = contentsWidth + PanelButtonStyle::Margin * 2;
@@ -105,18 +109,23 @@ struct Buttons {
 		buttons.push_back(widget.createPanel({.label = "Label #1 (original)",
 		                                      .details = "*tag*: info, *iteration*: #1",
 		                                      .value = "Value A",
-		                                      .rightIcon = arrowRightSVGIcon()}));
+		                                      .toolTip = "Tool tip #1",
+		                                      .rightIcon = arrowRightSVGIcon(),
+		                                      .sequences = {Qt::CTRL | Qt::Key_L, Qt::ALT | Qt::Key_L}}));
 		static_cast<Panel*>(buttons.back()->widget())
 		    ->setInfo({.label = "Label #1 (changed)",
 		               .details = "*tag*: info, *iteration*: #2",
 		               .value = "Value B",
 		               .rightIcon = arrowRightSVGIcon()});
-		buttons.push_back(
-		    widget.createPanel({.label = "Label #2", .value = "123,50 zł", .rightIcon = arrowRightSVGIcon()}));
+		buttons.push_back(widget.createPanel({.label = "Label #2",
+		                                      .value = "123,50 zł",
+		                                      .rightIcon = arrowRightSVGIcon(),
+		                                      .sequences = {Qt::ALT | Qt::CTRL | Qt::Key_Delete}}));
 		buttons.push_back(
 		    widget.createPanel({.label = "Label #3",
 		                        .details = "*date*: 2002-01-15, *tags*: alpha beta gamma delta long-words long list "
 		                                   "many words wrap around",
+		                        .toolTip = "Tool tip #3",
 		                        .rightIcon = arrowRightSVGIcon()}));
 		buttons.push_back(
 		    widget.createPanel({.label = "Label #3 (but hidden)",
@@ -144,12 +153,12 @@ struct Buttons {
 		buttons.push_back(widget.addButton("Bold label", true));
 	}
 
-	void resize(PanelButtonGroup& widget, qreal scale = 1) {
+	void resize(qreal scale = 1) {
 		int height = 0;
-		auto const widgetLayout = widget.layout();
+		auto const widgetLayout = parent->layout();
 		auto const margins = widgetLayout->contentsMargins();
 		auto const spacing = widgetLayout->spacing();
-		auto const width = widget.width() - (margins.left() + margins.right());
+		auto const width = parent->width() - (margins.left() + margins.right());
 
 		auto const count = widgetLayout->count();
 		for (auto index = 0; index < count; ++index) {
@@ -162,7 +171,7 @@ struct Buttons {
 		height += margins.top() + margins.bottom();
 
 		height = qRound(height * scale);
-		widget.resize(widget.width(), height);
+		parent->resize(parent->width(), height);
 	}
 };
 
@@ -189,16 +198,22 @@ static constexpr ButtonOp actions[] = {
 	    btns.buttons[1]->setHovered(true);
 	    btns.buttons[2]->setEnabled(false);
 	    btns.buttons[2]->setHovered(true);
+	    auto const pos = btns.buttons[0]->widget()->geometry().topLeft();
+	    qApp->notify(btns.parent, new QHelpEvent{QEvent::ToolTip, pos, btns.parent->mapToGlobal(pos)});
     },
     [](Buttons& btns) {
 	    btns.buttons[1]->setHovered(false);
 	    btns.buttons[1]->setActive(true);
+	    auto const pos = btns.buttons[3]->widget()->geometry().topLeft();
+	    qApp->notify(btns.parent, new QHelpEvent{QEvent::ToolTip, pos, btns.parent->mapToGlobal(pos)});
     },
     [](Buttons& btns) {
 	    btns.buttons[1]->setActive(false);
 	    btns.buttons[1]->setHovered(true);
 	    auto const widget = static_cast<Panel*>(btns.buttons[1]->widget());
 	    widget->setValue("Clicked!");
+	    auto const pos = QPoint{};
+	    qApp->notify(btns.parent, new QHelpEvent{QEvent::ToolTip, pos, btns.parent->mapToGlobal(pos)});
     },
 };
 
@@ -218,7 +233,7 @@ void ControlsTest::PanelButtonGroup_layout() {
 	btns.buttons.front()->widget()->setFont(QFont{"DejaVu Sans Mono", qApp->font().pointSize()});
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
-	btns.resize(widget);
+	btns.resize();
 
 	Stamper stamper{&widget,
 	                {
@@ -262,6 +277,38 @@ void ControlsTest::PanelButtonGroup_contents() {
 			QVERIFY2(button->widget(), std::format("index = {}", pos).c_str());
 		}
 	}
+	QCOMPARE_EQ(btns.buttons[0]->toolTip(), u"Tool tip #1\tCtrl+L"_sv);
+	QCOMPARE_EQ(btns.buttons[1]->toolTip(), u"Ctrl+Alt+Del"_sv);
+	QCOMPARE_EQ(btns.buttons[2]->toolTip(), u"Tool tip #3"_sv);
+	QVERIFY(btns.buttons[3]->toolTip().isEmpty());
+	QVERIFY(btns.buttons[4]->toolTip().isEmpty());
+	QVERIFY(btns.buttons[5]->toolTip().isEmpty());
+	QVERIFY(btns.buttons[6]->toolTip().isEmpty());
+}
+
+void ControlsTest::PanelButtonGroup_shortcuts() {
+	PanelButtonGroup widget{};
+	Buttons btns{widget};
+	widget.show();
+	QVERIFY(QTest::qWaitForWindowExposed(&widget));
+
+	btns.buttons[0]->setSequences({Qt::CTRL | Qt::Key_L});
+	btns.buttons[3]->setSequences({Qt::ALT | Qt::Key_L});
+	btns.buttons[4]->setSequences({Qt::ALT | Qt::Key_L});  // ambiguous
+
+	QSignalSpy spy0{btns.buttons[0], &PanelButton::clicked};
+	QSignalSpy spy3{btns.buttons[3], &PanelButton::clicked};
+	QSignalSpy spy4{btns.buttons[4], &PanelButton::clicked};
+
+	QTest::keyClick(&widget, Qt::Key_L, Qt::ControlModifier);
+	QCOMPARE_EQ(spy0.length(), 1);
+	QCOMPARE_EQ(spy3.length(), 0);
+	QCOMPARE_EQ(spy4.length(), 0);
+
+	QTest::keyClick(&widget, Qt::Key_L, Qt::AltModifier);
+	QCOMPARE_EQ(spy0.length(), 1);
+	QCOMPARE_EQ(spy3.length(), 1);
+	QCOMPARE_EQ(spy4.length(), 0);
 }
 
 QPointF midpoint(QWidget* widget) {

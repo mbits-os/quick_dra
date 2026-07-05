@@ -19,6 +19,7 @@ private slots:
 	void DevicePixelScale();
 	void PanelButtonGroup_layout();
 	void PanelButtonGroup_contents();
+	void PanelButtonGroup_shortcuts();
 	void PanelButtonGroup_mouseMove();
 	void PanelButtonGroup_mouseClick();
 	void PanelButtonGroup_mouseClickWrongPlace();
