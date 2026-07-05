@@ -49,6 +49,7 @@ namespace quick_dra::gui {
 		void mousePressEvent(QPointF const&, Qt::MouseButton);
 		void mouseReleaseEvent(QPointF const&, Qt::MouseButton);
 		bool toolTipEvent(QPoint const& inWidgetPos, QPoint const& globalPos);
+		void pageFocusEvent(bool hasFocus);
 
 		bool trackingActive() const { return !!originalActive_; }
 		PanelButton* fromPos(QPoint const&);

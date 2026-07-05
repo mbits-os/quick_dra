@@ -9,6 +9,7 @@ set(SRCS
     include/app/gui/HeaderTitle_p.hpp
     include/app/gui/HeaderTitle.hpp
     include/app/gui/PagedWidget.hpp
+    include/app/gui/PageFocusEvent.hpp
     include/app/gui/PageHeader.hpp
     include/app/gui/PageStack.hpp
     include/app/gui/types.hpp

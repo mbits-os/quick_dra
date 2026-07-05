@@ -10,6 +10,7 @@
 #include <QToolTip>
 #include <app/controls/Panel.hpp>
 #include <app/controls/PanelButton_p.hpp>
+#include <app/gui/PageFocusEvent.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
 #include <memory>
@@ -151,6 +152,12 @@ namespace quick_dra::gui {
 		return true;
 	}
 
+	void PanelButtonGroupPrivate::pageFocusEvent(bool hasFocus) {
+		for (auto const& control : controls_) {
+			control->setFocused(hasFocus);
+		}
+	}
+
 	PanelButton* PanelButtonGroupPrivate::fromPos(QPoint const& inWidgetPos) {
 		// GCOV_EXCL_START
 		if (scale.updateScale(q_ptr->logicalDpiX())) {
@@ -282,6 +289,11 @@ namespace quick_dra::gui {
 			if (!d_ptr->toolTipEvent(helpEvent->pos(), helpEvent->globalPos())) {
 				event->ignore();
 			}
+			return true;
+		}
+		if (auto focusEvent = user_event_cast<PageFocusEvent>(event); focusEvent) {
+			d_ptr->pageFocusEvent(focusEvent->hasFocus());
+			event->ignore();
 			return true;
 		}
 		return QWidget::event(event);
