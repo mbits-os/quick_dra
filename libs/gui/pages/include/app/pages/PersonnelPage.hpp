@@ -20,12 +20,12 @@
 #include <quick_dra/models/types.hpp>
 
 namespace quick_dra::gui {
-	class PersonelPage : public PagedWidget {
+	class PersonnelPage : public PagedWidget {
 		Q_OBJECT
 
 	public:
-		explicit PersonelPage(QWidget* parent = nullptr);
-		~PersonelPage();
+		explicit PersonnelPage(QWidget* parent = nullptr);
+		~PersonnelPage();
 
 		void connectPage() override;
 		bool survivesReload() const override { return true; }

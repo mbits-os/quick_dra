@@ -3,15 +3,16 @@
 
 #include "page_verify.hpp"
 
+#include <app/controls/PanelButton.hpp>
 #include <app/pages/InsuredEditPage.hpp>
 #include <app/pages/PayerEditPage.hpp>
-#include <app/pages/PersonelPage.hpp>
+#include <app/pages/PersonnelPage.hpp>
 #include <app/pages/RemoveInsuredPage.hpp>
 
 using namespace quick_dra::gui;
 using namespace quick_dra;
 
-void verify_page(PersonelPage& page) {
+void verify_page(PersonnelPage& page) {
 	auto group = page.insuredButtons();
 	auto const lastButton = group->count() ? group->itemAt(group->count() - 1) : nullptr;
 	QVERIFY(lastButton && lastButton->isClickable());

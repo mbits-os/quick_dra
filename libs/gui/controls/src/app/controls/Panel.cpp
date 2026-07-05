@@ -203,7 +203,7 @@ namespace quick_dra::gui {
 	}
 	// GCOV_EXCL_STOP
 
-	void Panel::setInfo(PanelInfo const& info) {
+	void Panel::setInfo(SetInfoOptions const& info) {
 		setTitle(info.label);
 		setValue(info.value);
 		setDetails(info.details);

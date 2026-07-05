@@ -11,7 +11,7 @@ set(SRCS
     include/app/pages/HomePage.hpp
     include/app/pages/InsuredEditPage.hpp
     include/app/pages/PayerEditPage.hpp
-    include/app/pages/PersonelPage.hpp
+    include/app/pages/PersonnelPage.hpp
     include/app/pages/RemoveHistoryPage.hpp
     include/app/pages/RemoveInsuredPage.hpp
     include/app/pages/ReportFormPage.hpp
@@ -19,7 +19,7 @@ set(SRCS
     src/app/pages/HomePage.cpp
     src/app/pages/InsuredEditPage.cpp
     src/app/pages/PayerEditPage.cpp
-    src/app/pages/PersonelPage.cpp
+    src/app/pages/PersonnelPage.cpp
     src/app/pages/RemoveHistoryPage.cpp
     src/app/pages/RemoveInsuredPage.cpp
     src/app/pages/ReportFormPage.cpp
@@ -64,7 +64,7 @@ if(QUICK_DRA_TESTING)
         tests/PagesTest.verify.HomePage.cpp
         tests/PagesTest.verify.InsuredEditPage.cpp
         tests/PagesTest.verify.PayerEditPage.cpp
-        tests/PagesTest.verify.PersonelPage.cpp
+        tests/PagesTest.verify.PersonnelPage.cpp
         tests/PagesTest.verify.RemoveInsuredPage.cpp
         tests/PagesTest.verify.ReportFormPage.cpp
         tests/PagesTest.verify.ReportIdEditPage.cpp

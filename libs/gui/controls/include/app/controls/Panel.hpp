@@ -9,17 +9,6 @@
 #include <optional>
 
 namespace quick_dra::gui {
-	struct PanelInfo {
-		QString label{};
-		QString details{};
-		QString value{};
-		QIcon rightIcon{};
-		std::optional<bool> isClickable{true};
-		std::optional<bool> isEnabled{};
-	};
-
-	class PanelPrivate;
-
 	class PanelPrivate;
 	class Panel : public QWidget {
 		Q_OBJECT
@@ -30,11 +19,18 @@ namespace quick_dra::gui {
 		Panel(QWidget* parent = nullptr);
 		~Panel();
 
-		[[deprecated("Use setInfo(PanelInfo const&)")]] void setInfo(QString const& label,
-		                                                             QString const& details,
-		                                                             QString const& value,
-		                                                             QIcon const& rightIcon);
-		void setInfo(PanelInfo const&);
+		[[deprecated("Use setInfo(SetInfoOptions const&)")]] void setInfo(QString const& label,
+		                                                                  QString const& details,
+		                                                                  QString const& value,
+		                                                                  QIcon const& rightIcon);
+		struct SetInfoOptions {
+			QString label{};
+			QString details{};
+			QString value{};
+			QIcon rightIcon{};
+		};
+
+		void setInfo(SetInfoOptions const&);
 		void setTitle(QString const& text) noexcept;
 		void setValue(QString const& text) noexcept;
 		void setDetails(QString const& text) noexcept;

@@ -3,8 +3,9 @@
 
 #include "page_verify.hpp"
 
+#include <app/controls/PanelButton.hpp>
 #include <app/pages/HomePage.hpp>
-#include <app/pages/PersonelPage.hpp>
+#include <app/pages/PersonnelPage.hpp>
 #include <app/pages/ReportFormPage.hpp>
 #include <app/pages/ReportIdEditPage.hpp>
 #include <quick_dra/cli/builtins.hpp>
@@ -21,7 +22,7 @@ void verify_page(HomePage& page) {
 	QVERIFY(first && first->isClickable());
 
 	QVERIFY_NAVIGATION(page.editReportIdAction(), ReportIdEditPage, "Identyfikator");
-	QVERIFY_NAVIGATION(page.showPersonelFilesAction(), PersonelPage, "Dane osobowe");
+	QVERIFY_NAVIGATION(page.showPersonelFilesAction(), PersonnelPage, "Dane osobowe");
 	QVERIFY_NAVIGATION(first->clicked(), ReportFormPage, u"RCA (PIOTR IKSI\u0143SKI)");
 
 	auto const today = get_today();

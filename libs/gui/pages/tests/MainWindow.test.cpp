@@ -6,7 +6,7 @@
 #include <QTest>
 #include <app/gui/Globals.hpp>
 #include <app/main/MainWindow.hpp>
-#include <app/pages/PersonelPage.hpp>
+#include <app/pages/PersonnelPage.hpp>
 #include <quick_dra/version.hpp>
 #include "PagesTest.hpp"
 #include "TestPaths.hpp"
@@ -34,7 +34,7 @@ void PagesTest::mainWindow() {
 	QVERIFY(QTest::qWaitForWindowExposed(&window));
 
 	QVERIFY_TITLE("Podsumowanie");
-	globals.stack().push<PersonelPage>();
+	globals.stack().push<PersonnelPage>();
 	QVERIFY_TITLE("Dane osobowe");
 
 	QEvent pce{QEvent::PaletteChange};

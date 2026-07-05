@@ -12,7 +12,7 @@
 #include <app/pages/HomePage.hpp>
 #include <app/pages/InsuredEditPage.hpp>
 #include <app/pages/PayerEditPage.hpp>
-#include <app/pages/PersonelPage.hpp>
+#include <app/pages/PersonnelPage.hpp>
 #include <app/pages/RemoveHistoryPage.hpp>
 #include <app/pages/RemoveInsuredPage.hpp>
 #include <app/pages/ReportFormPage.hpp>
@@ -28,7 +28,7 @@ static constexpr size_t first_pos = 0;
 #define PAGE_TYPES(X)             \
 	X(HomePage)                   \
 	X(ReportIdEditPage)           \
-	X(PersonelPage)               \
+	X(PersonnelPage)              \
 	X(ReportFormPage, first_pos)  \
 	X(PayerEditPage)              \
 	X(InsuredEditPage, first_pos) \
