@@ -15,6 +15,8 @@ set(SRCS
     include/app/controls/PageScrollArea.hpp
     include/app/controls/Panel_p.hpp
     include/app/controls/Panel.hpp
+    include/app/controls/PanelButton_p.hpp
+    include/app/controls/PanelButton.hpp
     include/app/controls/PanelButtonGroup_p.hpp
     include/app/controls/PanelButtonGroup.hpp
     include/app/controls/PanelButtonStyle.hpp
@@ -26,6 +28,7 @@ set(SRCS
     src/app/controls/Glyph.cpp
     src/app/controls/PageScrollArea.cpp
     src/app/controls/Panel.cpp
+    src/app/controls/PanelButton.cpp
     src/app/controls/PanelButtonGroup.cpp
     src/app/controls/WordWrap.cpp
 )

@@ -3,54 +3,16 @@
 
 #pragma once
 
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLayout>
+#include <QEvent>
+#include <QVBoxLayout>
 #include <QWidget>
-#include <app/utils/DevicePixelScale.hpp>
 #include <app/utils/empty_callback.hpp>
-#include <concepts>
 #include <memory>
 #include <utility>
 
 namespace quick_dra::gui {
-	class PanelButtonPrivate;
+	class PanelButton;
 	class PanelButtonGroupPrivate;
-
-	struct PanelInfo;
-
-	class PanelButton : public QObject {
-		Q_OBJECT
-		Q_DECLARE_PRIVATE(PanelButton)
-		Q_DISABLE_COPY_MOVE(PanelButton)
-
-	public:
-		PanelButton();
-		~PanelButton();
-
-		QWidget* widget() const;
-		QLayout* layout() const;
-		void clearItem();
-
-		bool isClickable() const noexcept;
-		bool isEnabled() const noexcept;
-		bool isHovered() const noexcept;
-		bool isActive() const noexcept;
-
-	public slots:
-		void setClickable(bool value) noexcept;
-		void setEnabled(bool value) noexcept;
-		void setHovered(bool value) noexcept;
-		void setActive(bool value) noexcept;
-
-	signals:
-		void clicked();
-
-	private:
-		friend class PanelButtonGroup;
-		friend class PanelButtonGroupPrivate;
-		std::unique_ptr<PanelButtonPrivate> d_ptr{};
-	};
 
 	class PanelButtonGroup : public QWidget {
 		Q_OBJECT
@@ -83,7 +45,16 @@ namespace quick_dra::gui {
 			return this->createWidget<Wgt, Callback>("", std::forward<Callback>(cb));
 		}
 
-		PanelButton* createPanel(PanelInfo const&, QAnyStringView objectName = {});
+		struct CreatePanelOptions {
+			QString label{};
+			QString details{};
+			QString value{};
+			QIcon rightIcon{};
+			std::optional<bool> isClickable{true};
+			std::optional<bool> isEnabled{};
+		};
+
+		PanelButton* createPanel(CreatePanelOptions const&, QAnyStringView objectName = {});
 
 		PanelButton* takeLast();
 		void clearAll();

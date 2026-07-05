@@ -6,12 +6,13 @@
 #include <QToolButton>
 #include <app/controls/PageScrollArea.hpp>
 #include <app/controls/Panel.hpp>
+#include <app/controls/PanelButton.hpp>
 #include <app/controls/PanelButtonGroup.hpp>
 #include <app/gui/CurrentColor.hpp>
 #include <app/gui/PageStack.hpp>
 #include <app/pages/InsuredEditPage.hpp>
 #include <app/pages/PayerEditPage.hpp>
-#include <app/pages/PersonelPage.hpp>
+#include <app/pages/PersonnelPage.hpp>
 #include <app/pages/RemoveInsuredPage.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/forms.hpp>
@@ -31,11 +32,15 @@
 using namespace std::literals;
 
 namespace quick_dra::gui {
-	PersonelPage::PersonelPage(QWidget* parent) : PagedWidget(parent) { setupUI(); }
+	QString operator"" _s(char16_t const* text, size_t length) {
+		return QString{QStringView{text, static_cast<qsizetype>(length)}};
+	}
 
-	PersonelPage::~PersonelPage() = default;
+	PersonnelPage::PersonnelPage(QWidget* parent) : PagedWidget(parent) { setupUI(); }
 
-	void PersonelPage::setupUI() {
+	PersonnelPage::~PersonnelPage() = default;
+
+	void PersonnelPage::setupUI() {
 		setWindowTitle("Dane osobowe");
 		auto const [_, pageParent] = PageScrollArea::setupPage(this);
 		QVBoxLayout* pageLayout{};
@@ -50,26 +55,24 @@ namespace quick_dra::gui {
 		                  [](PanelButtonGroup& group) { group.setSizePolicy(TakeWidth / HeightForWidth); });
 
 		auto addNewInsuredButton = editInsuredGroup->createPanel(
-		    {.label = QString::fromUtf16(u"Dodaj ubezpieczonego"), .rightIcon = arrowRightSVGIcon()},
-		    "addNewInsuredButton");
+		    {.label = u"Dodaj ubezpieczonego"_s, .rightIcon = arrowRightSVGIcon()}, "addNewInsuredButton");
 		addNewInsuredButton->setClickable(true);
-		QObject::connect(addNewInsuredButton, &PanelButton::clicked, this, &PersonelPage::addInsured);
+		QObject::connect(addNewInsuredButton, &PanelButton::clicked, this, &PersonnelPage::addInsured);
 
 		removeInsuredButton = editInsuredGroup->createPanel(
-		    {.label = QString::fromUtf16(u"Usuń ubezpieczonych"), .rightIcon = arrowRightSVGIcon()},
-		    "removeInsuredButton");
+		    {.label = u"Usuń ubezpieczonych"_s, .rightIcon = arrowRightSVGIcon()}, "removeInsuredButton");
 		removeInsuredButton->setClickable(true);
 		removeInsuredButton->setEnabled(false);
-		QObject::connect(removeInsuredButton, &PanelButton::clicked, this, &PersonelPage::removeInsured);
+		QObject::connect(removeInsuredButton, &PanelButton::clicked, this, &PersonnelPage::removeInsured);
 	}
 
-	void PersonelPage::connectPage() {
-		QObject::connect(&globals(), &Globals::identifierChanged, this, &PersonelPage::configurationChanged);
-		QObject::connect(&globals(), &Globals::configurationChanged, this, &PersonelPage::configurationChanged);
+	void PersonnelPage::connectPage() {
+		QObject::connect(&globals(), &Globals::identifierChanged, this, &PersonnelPage::configurationChanged);
+		QObject::connect(&globals(), &Globals::configurationChanged, this, &PersonnelPage::configurationChanged);
 		configurationChanged();
 	}
 
-	void PersonelPage::setPayer(partial::payer_t const& payer) {
+	void PersonnelPage::setPayer(partial::payer_t const& payer) {
 		payerGroup->clearAll();
 
 		auto const name = name_from(payer.first_name, payer.last_name, {.format_for = name_hint::payer});
@@ -79,10 +82,10 @@ namespace quick_dra::gui {
 		    {.label = QString::fromUtf8(name), .details = QString::fromUtf8(info), .rightIcon = arrowRightSVGIcon()},
 		    "payerPanel");
 		button->setClickable(true);
-		QObject::connect(button, &PanelButton::clicked, this, &PersonelPage::editPayer);
+		QObject::connect(button, &PanelButton::clicked, this, &PersonnelPage::editPayer);
 	}
 
-	void PersonelPage::setInsured(std::vector<partial::insured_t> const& people) {
+	void PersonnelPage::setInsured(std::vector<partial::insured_t> const& people) {
 		removeInsuredButton->setEnabled(!people.empty());
 		insuredGroup->clearAll();
 
@@ -104,7 +107,7 @@ namespace quick_dra::gui {
 		}
 	}
 
-	void PersonelPage::configurationChanged() {
+	void PersonnelPage::configurationChanged() {
 		auto const& formData = globals().data();
 		assert(formData.cfg.payer);
 		assert(formData.cfg.insured);
@@ -112,8 +115,8 @@ namespace quick_dra::gui {
 		setInsured(formData.cfg.insured.value());
 	}
 
-	void PersonelPage::editPayer() { stack().push<PayerEditPage>(); }
-	void PersonelPage::editInsured(size_t index) { stack().push<InsuredEditPage>(index); }
-	void PersonelPage::addInsured() { stack().push<InsuredEditPage>(globals().data().cfg.insured->size()); }
-	void PersonelPage::removeInsured() { stack().push<RemoveInsuredPage>(); }
+	void PersonnelPage::editPayer() { stack().push<PayerEditPage>(); }
+	void PersonnelPage::editInsured(size_t index) { stack().push<InsuredEditPage>(index); }
+	void PersonnelPage::addInsured() { stack().push<InsuredEditPage>(globals().data().cfg.insured->size()); }
+	void PersonnelPage::removeInsured() { stack().push<RemoveInsuredPage>(); }
 }  // namespace quick_dra::gui

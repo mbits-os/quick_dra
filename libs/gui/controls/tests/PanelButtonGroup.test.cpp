@@ -7,6 +7,7 @@
 #include <QTest>
 #include <app/controls/Glyph.hpp>
 #include <app/controls/Panel.hpp>
+#include <app/controls/PanelButton.hpp>
 #include <app/controls/PanelButtonGroup.hpp>
 #include <app/controls/PanelButtonStyle.hpp>
 #include <app/gui/CurrentColor.hpp>
