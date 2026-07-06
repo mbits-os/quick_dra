@@ -6,6 +6,7 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QScrollArea>
 
 namespace quick_dra::gui {
 	namespace {
@@ -25,6 +26,16 @@ namespace quick_dra::gui {
 				clear(layout);
 				layout->deleteLater();
 			}
+		}
+
+		QScrollArea* scrollAreaParent(QWidget* ptr) {
+			while (ptr) {
+				auto result = qobject_cast<QScrollArea*>(ptr);
+				if (result) return result;
+				ptr = qobject_cast<QWidget*>(ptr->parent());
+			}
+
+			return nullptr;
 		}
 	}  // namespace
 
@@ -115,16 +126,27 @@ namespace quick_dra::gui {
 		updateToolTip();
 	}
 
-	void PanelButtonPrivate::paint(QPainter& painter,
-	                               DevicePixelScale const& scale,
-	                               Positions pos,
-	                               PanelButtonStyle::Palette const& palette) const {
-		using namespace PanelButtonStyle;
-		auto const radius = scale.toDeviceF(Radius);
-		auto const diameter = radius * 2;
-		auto const margin = scale.toDeviceF(TrueMargin) + qreal{.5};
+	QRect PanelButtonPrivate::geometry() const {
+		auto const margin = q_parent->scale().toDevice(PanelButtonStyle::TrueMargin);
+		return item->geometry().marginsAdded({margin, margin, margin, margin});
+	}
 
-		auto const rect = item->geometry().toRectF().marginsAdded({margin, margin, margin, margin});
+	void PanelButtonPrivate::ensureVisible() const {
+		auto scrollArea = scrollAreaParent(q_parent);
+		if (!scrollArea) {  // GCOV_EXCL_LINE
+			[[unlikely]];   // GCOV_EXCL_LINE
+			return;         // GCOV_EXCL_LINE
+		}
+
+		auto const scrolledWidget = scrollArea->widget();
+		auto const geo = geometry();
+		auto const focus = QRect{q_parent->mapTo(scrolledWidget, geo.topLeft()), geo.size()};
+		scrollArea->ensureVisible(focus.left(), (focus.top() + focus.bottom()) / 2, 0, focus.height() * 3 / 2);
+	}
+
+	QPainterPath plotPath(QRectF const& rect, qreal radius, Positions pos, bool close) {
+		auto const diameter = radius * 2;
+
 		QPainterPath path{};
 		if (pos & PanePosition::Bottom) {
 			path.moveTo(rect.left(), rect.bottom() - radius);
@@ -155,7 +177,22 @@ namespace quick_dra::gui {
 			path.arcTo(rect.left(), rect.bottom() - diameter, diameter, diameter, 270, -90);
 		} else {
 			path.lineTo(rect.right(), rect.bottom());
+
+			if (close) path.lineTo(rect.left(), rect.bottom());
 		}
+
+		return path;
+	}  // GCOV_EXCL_LINE
+
+	void PanelButtonPrivate::paint(QPainter& painter,
+	                               DevicePixelScale const& scale,
+	                               Positions pos,
+	                               PanelButtonStyle::Palette const& palette) const {
+		using namespace PanelButtonStyle;
+		auto const radius = scale.toDeviceF(Radius);
+		auto const margin = scale.toDeviceF(TrueMargin) + qreal{.5};
+
+		auto const rect = item->geometry().toRectF().marginsAdded({margin, margin, margin, margin});
 
 		auto const normal = !isClickable() || (!isActive() && !isHovered());
 		auto const pane = !isEnabled() ? palette.disabled
@@ -165,6 +202,26 @@ namespace quick_dra::gui {
 
 		painter.setPen(palette.frame);
 		painter.setBrush(pane);
+		painter.drawPath(plotPath(rect, radius, pos, false));
+	}
+
+	void PanelButtonPrivate::paintFocusRect(QPainter& painter, DevicePixelScale const& scale, Positions pos) const {
+		using namespace PanelButtonStyle;
+		auto const trueMargin = scale.toDeviceF(TrueMargin) + qreal{.5};
+		auto const fullMargin = scale.toDeviceF(Margin) + qreal{.5};
+		auto const margin = (trueMargin + fullMargin) / 2;
+		auto const radius = scale.toDeviceF(Radius) + (margin - trueMargin);
+		auto const dist = scale.toDeviceF(FocusMarker) + qreal{.5};
+
+		auto const rect =
+		    item->geometry().toRectF().marginsAdded({margin, margin, margin, margin - scale.toDeviceF(1_px) - 1});
+		auto const markerLeft = rect.left() + dist + qreal{.5};
+		auto path = plotPath(rect, radius, pos, true);
+		path.moveTo(markerLeft, rect.top() + margin - dist);
+		path.lineTo(markerLeft, rect.bottom() - margin + dist);
+
+		painter.setPen(q_parent->palette().color(QPalette::Highlight));
+		painter.setBrush(Qt::NoBrush);
 		painter.drawPath(path);
 	}
 
@@ -192,8 +249,9 @@ namespace quick_dra::gui {
 	FWD(PanelButton, Enabled)
 	FWD(PanelButton, Hovered)
 	FWD(PanelButton, Active)
+	FWD(PanelButton, Focused)
 #undef GWD
-	void PanelButton::setFocused(bool value) noexcept { d_func()->setFocused(value); }
+	void PanelButton::setPageFocused(bool value) noexcept { d_func()->setPageFocused(value); }
 
 	QString const& PanelButton::toolTip() const noexcept { return d_func()->toolTip(); }
 	void PanelButton::setToolTip(QString const& text) { d_func()->setToolTip(text); }

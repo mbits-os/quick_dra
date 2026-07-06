@@ -50,6 +50,9 @@ namespace quick_dra::gui {
 		void mouseReleaseEvent(QPointF const&, Qt::MouseButton);
 		bool toolTipEvent(QPoint const& inWidgetPos, QPoint const& globalPos);
 		void pageFocusEvent(bool hasFocus);
+		void gotFocus(Qt::FocusReason reason);
+		void lostFocus();
+		bool focusPrevNext(bool next);
 
 		bool trackingActive() const { return !!originalActive_; }
 		PanelButton* fromPos(QPoint const&);
@@ -63,10 +66,18 @@ namespace quick_dra::gui {
 			QVBoxLayout* layout{};
 		};
 
+		PanelButton* prevNext(int diff);
+		bool isTabStop(PanelButton*);
+		void setFocused(PanelButton*);
+		void setInternalFocus(bool value);
+
 		PanelButtonGroup* q_ptr{};
 		DevicePixelScale scale{q_ptr->logicalDpiX()};
 		UI ui{};
 		std::vector<std::unique_ptr<PanelButton>> controls_{};
+		bool hasFocus_{false};
+		int focusedIndex_{-1};
+		PanelButton* focused_{};
 		PanelButton* hovered_{};
 		PanelButton* originalActive_{};
 	};

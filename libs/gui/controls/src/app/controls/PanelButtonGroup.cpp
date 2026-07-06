@@ -69,6 +69,7 @@ namespace quick_dra::gui {
 		// GCOV_EXCL_STOP
 
 		auto lastIndex = -1;
+		auto firstIndex = -1;
 
 		for (auto index = -1; auto const& control : controls_) {
 			++index;
@@ -76,10 +77,10 @@ namespace quick_dra::gui {
 			if (auto const wdg = d.item->widget(); wdg && wdg->isHidden()) {
 				continue;
 			}
+			if (firstIndex < 0) firstIndex = index;
 			lastIndex = index;
 		}
 
-		auto first = true;
 		for (auto index = -1; auto const& control : controls_) {
 			++index;
 			auto const& d = *control.get()->d_func();
@@ -88,11 +89,19 @@ namespace quick_dra::gui {
 			}
 
 			Positions pos{};
-			if (first) pos |= PanePosition::Top;
+			if (index == firstIndex) pos |= PanePosition::Top;
 			if (index == lastIndex) pos |= PanePosition::Bottom;
-			first = false;
-
 			d.paint(painter, scale, pos, palette);
+		}
+
+		if (hasFocus_ && focused_) {
+			auto const& d = *focused_->d_func();
+			if (auto const wdg = d.item->widget(); !wdg || !wdg->isHidden()) {
+				Positions pos{};
+				if (focusedIndex_ == firstIndex) pos |= PanePosition::Top;
+				if (focusedIndex_ == lastIndex) pos |= PanePosition::Bottom;
+				d.paintFocusRect(painter, scale, pos);
+			}
 		}
 	}
 
@@ -154,8 +163,88 @@ namespace quick_dra::gui {
 
 	void PanelButtonGroupPrivate::pageFocusEvent(bool hasFocus) {
 		for (auto const& control : controls_) {
-			control->setFocused(hasFocus);
+			control->setPageFocused(hasFocus);
 		}
+	}
+
+	void PanelButtonGroupPrivate::gotFocus(Qt::FocusReason reason) {
+		setInternalFocus(true);
+		auto const size = static_cast<int>(controls_.size());
+		if (reason == Qt::BacktabFocusReason) {
+			focusedIndex_ = controls_.empty() ? 0 : size;
+			focusPrevNext(false);
+		} else if (focusedIndex_ < 0 || focusedIndex_ >= size) {
+			focusedIndex_ = -1;
+			focusPrevNext(true);
+		}
+	}
+
+	void PanelButtonGroupPrivate::lostFocus() { setInternalFocus(false); }
+
+	PanelButton* PanelButtonGroupPrivate::prevNext(int diff) {
+		auto const currentButton = [this]() { return controls_.at(static_cast<size_t>(focusedIndex_)).get(); };
+		auto const size = static_cast<int>(controls_.size());
+
+		if (focusedIndex_ < 0 && diff < 0) focusedIndex_ = size;
+
+		focusedIndex_ += diff;
+		while (focusedIndex_ >= 0 && focusedIndex_ < size) {
+			if (!isTabStop(currentButton())) {
+				focusedIndex_ += diff;
+				continue;
+			}
+			break;
+		}  // GCOV_EXCL_LINE[WIN32]
+
+		if (focusedIndex_ < 0 || focusedIndex_ >= size) {
+			focusedIndex_ = -1;
+			return nullptr;
+		}
+
+		return currentButton();
+	}
+
+	bool PanelButtonGroupPrivate::isTabStop(PanelButton* button) {
+		auto const& d = *button->d_func();
+		if (!d.isEnabled() || !d.isClickable()) {
+			return false;
+		}
+		if (auto const wdg = d.item->widget(); wdg && wdg->isHidden()) {
+			return false;
+		}
+		return true;
+	}
+
+	bool PanelButtonGroupPrivate::focusPrevNext(bool next) {
+		setFocused(prevNext(next ? 1 : -1));
+
+		if (focused_) {
+			return true;
+		}
+
+		return false;
+	}
+
+	void PanelButtonGroupPrivate::setFocused(PanelButton* nextFocused) {
+		if (focused_ == nextFocused) return;
+
+		if (focused_) {
+			focused_->setFocused(false);
+		}
+
+		focused_ = nextFocused;
+
+		if (focused_) {
+			focused_->setFocused(true);
+		}
+
+		q_ptr->update();
+	}
+
+	void PanelButtonGroupPrivate::setInternalFocus(bool value) {
+		if (hasFocus_ == value) return;
+		hasFocus_ = value;
+		q_ptr->update();
 	}
 
 	PanelButton* PanelButtonGroupPrivate::fromPos(QPoint const& inWidgetPos) {
@@ -200,9 +289,13 @@ namespace quick_dra::gui {
 		}
 	}
 
-	PanelButtonGroup::PanelButtonGroup(QWidget* parent) : QWidget{parent}, d_ptr{new PanelButtonGroupPrivate{this}} {}
+	PanelButtonGroup::PanelButtonGroup(QWidget* parent) : QWidget{parent}, d_ptr{new PanelButtonGroupPrivate{this}} {
+		setFocusPolicy(Qt::TabFocus);
+	}
 
 	PanelButtonGroup::~PanelButtonGroup() = default;
+
+	DevicePixelScale const& PanelButtonGroup::scale() const noexcept { return d_func()->scale; }
 
 	int PanelButtonGroup::count() const { return d_func()->count(); }
 
@@ -272,6 +365,11 @@ namespace quick_dra::gui {
 			auto const index = d->ui.layout->indexOf(button_d->item);
 			d->ui.layout->takeAt(index);
 			button_d->has_item_ownership = true;
+
+			if (local.get() == d->focused_) {
+				d->setFocused(nullptr);
+				d->focusedIndex_ = -1;
+			}
 		}
 		return local.release();
 	}
@@ -299,9 +397,7 @@ namespace quick_dra::gui {
 		return QWidget::event(event);
 	}
 
-	void PanelButtonGroup::paintEvent(QPaintEvent* event) {
-		QWidget::paintEvent(event);
-
+	void PanelButtonGroup::paintEvent(QPaintEvent*) {
 		Q_D(PanelButtonGroup);
 
 		QPainter painter{this};
@@ -329,14 +425,70 @@ namespace quick_dra::gui {
 
 		d->mouseMoveEvent(event->position());
 	}
+
 	void PanelButtonGroup::mousePressEvent(QMouseEvent* event) {
 		Q_D(PanelButtonGroup);
 
 		d->mousePressEvent(event->position(), event->button());
 	}
+
 	void PanelButtonGroup::mouseReleaseEvent(QMouseEvent* event) {
 		Q_D(PanelButtonGroup);
 
 		d->mouseReleaseEvent(event->position(), event->button());
+	}
+
+	static constexpr auto keyReturn = QKeyCombination{Qt::Key_Return};
+	static constexpr auto keyEnter = QKeyCombination{Qt::Key_Enter};
+	static constexpr auto keyDown = QKeyCombination{Qt::Key_Down};
+	static constexpr auto keyUp = QKeyCombination{Qt::Key_Up};
+
+	static bool upDownKeyEvent(QWidget* target, QKeyEvent* event) {
+		if (event->keyCombination() == keyDown) {
+			event->accept();
+			qApp->notify(target, new QKeyEvent{event->type(), Qt::Key_Tab, event->modifiers()});
+			return true;
+		}
+		if (event->keyCombination() == keyUp) {
+			event->accept();
+			qApp->notify(target, new QKeyEvent{event->type(), Qt::Key_Backtab, event->modifiers()});
+			return true;
+		}
+		return false;
+	}
+
+	void PanelButtonGroup::keyPressEvent(QKeyEvent* event) { upDownKeyEvent(this, event); }
+
+	void PanelButtonGroup::keyReleaseEvent(QKeyEvent* event) {
+		if (upDownKeyEvent(this, event)) return;
+
+		if ((event->keyCombination() == keyReturn) || (event->keyCombination() == keyEnter)) {
+			event->accept();
+			Q_D(PanelButtonGroup);
+			if (d->focused_) {
+				d->focused_->clicked();
+			}
+			return;
+		}
+	}
+
+	void PanelButtonGroup::focusInEvent(QFocusEvent* event) {
+		Q_D(PanelButtonGroup);
+
+		d->gotFocus(event->reason());
+	}
+
+	void PanelButtonGroup::focusOutEvent(QFocusEvent*) {
+		Q_D(PanelButtonGroup);
+
+		d->lostFocus();
+	}
+
+	bool PanelButtonGroup::focusNextPrevChild(bool next) {
+		Q_D(PanelButtonGroup);
+
+		if (d->focusPrevNext(next)) return true;
+
+		return QWidget::focusNextPrevChild(next);
 	}
 }  // namespace quick_dra::gui

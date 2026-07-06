@@ -173,11 +173,20 @@ struct Buttons {
 		height = qRound(height * scale);
 		parent->resize(parent->width(), height);
 	}
+
+	bool onlyFocusedButton(size_t pos) {
+		for (size_t index = 0; index < buttons.size(); ++index) {
+			if (buttons[index]->isFocused() != (index == pos)) {
+				return false;
+			}
+		}
+		return true;
+	}
 };
 
 static PaletteOverride const themes[] = {
-    {.window = Qt::white, .windowText = Qt::black},
-    {.window = Qt::black, .windowText = Qt::white},
+    {.window = Qt::white, .windowText = Qt::black, .highlight = QColor{0, 120, 215}},
+    {.window = Qt::black, .windowText = Qt::white, .highlight = QColor{0, 120, 215}},
 };
 
 using ButtonOp = void (*)(Buttons&);
@@ -234,6 +243,11 @@ void ControlsTest::PanelButtonGroup_layout() {
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
 	btns.resize();
+	widget.focusNextPrevChild(true);
+	widget.focusNextPrevChild(true);
+	widget.focusNextPrevChild(true);
+	QVERIFY(!btns.buttons[0]->isFocused());
+	QVERIFY(btns.buttons[4]->isFocused());
 
 	Stamper stamper{&widget,
 	                {
@@ -527,4 +541,58 @@ void ControlsTest::PanelButtonGroup_mouseClickMoveOutside() {
 
 	QTest::qWait(0);
 	QCOMPARE_EQ(spy.size(), 0);
+}
+
+void ControlsTest::PanelButtonGroup_internalFocus() {
+	PanelButtonGroup widget{};
+	Buttons btns{widget};
+	widget.show();
+	QVERIFY(QTest::qWaitForWindowExposed(&widget));
+
+	// FORWARD
+	QSignalSpy spy{btns.buttons[0], &PanelButton::clicked};
+	QVERIFY(btns.onlyFocusedButton(0));
+
+	QTest::keyClick(&widget, Qt::Key_Enter, Qt::NoModifier);
+	QTest::keyClick(&widget, Qt::Key_Return, Qt::NoModifier);
+	spy.wait(100ms);
+	QCOMPARE_EQ(spy.length(), 2);
+
+	QTest::keyClick(&widget, Qt::Key_Tab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(1));
+	QTest::keyClick(&widget, Qt::Key_Tab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(2));
+	QTest::keyClick(&widget, Qt::Key_Tab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(4));
+	QTest::keyClick(&widget, Qt::Key_Tab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(btns.buttons.size()));
+	QTest::keyClick(&widget, Qt::Key_Enter, Qt::NoModifier);
+	QTest::keyClick(&widget, Qt::Key_Return, Qt::NoModifier);
+	spy.wait(100ms);
+	QCOMPARE_EQ(spy.length(), 2);
+
+	// BACKWARD
+	QTest::keyClick(&widget, Qt::Key_Backtab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(4));
+	QTest::keyClick(&widget, Qt::Key_Backtab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(2));
+	QTest::keyClick(&widget, Qt::Key_Backtab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(1));
+	QTest::keyClick(&widget, Qt::Key_Backtab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(0));
+	QTest::keyClick(&widget, Qt::Key_Backtab, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(btns.buttons.size()));
+
+	// FOCUS-IN (SHIFT+TAB)
+	QFocusEvent ev{QEvent::FocusIn, Qt::BacktabFocusReason};
+	widget.focusInEvent(&ev);
+	QVERIFY(btns.onlyFocusedButton(4));
+
+	// Up + Down
+	QTest::keyClick(&widget, Qt::Key_Up, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(2));
+	QTest::keyClick(&widget, Qt::Key_Up, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(1));
+	QTest::keyClick(&widget, Qt::Key_Down, Qt::NoModifier);
+	QVERIFY(btns.onlyFocusedButton(2));
 }

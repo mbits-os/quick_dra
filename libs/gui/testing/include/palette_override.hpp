@@ -11,6 +11,7 @@
 struct PaletteOverride {
 	QColor window;
 	QColor windowText;
+	QColor highlight{};
 
 	void setPalette(auto* target) const {
 		auto const lightness = (window.toHsl().lightnessF() + windowText.toHsl().lightnessF() * 2) / 3;
@@ -21,6 +22,10 @@ struct PaletteOverride {
 		palette.setColor(QPalette::Normal, QPalette::WindowText, windowText);
 		palette.setColor(QPalette::Disabled, QPalette::Window, window);
 		palette.setColor(QPalette::Disabled, QPalette::WindowText, disabled);
+		if (highlight.isValid()) {
+			palette.setColor(QPalette::Normal, QPalette::Highlight, highlight);
+			palette.setColor(QPalette::Disabled, QPalette::Highlight, highlight);
+		}
 		target->setPalette(palette);
 	}
 
