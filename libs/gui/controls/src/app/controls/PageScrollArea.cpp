@@ -28,7 +28,8 @@ namespace quick_dra::gui {
 		                           [](QLayout& layout) { layout.setContentsMargins(0, 0, 0, 0); });
 
 		auto root = LaidOut{page, rootLayout};
-		root.createWidget(scrollArea, "scrollArea");
+		root.createWidget(scrollArea, "scrollArea",
+		                  [](QScrollArea& scrollArea) { scrollArea.setFocusPolicy(Qt::NoFocus); });
 
 		LaidOut<QWidget, QLayout>{nullptr}.createWidget(pageParent, "pageParent",
 		                                                [&scrollArea = *scrollArea](QWidget& pageParent) {
@@ -36,6 +37,7 @@ namespace quick_dra::gui {
 
 			                                                pageParent.setSizePolicy(TakeWidth);
 			                                                pageParent.setGeometry(0, 0, 10, 10);
+			                                                pageParent.setFocusPolicy(Qt::NoFocus);
 		                                                });
 		return {scrollArea, pageParent};
 	}

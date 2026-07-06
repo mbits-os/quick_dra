@@ -12,6 +12,8 @@
 
 namespace quick_dra::gui::PanelButtonStyle {
 	static constexpr auto TrueMargin = 15_px;
+	static constexpr auto FocusMarker = 5_px;
+	static constexpr auto FocusMarkerWidth = 2_px;
 	static constexpr auto Margin = TrueMargin + 2_px;
 	static constexpr auto Radius = 6_px;
 

@@ -27,6 +27,7 @@ private slots:
 	void PanelButtonGroup_mouseClickMoveAway();
 	void PanelButtonGroup_mouseClickMoveAwayAndReturn();
 	void PanelButtonGroup_mouseClickMoveOutside();
+	void PanelButtonGroup_internalFocus();
 
 	void Forms_access();
 	void Forms_lineEdit();

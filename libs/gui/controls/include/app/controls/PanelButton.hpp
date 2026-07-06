@@ -7,6 +7,7 @@
 #include <QLayout>
 #include <QList>
 #include <QWidget>
+#include <app/utils/DevicePixelScale.hpp>
 #include <memory>
 
 namespace quick_dra::gui {
@@ -30,6 +31,7 @@ namespace quick_dra::gui {
 		bool isEnabled() const noexcept;
 		bool isHovered() const noexcept;
 		bool isActive() const noexcept;
+		bool isFocused() const noexcept;
 
 		QString const& toolTip() const noexcept;
 		void setToolTip(QString const&);
@@ -40,6 +42,7 @@ namespace quick_dra::gui {
 		void setHovered(bool value) noexcept;
 		void setActive(bool value) noexcept;
 		void setFocused(bool value) noexcept;
+		void setPageFocused(bool value) noexcept;
 
 	signals:
 		void clicked();

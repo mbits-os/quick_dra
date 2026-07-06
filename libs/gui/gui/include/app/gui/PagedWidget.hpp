@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <QPointer>
 #include <QWidget>
 #include <app/gui/Globals.hpp>
 #include <app/gui/PageStack.hpp>
@@ -40,7 +41,7 @@ namespace quick_dra::gui {
 	signals:
 		void accepted();
 
-	protected:
+	protected:  // GCOV_EXCL_LINE (what?!?)
 		Globals& globals() const noexcept { return *globals_; }
 		PageStack& stack() const noexcept { return globals().stack(); }
 
@@ -55,5 +56,6 @@ namespace quick_dra::gui {
 		Globals* globals_{};
 		bool formDirty_{false};
 		bool formValid_{true};
+		QPointer<QWidget> storedFocus_{};
 	};
 }  // namespace quick_dra::gui

@@ -65,6 +65,8 @@ namespace quick_dra::gui {
 		void setSequences(QList<QKeySequence> const&);
 		QString const& toolTip() const noexcept { return toolTip_; }
 		void setToolTip(QString const&);
+		QRect geometry() const;
+		void ensureVisible() const;
 
 		auto cursor() const noexcept { return clickable_ && enabled_ ? Qt::PointingHandCursor : Qt::ArrowCursor; }
 
@@ -98,12 +100,21 @@ namespace quick_dra::gui {
 			q_parent->update();
 		}
 
-		void setFocused(bool value) noexcept { shortcuts->setFocused(value); }
+		bool isFocused() const noexcept { return focused_; }
+		void setFocused(bool value) noexcept {
+			if (value == focused_) return;
+			focused_ = value;
+			if (focused_) ensureVisible();
+			q_parent->update();
+		}
+
+		void setPageFocused(bool value) noexcept { shortcuts->setFocused(value); }
 
 		void paint(QPainter& painter,
 		           DevicePixelScale const& scale,
 		           Positions pos,
 		           PanelButtonStyle::Palette const& palette) const;
+		void paintFocusRect(QPainter& painter, DevicePixelScale const& scale, Positions pos) const;
 
 	private:
 		void propagate(QLayoutItem* item, auto&& callback) {
@@ -132,5 +143,6 @@ namespace quick_dra::gui {
 		bool enabled_ : 1 = true;
 		bool hovered_ : 1 = false;
 		bool active_ : 1 = false;
+		bool focused_ : 1 = false;
 	};
 }  // namespace quick_dra::gui

@@ -6,6 +6,7 @@
 #include <QEvent>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <app/utils/DevicePixelScale.hpp>
 #include <app/utils/empty_callback.hpp>
 #include <memory>
 #include <utility>
@@ -22,6 +23,8 @@ namespace quick_dra::gui {
 	public:
 		PanelButtonGroup(QWidget* parent = nullptr);
 		~PanelButtonGroup();
+
+		DevicePixelScale const& scale() const noexcept;
 
 		int count() const;
 		PanelButton* itemAt(int) const;
@@ -68,6 +71,12 @@ namespace quick_dra::gui {
 		void mouseMoveEvent(QMouseEvent* event) override;
 		void mousePressEvent(QMouseEvent* event) override;
 		void mouseReleaseEvent(QMouseEvent* event) override;
+		void keyPressEvent(QKeyEvent* event) override;
+		void keyReleaseEvent(QKeyEvent* event) override;
+		void focusInEvent(QFocusEvent* event) override;
+		void focusOutEvent(QFocusEvent* event) override;
+
+		bool focusNextPrevChild(bool next) override;
 
 	private:
 		std::unique_ptr<PanelButtonGroupPrivate> d_ptr{};

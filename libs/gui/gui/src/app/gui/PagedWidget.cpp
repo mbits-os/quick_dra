@@ -13,6 +13,29 @@ namespace quick_dra::gui {
 				qApp->notify(child, new PageFocusEvent{hasFocus});
 			}
 		}
+
+		QWidget* focusToStore(QWidget* self) {
+			auto focused = qApp->focusWidget();
+			if (focused) {
+				auto parent = focused->parentWidget();
+				while (parent && parent != self) {
+					parent = parent->parentWidget();
+				}
+				if (parent) {
+					return focused;
+				}
+			}
+			return nullptr;
+		}
+
+		void restoreFocus(QPointer<QWidget>& stored) {
+			QPointer<QWidget> local{};
+			local.swap(stored);
+			auto focused = local.data();
+			if (focused && !local.isNull()) {
+				focused->setFocus();
+			}
+		}
 	}  // namespace
 
 	PagedWidget::PagedWidget(QWidget* parent) : QWidget{parent} {
@@ -26,8 +49,17 @@ namespace quick_dra::gui {
 
 	void PagedWidget::connectPage() {}
 	void PagedWidget::beforePageFocus() {}
-	void PagedWidget::pageFocus() { broadcastPageFocusEvent(this, true); }
-	void PagedWidget::beforePageBlur() { broadcastPageFocusEvent(this, false); }
+
+	void PagedWidget::pageFocus() {
+		restoreFocus(storedFocus_);
+		broadcastPageFocusEvent(this, true);
+	}
+
+	void PagedWidget::beforePageBlur() {
+		broadcastPageFocusEvent(this, false);
+		storedFocus_ = focusToStore(this);
+	}
+
 	void PagedWidget::pageBlur() {}
 	void PagedWidget::pageRemoved() {}
 	void PagedWidget::accept() { accepted(); }
