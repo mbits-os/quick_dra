@@ -83,33 +83,33 @@ namespace quick_dra::gui {
 
 	DECLARE_FIELD(FirstNameDeclaration, detail::NonEmptyValidator, person, first_name) {
 		static constexpr auto id = "firstName"sv;
-		static constexpr auto label = "Imię pierwsze"sv;
+		static constexpr auto label = "Pierwsze &imię"sv;
 		static constexpr auto error_message = ""sv;
 	};
 
 	DECLARE_FIELD(LastNameDeclaration, detail::NonEmptyValidator, person, last_name) {
 		static constexpr auto id = "lastName"sv;
-		static constexpr auto label = "Nazwisko"sv;
+		static constexpr auto label = "Na&zwisko"sv;
 		static constexpr auto error_message = ""sv;
 	};
 
 	DECLARE_FIELD(TitleDeclaration, detail::InsuranceTitleValidator, insured_type, title) {
 		static constexpr auto id = "insuranceTitle"sv;
-		static constexpr auto label = "Kod tytułu ubezpieczenia"sv;
+		static constexpr auto label = "Kod &tytułu ubezpieczenia"sv;
 		static constexpr auto error_message =
 		    "Tytuł ubezpieczenia powinien składać się z 6 cyfr w formacie \"0000 0 0\""sv;
 	};
 
 	DECLARE_FIELD(TaxIdDeclaration, tax_id_validator, payer_t, tax_id) {
 		static constexpr auto id = "taxId"sv;
-		static constexpr auto label = "Numer NIP"sv;
+		static constexpr auto label = "Numer &NIP"sv;
 		static constexpr auto error_message =
 		    "Numer NIP musi mieć poprawną sumę kontrolną i nie może zawierać kresek"sv;
 	};
 
 	DECLARE_FIELD(EmploymentHistoryDeclaration, detail::NullValidator, insured_type, history) {
 		static constexpr auto id = "employmentHistory"sv;
-		static constexpr auto label = "Historia zatrudnienia"sv;
+		static constexpr auto label = "&Historia zatrudnienia"sv;
 		static constexpr auto error_message = ""sv;
 	};
 
@@ -155,7 +155,9 @@ namespace quick_dra::gui {
 		ERROR_CHECKSUM_NEEDED("Numer PESEL");
 	};
 
-	struct SocialIdDeclaration : SocialIdDeclarationBase<payer_t> {};
+	struct SocialIdDeclaration : SocialIdDeclarationBase<payer_t> {
+		static constexpr auto label = "Numer &PESEL"sv;
+	};
 
 	struct SocialIdEnumDeclaration : SocialIdDeclarationBase<insured_type> {
 		ENUM_KEY(P);

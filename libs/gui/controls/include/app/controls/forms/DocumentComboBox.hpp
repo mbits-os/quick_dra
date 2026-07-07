@@ -29,12 +29,12 @@ namespace quick_dra::gui {
 	public:
 		DECLARE_FIELD_HEADER(DocumentKindDeclaration, detail::NullValidator, person, kind) {
 			static constexpr auto id = "documentKind"sv;
-			static constexpr auto label = "Rodzaj dokumentu"sv;
+			static constexpr auto label = "&Rodzaj dokumentu"sv;
 			static constexpr auto error_message = ""sv;
 		};
 		DECLARE_FIELD_HEADER(DocumentDeclaration, detail::NullValidator, person, document) {
 			static constexpr auto id = "document"sv;
-			static constexpr auto label = "Seria i numer dokumentu"sv;
+			static constexpr auto label = "&Seria i numer dokumentu"sv;
 			static constexpr auto error_message = ""sv;
 		};
 

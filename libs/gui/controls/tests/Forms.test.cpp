@@ -365,15 +365,15 @@ void ControlsTest::Forms_documentComboBox() {
 
 	ui.get<DocumentABCCombo>().restyleField(false);
 
-	QVERIFY_COMBO_BOX("documentKind", "Rodzaj dokumentu", -1, "A - Klucz A", "B - Klucz B", "C - Klucz C");
-	QVERIFY_LINE_EDIT("document", "Seria i numer dokumentu", "");
+	QVERIFY_COMBO_BOX("documentKind", "&Rodzaj dokumentu", -1, "A - Klucz A", "B - Klucz B", "C - Klucz C");
+	QVERIFY_LINE_EDIT("document", "&Seria i numer dokumentu", "");
 
 	data.kind = "B"sv;
 	data.document = "AA?000000"sv;
 	ui.attach(data);
 
-	QVERIFY_COMBO_BOX("documentKind", "Rodzaj dokumentu", 1, "A - Klucz A", "B - Klucz B", "C - Klucz C");
-	QVERIFY_LINE_EDIT("document", "Seria i numer dokumentu", "AA?000000");
+	QVERIFY_COMBO_BOX("documentKind", "&Rodzaj dokumentu", 1, "A - Klucz A", "B - Klucz B", "C - Klucz C");
+	QVERIFY_LINE_EDIT("document", "&Seria i numer dokumentu", "AA?000000");
 
 	SELECT_OPTION("documentKind", 0);
 	QVERIFY_IS_INVALID("document", u"Pole nie mo\u017Ce by\u0107 puste");
