@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>313</width>
-    <height>76</height>
+    <height>100</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,14 @@
   <layout class="QFormLayout" name="formLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="label">
+     <property name="lineWidth">
+      <number>-4</number>
+     </property>
      <property name="text">
-      <string>Numer raportu</string>
+      <string>&amp;Numer raportu</string>
+     </property>
+     <property name="buddy">
+      <cstring>spinBox</cstring>
      </property>
     </widget>
    </item>
@@ -36,7 +42,10 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Miesiąc raportu</string>
+      <string>&amp;Miesiąc raportu</string>
+     </property>
+     <property name="buddy">
+      <cstring>dateEdit</cstring>
      </property>
     </widget>
    </item>

@@ -4,6 +4,7 @@
 #include <QDate>
 #include <QFormLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QLocale>
 #include <algorithm>
 #include <app/controls/forms/TableView.hpp>
@@ -140,6 +141,7 @@ QPushButton
 		buttonLayout->addWidget(removeButton);
 
 		layout->addRow(QString::fromUtf8(label), buttonLayout);
+		auto const labelWidget = layout->itemAt(layout->rowCount() - 1, QFormLayout::LabelRole)->widget();
 
 		view = new QTreeView{parentWidget};
 		view->setObjectName(QString{"%1TreeView"}.arg(qId));
@@ -153,6 +155,8 @@ QPushButton
 		view->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 		layout->addRow("", view);
+
+		static_cast<QLabel*>(labelWidget)->setBuddy(view);
 	}
 
 	void ListViewBase::restyleField(bool) {}  // GCOV_EXCL_LINE -- no side effects to test for
