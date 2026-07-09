@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.5.0](https://github.com/mbits-os/quick_dra/compare/v1.4.0...v1.5.0) (2026-07-09)
+
+### New Features
+
+- setup buddies in forms ([8883255](https://github.com/mbits-os/quick_dra/commit/8883255a32669eada7bd55707bea43caf3c163cc))
+- focus-based navigation for PanelButtonGroups ([738366a](https://github.com/mbits-os/quick_dra/commit/738366ae7547918945b9f0a9a9a7e49852e807ce)), closes #101 and #96
+- add keyboard navigation for Home and Personnel pages ([f0c7fa6](https://github.com/mbits-os/quick_dra/commit/f0c7fa64b82afbcf018fae15d6825b157fd26ae7)), fixes #98 and #100
+- wire up panel buttons shortcuts ([aef8550](https://github.com/mbits-os/quick_dra/commit/aef8550d9febc09b0b68ae8dbf508fa61e07233c))
+- add tooltips for shortcut discovery ([829ceb1](https://github.com/mbits-os/quick_dra/commit/829ceb1151e242a743c9bf4919a466f31ea55edd))
+
+### Bug Fixes
+
+- slightly more space to breath around form controls ([7b1fb0a](https://github.com/mbits-os/quick_dra/commit/7b1fb0ade1348166f6f690c75486f596b9b7dbae))
+- add shortcuts to close pages ([11a0a60](https://github.com/mbits-os/quick_dra/commit/11a0a60996fe7cb8bd9e9be9a4aed6052df50818)), closes #97
+
 ## [1.4.0](https://github.com/mbits-os/quick_dra/compare/v1.3.0...v1.4.0) (2026-07-04)
 
 ### New Features
