@@ -109,9 +109,9 @@ namespace quick_dra::gui {
 		trackHover(fromPos(inWidgetPos.toPoint()));
 	}
 
-	void PanelButtonGroupPrivate::mousePressEvent(QPointF const& inWidgetPos, Qt::MouseButton button) {
+	bool PanelButtonGroupPrivate::mousePressEvent(QPointF const& inWidgetPos, Qt::MouseButton button) {
 		if (button != Qt::MouseButton::LeftButton) {
-			return;
+			return false;
 		}
 
 		trackHover(fromPos(inWidgetPos.toPoint()));
@@ -125,17 +125,19 @@ namespace quick_dra::gui {
 			originalActive_->setHovered(false);
 			originalActive_->setActive(true);
 		}
+
+		return true;
 	}
 
-	void PanelButtonGroupPrivate::mouseReleaseEvent(QPointF const& inWidgetPos, Qt::MouseButton button) {
+	bool PanelButtonGroupPrivate::mouseReleaseEvent(QPointF const& inWidgetPos, Qt::MouseButton button) {
 		if (button != Qt::MouseButton::LeftButton) {
-			return;
+			return false;
 		}
 
 		trackHover(fromPos(inWidgetPos.toPoint()));
 
 		if (!originalActive_) {
-			return;
+			return false;
 		}
 
 		originalActive_->setActive(false);
@@ -148,6 +150,8 @@ namespace quick_dra::gui {
 		if (!rect.contains(inWidgetPos)) {
 			q_func()->setMouseTracking(false);
 		}
+
+		return true;
 	}
 
 	bool PanelButtonGroupPrivate::toolTipEvent(QPoint const& inWidgetPos, QPoint const& globalPos) {
@@ -429,13 +433,17 @@ namespace quick_dra::gui {
 	void PanelButtonGroup::mousePressEvent(QMouseEvent* event) {
 		Q_D(PanelButtonGroup);
 
-		d->mousePressEvent(event->position(), event->button());
+		if (!d->mousePressEvent(event->position(), event->button())) {
+			event->ignore();
+		}
 	}
 
 	void PanelButtonGroup::mouseReleaseEvent(QMouseEvent* event) {
 		Q_D(PanelButtonGroup);
 
-		d->mouseReleaseEvent(event->position(), event->button());
+		if (!d->mouseReleaseEvent(event->position(), event->button())) {
+			event->ignore();
+		}
 	}
 
 	static constexpr auto keyReturn = QKeyCombination{Qt::Key_Return};

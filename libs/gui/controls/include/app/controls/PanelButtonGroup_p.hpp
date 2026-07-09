@@ -46,8 +46,8 @@ namespace quick_dra::gui {
 
 		void paintEvent(QPainter& painter, PanelButtonStyle::Palette const& palette);
 		void mouseMoveEvent(QPointF const&);
-		void mousePressEvent(QPointF const&, Qt::MouseButton);
-		void mouseReleaseEvent(QPointF const&, Qt::MouseButton);
+		bool mousePressEvent(QPointF const&, Qt::MouseButton);
+		bool mouseReleaseEvent(QPointF const&, Qt::MouseButton);
 		bool toolTipEvent(QPoint const& inWidgetPos, QPoint const& globalPos);
 		void pageFocusEvent(bool hasFocus);
 		void gotFocus(Qt::FocusReason reason);

@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <QAction>
+#include <QMouseEvent>
 #include <QToolBar>
 #include "TestApp.hpp"
 
@@ -303,5 +304,27 @@ namespace quick_dra::gui::testing {
 		EXPECT_TRUE(env.formValid());
 		subPage->setFormValid(false);
 		EXPECT_TRUE(env.formValid());
+	}
+
+	TEST(Pages, mouseBack) {
+		PagesEnv env{};
+
+		auto homePage = env.stack->push<PagedWidgetMock>("Home Page");
+		auto subPage = homePage->subpage("Page #1");
+		subPage->subpage("Page #2");
+
+		QMouseEvent evPress{QEvent::MouseButtonPress, QPointF{},      QPointF{},
+		                    Qt::BackButton,           Qt::BackButton, Qt::NoModifier};
+		QMouseEvent evRelease{
+		    QEvent::MouseButtonRelease, QPointF{}, QPointF{}, Qt::BackButton, Qt::BackButton, Qt::NoModifier};
+
+		auto const target = env.stack->page();
+
+		qApp->notify(target, &evPress);
+		EXPECT_EQ(target, env.stack->page());
+
+		qApp->notify(target, &evRelease);
+		EXPECT_NE(target, env.stack->page());
+		EXPECT_EQ(subPage, env.stack->page());
 	}
 }  // namespace quick_dra::gui::testing

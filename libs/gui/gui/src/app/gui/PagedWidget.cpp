@@ -2,6 +2,7 @@
 // This code is licensed under MIT license (see LICENSE for details)
 
 #include <QApplication>
+#include <QMouseEvent>
 #include <app/gui/PageFocusEvent.hpp>
 #include <app/gui/PagedWidget.hpp>
 
@@ -70,6 +71,12 @@ namespace quick_dra::gui {
 		onTitleChange(windowTitle());
 	}
 	bool PagedWidget::survivesReload() const { return false; }
+
+	void PagedWidget::mouseReleaseEvent(QMouseEvent* event) {
+		if (event->button() == Qt::BackButton) {
+			stack().navigateBack();
+		}
+	}
 
 	void PagedWidget::setFormDirty(bool value) {
 		if (formDirty_ == value) {
