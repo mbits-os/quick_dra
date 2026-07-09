@@ -30,6 +30,8 @@ namespace quick_dra::gui {
 		bool isFormDirty() const noexcept { return formDirty_; }
 		bool isFormValid() const noexcept { return formValid_; }
 
+		void mouseReleaseEvent(QMouseEvent* event) override;
+
 	public slots:
 		void leavePage();
 		void setFormDirty(bool);
@@ -41,7 +43,7 @@ namespace quick_dra::gui {
 	signals:
 		void accepted();
 
-	protected:  // GCOV_EXCL_LINE (what?!?)
+	protected:
 		Globals& globals() const noexcept { return *globals_; }
 		PageStack& stack() const noexcept { return globals().stack(); }
 
