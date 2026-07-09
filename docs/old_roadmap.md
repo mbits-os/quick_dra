@@ -51,8 +51,8 @@
     - [x] Add tests (_v1.2.1_)
   - [ ] ~~_(opt)_ Show history graphs~~
   - [x] Animate title on page change (_v1.4.0_)
-  - [ ] Update documentation
+  - [ ] _(moved)_ ~~Update documentation~~
   - [x] Keyboard navigation (_v1.5.0_)
 - [x] GitHub social templates (_Bug report_ and _Feature request_) should both use YAML template (issue: [#79](https://github.com/mbits-os/quick_dra/issues/79))
-- [ ] Automatic upload to ZUS ePłatnik
+- [ ] _(moved)_ ~~Automatic upload to ZUS ePłatnik~~
 - [x] Setup bug tracking in GitHub
