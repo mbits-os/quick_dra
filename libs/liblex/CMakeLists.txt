@@ -26,19 +26,6 @@ target_link_libraries(liblex PUBLIC libbase)
 set_target_properties(liblex PROPERTIES FOLDER lib)
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS liblex COMPONENT libraries)
-
-    install(
-        DIRECTORY include/
-        TYPE INCLUDE
-        COMPONENT libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)

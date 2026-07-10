@@ -38,19 +38,6 @@ target_include_directories(gui
 set_target_properties(gui PROPERTIES FOLDER lib)
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS gui COMPONENT gui_libraries)
-
-    install(
-        DIRECTORY include/
-        TYPE INCLUDE
-        COMPONENT gui_libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
