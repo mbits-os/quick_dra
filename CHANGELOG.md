@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.6.0](https://github.com/mbits-os/quick_dra/compare/v1.5.0...v1.6.0) (2026-07-10)
+
+### New Features
+
+- add mouse back navigation ([fb48569](https://github.com/mbits-os/quick_dra/commit/fb48569fddaac1e3f4bfd45af954a2347bdceb55)), closes #109
+
 ## [1.5.0](https://github.com/mbits-os/quick_dra/compare/v1.4.0...v1.5.0) (2026-07-09)
 
 ### New Features
