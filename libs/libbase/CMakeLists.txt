@@ -58,21 +58,6 @@ if(TARGET ICU::i18n)
 endif()
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS libbase COMPONENT libraries)
-
-    install(
-        DIRECTORY
-        include/
-        ${CMAKE_CURRENT_BINARY_DIR}/include/
-        TYPE INCLUDE
-        COMPONENT libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)

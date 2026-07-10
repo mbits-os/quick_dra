@@ -47,19 +47,6 @@ target_include_directories(controls
 set_target_properties(controls PROPERTIES FOLDER lib)
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS controls COMPONENT gui_libraries)
-
-    install(
-        DIRECTORY include/
-        TYPE INCLUDE
-        COMPONENT gui_libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)

@@ -27,19 +27,6 @@ target_link_libraries(libpersist PUBLIC ryml::ryml fmt::fmt)
 set_target_properties(libpersist PROPERTIES FOLDER lib)
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS libpersist COMPONENT libraries)
-
-    install(
-        DIRECTORY include/
-        TYPE INCLUDE
-        COMPONENT libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)

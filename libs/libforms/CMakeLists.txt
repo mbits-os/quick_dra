@@ -53,19 +53,6 @@ add_custom_command(
     "${PROJECT_BINARY_DIR}/${SHARE_DIR}/schemas")
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS libforms COMPONENT libraries)
-
-    install(
-        DIRECTORY include/
-        TYPE INCLUDE
-        COMPONENT libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)

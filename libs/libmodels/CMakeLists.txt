@@ -32,21 +32,6 @@ target_link_libraries(libmodels PRIVATE args)
 set_target_properties(libmodels PROPERTIES FOLDER lib)
 
 # #################################################################
-# #  INSTALL
-# #################################################################
-if(QUICK_DRA_INSTALL)
-    install(TARGETS libmodels COMPONENT libraries)
-
-    install(
-        DIRECTORY
-        include/
-        ${CMAKE_CURRENT_BINARY_DIR}/include/
-        TYPE INCLUDE
-        COMPONENT libraries
-    )
-endif()
-
-# #################################################################
 # #  TESTING
 # #################################################################
 if(QUICK_DRA_TESTING)
