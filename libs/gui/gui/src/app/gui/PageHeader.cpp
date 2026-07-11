@@ -16,6 +16,7 @@
 #include <array>
 #include <concepts>
 #include <memory>
+#include <string>
 #include <string_view>
 
 using namespace std::literals;
@@ -30,6 +31,12 @@ namespace quick_dra::gui {
 		                      std::string_view toolTip,
 		                      QList<QKeySequence> const& shortcuts,
 		                      QIcon const& icon) {
+			std::string toolTipWithShortcut;
+			if (!shortcuts.empty()) {
+				toolTipWithShortcut = std::format(
+				    "{}\t{}", toolTip, std::string_view{shortcuts.front().toString(QKeySequence::NativeText).toUtf8()});
+				toolTip = toolTipWithShortcut;
+			}
 			auto result = std::make_unique<QAction>(parent);
 			result->setObjectName(QString::fromUtf8(name));
 			result->setIcon(icon);
@@ -38,10 +45,25 @@ namespace quick_dra::gui {
 			result->setMenuRole(QAction::MenuRole::NoRole);
 			return result.release();
 		}
+
 		void setupAction(QToolBar* bar, QAction* action) {
 			auto widget = bar->widgetForAction(action);
 			restrictToolButton(widget, 36);
 		}
+
+		qsizetype sizeOfKey(QKeySequence::StandardKey key) { return QKeySequence::keyBindings(key).size(); }
+
+		void append(QList<QKeySequence>& list, QKeySequence::StandardKey key) {
+			list.append(QKeySequence::keyBindings(key));
+		}
+
+		template <typename... Key>
+		QList<QKeySequence> mergeSequences(Key... keys) {
+			QList<QKeySequence> result{};
+			result.reserve((0 + ... + sizeOfKey(keys)));
+			(append(result, keys), ...);
+			return result;
+		}  // GCOV_EXCL_LINE
 	}  // namespace
 
 	void HeaderToolbar::resizeEvent(QResizeEvent* event) {
@@ -215,12 +237,11 @@ namespace quick_dra::gui {
 			toolBar.setIconSize({16, 16});
 			toolBar.setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonIconOnly);
 
-			auto actionBack = createAction(
-			    self, "actionBack"sv, "Cofnij [Esc]"sv,
-			    {Qt::Key_Escape, Qt::CTRL | Qt::Key_Backspace, Qt::META | Qt::Key_Backspace, Qt::ALT | Qt::Key_Left},
-			    arrowLeftSVGIcon());
+			auto actionBack =
+			    createAction(self, "actionBack"sv, "Cofnij"sv, mergeSequences(QKeySequence::Back, QKeySequence::Cancel),
+			                 arrowLeftSVGIcon());
 			auto actionAccept = createAction(
-			    self, "actionAccept"sv, "Zastosuj [Shift+Esc]"sv,
+			    self, "actionAccept"sv, "Zastosuj"sv,
 			    {Qt::SHIFT | Qt::Key_Escape, Qt::CTRL | Qt::Key_Escape, Qt::META | Qt::Key_Escape}, checkSVGIcon());
 
 			toolBar.addAction(actionBack);

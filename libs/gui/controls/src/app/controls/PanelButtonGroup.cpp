@@ -465,7 +465,11 @@ namespace quick_dra::gui {
 		return false;
 	}
 
-	void PanelButtonGroup::keyPressEvent(QKeyEvent* event) { upDownKeyEvent(this, event); }
+	void PanelButtonGroup::keyPressEvent(QKeyEvent* event) {
+		if (!upDownKeyEvent(this, event)) {
+			// event->ignore();
+		}
+	}
 
 	void PanelButtonGroup::keyReleaseEvent(QKeyEvent* event) {
 		if (upDownKeyEvent(this, event)) return;
@@ -478,6 +482,8 @@ namespace quick_dra::gui {
 			}
 			return;
 		}
+
+		// event->ignore();
 	}
 
 	void PanelButtonGroup::focusInEvent(QFocusEvent* event) {

@@ -73,11 +73,20 @@ namespace quick_dra::gui {
 		}
 
 		shortcuts.clear();
+#if 0
 		shortcuts.reserve(static_cast<size_t>(keys.size()));
 		for (auto const& key : keys) {
 			shortcuts.push_back(new QShortcut{key, parent(), this, &Shortcuts::activated,
 			                                  &Shortcuts::activatedAmbiguously, Qt::ApplicationShortcut});
 		}
+#else
+		shortcuts.push_back(new QShortcut{parent()});
+		auto shortcut = shortcuts.back();
+		shortcut->setContext(Qt::ApplicationShortcut);
+		shortcut->setKeys(keys);
+		connect(shortcut, &QShortcut::activated, this, &Shortcuts::activated);
+		connect(shortcut, &QShortcut::activatedAmbiguously, this, &Shortcuts::activatedAmbiguously);
+#endif
 
 		enableShortcuts(enabled && focused);
 

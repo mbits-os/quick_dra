@@ -7,6 +7,7 @@
 #include <app/pages/HomePage.hpp>
 #include <format>
 #include <quick_dra/version.hpp>
+#include <string>  // used by temp slot
 
 using namespace std::literals;
 
@@ -24,6 +25,8 @@ namespace quick_dra::gui {
 		pageStack->push<HomePage>();
 
 		QObject::connect(globals, &Globals::configModifiedChanged, messageBar, &QWidget::setVisible);
+		QObject::connect(&globals->discovery(), &ShortcutDiscovery::modifiersChanged, this,
+		                 &MainWindow::discoveryModifiers);
 	}
 
 	void MainWindow::closeEvent(QCloseEvent* event) {
@@ -50,6 +53,31 @@ namespace quick_dra::gui {
 		pageStack->navigateHomeForReload();
 		pageStack->globals().reloadConfig();
 	}
+
+	// GCOV_EXCL_START -- temporary slot to verify signals via console
+	// TODO: remove this slot before closing of #104
+	void MainWindow::discoveryModifiers(Qt::KeyboardModifiers modifiers) {
+		std::string sMods{};
+		if (!modifiers) {
+			sMods = "NoModifier"s;
+		}
+#define CHECK_MOD(NAME, LABEL)                    \
+	if (modifiers & Qt::NAME) {                   \
+		modifiers &= ~Qt::NAME;                   \
+		if (!sMods.empty()) sMods.push_back('+'); \
+		sMods.append(LABEL##sv);                  \
+	}
+		CHECK_MOD(ShiftModifier, "Shift");
+		CHECK_MOD(ControlModifier, "Ctrl");
+		CHECK_MOD(MetaModifier, "Meta");
+		CHECK_MOD(AltModifier, "Alt");
+		if (modifiers) {
+			if (!sMods.empty()) sMods.push_back('+');
+			sMods.append(std::to_string(modifiers.toInt()));
+		}
+		qDebug() << "[discovery]" << sMods.c_str();
+	}
+	// GCOV_EXCL_STOP
 
 	void MainWindow::storePosition(Globals* globals) {
 		auto settings = globals->createSettings();

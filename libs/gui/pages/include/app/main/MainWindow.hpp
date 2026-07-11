@@ -36,6 +36,7 @@ namespace quick_dra::gui {
 	private slots:
 		void updateTitle();
 		void reloadConfig();
+		void discoveryModifiers(Qt::KeyboardModifiers);
 
 	private:
 		void setupUi(Globals* globals);

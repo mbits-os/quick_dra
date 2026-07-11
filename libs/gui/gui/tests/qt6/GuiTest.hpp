@@ -14,4 +14,10 @@ private slots:
 	void PageHeader_animate();
 	void CurrentColor_changePaletteAtRuntime_data();
 	void CurrentColor_changePaletteAtRuntime();
+	void ShortcutDiscovery_shiftCtrlAltD();
+	void ShortcutDiscovery_removeModifiers();
+	void ShortcutDiscovery_removeKey();
+	void ShortcutDiscovery_mouseButtons_data();
+	void ShortcutDiscovery_mouseButtons();
+	void ShortcutDiscovery_mouseWheel();
 };
