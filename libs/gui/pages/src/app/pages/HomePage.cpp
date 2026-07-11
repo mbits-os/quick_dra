@@ -105,11 +105,12 @@ namespace quick_dra::gui {
 			                                                 .rightIcon = arrowRightSVGIcon(),
 			                                                 .sequences = {Qt::CTRL | Qt::Key_D}},
 			                                                "personelButton");
-			        auto localStoreButton = group.createPanel({.label = "Zapisz plik KEDU XML na dysku",
-			                                                   .toolTip = "Zapisz plik",
-			                                                   .rightIcon = ellipsisSVGIcon(),
-			                                                   .sequences = {Qt::CTRL | Qt::Key_S}},
-			                                                  "localStoreButton");
+			        auto localStoreButton =
+			            group.createPanel({.label = "Zapisz plik KEDU XML na dysku",
+			                               .toolTip = "Zapisz plik",
+			                               .rightIcon = ellipsisSVGIcon(),
+			                               .sequences = QKeySequence::keyBindings(QKeySequence::Save)},
+			                              "localStoreButton");
 			        group.createPanel({.label = QString::fromUtf16(u"Wyślij KEDU XML do e-ZUS"),
 			                           .rightIcon = ellipsisSVGIcon(),
 			                           .isEnabled = false},

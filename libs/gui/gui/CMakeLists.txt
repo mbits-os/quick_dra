@@ -12,6 +12,7 @@ set(SRCS
     include/app/gui/PageFocusEvent.hpp
     include/app/gui/PageHeader.hpp
     include/app/gui/PageStack.hpp
+    include/app/gui/ShortcutDiscovery.hpp
     include/app/gui/types.hpp
     src/app/gui/CurrentColor.cpp
     src/app/gui/Globals.cpp
@@ -19,6 +20,7 @@ set(SRCS
     src/app/gui/PagedWidget.cpp
     src/app/gui/PageHeader.cpp
     src/app/gui/PageStack.cpp
+    src/app/gui/ShortcutDiscovery.cpp
 )
 
 set(RES res/icons.qrc)
@@ -58,6 +60,7 @@ if(QUICK_DRA_TESTING)
         tests/qt6/GuiTest.hpp
         tests/qt6/CurrentColor.test.cpp
         tests/qt6/PageHeader.test.cpp
+        tests/qt6/ShortcutDiscovery.test.cpp
     )
 
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/tests FILES ${FULL_TEST_SRCS} ${QT6_TEST_SRCS})
