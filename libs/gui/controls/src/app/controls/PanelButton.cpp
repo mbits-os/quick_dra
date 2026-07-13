@@ -3,6 +3,7 @@
 
 #include <app/controls/PanelButton.hpp>
 #include <app/controls/PanelButton_p.hpp>
+#include <app/gui/ShortcutDiscovery.hpp>
 
 #include <QPainter>
 #include <QPainterPath>
@@ -60,38 +61,26 @@ namespace quick_dra::gui {
 	}
 
 	void Shortcuts::enableShortcuts(bool enabledAndFocused) {
-		for (auto shortcut : shortcuts) {
-			shortcut->setEnabled(enabledAndFocused);
-		}
+		if (shortcut) shortcut->setEnabled(enabledAndFocused);
 	}
 
 	void Shortcuts::setSequences(QList<QKeySequence> const& keys) {
-		for (auto const& shortcut : shortcuts) {
+		if (shortcut) {
 			shortcut->setEnabled(false);
 			shortcut->setParent(nullptr);
 			shortcut->deleteLater();
 		}
 
-		shortcuts.clear();
-#if 0
-		shortcuts.reserve(static_cast<size_t>(keys.size()));
-		for (auto const& key : keys) {
-			shortcuts.push_back(new QShortcut{key, parent(), this, &Shortcuts::activated,
-			                                  &Shortcuts::activatedAmbiguously, Qt::ApplicationShortcut});
-		}
-#else
-		shortcuts.push_back(new QShortcut{parent()});
-		auto shortcut = shortcuts.back();
+		shortcut = new QShortcut{parent()};
 		shortcut->setContext(Qt::ApplicationShortcut);
 		shortcut->setKeys(keys);
 		connect(shortcut, &QShortcut::activated, this, &Shortcuts::activated);
 		connect(shortcut, &QShortcut::activatedAmbiguously, this, &Shortcuts::activatedAmbiguously);
-#endif
 
 		enableShortcuts(enabled && focused);
-
-		sequences = keys;
 	}
+
+	QList<QKeySequence> Shortcuts::sequences() const { return shortcut ? shortcut->keys() : QList<QKeySequence>{}; }
 
 	void Shortcuts::activated() {
 		auto const d = static_cast<PanelButtonPrivate*>(parent());
@@ -129,6 +118,8 @@ namespace quick_dra::gui {
 		updateToolTip();
 		shortcuts->setSequences(sequences);
 	}
+
+	QList<QKeySequence> PanelButtonPrivate::sequences() const { return shortcuts->sequences(); }
 
 	void PanelButtonPrivate::setToolTip(QString const& text) {
 		buttonTip = text;
@@ -241,8 +232,10 @@ namespace quick_dra::gui {
 
 	PanelButton::~PanelButton() = default;
 
+	QRect PanelButton::geometry() const { return d_ptr->geometry(); }
 	void PanelButton::setSequences(QList<QKeySequence> const& sequences) { d_ptr->setSequences(sequences); }
-
+	QList<QKeySequence> PanelButton::sequences() { return d_ptr->sequences(); }
+	PanelButtonGroup* PanelButton::parentGroup() const noexcept { return d_ptr->q_parent; }
 	QWidget* PanelButton::widget() const { return d_func()->item->widget(); }
 	QLayout* PanelButton::layout() const { return d_func()->item->layout(); }
 

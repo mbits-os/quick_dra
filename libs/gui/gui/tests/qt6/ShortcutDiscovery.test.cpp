@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QTest>
+#include <QVBoxLayout>
 #include <QWheelEvent>
 #include <Qt>
 #include <app/gui/ShortcutDiscovery.hpp>
@@ -238,4 +239,140 @@ void GuiTest::ShortcutDiscovery_mouseWheel() {
 	QVERIFY(!discovery.isActive());
 
 	QCOMPARE_EQ(spy, (QList{modsChanged(Qt::ControlModifier), modsChanged(Qt::NoModifier)}));
+}
+
+class ShortcutWidget : public QWidget {
+public:
+	ShortcutWidget(QSize const& hint, QList<QKeySequence> const& keys, QWidget* parent = nullptr)
+	    : QWidget{parent}, keys{keys}, hint_{hint} {
+		setSizePolicy(TakeWidth);
+	}
+
+	QSize sizeHint() const override { return hint_; }
+	QSize minimumSizeHint() const override { return hint_; }
+
+	QList<QKeySequence> keys;
+	QSize hint_;
+};
+
+namespace quick_dra::gui {
+	template <>
+	struct HolderSupport<ShortcutWidget> : HolderSupport<QWidget> {
+		static QList<QKeySequence> keys(ShortcutWidget const* holder) { return holder->keys; }
+	};
+}  // namespace quick_dra::gui
+
+enum class EnabledVisible { None = 0, Disabled = 1, Invisible = 2 };
+Q_DECLARE_FLAGS(EV, EnabledVisible)
+Q_DECLARE_OPERATORS_FOR_FLAGS(EV)
+
+static std::tuple<int, QList<QKeySequence>, EV> const controls[] = {
+    {36, {Qt::CTRL | Qt::SHIFT | Qt::Key_E}, EnabledVisible::None},
+    {36, {Qt::CTRL | Qt::ALT | Qt::Key_Z, Qt::CTRL | Qt::Key_Z}, {}},
+    {24, {Qt::CTRL | Qt::Key_K}, EnabledVisible::Disabled},
+    {48, {Qt::CTRL | Qt::Key_C}, EnabledVisible::Invisible},
+    {36, {Qt::CTRL | Qt::Key_D}, EnabledVisible::Disabled | EnabledVisible::Invisible},
+    {24, {Qt::CTRL | Qt::Key_V}, EnabledVisible::None},
+};
+
+auto widgetMaker(QWidget* parent, QLayout* layout) {
+	return [parent, layout](std::tuple<int, QList<QKeySequence>, EV> const& control) {
+		auto const& [height, keys, ev] = control;
+		auto* result = new ShortcutWidget{QSize{1, height}, keys, parent};
+		if (ev & EnabledVisible::Disabled) {
+			result->setEnabled(false);
+		}
+		if (ev & EnabledVisible::Invisible) {
+			result->setVisible(false);
+		}
+		layout->addWidget(result);
+		return result;
+	};
+}
+
+void GuiTest::ShortcutDiscovery_gatherTooltips() {
+	ShortcutDiscovery discovery{100ms};
+	QSignalSpy activeSpy{&discovery, &ShortcutDiscovery::modifiersChanged};
+	QSignalSpy labelsSpy{&discovery, &ShortcutDiscovery::labelsChanged};
+	QWidget widget{};
+	HUD hud{&widget};
+
+	auto layout = new QVBoxLayout{&widget};
+	layout->setContentsMargins(5, 5, 5, 5);
+	layout->setSpacing(5);
+
+	std::vector<ShortcutWidget*> widgets{};
+	widgets.reserve(std::size(controls));
+	std::transform(std::begin(controls), std::end(controls), std::back_inserter(widgets), widgetMaker(&widget, layout));
+	int height = 5;
+	for (auto const& control : controls) {
+		height += std::get<0>(control) + 5;
+	}
+	widget.resize(200, height);
+
+	widget.show();
+	QVERIFY(QTest::qWaitForWindowExposed(&widget));
+
+	{
+		auto editor0 = discovery.beginHolderUpdate();
+		auto editor = std::move(editor0);  // test move-ctor even if begin... uses RVO
+		for (auto child : widgets) {
+			editor.addHolder(child);
+		}
+	}
+
+	QCOMPARE_EQ(discovery.holders().size(), std::size(widgets));
+
+	QVERIFY(!discovery.isActive());
+
+	hud.press(Qt::Key_Control);
+	activeSpy.wait(200ms);
+	QVERIFY(discovery.isActive());
+
+	if (labelsSpy.size() < 1) labelsSpy.wait(100ms);
+	QCOMPARE_EQ(labelsSpy.size(), 1);
+	QCOMPARE_EQ(activeSpy.size(), 1);
+
+	{
+		auto editor = discovery.beginHolderUpdate();
+		for (auto child : widgets) {
+			editor.removeHolder(child);
+		}
+	}
+
+	QCOMPARE_EQ(discovery.holders().size(), 0);
+
+	if (labelsSpy.size() < 2) labelsSpy.wait(100ms);
+	activeSpy.wait(100ms);
+	QCOMPARE_EQ(labelsSpy.size(), 2);
+	QCOMPARE_EQ(activeSpy.size(), 1);
+}
+
+void GuiTest::ShortcutDiscovery_toolButton() {
+	using Support = HolderSupport<QToolButton>;
+
+	QAction action{};
+	QToolButton button{};
+	action.setShortcuts(QList<QKeySequence>{Qt::CTRL | Qt::Key_A, Qt::CTRL | Qt::Key_B});
+	button.setDefaultAction(&action);
+
+	QCOMPARE(Support::keys(&button), (QList<QKeySequence>{Qt::CTRL | Qt::Key_A, Qt::CTRL | Qt::Key_B}));
+
+	button.show();
+	QVERIFY(QTest::qWaitForWindowExposed(&button));
+	QVERIFY(Support::isEnabled(&button));
+
+	action.setEnabled(false);
+	QVERIFY(!Support::isEnabled(&button));
+
+	action.setEnabled(true);
+	button.setEnabled(false);
+	QVERIFY(!Support::isEnabled(&button));
+
+	button.setEnabled(true);
+	button.setVisible(false);
+	QVERIFY(!Support::isEnabled(&button));
+
+	button.setVisible(true);
+	QVERIFY(Support::isEnabled(&button));
 }

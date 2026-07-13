@@ -50,6 +50,13 @@ namespace quick_dra::gui {
 		QObject::connect(parent_, &QStackedWidget::currentChanged, this, &PageStack::currentChanged);
 		QObject::connect(globalHeader_, &PageHeader::navigatingBack, this, &PageStack::navigateBack);
 		QObject::connect(globalHeader_, &PageHeader::changesAccepted, this, &PageStack::formAccepted);
+
+		auto const toolBar = globalHeader_->toolBar();
+		auto const buttons = toolBar->findChildren<QToolButton*>();
+		auto editor = discovery().beginHolderUpdate();
+		for (auto const button : buttons) {
+			editor.addHolder(button);
+		}
 	}
 
 	PagedWidget* PageStack::page() { return qobject_cast<PagedWidget*>(parent_->currentWidget()); }

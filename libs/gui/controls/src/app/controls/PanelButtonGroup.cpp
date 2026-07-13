@@ -11,8 +11,10 @@
 #include <app/controls/Panel.hpp>
 #include <app/controls/PanelButton_p.hpp>
 #include <app/gui/PageFocusEvent.hpp>
+#include <app/gui/PageStack.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
+#include <cassert>
 #include <memory>
 #include <utility>
 
@@ -27,6 +29,15 @@ namespace quick_dra::gui {
 			return lightModeActive(qApp->palette()) ? PanelButtonStyle::lightPalette : PanelButtonStyle::darkPalette;
 		}
 	}  // namespace
+
+	template <>
+	struct HolderSupport<PanelButton> {
+		static bool isEnabled(PanelButton const* holder) noexcept { return holder->isEnabled(); }
+		static QList<QKeySequence> keys(PanelButton* holder) { return holder->sequences(); }
+		static HolderPosition getPosition(PanelButton const* holder) noexcept {
+			return {.geometry = holder->geometry(), .rectReference = holder->parentGroup()};
+		}
+	};
 
 	void PanelButtonGroupPrivate::UI::setupUI(DevicePixelScale const& scale, PanelButtonGroup* parent) {
 		LaidOut{parent}.createLayout(layout, "layout", parent);
@@ -168,6 +179,18 @@ namespace quick_dra::gui {
 	void PanelButtonGroupPrivate::pageFocusEvent(bool hasFocus) {
 		for (auto const& control : controls_) {
 			control->setPageFocused(hasFocus);
+		}
+
+		auto editor = ShortcutDiscovery::Editor::current;
+		assert(editor);
+		if (hasFocus) {
+			for (auto const& control : controls_) {
+				editor->addHolder(control.get());
+			}
+		} else {
+			for (auto const& control : controls_) {
+				editor->removeHolder(control.get());
+			}
 		}
 	}
 

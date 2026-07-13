@@ -25,7 +25,7 @@ namespace quick_dra::gui {
 		pageStack->push<HomePage>();
 
 		QObject::connect(globals, &Globals::configModifiedChanged, messageBar, &QWidget::setVisible);
-		QObject::connect(&globals->discovery(), &ShortcutDiscovery::modifiersChanged, this,
+		QObject::connect(&pageStack->discovery(), &ShortcutDiscovery::modifiersChanged, this,
 		                 &MainWindow::discoveryModifiers);
 	}
 

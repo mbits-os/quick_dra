@@ -9,9 +9,11 @@
 namespace quick_dra::gui {
 	namespace {
 		void broadcastPageFocusEvent(QWidget* parent, bool hasFocus) {
+			auto editor = PageStack::current()->discovery().beginHolderUpdate();
 			auto const children = parent->findChildren<QWidget*>();
+			PageFocusEvent event{hasFocus};
 			for (auto const child : children) {
-				qApp->notify(child, new PageFocusEvent{hasFocus});
+				qApp->notify(child, &event);
 			}
 		}
 

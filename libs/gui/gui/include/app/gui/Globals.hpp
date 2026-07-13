@@ -6,7 +6,6 @@
 #include <QFileSystemWatcher>
 #include <QObject>
 #include <QSettings>
-#include <app/gui/ShortcutDiscovery.hpp>
 #include <app/utils/FormData.hpp>
 #include <memory>
 #include <utility>
@@ -47,8 +46,6 @@ namespace quick_dra::gui {
 		bool hasStack() const noexcept { return !!stack_; }
 		void setStack(PageStack* stack);
 
-		ShortcutDiscovery& discovery() noexcept { return discovery_; }
-
 		QSettings createSettings() const { return provider_->createContainer(); }
 
 		bool configModified() const noexcept;
@@ -86,7 +83,6 @@ namespace quick_dra::gui {
 		FormData data_{};
 		ReportId reportId_{};
 		QFileSystemWatcher watcher_{};
-		ShortcutDiscovery discovery_{};
 		bool configModified_{false};
 	};
 }  // namespace quick_dra::gui

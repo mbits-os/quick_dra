@@ -35,6 +35,7 @@ namespace quick_dra::gui {
 		void setEnabled(bool value);
 		void setFocused(bool value);
 		void setSequences(QList<QKeySequence> const&);
+		QList<QKeySequence> sequences() const;
 
 	private slots:
 		void activated();
@@ -43,8 +44,7 @@ namespace quick_dra::gui {
 	private:
 		void enableShortcuts(bool enabledAndFocused);
 
-		QList<QKeySequence> sequences{};
-		std::vector<QShortcut*> shortcuts{};
+		QShortcut* shortcut{};
 		bool enabled : 1 = true;
 		bool focused : 1 = true;
 	};
@@ -63,6 +63,7 @@ namespace quick_dra::gui {
 		inline const PanelButton* q_func() const noexcept { return static_cast<const PanelButton*>(q_ptr); }
 
 		void setSequences(QList<QKeySequence> const&);
+		QList<QKeySequence> sequences() const;
 		QString const& toolTip() const noexcept { return toolTip_; }
 		void setToolTip(QString const&);
 		QRect geometry() const;
