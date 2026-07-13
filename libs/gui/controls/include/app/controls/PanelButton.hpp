@@ -12,6 +12,7 @@
 
 namespace quick_dra::gui {
 	class PanelButtonPrivate;
+	class PanelButtonGroup;
 	class PanelButton : public QObject {
 		Q_OBJECT
 		Q_DECLARE_PRIVATE(PanelButton)
@@ -21,7 +22,10 @@ namespace quick_dra::gui {
 		PanelButton();
 		~PanelButton();
 
+		QRect geometry() const;
 		void setSequences(QList<QKeySequence> const&);
+		QList<QKeySequence> sequences();
+		PanelButtonGroup* parentGroup() const noexcept;
 
 		QWidget* widget() const;
 		QLayout* layout() const;

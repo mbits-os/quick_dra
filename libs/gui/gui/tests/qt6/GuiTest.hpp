@@ -20,4 +20,6 @@ private slots:
 	void ShortcutDiscovery_mouseButtons_data();
 	void ShortcutDiscovery_mouseButtons();
 	void ShortcutDiscovery_mouseWheel();
+	void ShortcutDiscovery_gatherTooltips();
+	void ShortcutDiscovery_toolButton();
 };

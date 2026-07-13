@@ -12,6 +12,8 @@
 #include <app/controls/PanelButtonGroup.hpp>
 #include <app/controls/PanelButtonStyle.hpp>
 #include <app/gui/CurrentColor.hpp>
+#include <app/gui/PageFocusEvent.hpp>
+#include <app/gui/ShortcutDiscovery.hpp>
 #include <app/utils/DevicePixelScale.hpp>
 #include <app/utils/LaidOut.hpp>
 #include <app/utils/utils.hpp>
@@ -595,4 +597,38 @@ void ControlsTest::PanelButtonGroup_internalFocus() {
 	QVERIFY(btns.onlyFocusedButton(1));
 	QTest::keyClick(&widget, Qt::Key_Down, Qt::NoModifier);
 	QVERIFY(btns.onlyFocusedButton(2));
+}
+
+void ControlsTest::PanelButtonGroup_holders() {
+	PanelButtonGroup widget{};
+	Buttons btns{widget};
+	widget.show();
+	QVERIFY(QTest::qWaitForWindowExposed(&widget));
+
+	ShortcutDiscovery discovery{100ms};
+	QSignalSpy spy{&discovery, &ShortcutDiscovery::holdersChanged};
+	{
+		auto editor = discovery.beginHolderUpdate();
+		PageFocusEvent event{true};
+		qApp->notify(&widget, &event);
+	}
+
+	int count = 0;
+	while (spy.isEmpty()) {
+		spy.wait(100ms);
+		++count;
+		if (count == 10) break;
+	}
+	QVERIFY(!spy.isEmpty());
+
+	auto const& holders = discovery.holders();
+	QCOMPARE_EQ(holders.size(), 2);
+	QCOMPARE_EQ(holders[0].holder, btns.buttons[0]);
+	QCOMPARE_EQ(holders[1].holder, btns.buttons[1]);
+	QVERIFY(holders[0].isEnabled(holders[0].holder));
+	QVERIFY(holders[1].isEnabled(holders[1].holder));
+	QCOMPARE_EQ(holders[0].keys, QList<QKeySequence>({Qt::CTRL | Qt::Key_L, Qt::ALT | Qt::Key_L}));
+	QCOMPARE_EQ(holders[1].keys, QList<QKeySequence>({Qt::ALT | Qt::CTRL | Qt::Key_Delete}));
+	QCOMPARE_EQ(holders[0].getPosition(holders[0].holder).rectReference, &widget);
+	QCOMPARE_EQ(holders[1].getPosition(holders[1].holder).rectReference, &widget);
 }

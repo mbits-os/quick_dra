@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QStackedWidget>
+#include <app/gui/ShortcutDiscovery.hpp>
 #include <app/gui/types.hpp>
 #include <memory>
 #include <utility>
@@ -24,6 +25,7 @@ namespace quick_dra::gui {
 
 		void setGlobals(Globals* globals);
 		Globals& globals() const noexcept { return *globals_; }
+		ShortcutDiscovery& discovery() noexcept { return discovery_; }
 		bool formDirty() const noexcept;
 		bool formValid() const noexcept;
 		bool topMost() const noexcept;
@@ -66,5 +68,6 @@ namespace quick_dra::gui {
 
 		PageHeader* globalHeader_{};
 		QStackedWidget* parent_{};
+		ShortcutDiscovery discovery_{};
 	};
 }  // namespace quick_dra::gui
