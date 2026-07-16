@@ -483,12 +483,12 @@ namespace quick_dra::gui {
 		dirty = false;
 
 		for (auto& fontInfo : fontInfos) {
-			fontInfo.used = 0;
+			fontInfo.used = false;
 		}
 
 		for (auto const& word : words) {
 			for (auto const& span : word.spans) {
-				info(span).used = 1;
+				info(span).used = true;
 			}
 		}
 

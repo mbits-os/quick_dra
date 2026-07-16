@@ -72,7 +72,7 @@ namespace quick_dra::gui {
 		struct Font {
 			bool isBold = false;
 			bool isItalic = false;
-			size_t used{};
+			bool used{};
 			LineHeight lineHeight{};
 		};
 

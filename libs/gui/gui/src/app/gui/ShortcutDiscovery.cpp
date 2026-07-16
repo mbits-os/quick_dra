@@ -49,7 +49,7 @@ namespace quick_dra::gui {
 
 	ShortcutDiscovery::ShortcutDiscovery(ch::milliseconds delay) {
 		timer_.setSingleShot(true);
-		timer_.setInterval(delay.count());
+		timer_.setInterval(static_cast<int>(delay.count()));
 		timer_.callOnTimeout(this, &ShortcutDiscovery::timedOut);
 		qApp->installEventFilter(this);
 	}
