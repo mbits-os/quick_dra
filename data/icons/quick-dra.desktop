@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Quick-DRA
+Exec=quick-dra
+Icon=quick-dra
+Terminal=false
+Categories=Utility;

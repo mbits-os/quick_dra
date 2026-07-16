@@ -23,7 +23,7 @@ cpack_add_component(C001_cli
 if (TARGET Qt6::Gui)
     cpack_add_component(C002_gui
         DISPLAY_NAME "Aplikacja GUI"
-        DESCRIPTION "Graficzny interfejs użytkownika aplikacji `qdra-gui`"
+        DESCRIPTION "Graficzny interfejs użytkownika aplikacji `quick-dra`"
         DEPENDS C004_data C003_qt_deployment
         GROUP apps
     )
