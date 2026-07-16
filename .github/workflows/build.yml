@@ -130,7 +130,7 @@ jobs:
       - name: Prepare Test Report
         if: always()
         continue-on-error: true
-        run: ${{ env.FLOW_COMMAND }} -s JUnitToCtrf,MergeCtrfFiles
+        run: ${{ env.FLOW_COMMAND }} -s QTestToJUnit,JUnitToCtrf,MergeCtrfFiles
 
       - name: Pack
         id: artifacts

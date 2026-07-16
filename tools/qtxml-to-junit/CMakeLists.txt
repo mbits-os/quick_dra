@@ -20,3 +20,13 @@ if(WIN32)
     target_link_options(qtxml-to-junit PRIVATE /ENTRY:wmainCRTStartup)
     target_compile_options(qtxml-to-junit PRIVATE /D_UNICODE /DUNICODE)
 endif()
+
+set(_OUTPUT ${PROJECT_BINARY_DIR}/tools)
+
+set_target_properties(qtxml-to-junit PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${_OUTPUT}
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_OUTPUT}
+)

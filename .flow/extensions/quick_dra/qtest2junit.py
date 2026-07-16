@@ -68,7 +68,7 @@ class QTestToJUnit(step.Step):
         binary = "qtxml-to-junit"
         if os.name == "nt":
             binary += ".exe"
-        executable = build_dir / "bin" / binary
+        executable = build_dir / "tools" / binary
 
         rt.cmd(str(executable), *inputs, "-o", str(build_dir / output / "qt.xml"))
         return 0

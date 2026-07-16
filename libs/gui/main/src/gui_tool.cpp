@@ -23,7 +23,7 @@ int gui_tool(int argc, char** argv) {
 	QApplication a{argc, argv};
 
 	QCoreApplication::setOrganizationName("midnightBITS");
-	QCoreApplication::setApplicationName("QuickDRA");
+	QCoreApplication::setApplicationName("Quick-DRA");
 
 	a.setWindowIcon(QIcon{":/assets/icon"});
 

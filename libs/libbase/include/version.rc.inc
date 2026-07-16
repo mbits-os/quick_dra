@@ -11,7 +11,7 @@
 
 #define RC_ORGANISATION "midnightBITS"
 #ifndef RC_MODULE
-#define RC_MODULE "qdra-gui"
+#define RC_MODULE "quick-dra"
 #endif
 #define RC_VERSION_STRING \
 	QUICK_DRA_VERSION_STR       \

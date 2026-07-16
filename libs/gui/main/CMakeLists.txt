@@ -1,7 +1,7 @@
 # Copyright (c) 2026 midnightBITS
 # This file is licensed under MIT license (see LICENSE for details)
 
-option(QUICK_DRA_WIN_GUI_CONSOLE "Subsystem for the qdra-gui on Windows should default to CONSOLE" OFF)
+option(QUICK_DRA_WIN_GUI_CONSOLE "Subsystem for the quick-dra on Windows should default to CONSOLE" OFF)
 
 qt_standard_project_setup()
 
@@ -16,7 +16,7 @@ set(QRC_SRCS)
 
 if(WIN32)
     list(APPEND QRC_SRCS res/icon_win32.qrc)
-    list(APPEND SRCS res/qdra-gui.exe.manifest res/version.rc)
+    list(APPEND SRCS res/quick-dra.exe.manifest res/version.rc)
 else()
     list(APPEND QRC_SRCS res/icon_svg.qrc)
 endif()
@@ -28,14 +28,14 @@ message(STATUS "Generated resource files: ${RESOURCES}")
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SRCS} ${QRC_SRCS})
 source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX gen FILES ${RESOURCES})
 
-qt_add_executable(qdra-gui MACOSX_BUNDLE ${SRCS} ${QRC_SRCS} ${RESOURCES})
+qt_add_executable(quick-dra MACOSX_BUNDLE ${SRCS} ${QRC_SRCS} ${RESOURCES})
 
-add_win32_icon(qdra-gui appicon.ico)
-target_compile_options(qdra-gui PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
-target_include_directories(qdra-gui PRIVATE src)
-target_link_options(qdra-gui PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
-target_link_libraries(qdra-gui PRIVATE pages)
-set_target_properties(qdra-gui PROPERTIES
+add_win32_icon(quick-dra appicon.ico)
+target_compile_options(quick-dra PRIVATE ${QUICK_DRA_ADDITIONAL_COMPILE_FLAGS})
+target_include_directories(quick-dra PRIVATE src)
+target_link_options(quick-dra PRIVATE ${QUICK_DRA_ADDITIONAL_LINK_FLAGS})
+target_link_libraries(quick-dra PRIVATE pages)
+set_target_properties(quick-dra PROPERTIES
     VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
     VS_DPI_AWARE ON
 )
@@ -43,23 +43,35 @@ set_target_properties(qdra-gui PROPERTIES
 if(WIN32)
     if(QUICK_DRA_WIN_GUI_CONSOLE)
         message(STATUS "winapi: Build Quick-DRA GUI as Console app")
-        target_link_options(qdra-gui PRIVATE /ENTRY:wmainCRTStartup)
+        target_link_options(quick-dra PRIVATE /ENTRY:wmainCRTStartup)
     else()
         message(STATUS "winapi: Build Quick-DRA GUI as Windows app")
-        target_link_options(qdra-gui PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup)
+        target_link_options(quick-dra PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup)
     endif()
 
-    target_compile_options(qdra-gui PRIVATE /D_UNICODE /DUNICODE)
+    target_compile_options(quick-dra PRIVATE /D_UNICODE /DUNICODE)
+endif()
+
+if (UNIX)
+    add_custom_command(
+        TARGET quick-dra POST_BUILD
+        COMMENT "Copy xdg files"
+        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/data/icons"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS -E copy quick-dra.desktop "${PROJECT_BINARY_DIR}/share/applications/quick-dra.desktop"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS -E copy appicon.svg "${PROJECT_BINARY_DIR}/share/icons/hicolor/scalable/apps/quick-dra.svg"
+    )
 endif()
 
 # #################################################################
 # #  INSTALL
 # #################################################################
 if(QUICK_DRA_INSTALL)
-    install(TARGETS qdra-gui COMPONENT C002_gui)
+    install(TARGETS quick-dra COMPONENT C002_gui)
 
     qt_generate_deploy_app_script(
-        TARGET qdra-gui
+        TARGET quick-dra
         OUTPUT_SCRIPT deploy_script
         NO_UNSUPPORTED_PLATFORM_ERROR
     )
