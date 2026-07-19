@@ -19,6 +19,8 @@ namespace ch = std::chrono;
 QT_FORWARD_DECLARE_CLASS(QToolButton)
 
 namespace quick_dra::gui {
+	class ToolTipLabel;
+
 	struct HolderPosition {
 		QRect geometry;
 		QWidget const* rectReference;
@@ -92,6 +94,17 @@ namespace quick_dra::gui {
 		struct PrivateTag {};
 
 	public:
+		struct LabelInfo {
+			QWidget* parent = nullptr;
+			ToolTipLabel* toolTip = nullptr;
+			QPoint origin{};
+			QString text{};
+
+			bool operator==(LabelInfo const& rhs) const noexcept {
+				return parent == rhs.parent && origin == rhs.origin && text == rhs.text;
+			}
+		};
+
 		struct Editor {
 			static Editor* current;
 
@@ -125,6 +138,7 @@ namespace quick_dra::gui {
 
 		Editor beginHolderUpdate();
 		std::deque<ShortcutHolderInfo> const& holders() const noexcept { return holders_; }
+		std::vector<LabelInfo> const& labels() const noexcept { return labels_; }
 
 	public slots:
 		void modifiersPressed(Qt::KeyboardModifiers);
@@ -140,15 +154,6 @@ namespace quick_dra::gui {
 		void labelsChanged();
 
 	private:
-		struct LabelInfo {
-			QWidget* parent = nullptr;
-			QWidget* toolTip = nullptr;
-			QPoint origin{};
-			QString text{};
-
-			auto operator<=>(LabelInfo const&) const noexcept = default;
-		};
-
 		enum class ModsState {
 			Stable = false,
 			Changed = true,

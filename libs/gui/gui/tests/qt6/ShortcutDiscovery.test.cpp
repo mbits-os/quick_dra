@@ -9,6 +9,7 @@
 #include <QWheelEvent>
 #include <Qt>
 #include <app/gui/ShortcutDiscovery.hpp>
+#include <app/gui/ToolTipLabel.hpp>
 #include <app/utils/utils.hpp>
 #include "GuiTest.hpp"
 #include "ui_helpers.hpp"
@@ -31,6 +32,8 @@ namespace {
 
 		return Qt::NoModifier;
 	}
+
+	QString operator""_L1(char const* ptr, size_t len) { return QString::fromLatin1(ptr, static_cast<qsizetype>(len)); }
 }  // namespace
 
 struct HUD {
@@ -297,18 +300,20 @@ void GuiTest::ShortcutDiscovery_gatherTooltips() {
 	QWidget widget{};
 	HUD hud{&widget};
 
-	auto layout = new QVBoxLayout{&widget};
+	auto parent = new QWidget{&widget};
+	auto layout = new QVBoxLayout{parent};
 	layout->setContentsMargins(5, 5, 5, 5);
 	layout->setSpacing(5);
 
 	std::vector<ShortcutWidget*> widgets{};
 	widgets.reserve(std::size(controls));
-	std::transform(std::begin(controls), std::end(controls), std::back_inserter(widgets), widgetMaker(&widget, layout));
+	std::transform(std::begin(controls), std::end(controls), std::back_inserter(widgets), widgetMaker(parent, layout));
 	int height = 5;
 	for (auto const& control : controls) {
 		height += std::get<0>(control) + 5;
 	}
-	widget.resize(200, height);
+	parent->resize(200, height);
+	widget.resize(200, height * 2 / 3);
 
 	widget.show();
 	QVERIFY(QTest::qWaitForWindowExposed(&widget));
@@ -332,6 +337,25 @@ void GuiTest::ShortcutDiscovery_gatherTooltips() {
 	if (labelsSpy.size() < 1) labelsSpy.wait(100ms);
 	QCOMPARE_EQ(labelsSpy.size(), 1);
 	QCOMPARE_EQ(activeSpy.size(), 1);
+
+	auto const previous = discovery.labels();
+	{
+		// "empty" update
+		discovery.beginHolderUpdate();
+	}
+	auto const now = discovery.labels();
+	auto actual = QList<std::pair<QPoint, QString>>{};
+	actual.reserve(static_cast<qsizetype>(now.size()));
+	std::transform(now.begin(), now.end(), std::back_inserter(actual),
+	               [](ShortcutDiscovery::LabelInfo const& info) { return std::pair{info.origin, info.text}; });
+
+	labelsSpy.wait(100ms);
+	activeSpy.wait(100ms);
+	QCOMPARE_EQ(labelsSpy.size(), 1);
+	QCOMPARE_EQ(activeSpy.size(), 1);
+	QCOMPARE_EQ(previous, now);
+	QCOMPARE_EQ(actual, (QList{std::pair{QPoint{17, 49}, "Shift+E"_L1}, std::pair{QPoint{17, 108}, "Alt+Z"_L1},
+	                           std::pair{QPoint{71, 108}, "Z"_L1}}));
 
 	{
 		auto editor = discovery.beginHolderUpdate();
@@ -375,4 +399,9 @@ void GuiTest::ShortcutDiscovery_toolButton() {
 
 	button.setVisible(true);
 	QVERIFY(Support::isEnabled(&button));
+
+	// call painting the tool tip label
+	ToolTipLabel label{"Text", QPoint{}, nullptr};
+	label.showNormal();
+	QVERIFY(QTest::qWaitForWindowExposed(&label));
 }

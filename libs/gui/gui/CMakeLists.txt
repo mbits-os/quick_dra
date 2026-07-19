@@ -14,6 +14,7 @@ set(SRCS
     include/app/gui/PageStack.hpp
     include/app/gui/ShortcutDiscovery.hpp
     include/app/gui/types.hpp
+    include/app/gui/ToolTipLabel.hpp
     src/app/gui/CurrentColor.cpp
     src/app/gui/Globals.cpp
     src/app/gui/HeaderTitle.cpp
@@ -21,6 +22,7 @@ set(SRCS
     src/app/gui/PageHeader.cpp
     src/app/gui/PageStack.cpp
     src/app/gui/ShortcutDiscovery.cpp
+    src/app/gui/ToolTipLabel.cpp
 )
 
 set(RES res/icons.qrc)
