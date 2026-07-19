@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.7.0](https://github.com/mbits-os/quick_dra/compare/v1.6.0...v1.7.0) (2026-07-19)
+
+### New Features
+
+- show tooltips for discovered shortcuts ([650990f](https://github.com/mbits-os/quick_dra/commit/650990f31248a8237aaceed20e3084edb1ae76b4)), closes mbits-os/quick_dra#106 and mbits-os/quick_dra#104
+- track all available shortcuts at any time ([3b01109](https://github.com/mbits-os/quick_dra/commit/3b01109c508b39eba793052e0ebe9922aa197efa)), closes mbits-os/quick_dra#105
+- observe keys to keep track of modifier keys ([c0a4519](https://github.com/mbits-os/quick_dra/commit/c0a4519a8a61a43f3174c894a0ee8b6af584e74b)), closes #107
+
+### Bug Fixes
+
+- remove compilation warnings ([092875f](https://github.com/mbits-os/quick_dra/commit/092875f779d4ec0f2a9761456179b147a46a2850))
+- prepare desktop entry ([23fa7a9](https://github.com/mbits-os/quick_dra/commit/23fa7a977e0b393d6316ccfd745a869d4db1e643))
+
 ## [1.6.0](https://github.com/mbits-os/quick_dra/compare/v1.5.0...v1.6.0) (2026-07-10)
 
 ### New Features
