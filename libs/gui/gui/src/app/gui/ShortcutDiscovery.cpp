@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <app/gui/Globals.hpp>
 #include <app/gui/ShortcutDiscovery.hpp>
+#include <app/gui/ToolTipLabel.hpp>
 #include <array>
 #include <utility>
 #include <vector>
@@ -206,14 +207,33 @@ namespace quick_dra::gui {
 		}
 
 		for (auto const& label : labels_) {
-			if (label.toolTip) label.toolTip->deleteLater();  // GCOV_EXCL_LINE (until #106)
+			if (label.toolTip) label.toolTip->hideTip();
 		}
+
 		labels_ = std::move(labels);
-		for (auto const& label : labels_) {
-			// TODO: mbits-os/quick_dra#106 Show matching shortcuts, when Control is being held for one seconds
+
+		for (auto& label : labels_) {
+			label.toolTip = new ToolTipLabel{label.text, label.origin, label.parent};
+			label.toolTip->showNormal();
 		}
 
 		labelsChanged();
+	}
+
+	static bool visibleInStack(QWidget const* bottom, QPoint const& pt) {
+		auto point = pt;
+		auto widget = bottom;
+
+		while (widget) {
+			if (!widget->rect().contains(point)) {
+				return false;
+			}
+			auto parent = qobject_cast<QWidget*>(widget->parent());
+			if (!parent) break;
+			point = widget->mapTo(parent, point);
+			widget = parent;
+		}
+		return true;
 	}
 
 	std::vector<ShortcutDiscovery::LabelInfo> ShortcutDiscovery::filterShortcuts() {
@@ -241,7 +261,7 @@ namespace quick_dra::gui {
 		int lineHeight{fm.ascent() + fm.descent() + fm.leading()};
 		int em{fm.boundingRect("m").width()};
 
-		int vOffset = -lineHeight * 2 / 3;
+		int vOffset = -lineHeight * 4 / 5;
 
 		for (auto const& holder : holders_) {
 			if (!holder.isEnabled(holder.holder)) continue;
@@ -253,8 +273,12 @@ namespace quick_dra::gui {
 					auto const pos = holder.getPosition(holder.holder);
 					auto const topLevelParent = pos.rectReference->topLevelWidget();
 
-					auto const position =
-					    pos.rectReference->mapTo(topLevelParent, pos.geometry.bottomLeft()) + QPoint{hOffset, vOffset};
+					auto const local = pos.geometry.bottomLeft() + QPoint{hOffset, vOffset};
+					if (!visibleInStack(pos.rectReference, local)) {
+						continue;
+					}
+
+					auto const position = pos.rectReference->mapToGlobal(local);
 					auto label = QKeySequence{mod.key() | (mod.keyboardModifiers() & ~modifiers_)}.toString();
 					hOffset += 2 * em + fm.boundingRect(label).width();
 
