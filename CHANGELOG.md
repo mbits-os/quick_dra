@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) and [COMMITS.md](COMMITS.md) for commit guidelines.
 
+## [1.7.1](https://github.com/mbits-os/quick_dra/compare/v1.7.0...v1.7.1) (2026-08-15)
+
+### Bug Fixes
+
+- use hydra head in xdg installs ([7cf5362](https://github.com/mbits-os/quick_dra/commit/7cf536290b9750d08c8d46975347cde97a0f0cbd))
+- clean compilation issues ([bae3289](https://github.com/mbits-os/quick_dra/commit/bae3289d7afcba2852c8895b5edcd01d66657d80))
+
 ## [1.7.0](https://github.com/mbits-os/quick_dra/compare/v1.6.0...v1.7.0) (2026-07-19)
 
 ### New Features
