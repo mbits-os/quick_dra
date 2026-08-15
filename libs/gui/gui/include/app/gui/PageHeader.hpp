@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QToolBar>
 #include <QWidget>
-#include <QtTypes>
 #include <app/gui/HeaderTitle.hpp>
 #include <app/gui/types.hpp>
 

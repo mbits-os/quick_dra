@@ -440,7 +440,8 @@ namespace quick_dra::gui {
 		if (bold != isBold || italic != isItalic) {
 			return;
 		}
-		auto const str = QString{letters.sliceInto(text)};
+		auto const view = letters.sliceInto(text);
+		auto const str = QString{view.data(), view.size()};
 		pos.advance = fm.horizontalAdvance(str);
 		pos.boundingBox = fm.boundingRect(str);
 #ifdef DEBUG_MD
@@ -604,7 +605,7 @@ namespace quick_dra::gui {
 					if (span.isBold == isBold && span.isItalic == isItalic) {
 						auto const view = span.letters.sliceInto(markdownClearedText);
 
-						painter->drawText(QPointF{advance, baseline}, QString{view});
+						painter->drawText(QPointF{advance, baseline}, QString{view.data(), view.size()});
 					}
 
 					advance += span.pos.advance;

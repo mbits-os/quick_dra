@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <qtypes.h>
 #include <QPainter>
 #include <QVBoxLayout>
 #include <app/utils/DevicePixelScale.hpp>
