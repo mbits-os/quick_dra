@@ -61,6 +61,12 @@ if (UNIX)
         ARGS -E copy quick-dra.desktop "${PROJECT_BINARY_DIR}/share/applications/quick-dra.desktop"
         COMMAND "${CMAKE_COMMAND}"
         ARGS -E copy appicon.svg "${PROJECT_BINARY_DIR}/share/icons/hicolor/scalable/apps/quick-dra.svg"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS -E copy appicon-16.svg "${PROJECT_BINARY_DIR}/share/icons/hicolor/16x16/apps/quick-dra.svg"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS -E copy appicon-24.svg "${PROJECT_BINARY_DIR}/share/icons/hicolor/24x24/apps/quick-dra.svg"
+        COMMAND "${CMAKE_COMMAND}"
+        ARGS -E copy appicon-32.svg "${PROJECT_BINARY_DIR}/share/icons/hicolor/32x32/apps/quick-dra.svg"
     )
 endif()
 
