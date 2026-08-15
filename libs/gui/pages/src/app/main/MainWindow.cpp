@@ -7,7 +7,6 @@
 #include <app/pages/HomePage.hpp>
 #include <format>
 #include <quick_dra/version.hpp>
-#include <string>  // used by temp slot
 
 using namespace std::literals;
 
